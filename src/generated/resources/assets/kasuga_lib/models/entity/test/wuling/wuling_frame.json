@@ -1,0 +1,11 @@
+{
+  "multi_part": {
+    "frame": "kasuga_lib:entity/test/wuling/jsons/frame",
+    "tie": "kasuga_lib:entity/test/wuling/jsons/tie",
+    "front_door_left": "kasuga_lib:entity/test/wuling/jsons/door/front_door_left",
+    "front_door_right": "kasuga_lib:entity/test/wuling/jsons/door/front_door_right",
+    "back_door_left": "kasuga_lib:entity/test/wuling/jsons/door/back_door_left",
+    "back_door_right": "kasuga_lib:entity/test/wuling/jsons/door/back_door_right",
+    "large_back_door": "kasuga_lib:entity/test/wuling/jsons/door/large_back_door"
+  }
+}

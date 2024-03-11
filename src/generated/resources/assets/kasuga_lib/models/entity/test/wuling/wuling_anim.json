@@ -1,0 +1,123 @@
+{
+  "animation": {
+    "test_anim": {
+      "timer": {
+        "wheel": {
+          "chaser": {
+            "False": "wheel = tick + partial"
+          }
+        },
+        "shake": {
+          "chaser": {"True": "shake = cos(rad(wheel * 18)) * 0.02"}
+        },
+        "door1": {
+          "max": 60,
+          "chaser": {
+            "left_front == 1": "door1 = door1 + 1",
+            "left_front == 0": "door1 = door1 - 1"
+          }
+        },
+        "door2": {
+          "chaser": {
+            "left_back == 1": "door2 = door2 + 1",
+            "left_back == 0": "door2 = door2 - 1",
+            "left_back == 1 and door2 > 0 and door2 < 20": "door2x = door2x + 1",
+            "left_back == 0 and door2 > 0 and door2 < 20": "door2x = door2x - 1"
+          }
+        },
+        "door3": {
+          "max": 60,
+          "chaser": {
+            "right_front == 1": "door3 = door3 + 1",
+            "right_front == 0": "door3 = door3 - 1"
+          }
+        },
+        "door4": {
+          "chaser": {
+            "right_back == 1": "door4 = door4 + 1",
+            "right_back == 0": "door4 = door4 - 1",
+            "right_back == 1 and door4 > 0 and door4 < 20": "door4x = door4x + 1",
+            "right_back == 0 and door4 > 0 and door4 < 20": "door4x = door4x - 1"
+          }
+        },
+        "door5": {
+          "max": 85,
+          "chaser": {
+            "mid_back == 1": "door5 = door5 + 1",
+            "mid_back == 0": "door5 = door5 - 1"
+          }
+        }
+      },
+      "actor": {
+        "wuling_car": {
+          "action": ["translate(0, shake, 0)"]
+        },
+        "wuling_car.front_door_left": {
+          "action": [
+            "translate(-1.18, 0, -1.55)",
+            "y_rot(-door1)"
+          ]
+        },
+        "wuling_car.front_door_right": {
+          "action": [
+            "translate(1.18, 0, -1.55)",
+            "y_rot(door3)"
+          ]
+        },
+        "wuling_car.back_door_left": {
+          "action": [
+            "translate(-1.23, 0, 0)",
+            "translate(- door2x * 0.005, 0, door2 / 70)"
+          ]
+        },
+        "wuling_car.back_door_right": {
+          "action": [
+            "translate(1.23, 0, 0)",
+            "translate(door4x * 0.005, 0, door4 / 70)"
+          ]
+        },
+        "wuling_car.large_back_door": {
+          "action": [
+            "translate(0, 2.5, 3.2)",
+            "x_rot(- door5)"
+          ]
+        },
+        "wuling_car.tie": {
+          "action":
+          [
+            "translate(-0.65, 1.6, -1.45)",
+            "x_rot(-30)"
+          ]
+        },
+        "left_wheel": {
+          "action":
+          [
+            "translate(-1, 0.5, -1.975)",
+            "x_rot(- wheel * 18)"
+          ]
+        },
+        "left_wheel_2": {
+          "action":
+          [
+            "translate(-1, 0.5, 2.05)",
+            "x_rot(- wheel * 18)"
+          ]
+        },
+        "right_wheel": {
+          "action":
+          [
+            "translate(1, 0.5, -1.975)",
+            "x_rot(- wheel * 18)"
+          ]
+        },
+        "right_wheel_2": {
+          "action":
+          [
+            "translate(1, 0.5, 2.05)",
+            "x_rot(- wheel * 18)"
+          ]
+        }
+      }
+    }
+  }
+}

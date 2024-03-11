@@ -1,0 +1,9 @@
+{
+  "multi_part": {
+    "left_wheel": "kasuga_lib:entity/test/wuling/jsons/wheel/left_wheel",
+    "left_wheel_2": "kasuga_lib:entity/test/wuling/jsons/wheel/left_wheel",
+    "right_wheel": "kasuga_lib:entity/test/wuling/jsons/wheel/right_wheel",
+    "right_wheel_2": "kasuga_lib:entity/test/wuling/jsons/wheel/right_wheel",
+    "wuling_car": "kasuga_lib:entity/test/wuling/wuling_frame"
+  }
+}

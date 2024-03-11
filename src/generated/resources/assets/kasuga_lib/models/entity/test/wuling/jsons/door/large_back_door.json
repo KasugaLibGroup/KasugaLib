@@ -1,0 +1,5 @@
+{
+  "loader": "forge:obj",
+  "flip_v": true,
+  "model": "kasuga_lib:models/entity/test/wuling/objs/door/wuling_large_back_door.obj"
+}
