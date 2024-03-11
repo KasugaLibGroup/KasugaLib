@@ -1,3 +1,6 @@
 [submodule "codes"]
 	path = codes
 	url = https://github.com/MegumiKasuga/Mixed-Arithmetic-Logic-Interpreter.git
+[submodule "src/main/java/kasuga/lib/codes"]
+	path = src/main/java/kasuga/lib/codes
+	url = https://github.com/MegumiKasuga/Mixed-Arithmetic-Logic-Interpreter.git
