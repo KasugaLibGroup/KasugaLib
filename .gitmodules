@@ -1,0 +1,3 @@
+[submodule "codes"]
+	path = codes
+	url = https://github.com/MegumiKasuga/Mixed-Arithmetic-Logic-Interpreter.git
