@@ -1,11 +1,8 @@
 package kasuga.lib.core.client.animation.infrastructure;
 
-import kasuga.lib.codes.Code;
-import kasuga.lib.codes.compute.data.Namespace;
-import kasuga.lib.codes.compute.infrastructure.Assignable;
-import kasuga.lib.codes.logic.data.LogicalBool;
-import kasuga.lib.codes.logic.infrastructure.LogicalAssignable;
-import kasuga.lib.codes.logic.infrastructure.LogicalData;
+import interpreter.compute.data.Namespace;
+import interpreter.logic.infrastructure.LogicalAssignable;
+import interpreter.logic.infrastructure.LogicalData;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +14,8 @@ import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 public class Condition extends AnimationElement implements AnimAssignable {
-    @Nonnull LogicalData data;
+    @Nonnull
+    LogicalData data;
     private final Namespace namespace;
     public Condition(String key, Namespace namespace, String code) {
         super(key);

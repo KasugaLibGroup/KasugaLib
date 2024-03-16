@@ -7,8 +7,6 @@ import kasuga.lib.example_env.block_entity.GreenAppleTile;
 import kasuga.lib.example_env.client.block_entity.renderer.GreenAppleTileRenderer;
 import kasuga.lib.example_env.client.entity.renderer.WuLingRenderer;
 import kasuga.lib.example_env.entity.WuLingEntity;
-import kasuga.lib.example_env.fluid.ExampleFluid;
-import kasuga.lib.example_env.fluid.ExampleFluidBlock;
 import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
 import kasuga.lib.registrations.registry.SimpleRegistry;

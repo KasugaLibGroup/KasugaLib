@@ -1,9 +1,10 @@
 package kasuga.lib.core.client.animation;
 
-import kasuga.lib.codes.Code;
-import kasuga.lib.codes.compute.data.Namespace;
-import kasuga.lib.codes.compute.data.functions.SingleParamFunction;
-import kasuga.lib.codes.compute.data.functions.TripleParamFunction;
+import interpreter.Code;
+import interpreter.compute.data.Namespace;
+import interpreter.compute.data.functions.SingleParamFunction;
+import interpreter.compute.data.functions.TripleParamFunction;
+import interpreter.compute.infrastructure.Formula;
 import kasuga.lib.core.client.animation.data.Animation;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.event.TickEvent;

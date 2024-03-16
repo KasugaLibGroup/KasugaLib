@@ -1,8 +1,6 @@
 package kasuga.lib.core.client.animation.infrastructure;
 
-import kasuga.lib.codes.UniversalAssignable;
-import kasuga.lib.codes.compute.data.Namespace;
-import kasuga.lib.codes.compute.infrastructure.Assignable;
+import interpreter.compute.data.Namespace;
 
 import java.util.Map;
 

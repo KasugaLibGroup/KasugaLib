@@ -2,7 +2,7 @@ package kasuga.lib.core.client.animation.data.timer;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import kasuga.lib.codes.compute.data.Namespace;
+import interpreter.compute.data.Namespace;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;

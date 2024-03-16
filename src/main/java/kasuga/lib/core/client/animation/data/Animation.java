@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import com.mojang.blaze3d.vertex.PoseStack;
-import kasuga.lib.codes.compute.data.Namespace;
+import interpreter.compute.data.Namespace;
 import kasuga.lib.core.client.animation.Constants;
 import kasuga.lib.core.client.animation.data.bones.BonesGroup;
 import kasuga.lib.core.client.animation.data.timer.TimeLineGroup;
