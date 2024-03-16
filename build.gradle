@@ -252,12 +252,17 @@ publishing {
         maven {
             url "file://${project.projectDir}/mcmodsrepo"
         }
-        maven {
-            name = "github"
-            url = "https://maven.pkg.github.com/MegumiKasuga/KasugaLib/"
-            credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                username = System.getenv("GITHUB_TOKEN")
+        repositories {
+            maven {
+                url "file://${project.projectDir}/mcmodsrepo"
+            }
+            maven {
+                name "github"
+                url "https://maven.pkg.github.com/MegumiKasuga/KasugaLib"
+                credentials {
+                    username = GITHUB_ACTOR
+                    password = GITHUB_TOKEN
+                }
             }
         }
     }
