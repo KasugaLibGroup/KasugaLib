@@ -137,6 +137,12 @@ public class BlockReg<T extends Block> extends Reg {
         return this;
     }
 
+    public BlockReg<T> tabTo(CreativeTabReg reg) {
+        if(itemReg != null)
+            itemReg.tab(reg);
+        return this;
+    }
+
     public BlockReg<T> stackSize(int size) {
         if(itemReg != null)
             itemReg.stackTo(size);

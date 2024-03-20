@@ -52,8 +52,11 @@ public class AllExampleElements {
             .itemType(GreenAppleItem::new)
             .stackTo(16)
             .shouldCustomRender(true)
-            .tab(CreativeModeTab.TAB_FOOD)
+            // .tab(tab)
             .submit(testRegistry);
+
+    public static final CreativeTabReg tab = new CreativeTabReg("test")
+            .icon(greenAppleItem).submit(testRegistry);
 
 
     /*
@@ -66,9 +69,6 @@ public class AllExampleElements {
             .submit(testRegistry);
 
      */
-
-    public static final CreativeTabReg tab = new CreativeTabReg("test")
-            .icon(greenAppleItem).submit(testRegistry);
 
     public static final ChannelReg Channel = new ChannelReg("example_channel")
             .brand("1.0")
