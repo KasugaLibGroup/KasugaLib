@@ -14,6 +14,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.lang.reflect.Type;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -52,7 +54,7 @@ public class ModelReg extends Reg {
         ResourceLocation location = new ResourceLocation(registry.namespace, "models/" + this.location.getPath() + ".json");
         Resource resource = getResource(location);
         if(resource == null) return;
-        JsonObject json = JsonParser.parseReader(new JsonReader(resource.openAsReader())).getAsJsonObject();
+        JsonObject json = JsonParser.parseReader(Resources.openAsJson(resource)).getAsJsonObject();
         if(!json.has(COMBINE_CODEC)) return;
         multiPart = true;
         JsonObject members = json.getAsJsonObject(COMBINE_CODEC);
@@ -60,7 +62,7 @@ public class ModelReg extends Reg {
         for(int i = 0; i < entries.size(); i++) {
             Map.Entry<String, ResourceLocation> entry = entries.get(i);
             ResourceLocation location1 = getModelLocation(entry.getValue());
-            JsonObject obj = presentIfIsMulti(registry, entry.getKey(), location1);
+            JsonObject obj = presentIfIsMulti(location1);
             if(obj != null) {
                 entries.addAll(getMapFromJson(obj, entry.getKey()));
                 entries.remove(entry);
@@ -90,11 +92,11 @@ public class ModelReg extends Reg {
         return resource;
     }
 
-    private JsonObject presentIfIsMulti(SimpleRegistry registry, String boneKey, ResourceLocation location) throws IOException {
+    private JsonObject presentIfIsMulti(ResourceLocation location) throws IOException {
         Resource resource = getResource(location);
         HashMap<String, ResourceLocation> result = new HashMap<>();
         if(resource == null) return null;
-        JsonObject json = JsonParser.parseReader(new JsonReader(resource.openAsReader())).getAsJsonObject();
+        JsonObject json = JsonParser.parseReader(Resources.openAsJson(resource)).getAsJsonObject();
         if(!json.has(COMBINE_CODEC)) return null;
         return json.getAsJsonObject(COMBINE_CODEC);
     }

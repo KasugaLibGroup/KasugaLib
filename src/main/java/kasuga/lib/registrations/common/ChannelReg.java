@@ -72,7 +72,7 @@ public class ChannelReg extends Reg {
             channel.messageBuilder((Class<T>) pair.getFirst(), id)
                     .encoder(Packet::encode)
                     .decoder((Function<FriendlyByteBuf, T>) pair.getSecond())
-                    .consumerNetworkThread((first, second) -> (first.onReach(second.get()) || false))
+                    .consumer((first, second) -> (first.onReach(second.get()) || false))
                     .add();
         }
         return this;

@@ -53,12 +53,12 @@ public class Constants {
     }
 
     @SubscribeEvent
-    public static void onAnimStart(ClientPlayerNetworkEvent.LoggingIn event) {
+    public static void onAnimStart(ClientPlayerNetworkEvent.LoggedInEvent event) {
         shouldAct = true;
     }
 
     @SubscribeEvent
-    public static void onAnimStop(ClientPlayerNetworkEvent.LoggingOut event) {
+    public static void onAnimStop(ClientPlayerNetworkEvent.LoggedOutEvent event) {
         shouldAct = false;
         tick = 0;
     }

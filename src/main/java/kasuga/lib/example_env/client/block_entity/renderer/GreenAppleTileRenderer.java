@@ -11,12 +11,13 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTile> {
     SimpleModel model = AllExampleElements.greenAppleModel.getModel();
     // MultiPartModel wuling = (MultiPartModel) AllExampleElements.wuLingVans.getModel();
-    SimpleComponent component = new SimpleComponent(Component.literal("QwQ"));
+    SimpleComponent component = new SimpleComponent(new TextComponent("QwQ"));
     private static final WorldTexture texture = new WorldTexture(new ResourceLocation(KasugaLib.MOD_ID, "textures/common/test/green_apple_bubble.png"));
     public GreenAppleTileRenderer(BlockEntityRendererProvider.Context context) {
         // texture.renderType(RenderType::text);
