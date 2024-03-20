@@ -13,9 +13,7 @@ import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.client.ModelReg;
 import kasuga.lib.registrations.common.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
@@ -68,6 +66,9 @@ public class AllExampleElements {
             .submit(testRegistry);
 
      */
+
+    public static final CreativeTabReg tab = new CreativeTabReg("test")
+            .icon(greenAppleItem).submit(testRegistry);
 
     public static final ChannelReg Channel = new ChannelReg("example_channel")
             .brand("1.0")
