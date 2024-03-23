@@ -10,7 +10,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class TextureRegistryEvent {
 
     @SubscribeEvent
-    public static void onModelRegistry(ModelEvent.BakingCompleted bakingCompleted) {
+    public static void onModelRegistry(ModelEvent.RegisterAdditional bakingCompleted) {
         KasugaLib.STACKS.fireTextureRegistry();
         KasugaLib.STACKS.fontRegistry().onRegister();
     }
