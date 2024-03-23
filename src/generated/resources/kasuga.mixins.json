@@ -8,7 +8,6 @@
   ],
   "client": [
     "client.MixinBlockModelBinding",
-    "client.MixinModelManager",
     "client.MixinDirectoryLister"
   ],
   "minVersion": "0.8"
