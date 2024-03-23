@@ -60,6 +60,10 @@ public class CreativeTabReg extends Reg {
         return this;
     }
 
+    public SimpleCreativeTab getTab() {
+        return tab;
+    }
+
     @Override
     public String getIdentifier() {
         return "tab";
