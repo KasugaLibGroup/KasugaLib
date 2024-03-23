@@ -25,7 +25,7 @@ public class ModelRegistryEvent {
             SimpleRegistry registry = KasugaLib.STACKS.getRegistries().get(key);
             for(ResourceLocation location : registry.model().UNBAKED.keySet()) {
                 ModelReg reg = registry.model().UNBAKED.get(location);
-                try{
+                try {
                     reg.compileFile(registry);
                     if(reg.isMultiPart()) {
                         reg.rebuildAsMultiPart();

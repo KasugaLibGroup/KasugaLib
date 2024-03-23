@@ -3,6 +3,7 @@ package kasuga.lib.registrations.registry;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.ModelMappings;
 import kasuga.lib.core.client.render.model.CustomRenderedItemModel;
+import kasuga.lib.core.util.SimpleCreativeTab;
 import kasuga.lib.registrations.common.BlockEntityReg;
 import kasuga.lib.registrations.common.EntityReg;
 import kasuga.lib.registrations.common.ItemReg;
@@ -19,6 +20,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -61,6 +63,7 @@ public class SimpleRegistry {
     private final HashSet<String> CUSTOM_RENDERED_ITEMS;
     private final HashSet<EntityReg<? extends LivingEntity>> CACHE_OF_LIVING_ENTITIES;
     private final ModelMappings modelMappings;
+    private final HashMap<String, SimpleCreativeTab> TABS;
 
     public SimpleRegistry(String namespace, IEventBus bus) {
         this.namespace = namespace;
@@ -85,6 +88,7 @@ public class SimpleRegistry {
         CACHE_OF_LIVING_ENTITIES = new HashSet<>();
         modelMappings = new ModelMappings(namespace);
         CACHE_OF_ENTITIES = new HashSet<>();
+        TABS = new HashMap<>();
     }
 
     public Logger logger() {
@@ -127,8 +131,8 @@ public class SimpleRegistry {
     public DeferredRegister<MobEffect> mob_effect() {return EFFECT;}
     public DeferredRegister<FluidAttributes> fluid_type() {return FLUID_TYPE;}
     public DeferredRegister<Fluid> fluid() {return FLUID;}
-
     public ModelRegistry model() {return MODELS;}
+    public HashMap<String, SimpleCreativeTab> tab() {return TABS;}
 
     public void stackCustomRenderedItemIn(String registrationKey) {
         CUSTOM_RENDERED_ITEMS.add(registrationKey);
