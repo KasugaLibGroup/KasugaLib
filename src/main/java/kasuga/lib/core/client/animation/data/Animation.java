@@ -122,7 +122,7 @@ public class Animation {
         assign("z", (float) entity.position().z());
         assign("x_rot", entity.getXRot());
         assign("y_rot", entity.getYRot());
-        assign("time", entity.getLevel().getDayTime());
+        assign("time", entity.level().getDayTime());
         assign("tick", Constants.tick());
         assign("partial", partial);
     }

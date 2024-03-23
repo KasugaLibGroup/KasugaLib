@@ -1,9 +1,9 @@
 package kasuga.lib.registrations.registry;
 
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.KasugaLibStacks;
 import kasuga.lib.core.client.ModelMappings;
 import kasuga.lib.core.client.render.model.CustomRenderedItemModel;
-import kasuga.lib.core.util.SimpleCreativeTab;
 import kasuga.lib.registrations.common.BlockEntityReg;
 import kasuga.lib.registrations.common.EntityReg;
 import kasuga.lib.registrations.common.ItemReg;
@@ -12,6 +12,8 @@ import kasuga.lib.registrations.registry.ModelRegistry;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
@@ -62,10 +64,11 @@ public class SimpleRegistry {
     private final HashSet<String> CUSTOM_RENDERED_ITEMS;
     private final HashSet<EntityReg<? extends LivingEntity>> CACHE_OF_LIVING_ENTITIES;
     private final ModelMappings modelMappings;
-    private final HashMap<String, SimpleCreativeTab> TABS;
+    private final DeferredRegister<CreativeModeTab> TABS;
 
     public SimpleRegistry(String namespace, IEventBus bus) {
         this.namespace = namespace;
+        KasugaLibStacks.registerNamespaceIn(this);
         this.eventBus = bus;
         logger = LoggerFactory.getLogger(namespace + "/reg");
         SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, namespace);
@@ -87,7 +90,7 @@ public class SimpleRegistry {
         CACHE_OF_LIVING_ENTITIES = new HashSet<>();
         modelMappings = new ModelMappings(namespace);
         CACHE_OF_ENTITIES = new HashSet<>();
-        TABS = new HashMap<>();
+        TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, namespace);
     }
 
     public Logger logger() {
@@ -131,7 +134,7 @@ public class SimpleRegistry {
     public DeferredRegister<FluidType> fluid_type() {return FLUID_TYPE;}
     public DeferredRegister<Fluid> fluid() {return FLUID;}
     public ModelRegistry model() {return MODELS;}
-    public HashMap<String, SimpleCreativeTab> tab() {return TABS;}
+    public DeferredRegister<CreativeModeTab> tab() {return TABS;}
 
     public void stackCustomRenderedItemIn(String registrationKey) {
         CUSTOM_RENDERED_ITEMS.add(registrationKey);

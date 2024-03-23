@@ -17,8 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.RegistryObject;
@@ -28,9 +27,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class FluidBlockReg<T extends LiquidBlock> extends Reg {
-    private Material material = Material.AIR;
-    private MaterialColor color = MaterialColor.NONE;
-    public BlockBehaviour.Properties properties = BlockBehaviour.Properties.of(Material.AIR);
+    private MapColor color = MapColor.NONE;
+    public BlockBehaviour.Properties properties = BlockBehaviour.Properties.of();
     private FluidBlockBuilder<T> builder;
     private BlockEntityReg<? extends BlockEntity> blockEntityReg = null;
     private MenuReg<?, ?, ?> menuReg = null;
@@ -44,11 +42,6 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
         this.tags = new ArrayList<>();
     }
 
-    public FluidBlockReg<T> material(Material material) {
-        this.material = material;
-        return this;
-    }
-
     public FluidBlockReg<T> fluid(Supplier<? extends ForgeFlowingFluid> fluid) {
         this.fluid = fluid;
         return this;
@@ -59,7 +52,7 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
         return this;
     }
 
-    public FluidBlockReg<T> materialColor(MaterialColor color) {
+    public FluidBlockReg<T> MapColor(MapColor color) {
         this.color = color;
         return this;
     }
@@ -117,7 +110,7 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     }
 
     private void initProperties() {
-        properties = BlockBehaviour.Properties.of(material, color);
+        properties = BlockBehaviour.Properties.of().mapColor(color);
         if(identifier != null) identifier.apply(properties);
     }
 

@@ -2,7 +2,6 @@ package kasuga.lib.core.client.render.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.render.PoseContext;
 import kasuga.lib.core.client.render.SimpleColor;
@@ -17,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 import javax.annotation.Nonnull;
 import java.util.List;

@@ -74,8 +74,8 @@ public class ItemReg<T extends Item> extends Reg {
         return this;
     }
 
-    public ItemReg<T> tab(CreativeModeTab tab) {
-        properties.tab(tab);
+    public ItemReg<T> tab(CreativeTabReg tab) {
+        tab.item(this);
         return this;
     }
 

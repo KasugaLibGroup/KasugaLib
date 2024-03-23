@@ -1,7 +1,7 @@
 package kasuga.lib.core.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -19,10 +19,10 @@ public class RendererUtil {
         stack.translate(.5, 0, .5);
         if(state.hasProperty(BlockStateProperties.FACING)) {
             float f = -state.getValue(BlockStateProperties.FACING).getOpposite().toYRot();
-            stack.mulPose(Vector3f.YP.rotationDegrees(f));
+            stack.mulPose(Axis.YP.rotationDegrees(f));
         } else if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
             float f = -state.getValue(BlockStateProperties.HORIZONTAL_FACING).getOpposite().toYRot();
-            stack.mulPose(Vector3f.YP.rotationDegrees(f));
+            stack.mulPose(Axis.YP.rotationDegrees(f));
         }
     }
 
@@ -36,7 +36,7 @@ public class RendererUtil {
         stack.pushPose();
         stack.scale(1, -1, 1);
         stack.translate(myPosition.x(), myPosition.y(), myPosition.z());
-        stack.mulPose(Vector3f.YP.rotationDegrees((float) getVecHorizontalAngles(myPosition, player.getEyePosition())));
+        stack.mulPose(Axis.YP.rotationDegrees((float) getVecHorizontalAngles(myPosition, player.getEyePosition())));
     }
 
     public static double getVecHorizontalAngles(Vec3 pos1, Vec3 pos2) {

@@ -6,6 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -14,6 +15,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -63,25 +65,25 @@ public class RenderableItem {
         return stack;
     }
 
-    public void render(@Nullable PoseStack pose, ItemRenderer renderer, int x, int y, int width, int height){
+    public void render(@Nullable GuiGraphics pose, ItemRenderer renderer, int x, int y, int width, int height){
         if(stack == null) return;
         renderItem(renderer, stack, x, y, width, height);
         if(renderCount && stack.isStackable() && stack.getCount() > 1 && pose != null) {
             String count = String.valueOf(stack.getCount());
             int w = font.width(count);
-            font.draw(pose, count, x + width - w, y + height - font.lineHeight, 0xffffff);
+            pose.drawString(font, count, x + width - w, y + height - font.lineHeight, 0xffffff);
         }
     }
 
-    public void render(@Nullable PoseStack pose, ItemRenderer renderer, int x, int y) {
+    public void render(@Nullable GuiGraphics pose, ItemRenderer renderer, int x, int y) {
         render(pose, renderer, x, y, width, height);
     }
 
-    public void renderCentered(@Nullable PoseStack pose, ItemRenderer renderer, int centerX, int centerY, int width, int height) {
+    public void renderCentered(@Nullable GuiGraphics pose, ItemRenderer renderer, int centerX, int centerY, int width, int height) {
         render(pose, renderer, centerX - width/2, centerY - height/2);
     }
 
-    public void renderCentered(@Nullable PoseStack pose, ItemRenderer renderer, int centerX, int centerY) {
+    public void renderCentered(@Nullable GuiGraphics pose, ItemRenderer renderer, int centerX, int centerY) {
         renderCentered(pose, renderer, centerX, centerY, width, height);
     }
 
@@ -124,7 +126,7 @@ public class RenderableItem {
 
         renderer.render(
                 pStack,
-                ItemTransforms.TransformType.GUI,
+                ItemDisplayContext.GUI,
                 false,
                 posestack1,
                 multibuffersource$buffersource,

@@ -20,6 +20,7 @@ public class WuLingRenderer extends EntityRenderer<WuLingEntity> {
     public final Animation test_anim;
     public WuLingRenderer(EntityRendererProvider.Context pContext) {
         super(pContext);
+
         wuling_model = ((MultiPartModel) AllExampleElements.wuLingVans.getModel()).clone();
         wuling_model.renderType(RenderType::solid);
         wuling_model.applyParentRenderTypeForAllBones();

@@ -34,13 +34,14 @@ public class Resources {
                 l -> l.getNamespace().equals(location.getNamespace()));
         HashMap<String, net.minecraft.server.packs.resources.Resource> result = new HashMap<>();
         for(ResourceLocation location1 : resources.keySet()) {
-            if(fullyPath)
-                if(location1.getPath().contains("."))
+            if(fullyPath) {
+                if (location1.getPath().contains("."))
                     result.put(location1.getPath(), resources.get(location1));
-            else
-                if(location1.getPath().contains("."))
+            } else {
+                if (location1.getPath().contains("."))
                     result.put(location1.getPath().replaceAll(location.getPath() + "/", ""),
                             resources.get(location1));
+            }
         }
         return result;
     }

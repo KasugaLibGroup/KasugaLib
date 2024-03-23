@@ -94,8 +94,8 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         return this;
     }
 
-    public FluidReg<E> tab(CreativeModeTab tab) {
-        itemProperties.tab(tab);
+    public FluidReg<E> tab(CreativeTabReg tab) {
+        tab.item(this::bucket);
         return this;
     }
 

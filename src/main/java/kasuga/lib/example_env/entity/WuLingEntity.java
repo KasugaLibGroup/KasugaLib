@@ -1,6 +1,5 @@
 package kasuga.lib.example_env.entity;
 
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.render.RendererUtil;
 import kasuga.lib.example_env.AllExampleElements;
 import net.minecraft.nbt.CompoundTag;
@@ -28,9 +27,9 @@ public class WuLingEntity extends LivingEntity {
         super(pEntityType, pLevel);
     }
 
-    public WuLingEntity(Level world) {
-        this(AllExampleElements.wuling.getType(), world);
-    }
+    // public WuLingEntity(Level world) {
+        // this(AllExampleElements.wuling.getType(), world);
+    // }
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 100D);
@@ -52,7 +51,7 @@ public class WuLingEntity extends LivingEntity {
     @Override
     public void tick() {
         super.tick();
-        if(getLevel().isClientSide())
+        if(level().isClientSide())
             clientTick();
         else
             serverTick();

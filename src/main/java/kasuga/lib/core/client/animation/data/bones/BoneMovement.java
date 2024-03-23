@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import interpreter.compute.data.Namespace;
 import interpreter.compute.data.functions.Function;
 import interpreter.compute.infrastructure.Formula;
@@ -166,24 +166,24 @@ public class BoneMovement extends AnimationElement implements AnimAssignable {
         return  (pose) -> {pose.translate(fx.getResult(), fy.getResult(), fz.getResult());};
     }
     public PoseContext.Action xRot(Formula fx) {
-        return  (pose) -> {pose.mulPose(Vector3f.XP.rotationDegrees(fx.getResult()));};
+        return  (pose) -> {pose.mulPose(Axis.XP.rotationDegrees(fx.getResult()));};
     }
     public PoseContext.Action yRot(Formula fy) {
-        return  (pose) -> {pose.mulPose(Vector3f.YP.rotationDegrees(fy.getResult()));};
+        return  (pose) -> {pose.mulPose(Axis.YP.rotationDegrees(fy.getResult()));};
     }
     public PoseContext.Action zRot(Formula fz) {
-        return  (pose) -> {pose.mulPose(Vector3f.ZP.rotationDegrees(fz.getResult()));};
+        return  (pose) -> {pose.mulPose(Axis.ZP.rotationDegrees(fz.getResult()));};
     }
 
     public PoseContext.Action xRotRad(Formula fx) {
-        return  (pose) -> {pose.mulPose(Vector3f.XP.rotation(fx.getResult()));};
+        return  (pose) -> {pose.mulPose(Axis.XP.rotation(fx.getResult()));};
     }
 
     public PoseContext.Action yRotRad(Formula fy) {
-        return  (pose) -> {pose.mulPose(Vector3f.YP.rotation(fy.getResult()));};
+        return  (pose) -> {pose.mulPose(Axis.YP.rotation(fy.getResult()));};
     }
 
     public PoseContext.Action zRotRad(Formula fz) {
-        return  (pose) -> {pose.mulPose(Vector3f.ZP.rotation(fz.getResult()));};
+        return  (pose) -> {pose.mulPose(Axis.ZP.rotation(fz.getResult()));};
     }
 }

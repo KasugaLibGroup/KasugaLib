@@ -15,8 +15,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -24,9 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BlockReg<T extends Block> extends Reg {
-    private Material material = Material.AIR;
-    private MaterialColor color = MaterialColor.NONE;
-    public BlockBehaviour.Properties properties = BlockBehaviour.Properties.of(Material.AIR);
+    private MapColor color = MapColor.NONE;
+
+    public BlockBehaviour.Properties properties = BlockBehaviour.Properties.of();
     private BlockBuilder<T> builder;
     private ItemReg<?> itemReg = null;
     private BlockEntityReg<? extends BlockEntity> blockEntityReg = null;
@@ -38,11 +37,6 @@ public class BlockReg<T extends Block> extends Reg {
     public BlockReg(String registrationKey) {
         super(registrationKey);
         this.tags = new ArrayList<>();
-    }
-
-    public BlockReg<T> material(Material material) {
-        this.material = material;
-        return this;
     }
 
     public BlockReg<T> blockType(BlockBuilder<T> builder) {
@@ -60,7 +54,7 @@ public class BlockReg<T extends Block> extends Reg {
         return this;
     }
 
-    public BlockReg<T> materialColor(MaterialColor color) {
+    public BlockReg<T> materialColor(MapColor color) {
         this.color = color;
         return this;
     }
@@ -131,7 +125,7 @@ public class BlockReg<T extends Block> extends Reg {
         return this;
     }
 
-    public BlockReg<T> tabTo(CreativeModeTab tab) {
+    public BlockReg<T> tabTo(CreativeTabReg tab) {
         if(itemReg != null)
             itemReg.tab(tab);
         return this;
@@ -161,7 +155,7 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     private void initProperties() {
-        properties = BlockBehaviour.Properties.of(material, color);
+        properties = BlockBehaviour.Properties.of().mapColor(color);
         if(identifier != null) identifier.apply(properties);
     }
 

@@ -1,7 +1,7 @@
 package kasuga.lib.core.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,15 +37,15 @@ public class PoseContext {
     }
 
     public void rotateX(float x_rotation) {
-        addAct(stack -> stack.mulPose(Vector3f.XP.rotationDegrees(x_rotation)));
+        addAct(stack -> stack.mulPose(Axis.XP.rotationDegrees(x_rotation)));
     }
 
     public void rotateY(float y_rotation) {
-        addAct(stack -> stack.mulPose(Vector3f.YP.rotationDegrees(y_rotation)));
+        addAct(stack -> stack.mulPose(Axis.YP.rotationDegrees(y_rotation)));
     }
 
     public void rotateZ(float z_rotation) {
-        addAct(stack -> stack.mulPose(Vector3f.ZP.rotationDegrees(z_rotation)));
+        addAct(stack -> stack.mulPose(Axis.ZP.rotationDegrees(z_rotation)));
     }
 
     public void translate(double x, double y, double z) {

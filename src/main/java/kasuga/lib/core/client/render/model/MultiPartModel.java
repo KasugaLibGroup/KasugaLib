@@ -1,11 +1,11 @@
 package kasuga.lib.core.client.render.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
 import kasuga.lib.registrations.client.ModelReg;
 import net.minecraft.client.renderer.MultiBufferSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 import java.io.Serializable;
 import java.util.HashMap;
