@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ModelReg extends Reg {
-
     public static final String COMBINE_CODEC = "multi_part";
     SimpleModel baked;
     private final HashMap<String, ResourceLocation> mappingForBones;
@@ -60,7 +59,7 @@ public class ModelReg extends Reg {
         for(int i = 0; i < entries.size(); i++) {
             Map.Entry<String, ResourceLocation> entry = entries.get(i);
             ResourceLocation location1 = getModelLocation(entry.getValue());
-            JsonObject obj = presentIfIsMulti(registry, entry.getKey(), location1);
+            JsonObject obj = presentIfIsMulti(location1);
             if(obj != null) {
                 entries.addAll(getMapFromJson(obj, entry.getKey()));
                 entries.remove(entry);
@@ -90,9 +89,8 @@ public class ModelReg extends Reg {
         return resource;
     }
 
-    private JsonObject presentIfIsMulti(SimpleRegistry registry, String boneKey, ResourceLocation location) throws IOException {
+    private JsonObject presentIfIsMulti(ResourceLocation location) throws IOException {
         Resource resource = getResource(location);
-        HashMap<String, ResourceLocation> result = new HashMap<>();
         if(resource == null) return null;
         JsonObject json = JsonParser.parseReader(new JsonReader(resource.openAsReader())).getAsJsonObject();
         if(!json.has(COMBINE_CODEC)) return null;

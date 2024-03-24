@@ -1,5 +1,6 @@
 package kasuga.lib.core.client;
 
+import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.util.Resources;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.resources.model.ModelBakery;
@@ -18,6 +19,7 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
+@Inner
 public class ModelMappings {
     public static final String IDENTIFIER = "blockstates";
     private final String namespace;

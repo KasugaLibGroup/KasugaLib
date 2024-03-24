@@ -1,11 +1,17 @@
 package kasuga.lib.core.util;
 
+import kasuga.lib.core.annos.Beta;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Still under construction. Don't use this.
+ */
+@Beta
 public class DevelopEnvFileContainer {
 
 

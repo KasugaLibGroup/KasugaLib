@@ -1,7 +1,7 @@
 package kasuga.lib.registrations.common;
 
-import kasuga.lib.core.Mandatory;
-import kasuga.lib.core.Optional;
+import kasuga.lib.core.annos.Mandatory;
+import kasuga.lib.core.annos.Optional;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;

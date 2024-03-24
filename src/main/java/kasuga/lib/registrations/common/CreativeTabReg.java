@@ -1,6 +1,6 @@
 package kasuga.lib.registrations.common;
 
-import kasuga.lib.core.util.SimpleCreativeTab;
+import kasuga.lib.core.base.SimpleCreativeTab;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.world.item.Item;

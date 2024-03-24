@@ -8,6 +8,7 @@ import java.util.LinkedList;
 public class BundledReg<T extends Reg> extends Reg {
     private final LinkedList<RegAction<T>> actions;
     private final HashMap<String, LinkedList<RegAction<T>>> specificActions;
+    private final LinkedList<RegDrive<T>> specificDrive;
     private final LinkedList<String> elements;
     private final HashMap<String, T> regs;
     private RegFactory<T> factory = null;
@@ -15,6 +16,7 @@ public class BundledReg<T extends Reg> extends Reg {
         super(registrationKey);
         actions = new LinkedList<>();
         specificActions = new HashMap<>();
+        specificDrive = new LinkedList<>();
         elements = new LinkedList<>();
         regs = new HashMap<>();
     }
@@ -53,6 +55,8 @@ public class BundledReg<T extends Reg> extends Reg {
             for (RegAction<T> action : actions) action.action(reg);
 
             LinkedList<RegAction<T>> specific = specificActions.getOrDefault(key, null);
+            for (RegDrive<T> drive : specificDrive)
+                drive.action(key, reg);
             if (specific != null)
                 for (RegAction<T> action : specific) action.action(reg);
             regs.put(key, (T) reg.submit(registry));
@@ -79,6 +83,10 @@ public class BundledReg<T extends Reg> extends Reg {
 
     public interface RegAction<T extends Reg> {
         T action(T reg);
+    }
+
+    public interface RegDrive<T extends Reg> {
+        T action(String key, T reg);
     }
 
     public interface RegFactory<T extends Reg> {
