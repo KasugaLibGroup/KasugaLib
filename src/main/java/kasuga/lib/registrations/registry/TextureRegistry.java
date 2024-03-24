@@ -11,6 +11,7 @@ import java.util.HashSet;
  * TextureRegistry is registry for KasugaLib style textures. We provide {@link SimpleTexture}
  * and {@link kasuga.lib.core.client.render.texture.WorldTexture} for quick Texture usage.
  */
+@Inner
 public class TextureRegistry {
     private final HashSet<SimpleTexture> UNREGED;
     private final HashMap<ResourceLocation, SimpleTexture> PICTURES;

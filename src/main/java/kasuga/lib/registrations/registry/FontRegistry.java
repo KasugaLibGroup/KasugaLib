@@ -14,6 +14,7 @@ import java.util.HashMap;
  * pathFinder would fill it automatically. For more info, please see {@link kasuga.lib.core.client.render.component.Font}
  * and {@link net.minecraft.network.chat.Style}.
  */
+@Inner
 public class FontRegistry {
 
     private final String namespace;

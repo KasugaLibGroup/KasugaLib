@@ -13,6 +13,7 @@ import java.util.HashMap;
  * {@link kasuga.lib.core.client.render.model.MultiPartModel} for data-gen model definition and quick
  * animation development.
  */
+@Inner
 public class ModelRegistry {
 
     public final String namespace;
