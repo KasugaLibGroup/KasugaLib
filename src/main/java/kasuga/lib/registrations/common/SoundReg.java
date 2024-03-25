@@ -17,7 +17,7 @@ public class SoundReg extends Reg {
     }
 
     @Override
-    public Reg submit(SimpleRegistry registry) {
+    public SoundReg submit(SimpleRegistry registry) {
         registryObject = registry.sound().register(registrationKey, () -> new SoundEvent(soundFile));
         return this;
     }

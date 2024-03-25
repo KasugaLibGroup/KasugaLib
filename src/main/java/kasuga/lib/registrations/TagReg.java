@@ -23,8 +23,4 @@ public abstract class TagReg<T> extends Reg {
      * @return the location.
      */
     public ResourceLocation location() {return location;}
-
-    public interface TagProvider<T> {
-        TagKey<T> provide();
-    }
 }

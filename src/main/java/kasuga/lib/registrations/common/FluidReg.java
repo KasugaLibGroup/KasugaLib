@@ -99,6 +99,11 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         return this;
     }
 
+    public FluidReg<E> tab(CreativeTabReg reg) {
+        itemProperties.tab(reg.getTab());
+        return this;
+    }
+
     public FluidReg<E> stacksTo(int size) {
         itemProperties.stacksTo(size);
         return this;

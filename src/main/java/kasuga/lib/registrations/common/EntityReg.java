@@ -97,8 +97,4 @@ public class EntityReg<T extends Entity> extends Reg {
     public interface EntityAttributeBuilder {
         AttributeSupplier.Builder get();
     }
-
-    public interface byRegistryObjectGetter<T extends EntityType<?>> {
-        T get();
-    }
 }
