@@ -18,6 +18,8 @@ public abstract class Packet {
      */
     public Packet(FriendlyByteBuf buf) {}
 
+    public Packet() {}
+
     @Inner
     abstract public boolean onReach(NetworkEvent.Context context);
 

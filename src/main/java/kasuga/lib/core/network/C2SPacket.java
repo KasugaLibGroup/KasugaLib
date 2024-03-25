@@ -20,6 +20,8 @@ public abstract class C2SPacket extends Packet {
      */
     public C2SPacket(FriendlyByteBuf buf) {super(buf);}
 
+    public C2SPacket() {super();}
+
     @Inner
     public boolean onReach(NetworkEvent.Context context) {
         context.enqueueWork(() -> handle(context));

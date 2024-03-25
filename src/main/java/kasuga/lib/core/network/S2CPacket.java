@@ -17,6 +17,8 @@ public abstract class S2CPacket extends Packet {
      * @param buf the received byte buffer.
      */
     public S2CPacket(FriendlyByteBuf buf) {super(buf);}
+
+    public S2CPacket() {super();}
     @Override
     @Inner
     public boolean onReach(NetworkEvent.Context context) {
