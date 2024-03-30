@@ -242,7 +242,7 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
-     * Provide a item for your block. The item you provide must be a subClass of {@link net.minecraft.world.item.BlockItem}
+     * Provide an item for your block. The item you provide must be a subClass of {@link net.minecraft.world.item.BlockItem}
      * Player could use this item to place your block down.
      * @param builder your item provider.
      * @param itemModelLocation your item model location, if your item's model is just under the namespace:models/item/
