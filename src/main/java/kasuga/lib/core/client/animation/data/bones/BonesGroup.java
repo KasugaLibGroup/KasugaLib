@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.vertex.PoseStack;
 import interpreter.compute.data.Namespace;
+import kasuga.lib.core.client.animation.data.Animation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
@@ -15,9 +16,11 @@ import java.util.*;
 public class BonesGroup {
     private final HashMap<String, BoneMovement> movements;
     private final Namespace namespace;
+    private final Animation animation;
 
-    public BonesGroup(Namespace namespace) {
+    public BonesGroup(Animation animation, Namespace namespace) {
         movements = new HashMap<>();
+        this.animation = animation;
         this.namespace = namespace;
     }
 
@@ -25,12 +28,13 @@ public class BonesGroup {
         Set<Map.Entry<String, JsonElement>> entries = bones.entrySet();
         for(Map.Entry<String, JsonElement> entry : entries) {
             if(entry.getValue() instanceof JsonObject jsonObject) {
-                movements.put(entry.getKey(), BoneMovement.decode(entry.getKey(), namespace, jsonObject));
+                movements.put(entry.getKey(), BoneMovement.decode(entry.getKey(), namespace, animation, jsonObject));
             }
         }
     }
 
     public void init() {
+        movements.values().forEach(BoneMovement::invoke);
         movements.values().forEach(BoneMovement::init);
     }
 

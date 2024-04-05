@@ -99,6 +99,11 @@ public class XmlCompound implements IXmlObject<IXmlObject<?>> {
     }
 
     @Override
+    public boolean isPrimitive() {
+        return false;
+    }
+
+    @Override
     public String toString() {
         return toFormattedString(0, false);
     }

@@ -13,4 +13,5 @@ public interface IXmlObject<T> {
     String toFormattedString(int stage, boolean isPlainText);
     boolean isSingleSideElement();
     void setIsSingleSide(boolean singleSide);
+    boolean isPrimitive();
 }

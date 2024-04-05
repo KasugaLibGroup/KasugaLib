@@ -7,9 +7,12 @@ import com.google.gson.stream.JsonReader;
 import com.mojang.blaze3d.vertex.PoseStack;
 import interpreter.compute.data.Namespace;
 import kasuga.lib.core.client.animation.Constants;
+import kasuga.lib.core.client.animation.data.anchor.Anchor;
+import kasuga.lib.core.client.animation.data.anchor.AnchorsGroup;
 import kasuga.lib.core.client.animation.data.bones.BonesGroup;
 import kasuga.lib.core.client.animation.data.timer.TimeLineGroup;
 import kasuga.lib.core.client.animation.data.trigger.TriggerGroup;
+import kasuga.lib.core.client.animation.infrastructure.IAnchor;
 import kasuga.lib.core.client.animation.infrastructure.MappingLayer;
 import kasuga.lib.core.client.render.PoseContext;
 import kasuga.lib.core.client.render.model.MultiPartModel;
@@ -40,6 +43,7 @@ public class Animation {
     private final TriggerGroup triggerGroup;
     private final TimeLineGroup timeLineGroup;
     private final BonesGroup bonesGroup;
+    private final AnchorsGroup anchorsGroup;
     public Animation(String name, Namespace namespace, ResourceLocation location) {
         this.key = name;
         this.location = location;
@@ -48,10 +52,13 @@ public class Animation {
         mappingLayer.buildMapping();
         triggerGroup = new TriggerGroup(namespace);
         timeLineGroup = new TimeLineGroup(namespace);
-        bonesGroup = new BonesGroup(namespace);
+        bonesGroup = new BonesGroup(this, namespace);
+        anchorsGroup = new AnchorsGroup(this, namespace);
     }
 
     public void decode(JsonObject root) {
+        if (root.has("anchor"))
+            anchorsGroup.decodeAnchors(root.getAsJsonObject("anchor"));
         if (root.has("trigger"))
             triggerGroup.decode(root.getAsJsonObject("trigger"));
         if (root.has("timer"))
@@ -90,6 +97,7 @@ public class Animation {
         triggerGroup.init();
         timeLineGroup.init();
         bonesGroup.init();
+        anchorsGroup.init();
         Constants.stackAnimateIn(this);
     }
 
@@ -115,7 +123,6 @@ public class Animation {
         namespace.assign(codec, value);
     }
 
-
     public void assign(Entity entity, float partial) {
         assign("x", (float) entity.position().x());
         assign("y", (float) entity.position().y());
@@ -125,6 +132,34 @@ public class Animation {
         assign("time", entity.getLevel().getDayTime());
         assign("tick", Constants.tick());
         assign("partial", partial);
+    }
+
+    public BonesGroup getBonesGroup() {
+        return bonesGroup;
+    }
+    public boolean containsBoneMovement(String key) {
+        return bonesGroup.containsMovements(key);
+    }
+
+    public AnchorsGroup getAnchors() {
+        return anchorsGroup;
+    }
+
+    public boolean containsAnchor(String key) {
+        return anchorsGroup.containsAnchor(key);
+    }
+
+    public boolean containsAsAnchor(String codec) {
+        return containsAnchor(codec) || containsBoneMovement(codec);
+    }
+    public IAnchor getAsAnchor(String codec) {
+        if (containsAnchor(codec)) {
+            return anchorsGroup.getAnchor(codec);
+        } else if (containsBoneMovement(codec)) {
+            return bonesGroup.getMovement(codec);
+        } else {
+            return new Anchor(this, namespace, "invalid");
+        }
     }
 
 

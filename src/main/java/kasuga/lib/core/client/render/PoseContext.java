@@ -83,4 +83,32 @@ public class PoseContext {
     public interface Action {
         void action(PoseStack stack);
     }
+
+    public enum ActionType {
+        TRANSLATE, X_ROT, Y_ROT, Z_ROT, SCALE, POINT_TO;
+
+        @Override
+        public String toString() {
+            return switch (this) {
+                case TRANSLATE -> "translate";
+                case X_ROT -> "x_rot";
+                case Y_ROT -> "y_rot";
+                case Z_ROT -> "z_rot";
+                case SCALE -> "scale";
+                case POINT_TO -> "point_to";
+            };
+        }
+
+        public static ActionType fromString(String codec) {
+            return switch (codec) {
+                case "translate" -> TRANSLATE;
+                case "x_rot" -> X_ROT;
+                case "y_rot" -> Y_ROT;
+                case "z_rot" -> Z_ROT;
+                case "scale" -> SCALE;
+                case "point_to" -> POINT_TO;
+                default -> throw new IllegalStateException("Unexpected value: " + codec);
+            };
+        }
+    }
 }

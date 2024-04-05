@@ -93,6 +93,11 @@ public class XmlString implements IXmlObject<String>{
     }
 
     @Override
+    public boolean isPrimitive() {
+        return true;
+    }
+
+    @Override
     public String toString() {
         return toFormattedString(0, false);
     }
