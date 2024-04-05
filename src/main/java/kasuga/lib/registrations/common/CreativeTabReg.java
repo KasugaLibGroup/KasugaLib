@@ -1,7 +1,6 @@
 package kasuga.lib.registrations.common;
 
 import kasuga.lib.core.annos.Mandatory;
-import kasuga.lib.core.base.SimpleCreativeTab;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.world.item.CreativeModeTab;
@@ -19,11 +18,11 @@ import java.util.function.Supplier;
  * your creative tab because the minecraft tab reg would be changed violently in 1.19.3. If you use the original
  * minecraft registration, it would be a big trouble for you to deal with your items with their tabs.
  * If you use this to create your tab, call {@link ItemReg#tab(CreativeTabReg)}, {@link BlockReg#tabTo(CreativeTabReg)}
- * or {@link FluidReg#tab(CreativeTabReg)} to register your item to this tab. This reg would create an
- * {@link SimpleCreativeTab} instance for you.
+ * or {@link FluidReg#tab(CreativeTabReg)}.
  */
 public class CreativeTabReg extends Reg {
     CreativeModeTab.Builder builder;
+    RegistryObject<CreativeModeTab> tabRegistryObject;
     private final HashSet<Supplier<Item>> items;
     /**
      * Use this to create your tab registration.
@@ -98,12 +97,12 @@ public class CreativeTabReg extends Reg {
         builder.displayItems(
                 (pParameters, pOutput) -> items.forEach(sup -> pOutput.accept(sup.get().getDefaultInstance()))
         );
-        registry.tab().register(registrationKey,builder::build);
+        tabRegistryObject = registry.tab().register(registrationKey,builder::build);
         return this;
     }
 
-    public SimpleCreativeTab getTab() {
-        return tab;
+    public CreativeModeTab getTab() {
+        return tabRegistryObject.get();
     }
 
     @Override

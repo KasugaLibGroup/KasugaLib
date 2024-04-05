@@ -4,6 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import kasuga.lib.core.client.gui.enums.LocationType;
 import kasuga.lib.core.client.gui.SimpleWidget;
 import kasuga.lib.core.xml.IXmlObject;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 
 public class DataDrivenWidget extends SimpleWidget {
     private int bgx, bgy, bgWidth, bgHeight;
@@ -19,11 +21,11 @@ public class DataDrivenWidget extends SimpleWidget {
     public void init() {}
 
     public void setBackgroundX(int x) {
-        this.bgx = this.x + x;
+        this.bgx = this.getX() + x;
     }
 
     public void setBackgroundY(int y) {
-        this.bgy = this.y + y;
+        this.bgy = this.getY() + y;
     }
 
     public void setBackgroundWidth(int width) {
@@ -35,19 +37,19 @@ public class DataDrivenWidget extends SimpleWidget {
     }
 
     public void setBackgroundLeft(int left) {
-        this.bgx = this.x + left;
+        this.bgx = this.getX() + left;
     }
 
     public void setBackgroundTop(int top) {
-        this.bgy = this.y + top;
+        this.bgy = this.getY() + top;
     }
 
     public void setBackgroundRight(int right) {
-        this.bgWidth = this.width + this.x - bgx - right;
+        this.bgWidth = this.width + this.getX() - bgx - right;
     }
 
     public void setBackgroundBottom(int bottom) {
-        this.bgHeight = this.height + this.y - bgy - bottom;
+        this.bgHeight = this.height + this.getY() - bgy - bottom;
     }
 
     public void decode(IXmlObject<?> object) {}
@@ -57,7 +59,12 @@ public class DataDrivenWidget extends SimpleWidget {
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        if (hasBackground()) getBackground().render(bgx, bgy, bgWidth, bgHeight);
+    protected void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+
+    }
+
+    @Override
+    protected void updateWidgetNarration(NarrationElementOutput pNarrationElementOutput) {
+
     }
 }

@@ -49,7 +49,7 @@ public class KasugaLibStacks {
         }
     }
 
-    public static void registerNamespaceIn(SimpleRegistry registry) {
+    public static void registerNamespace(SimpleRegistry registry) {
         registeredNamespaces.add(registry.namespace);
     }
 

@@ -2,17 +2,18 @@ package kasuga.lib.registrations.registry;
 
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.KasugaLibStacks;
+import kasuga.lib.core.annos.Beta;
+import kasuga.lib.core.annos.Inner;
+import kasuga.lib.core.annos.Mandatory;
+import kasuga.lib.core.annos.Util;
 import kasuga.lib.core.client.ModelMappings;
 import kasuga.lib.core.client.render.model.CustomRenderedItemModel;
 import kasuga.lib.registrations.common.BlockEntityReg;
 import kasuga.lib.registrations.common.EntityReg;
-import kasuga.lib.registrations.common.ItemReg;
 import kasuga.lib.registrations.common.MenuReg;
-import kasuga.lib.registrations.registry.ModelRegistry;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -83,6 +84,7 @@ public class SimpleRegistry {
      */
     public SimpleRegistry(String namespace, IEventBus bus) {
         this.namespace = namespace;
+        KasugaLibStacks.registerNamespace(this);
         this.eventBus = bus;
         logger = LoggerFactory.getLogger(namespace + "/reg");
         SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, namespace);

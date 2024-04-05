@@ -5,6 +5,7 @@ import kasuga.lib.core.client.gui.enums.ComponentType;
 import kasuga.lib.core.client.gui.enums.LocationType;
 import kasuga.lib.core.client.render.component.Font;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.MutableComponent;
 
 public class DataDrivenComponent extends DataDrivenWidget {
@@ -38,8 +39,8 @@ public class DataDrivenComponent extends DataDrivenWidget {
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
-        f.draw(pPoseStack, component, this.x, this.y, font.getFont().getColor().getValue());
+    public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
+        pGuiGraphics.drawString(f, component, getX(), getY(), font.getFont().getColor().getValue());
     }
 }

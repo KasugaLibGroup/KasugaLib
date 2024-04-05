@@ -208,7 +208,7 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
 
     @Inner
     private void initProperties() {
-        properties = BlockBehaviour.Properties.of(material, color);
+        properties = BlockBehaviour.Properties.of().mapColor(color);
         if(identifier != null) identifier.apply(properties);
     }
 

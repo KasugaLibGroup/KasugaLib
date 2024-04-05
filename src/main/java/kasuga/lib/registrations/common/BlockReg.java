@@ -55,11 +55,6 @@ public class BlockReg<T extends Block> extends Reg {
         this.tags = new ArrayList<>();
     }
 
-    public BlockReg<T> material(Material material) {
-        this.material = material;
-        return this;
-    }
-
     public BlockReg<T> blockType(BlockBuilder<T> builder) {
         this.builder = builder;
         return this;
@@ -262,19 +257,6 @@ public class BlockReg<T extends Block> extends Reg {
         return this;
     }
 
-
-    /**
-     * Your block item would stack to this tab,
-     * @param tab The tab you'd like to put your item in.
-     * @return self.
-     */
-    @Optional
-    public BlockReg<T> tabTo(CreativeModeTab tab) {
-        if(itemReg != null)
-            itemReg.tab(tab);
-        return this;
-    }
-
     /**
      * Your block item would stack to this tab.
      * @param reg The tab you'd like to put your item in.
@@ -370,7 +352,7 @@ public class BlockReg<T extends Block> extends Reg {
 
     @Inner
     private void initProperties() {
-        properties = BlockBehaviour.Properties.of(material, color);
+        properties = BlockBehaviour.Properties.of().mapColor(color);
         if(identifier != null) identifier.apply(properties);
     }
 

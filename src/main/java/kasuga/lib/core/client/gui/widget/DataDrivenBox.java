@@ -3,6 +3,7 @@ package kasuga.lib.core.client.gui.widget;
 import com.mojang.blaze3d.vertex.PoseStack;
 import kasuga.lib.core.client.gui.SimpleWidget;
 import kasuga.lib.core.client.gui.enums.LocationType;
+import net.minecraft.client.gui.GuiGraphics;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,8 +52,8 @@ public class DataDrivenBox extends DataDrivenWidget implements IBoxWidget {
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
-        for (SimpleWidget widget : widgets) widget.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+    public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
+        for (SimpleWidget widget :widgets) widget.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
     }
 }

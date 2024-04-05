@@ -6,6 +6,7 @@ import kasuga.lib.core.client.gui.enums.LocationType;
 import kasuga.lib.core.client.render.model.MultiPartModel;
 import kasuga.lib.core.client.render.model.SimpleModel;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -86,10 +87,10 @@ public class Gui3DModel extends DataDrivenWidget {
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+    public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
         if (animation != null) animation.action();
         MultiBufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-        if (model != null) model.render(pPoseStack, buffer, modelX, modelY, modelZ, LightTexture.FULL_BLOCK, OverlayTexture.NO_OVERLAY);
+        if (model != null) model.render(pGuiGraphics.pose(), buffer, modelX, modelY, modelZ, LightTexture.FULL_BLOCK, OverlayTexture.NO_OVERLAY);
     }
 }

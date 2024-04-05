@@ -157,17 +157,6 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
 
     /**
      * Which creative mode tab would your item contained in.
-     * @param tab the creative mode tab.
-     * @return self.
-     */
-    @Optional
-    public FluidReg<E> tab(CreativeModeTab tab) {
-        itemReg.tab(tab);
-        return this;
-    }
-
-    /**
-     * Which creative mode tab would your item contained in.
      * @param reg the creative mode tab registration.
      * @return self.
      */

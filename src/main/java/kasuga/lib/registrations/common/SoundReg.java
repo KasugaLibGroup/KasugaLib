@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
+import java.util.function.Supplier;
 
 /**
  * Use this reg to register your custom sound type and sound event to minecraft.
@@ -16,6 +17,7 @@ public class SoundReg extends Reg {
     @Nonnull public final ResourceLocation soundFile;
     private RegistryObject<SoundEvent> registryObject = null;
 
+    private Supplier<SoundEvent> supplier = null;
     /**
      * Create a sound reg.
      * @param registrationKey key of your sound reg.
@@ -26,6 +28,11 @@ public class SoundReg extends Reg {
         this.soundFile = soundFileLocation;
     }
 
+    public SoundReg soundSupplier(Supplier<SoundEvent> supplier) {
+        this.supplier = supplier;
+        return this;
+    }
+
     /**
      * Submit your config to minecraft.
      * @param registry the mod SimpleRegistry.
@@ -34,7 +41,7 @@ public class SoundReg extends Reg {
     @Override
     @Mandatory
     public SoundReg submit(SimpleRegistry registry) {
-        registryObject = registry.sound().register(registrationKey, () -> new SoundEvent(soundFile));
+        registryObject = registry.sound().register(registrationKey, supplier);
         return this;
     }
 

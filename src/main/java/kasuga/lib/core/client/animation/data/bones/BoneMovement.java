@@ -310,17 +310,17 @@ public class BoneMovement extends AnimationElement implements AnimAssignable, IA
         return (pose) -> {
             IAnchor.AnchorContext context1 = getMovement();
             IAnchor.AnchorContext context2 = anchor.getMovement();
-            pose.mulPose(Vector3f.XP.rotationDegrees(context2.x_rot() - context1.x_rot()));
-            pose.mulPose(Vector3f.YP.rotationDegrees(context2.y_rot() - context1.y_rot()));
-            pose.mulPose(Vector3f.ZP.rotationDegrees(context2.z_rot() - context1.z_rot()));
+            pose.mulPose(Axis.XP.rotationDegrees(context2.x_rot() - context1.x_rot()));
+            pose.mulPose(Axis.YP.rotationDegrees(context2.y_rot() - context1.y_rot()));
+            pose.mulPose(Axis.ZP.rotationDegrees(context2.z_rot() - context1.z_rot()));
         };
     }
 
     public PoseContext.Action pointTo(Formula px, Formula py, Formula pz) {
         return (pose) -> {
-            pose.mulPose(Vector3f.XP.rotationDegrees(px.getResult()));
-            pose.mulPose(Vector3f.YP.rotationDegrees(py.getResult()));
-            pose.mulPose(Vector3f.ZP.rotationDegrees(pz.getResult()));
+            pose.mulPose(Axis.XP.rotationDegrees(px.getResult()));
+            pose.mulPose(Axis.YP.rotationDegrees(py.getResult()));
+            pose.mulPose(Axis.ZP.rotationDegrees(pz.getResult()));
         };
     }
 
