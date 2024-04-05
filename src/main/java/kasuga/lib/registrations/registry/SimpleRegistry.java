@@ -31,6 +31,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
@@ -40,6 +41,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+/**
+ * SimpleRegistry is the core registry of KasugaLib provide Registration.
+ * call via {@link kasuga.lib.registrations.registry.SimpleRegistry#SimpleRegistry(String, IEventBus)} with your namespace
+ * name and your mod event bus. We have provided registries for some types of game elements.
+ * To use these registrations, see {@link kasuga.lib.registrations.Reg} and its subClasses.
+ */
 public class SimpleRegistry {
 
     public final String namespace;
@@ -66,9 +73,16 @@ public class SimpleRegistry {
     private final ModelMappings modelMappings;
     private final DeferredRegister<CreativeModeTab> TABS;
 
+    /**
+     * This constructor is used for create a new KasugaLib registration.
+     * @param namespace your mod namespace name
+     * @param bus your mod namespace eventbus. For more info see
+     *            {@link FMLJavaModLoadingContext#get()}
+     *            and
+     *            {@link FMLJavaModLoadingContext#getModEventBus()}
+     */
     public SimpleRegistry(String namespace, IEventBus bus) {
         this.namespace = namespace;
-        KasugaLibStacks.registerNamespaceIn(this);
         this.eventBus = bus;
         logger = LoggerFactory.getLogger(namespace + "/reg");
         SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, namespace);
@@ -93,119 +107,127 @@ public class SimpleRegistry {
         TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, namespace);
     }
 
+    /**
+     * return the registry logger.
+     * @return registry logger.
+     */
     public Logger logger() {
         return logger;
     }
 
+    /**
+     * return the registry of SoundEvents. See {@link kasuga.lib.registrations.common.SoundReg}
+     * @return Registry of SoundEvents
+     */
     public DeferredRegister<SoundEvent> sound() {return SOUNDS;}
 
+    /**
+     * return the registry of Blocks. See {@link kasuga.lib.registrations.common.BlockReg}
+     * @return Registry of Blocks
+     */
     public DeferredRegister<Block> block() {
         return BLOCK;
     }
 
+    /**
+     * return the registry of items. See {@link kasuga.lib.registrations.common.ItemReg}
+     * @return Registry of items.
+     */
     public DeferredRegister<Item> item() {
         return ITEMS;
     }
 
+    /**
+     * return the registry of BlockEntities. See {@link kasuga.lib.registrations.common.BlockEntityReg}
+     * @return Registry of BlockEntities.
+     */
     public DeferredRegister<BlockEntityType<?>> blockEntity() {
         return BLOCK_ENTITIES;
     }
 
-    public <T extends BlockEntity> void registerBlockEntityRenderer(BlockEntityReg.BlockEntityProvider<T> type,
-                                                                    BlockEntityReg.BlockEntityRendererBuilder<T> rendererBuilder) {
-        BlockEntityRenderers.register(type.provide(), rendererBuilder::build);
-    }
-
+    /**
+     * return the registry of ContainerMenus and GUI Screens. See {@link kasuga.lib.registrations.common.MenuReg}
+     * @return Registry of ContainerMenus.
+     */
     public DeferredRegister<MenuType<?>> menus() {
         return MENUS;
     }
 
+    /**
+     * return the registry of Entities. See {@link kasuga.lib.registrations.common.EntityReg}
+     * @return Registry of Entities.
+     */
     public DeferredRegister<EntityType<?>> entity() {
         return ENTITIES;
     }
+
+    /**
+     * return the registry of entity AI attributes.
+     * @return Registry of attributes.
+     */
+    @Beta
     public DeferredRegister<Attribute> attribute() {return ATTRIBUTES;}
+
+    /**
+     * return the registry of recipes. See {@link kasuga.lib.registrations.common.RecipeReg}
+     * @return Registry of recipes.
+     */
     public DeferredRegister<RecipeType<?>> recipe() {
         return RECIPES;
     }
+
+    /**
+     * return the registry of recipe serializers. See {@link kasuga.lib.registrations.common.RecipeReg}
+     * @return Registry of recipe.
+     */
     public DeferredRegister<RecipeSerializer<?>> recipe_serializer() {
         return RECIPE_SERIALIZERS;
     }
+
+    /**
+     * return the registry of poison effects. See {@link kasuga.lib.registrations.common.EffectReg}
+     * @return Registry of effects.
+     */
     public DeferredRegister<MobEffect> mob_effect() {return EFFECT;}
+
+    /**
+     * return the registry of fluid types. See {@link kasuga.lib.registrations.common.FluidReg}
+     * @return the registry of fluid types.
+     */
     public DeferredRegister<FluidType> fluid_type() {return FLUID_TYPE;}
+
+    /**
+     * return the registry of fluid. See {@link kasuga.lib.registrations.common.FluidReg}
+     * @return the registry of fluid.
+     */
     public DeferredRegister<Fluid> fluid() {return FLUID;}
+
+    /**
+     * retrun the registry of kasuga lib style models. See {@link kasuga.lib.registrations.client.ModelReg}
+     * @return the registry of kasuga lib style models.
+     */
     public ModelRegistry model() {return MODELS;}
+
+    /**
+     * return the registry of Creative Mode Tabs. See {@link kasuga.lib.registrations.common.CreativeTabReg}
+     * @return the regsitry of kasuga lib style models.
+     */
     public DeferredRegister<CreativeModeTab> tab() {return TABS;}
 
-    public void stackCustomRenderedItemIn(String registrationKey) {
-        CUSTOM_RENDERED_ITEMS.add(registrationKey);
-    }
-
-    public ModelMappings modelMappings(){return modelMappings;}
-
-    public void cacheBeIn(BlockEntityReg<?> entityReg) {
-        CACHE_OF_BLOCK_ENTITIES.put(entityReg.registrationKey, entityReg);
-    }
-
-    public boolean hasBeCache(String registrationKey) {
-        return CACHE_OF_BLOCK_ENTITIES.containsKey(registrationKey);
-    }
-
-    public BlockEntityReg<?> getBeCached(String registrationKey) {
-        return CACHE_OF_BLOCK_ENTITIES.getOrDefault(registrationKey, null);
-    }
-
-    public void cacheMenuIn(MenuReg<?, ?, ?> menuReg) {
-        CACHE_OF_MENUS.put(menuReg.registrationKey, menuReg);
-    }
-
-    public boolean hasMenuCache(String registrationKey) {
-        return CACHE_OF_MENUS.containsKey(registrationKey);
-    }
-
-    public MenuReg<?, ?, ?> getMenuCached(String registrationKey) {
-        return CACHE_OF_MENUS.getOrDefault(registrationKey, null);
-    }
-
-    public void cacheLivingEntityIn(EntityReg<? extends LivingEntity> reg) {
-        CACHE_OF_LIVING_ENTITIES.add(reg);
-    }
-
-    public HashSet<EntityReg<? extends LivingEntity>> getCachedLivingEntities() {
-        return CACHE_OF_LIVING_ENTITIES;
-    }
-
-    public void cacheEntityIn(EntityReg<?> entityReg) {
-        CACHE_OF_ENTITIES.add(entityReg);
-    }
-
-    public void onEntityRendererReg() {
-        for(EntityReg<?> entityReg : CACHE_OF_ENTITIES) {
-            entityReg.registerRenderer();
-        }
-        for(String key: CACHE_OF_BLOCK_ENTITIES.keySet()) {
-            CACHE_OF_BLOCK_ENTITIES.get(key).registerRenderer(this);
-        }
-        CACHE_OF_BLOCK_ENTITIES.clear();
-        CACHE_OF_ENTITIES.clear();
-    }
-
-    public void onCustomItemRendererReg(Map<ResourceLocation, BakedModel> registry) {
-        for(String key : this.CUSTOM_RENDERED_ITEMS) {
-            ModelResourceLocation location = new ModelResourceLocation(this.namespace, key, "inventory");
-            if(!registry.containsKey(location)) continue;
-            CustomRenderedItemModel model = new CustomRenderedItemModel(registry.get(location));
-            registry.remove(location);
-            registry.put(location, model);
-        }
-        CUSTOM_RENDERED_ITEMS.clear();
-    }
-
+    /**
+     * method for get location for resource under given namespace
+     * @param path the path of resource called.
+     * @return new resource location.
+     */
+    @Util
     public ResourceLocation asResource(String path) {
         return new ResourceLocation(namespace, path);
     }
 
-
-
+    /**
+     * You must call this after the registry has all been loaded.
+     */
+    @Mandatory
     public void submit() {
         SOUNDS.register(eventBus);
         BLOCK.register(eventBus);
@@ -221,5 +243,149 @@ public class SimpleRegistry {
         RECIPES.register(eventBus);
         RECIPE_SERIALIZERS.register(eventBus);
         KasugaLib.STACKS.stackIn(this);
+    }
+
+    /**
+     * Don't use this in your registration.
+     * @param registrationKey key
+     */
+    @Inner
+    public void stackCustomRenderedItemIn(String registrationKey) {
+        CUSTOM_RENDERED_ITEMS.add(registrationKey);
+    }
+
+    /**
+     * Don't use this in your registration.
+     * @return Model Mappings.
+     */
+    @Inner
+    public ModelMappings modelMappings(){return modelMappings;}
+
+    /**
+     * Don't use this in your registration.
+     * @param entityReg be to be cached
+     */
+    @Inner
+    public void cacheBeIn(BlockEntityReg<?> entityReg) {
+        CACHE_OF_BLOCK_ENTITIES.put(entityReg.registrationKey, entityReg);
+    }
+
+    /**
+     * Don't use this in your registration.
+     * @param registrationKey key of cache
+     * @return contains?
+     */
+    @Inner
+    public boolean hasBeCache(String registrationKey) {
+        return CACHE_OF_BLOCK_ENTITIES.containsKey(registrationKey);
+    }
+
+    /**
+     * Don't use.
+     * @param registrationKey key
+     * @return the blockEntity cached.
+     */
+    @Inner
+    public BlockEntityReg<?> getBeCached(String registrationKey) {
+        return CACHE_OF_BLOCK_ENTITIES.getOrDefault(registrationKey, null);
+    }
+
+    /**
+     * Don't use
+     * @param menuReg the reg would be cached in.
+     */
+    @Inner
+    public void cacheMenuIn(MenuReg<?, ?, ?> menuReg) {
+        CACHE_OF_MENUS.put(menuReg.registrationKey, menuReg);
+    }
+
+    /**
+     * Don't use.
+     * @param registrationKey key
+     * @return contains?
+     */
+    @Inner
+    public boolean hasMenuCache(String registrationKey) {
+        return CACHE_OF_MENUS.containsKey(registrationKey);
+    }
+
+    /**
+     * Don't use.
+     * @param registrationKey key
+     * @return the reg cached.
+     */
+    @Inner
+    public MenuReg<?, ?, ?> getMenuCached(String registrationKey) {
+        return CACHE_OF_MENUS.getOrDefault(registrationKey, null);
+    }
+
+    /**
+     * Don't use.
+     * @param reg the reg to cache in.
+     */
+    @Inner
+    public void cacheLivingEntityIn(EntityReg<? extends LivingEntity> reg) {
+        CACHE_OF_LIVING_ENTITIES.add(reg);
+    }
+
+    /**
+     * Don't use.
+     * @return the reg cached.
+     */
+    @Inner
+    public HashSet<EntityReg<? extends LivingEntity>> getCachedLivingEntities() {
+        return CACHE_OF_LIVING_ENTITIES;
+    }
+
+    /**
+     * Don't use.
+     * @param entityReg the reg to cache in.
+     */
+    @Inner
+    public void cacheEntityIn(EntityReg<?> entityReg) {
+        CACHE_OF_ENTITIES.add(entityReg);
+    }
+
+    /**
+     * Don't use. This would be call via {@link kasuga.lib.core.events.client.ModelRegistryEvent}
+     */
+    @Inner
+    public void onEntityRendererReg() {
+        for(EntityReg<?> entityReg : CACHE_OF_ENTITIES) {
+            entityReg.registerRenderer();
+        }
+        for(String key: CACHE_OF_BLOCK_ENTITIES.keySet()) {
+            CACHE_OF_BLOCK_ENTITIES.get(key).registerRenderer(this);
+        }
+        CACHE_OF_BLOCK_ENTITIES.clear();
+        CACHE_OF_ENTITIES.clear();
+    }
+
+    /**
+     * Don't use. This would be calls via {@link kasuga.lib.core.events.client.ModelRegistryEvent}
+     * @param registry the registry would be fired.
+     */
+    @Inner
+    public void onCustomItemRendererReg(Map<ResourceLocation, BakedModel> registry) {
+        for(String key : this.CUSTOM_RENDERED_ITEMS) {
+            ModelResourceLocation location = new ModelResourceLocation(this.namespace, key, "inventory");
+            if(!registry.containsKey(location)) continue;
+            CustomRenderedItemModel model = new CustomRenderedItemModel(registry.get(location));
+            registry.remove(location);
+            registry.put(location, model);
+        }
+        CUSTOM_RENDERED_ITEMS.clear();
+    }
+
+    /**
+     * Don't use this in your registration. This method is for BlockEntityRenderer binding.
+     * @param type BlockEntity for binding
+     * @param rendererBuilder BlockEntityRenderer for binding
+     * @param <T> the type of BlockEntity
+     */
+    @Inner
+    public <T extends BlockEntity> void registerBlockEntityRenderer(BlockEntityReg.BlockEntityProvider<T> type,
+                                                                    BlockEntityReg.BlockEntityRendererBuilder<T> rendererBuilder) {
+        BlockEntityRenderers.register(type.provide(), rendererBuilder::build);
     }
 }
