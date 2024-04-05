@@ -37,7 +37,6 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     private RegistryObject<E> flowingObject = null;
     private RegistryObject<? extends BucketItem> itemRegistryObject = null;
     private FluidAttributes.Builder properties;
-    private final FluidType.Properties properties;
     private ForgeFlowingFluid.Properties fluidProp = null;
     private FluidBuilder<E> stillBuilder = null, flowingBuilder = null;
     private PropertyBuilder propertyBuilder = null;
@@ -57,10 +56,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
      */
     public FluidReg(String registrationKey) {
         super(registrationKey);
-        itemProperties = new Item.Properties();
-        properties = FluidType.Properties.create();
         builders = new ArrayList<>();
-        identifiers = new ArrayList<>();
         block = new FluidBlockReg<>(registrationKey);
     }
 
@@ -120,7 +116,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
      * @return self.
      */
     @Mandatory
-    public <R extends BucketItem> FluidReg<E> bucketItem(BucketBuilder<? extends BucketItem> builder) {
+    public <R extends BucketItem> FluidReg<E> bucketItem(BucketItemReg.BucketBuilder<? extends BucketItem> builder) {
         itemReg = new BucketItemReg<R>(registrationKey + ".bucket");
         itemReg.itemType((BucketItemReg.BucketBuilder<R>) builder);
         return this;
@@ -345,10 +341,10 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         return type;
     }
 
-    public Fluid stillFluid() {
+    public ForgeFlowingFluid stillFluid() {
         return stillObject.get();
     }
-    public Fluid flowingFluid() {
+    public ForgeFlowingFluid flowingFluid() {
         return flowingObject.get();
     }
 
