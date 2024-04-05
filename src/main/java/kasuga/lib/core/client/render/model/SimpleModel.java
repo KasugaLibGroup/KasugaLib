@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.client.animation.infrastructure.IAnchor;
 import kasuga.lib.core.client.render.PoseContext;
 import kasuga.lib.core.client.render.SimpleColor;
 import kasuga.lib.core.client.render.RendererUtil;

@@ -1,7 +1,12 @@
 package kasuga.lib.core.util;
 
+import kasuga.lib.core.annos.Inner;
 import org.slf4j.Logger;
 
+/**
+ * The KasugaLib brand.
+ */
+@Inner
 public final class Start {
     public static final String[] LOGO = new String[] {
             "  _  __                             _     _ _      ____  ",
@@ -17,13 +22,11 @@ public final class Start {
     };
 
     public static void printLogo(Logger logger) {
-        // logger.info(stringCentered("", "-", 57));
         for(String s : LOGO) {logger.info(s);}
         logger.info(stringCentered(getCredits(), "-", 57));
     }
 
     public static void printLogo() {
-        // System.out.println(stringCentered("", "-", 57));
         for(String s : LOGO) {System.out.println(s);}
         System.out.println(stringCentered(getCredits(), "-", 57));
     }

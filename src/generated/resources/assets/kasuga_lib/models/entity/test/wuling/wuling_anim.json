@@ -1,6 +1,11 @@
 {
   "animation": {
     "test_anim": {
+      "anchor": {
+        "test_anchor": {
+          "parent": "wuling_car.back_door_right"
+        }
+      },
       "timer": {
         "wheel": {
           "chaser": {
