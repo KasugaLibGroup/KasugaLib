@@ -36,7 +36,7 @@ import java.util.List;
  * @param <T> Class of your block.
  */
 public class BlockReg<T extends Block> extends Reg {
-    private Material material = Material.AIR;
+    public Material material = Material.AIR;
     private MaterialColor color = MaterialColor.NONE;
 
     public BlockBehaviour.Properties properties = BlockBehaviour.Properties.of(Material.AIR);
@@ -389,7 +389,7 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     @Inner
-    private void initProperties() {
+    public void initProperties() {
         properties = BlockBehaviour.Properties.of(material, color);
         if(identifier != null) identifier.apply(properties);
     }
