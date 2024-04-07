@@ -2,7 +2,7 @@ package kasuga.lib.core.client.gui.widget;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import kasuga.lib.core.client.gui.enums.ComponentType;
-import kasuga.lib.core.client.gui.enums.LocationType;
+import kasuga.lib.core.client.gui.enums.PositionType;
 import kasuga.lib.core.client.render.component.Font;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.MutableComponent;
@@ -14,21 +14,21 @@ public class DataDrivenComponent extends DataDrivenWidget {
     MutableComponent component = null;
     public String content = "";
 
-    public DataDrivenComponent(int x, int y, int width, int height, LocationType location, ComponentType componentType) {
+    public DataDrivenComponent(int x, int y, int width, int height, PositionType location, ComponentType componentType) {
         this(x, y, width, height, location);
         this.type = componentType;
     }
 
-    public DataDrivenComponent(int x, int y, int width, int height, LocationType location) {
+    public DataDrivenComponent(int x, int y, int width, int height, PositionType location) {
         super(x, y, width, height, location);
     }
 
-    public DataDrivenComponent(int width, int height, LocationType location, ComponentType componentType) {
+    public DataDrivenComponent(int width, int height, PositionType location, ComponentType componentType) {
         this(width, height, location);
         this.type = componentType;
     }
 
-    public DataDrivenComponent(int width, int height, LocationType location) {
+    public DataDrivenComponent(int width, int height, PositionType location) {
         super(width, height, location);
     }
 

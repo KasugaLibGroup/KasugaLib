@@ -2,7 +2,7 @@ package kasuga.lib.core.client.gui.widget;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import kasuga.lib.core.client.animation.data.Animation;
-import kasuga.lib.core.client.gui.enums.LocationType;
+import kasuga.lib.core.client.gui.enums.PositionType;
 import kasuga.lib.core.client.render.model.MultiPartModel;
 import kasuga.lib.core.client.render.model.SimpleModel;
 import net.minecraft.client.Minecraft;
@@ -15,21 +15,21 @@ public class Gui3DModel extends DataDrivenWidget {
     private Animation animation = null;
     private int modelX, modelY, modelZ;
 
-    public Gui3DModel(int x, int y, int width, int height, LocationType type, SimpleModel model) {
+    public Gui3DModel(int x, int y, int width, int height, PositionType type, SimpleModel model) {
         this(x, y, width, height, type);
         this.model = model;
     }
 
-    public Gui3DModel(int x, int y, int width, int height, LocationType type) {
+    public Gui3DModel(int x, int y, int width, int height, PositionType type) {
         super(x, y, width, height, type);
     }
 
-    public Gui3DModel(int width, int height, LocationType type, SimpleModel model) {
+    public Gui3DModel(int width, int height, PositionType type, SimpleModel model) {
         this(width, height, type);
         this.model = model;
     }
 
-    public Gui3DModel(int width, int height, LocationType type) {
+    public Gui3DModel(int width, int height, PositionType type) {
         super(width, height, type);
     }
 

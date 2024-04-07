@@ -1,7 +1,8 @@
 package kasuga.lib.core.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import kasuga.lib.core.client.gui.enums.LocationType;
+import kasuga.lib.core.client.gui.enums.PositionType;
+import kasuga.lib.core.client.gui.structure.ElementBoundingBox;
 import kasuga.lib.core.client.render.texture.SimpleTexture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -12,16 +13,16 @@ import net.minecraft.resources.ResourceLocation;
 public abstract class SimpleWidget extends AbstractWidget implements IBackground {
     private SimpleTexture background = null;
     private SimpleWidget parent = null;
-    private LocationType locationType;
+    private PositionType positionType;
 
-    public SimpleWidget(int x, int y, int width, int height, LocationType type) {
+    public SimpleWidget(int x, int y, int width, int height, PositionType type) {
         super(x, y, width, height, Component.empty());
-        this.locationType = type;
+        this.positionType = type;
     }
 
-    public SimpleWidget(int width, int height, LocationType type) {
+    public SimpleWidget(int width, int height, PositionType type) {
         super(0, 0, width, height, Component.empty());
-        this.locationType = type;
+        this.positionType = type;
     }
 
     public void setBackground(SimpleTexture texture) {
@@ -48,25 +49,25 @@ public abstract class SimpleWidget extends AbstractWidget implements IBackground
         return parent;
     }
 
-    public LocationType getLocationType() {
-        return locationType;
+    public PositionType getPositionType() {
+        return positionType;
     }
 
-    public void setLocationType(LocationType type) {
-        this.locationType = type;
+    public void setPositionType(PositionType type) {
+        this.positionType = type;
     }
 
     public boolean isRelative() {
-        return locationType == LocationType.RELATIVE && hasParent();
+        return positionType == PositionType.RELATIVE && hasParent();
     }
 
     public boolean isLocationTypeValid() {
-        if (locationType == LocationType.RELATIVE && !hasParent()) return false;
-        return locationType == LocationType.INVALID;
+        if (positionType == PositionType.RELATIVE && !hasParent()) return false;
+        return positionType == PositionType.INVALID;
     }
 
     public boolean isAbsolute() {
-        return locationType == LocationType.ABSOLUTE;
+        return positionType == PositionType.ABSOLUTE;
     }
 
     public boolean hasParent() {

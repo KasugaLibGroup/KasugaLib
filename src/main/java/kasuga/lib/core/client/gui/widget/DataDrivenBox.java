@@ -2,15 +2,14 @@ package kasuga.lib.core.client.gui.widget;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import kasuga.lib.core.client.gui.SimpleWidget;
-import kasuga.lib.core.client.gui.enums.LocationType;
+import kasuga.lib.core.client.gui.enums.PositionType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class DataDrivenBox extends DataDrivenWidget implements IBoxWidget {
     private final ArrayList<SimpleWidget> widgets;
-    public DataDrivenBox(int pX, int pY, int pWidth, int pHeight, LocationType type) {
+    public DataDrivenBox(int pX, int pY, int pWidth, int pHeight, PositionType type) {
         super(pX, pY, pWidth, pHeight, type);
         widgets = new ArrayList<>();
     }

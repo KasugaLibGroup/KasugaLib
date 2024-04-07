@@ -1,6 +1,6 @@
 package kasuga.lib.core.client.gui.enums;
 
-public enum LocationType {
+public enum PositionType {
     ABSOLUTE,
     RELATIVE,
     INVALID;
@@ -14,7 +14,7 @@ public enum LocationType {
         };
     }
 
-    public static LocationType fromString(String input) {
+    public static PositionType fromString(String input) {
         return switch (input) {
             case "absolute" -> ABSOLUTE;
             case "relative" -> RELATIVE;
