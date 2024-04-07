@@ -57,17 +57,17 @@ public abstract class SimpleWidget extends AbstractWidget implements IBackground
         this.positionType = type;
     }
 
-    public boolean isRelative() {
-        return positionType == PositionType.RELATIVE && hasParent();
+    public boolean isAbsolute() {
+        return positionType == PositionType.ABSOLUTE && hasParent();
     }
 
     public boolean isLocationTypeValid() {
-        if (positionType == PositionType.RELATIVE && !hasParent()) return false;
+        if (positionType == PositionType.ABSOLUTE && !hasParent()) return false;
         return positionType == PositionType.INVALID;
     }
 
-    public boolean isAbsolute() {
-        return positionType == PositionType.ABSOLUTE;
+    public boolean isFixed() {
+        return positionType == PositionType.FIXED;
     }
 
     public boolean hasParent() {
@@ -75,19 +75,19 @@ public abstract class SimpleWidget extends AbstractWidget implements IBackground
     }
 
     public void setX(int x) {
-        this.x = isRelative() ? (x + parent.x()) : x;
+        this.x = isAbsolute() ? (x + parent.x()) : x;
     }
 
     public void setY(int y) {
-        this.y = isRelative() ? (y + parent.y()) : y;
+        this.y = isAbsolute() ? (y + parent.y()) : y;
     }
 
     public int x() {
-        return isRelative() ? (x - parent.x()) : x;
+        return isAbsolute() ? (x - parent.x()) : x;
     }
 
     public int y() {
-        return isRelative() ? (y - parent.y()) : y;
+        return isAbsolute() ? (y - parent.y()) : y;
     }
 
     public void setLeft(int left) {
@@ -99,12 +99,12 @@ public abstract class SimpleWidget extends AbstractWidget implements IBackground
     }
 
     public void setRight(int right) {
-        this.width = isRelative() ? (parent.x + parent.width - right - x) : (Minecraft.getInstance().screen == null ?
+        this.width = isAbsolute() ? (parent.x + parent.width - right - x) : (Minecraft.getInstance().screen == null ?
                 0 : Minecraft.getInstance().screen.width - right - x);
     }
 
     public void setBottom(int bottom) {
-        this.height = isRelative() ? (parent.y + parent.height - bottom - y) : (Minecraft.getInstance().screen == null ?
+        this.height = isAbsolute() ? (parent.y + parent.height - bottom - y) : (Minecraft.getInstance().screen == null ?
                 0 : Minecraft.getInstance().screen.height - bottom - y);
     }
 
@@ -117,12 +117,12 @@ public abstract class SimpleWidget extends AbstractWidget implements IBackground
     }
 
     public int right() {
-        return isRelative() ? (parent.x + parent.width - x - width) : Minecraft.getInstance().screen == null ?
+        return isAbsolute() ? (parent.x + parent.width - x - width) : Minecraft.getInstance().screen == null ?
                 0 : Minecraft.getInstance().screen.width - x - width;
     }
 
     public int bottom () {
-        return isRelative() ? (parent.y + parent.height - y - height) : Minecraft.getInstance().screen == null ?
+        return isAbsolute() ? (parent.y + parent.height - y - height) : Minecraft.getInstance().screen == null ?
                 0 : Minecraft.getInstance().screen.height - y - height;
     }
 
