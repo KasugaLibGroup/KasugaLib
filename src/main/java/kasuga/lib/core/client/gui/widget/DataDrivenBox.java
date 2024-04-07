@@ -55,4 +55,10 @@ public class DataDrivenBox extends DataDrivenWidget implements IBoxWidget {
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
         for (SimpleWidget widget : widgets) widget.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
     }
+
+    @Override
+    public void onClose() {
+        super.onClose();
+        for (SimpleWidget widget : widgets) widget.onClose();
+    }
 }
