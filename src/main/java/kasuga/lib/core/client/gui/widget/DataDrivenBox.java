@@ -52,6 +52,7 @@ public class DataDrivenBox extends DataDrivenWidget implements IBoxWidget {
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        super.updatePosition();
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
         for (SimpleWidget widget : widgets) widget.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
     }
@@ -60,5 +61,11 @@ public class DataDrivenBox extends DataDrivenWidget implements IBoxWidget {
     public void onClose() {
         super.onClose();
         for (SimpleWidget widget : widgets) widget.onClose();
+    }
+
+    @Override
+    public void locate() {
+        super.locate();
+        this.widgets.forEach(SimpleWidget::locate);
     }
 }

@@ -3,7 +3,8 @@ package kasuga.lib.core.client.gui;
 import com.mojang.blaze3d.vertex.PoseStack;
 import kasuga.lib.core.client.gui.enums.DisplayType;
 import kasuga.lib.core.client.gui.enums.PositionType;
-import kasuga.lib.core.client.gui.structure.ElementBoundingBox;
+import kasuga.lib.core.client.gui.layout.ElementLocator;
+import kasuga.lib.core.client.gui.layout.LayoutAllocator;
 import kasuga.lib.core.client.render.texture.SimpleTexture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -16,16 +17,25 @@ public abstract class SimpleWidget extends AbstractWidget implements IBackground
     private SimpleWidget parent = null;
     private PositionType positionType;
     private DisplayType displayType;
+    private ElementLocator elementLocator = new ElementLocator();
     public SimpleWidget(int x, int y, int width, int height, PositionType type,DisplayType displayType) {
         super(x, y, width, height, Component.empty());
         this.positionType = type;
         this.displayType = displayType;
+        this.elementLocator.setLeft(x);
+        this.elementLocator.setTop(y);
+        this.elementLocator.setWidth(width);
+        this.elementLocator.setHeight(height);
     }
 
     public SimpleWidget(int width, int height, PositionType type,DisplayType displayType) {
         super(0, 0, width, height, Component.empty());
         this.positionType = type;
         this.displayType = displayType;
+        this.elementLocator.setLeft(0);
+        this.elementLocator.setTop(0);
+        this.elementLocator.setWidth(width);
+        this.elementLocator.setHeight(height);
     }
 
     public void setBackground(SimpleTexture texture) {
@@ -46,6 +56,7 @@ public abstract class SimpleWidget extends AbstractWidget implements IBackground
 
     public void setParent(SimpleWidget parent) {
         this.parent = parent;
+        this.triggerLocate();
     }
 
     public SimpleWidget getParent() {
@@ -78,55 +89,30 @@ public abstract class SimpleWidget extends AbstractWidget implements IBackground
     }
 
     public void setX(int x) {
-        this.x = isAbsolute() ? (x + parent.x()) : x;
+        this.elementLocator.setTop(x);
+        this.triggerLocate();
     }
 
     public void setY(int y) {
-        this.y = isAbsolute() ? (y + parent.y()) : y;
+        this.elementLocator.setLeft(x);
+        this.triggerLocate();
     }
-
-    public int x() {
-        return isAbsolute() ? (x - parent.x()) : x;
-    }
-
-    public int y() {
-        return isAbsolute() ? (y - parent.y()) : y;
-    }
-
     public void setLeft(int left) {
         setX(left);
+        this.triggerLocate();
     }
 
     public void setTop(int top) {
         setY(top);
+        this.triggerLocate();
     }
 
     public void setRight(int right) {
-        this.width = isAbsolute() ? (parent.x + parent.width - right - x) : (Minecraft.getInstance().screen == null ?
-                0 : Minecraft.getInstance().screen.width - right - x);
+        this.elementLocator.setRight(right);
     }
 
     public void setBottom(int bottom) {
-        this.height = isAbsolute() ? (parent.y + parent.height - bottom - y) : (Minecraft.getInstance().screen == null ?
-                0 : Minecraft.getInstance().screen.height - bottom - y);
-    }
-
-    public int left() {
-        return x();
-    }
-
-    public int top() {
-        return y();
-    }
-
-    public int right() {
-        return isAbsolute() ? (parent.x + parent.width - x - width) : Minecraft.getInstance().screen == null ?
-                0 : Minecraft.getInstance().screen.width - x - width;
-    }
-
-    public int bottom () {
-        return isAbsolute() ? (parent.y + parent.height - y - height) : Minecraft.getInstance().screen == null ?
-                0 : Minecraft.getInstance().screen.height - y - height;
+        this.elementLocator.setBottom(bottom);
     }
 
     public abstract void init();
@@ -143,5 +129,39 @@ public abstract class SimpleWidget extends AbstractWidget implements IBackground
 
     public DisplayType getDisplayType() {
         return displayType;
+    }
+
+    LayoutAllocator allocator = new LayoutAllocator(this);
+
+
+    public LayoutAllocator getAllocator(){
+        return allocator;
+    }
+
+    public void locate(){
+        allocator.relocate();
+    }
+
+    public ElementLocator getElementLocator() {
+        return elementLocator;
+    }
+
+    public void triggerLocate(){
+        if(this.parent != null && this.positionType != PositionType.FIXED && this.positionType != PositionType.ABSOLUTE)
+            this.parent.triggerLocate();
+        else
+            this.locate();
+    }
+
+    public ElementBoundingBox getAbsoluteLocation(){
+        return this.allocator.getSelfBoundingBox();
+    }
+
+    public void updatePosition(){
+        ElementBoundingBox boundingBox = getAbsoluteLocation();
+        this.x = boundingBox.left;
+        this.y = boundingBox.top;
+        this.width = boundingBox.getWidth();
+        this.height = boundingBox.getHeight();
     }
 }
