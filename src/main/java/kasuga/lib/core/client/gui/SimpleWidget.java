@@ -134,4 +134,6 @@ public abstract class SimpleWidget extends AbstractWidget implements IBackground
 
     @Override
     public void updateNarration(NarrationElementOutput pNarrationElementOutput) {}
+
+    public void onClose(){}
 }
