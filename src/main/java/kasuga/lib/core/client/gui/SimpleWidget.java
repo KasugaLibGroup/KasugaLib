@@ -1,6 +1,7 @@
 package kasuga.lib.core.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import kasuga.lib.core.client.gui.enums.DisplayType;
 import kasuga.lib.core.client.gui.enums.PositionType;
 import kasuga.lib.core.client.gui.structure.ElementBoundingBox;
 import kasuga.lib.core.client.render.texture.SimpleTexture;
@@ -14,15 +15,17 @@ public abstract class SimpleWidget extends AbstractWidget implements IBackground
     private SimpleTexture background = null;
     private SimpleWidget parent = null;
     private PositionType positionType;
-
-    public SimpleWidget(int x, int y, int width, int height, PositionType type) {
+    private DisplayType displayType;
+    public SimpleWidget(int x, int y, int width, int height, PositionType type,DisplayType displayType) {
         super(x, y, width, height, Component.empty());
         this.positionType = type;
+        this.displayType = displayType;
     }
 
-    public SimpleWidget(int width, int height, PositionType type) {
+    public SimpleWidget(int width, int height, PositionType type,DisplayType displayType) {
         super(0, 0, width, height, Component.empty());
         this.positionType = type;
+        this.displayType = displayType;
     }
 
     public void setBackground(SimpleTexture texture) {
@@ -137,4 +140,8 @@ public abstract class SimpleWidget extends AbstractWidget implements IBackground
     public void updateNarration(NarrationElementOutput pNarrationElementOutput) {}
 
     public void onClose(){}
+
+    public DisplayType getDisplayType() {
+        return displayType;
+    }
 }

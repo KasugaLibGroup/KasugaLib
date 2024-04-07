@@ -1,18 +1,19 @@
 package kasuga.lib.core.client.gui.widget;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import kasuga.lib.core.client.gui.enums.DisplayType;
 import kasuga.lib.core.client.gui.enums.PositionType;
 import kasuga.lib.core.client.gui.SimpleWidget;
 import kasuga.lib.core.xml.IXmlObject;
 
 public class DataDrivenWidget extends SimpleWidget {
     private int bgx, bgy, bgWidth, bgHeight;
-    public DataDrivenWidget(int pX, int pY, int pWidth, int pHeight, PositionType type) {
-        super(pX, pY, pWidth, pHeight, type);
+    public DataDrivenWidget(int pX, int pY, int pWidth, int pHeight, PositionType type, DisplayType displayType) {
+        super(pX, pY, pWidth, pHeight, type,displayType);
     }
 
-    public DataDrivenWidget(int width, int height, PositionType type) {
-        super(width, height, type);
+    public DataDrivenWidget(int width, int height, PositionType type,DisplayType displayType) {
+        super(width, height, type, displayType);
     }
 
     @Override

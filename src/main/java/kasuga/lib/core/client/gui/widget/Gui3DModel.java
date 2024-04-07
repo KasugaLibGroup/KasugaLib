@@ -2,6 +2,7 @@ package kasuga.lib.core.client.gui.widget;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import kasuga.lib.core.client.animation.data.Animation;
+import kasuga.lib.core.client.gui.enums.DisplayType;
 import kasuga.lib.core.client.gui.enums.PositionType;
 import kasuga.lib.core.client.render.model.MultiPartModel;
 import kasuga.lib.core.client.render.model.SimpleModel;
@@ -15,22 +16,22 @@ public class Gui3DModel extends DataDrivenWidget {
     private Animation animation = null;
     private int modelX, modelY, modelZ;
 
-    public Gui3DModel(int x, int y, int width, int height, PositionType type, SimpleModel model) {
-        this(x, y, width, height, type);
+    public Gui3DModel(int x, int y, int width, int height, PositionType type, SimpleModel model, DisplayType displayType) {
+        this(x, y, width, height, type, displayType);
         this.model = model;
     }
 
-    public Gui3DModel(int x, int y, int width, int height, PositionType type) {
-        super(x, y, width, height, type);
+    public Gui3DModel(int x, int y, int width, int height, PositionType type, DisplayType displayType) {
+        super(x, y, width, height, type, displayType);
     }
 
-    public Gui3DModel(int width, int height, PositionType type, SimpleModel model) {
-        this(width, height, type);
+    public Gui3DModel(int width, int height, PositionType type, SimpleModel model, DisplayType displayType) {
+        this(width, height, type,displayType);
         this.model = model;
     }
 
-    public Gui3DModel(int width, int height, PositionType type) {
-        super(width, height, type);
+    public Gui3DModel(int width, int height, PositionType type, DisplayType displayType) {
+        super(width, height, type, displayType);
     }
 
     public void setModel(SimpleModel model) {
