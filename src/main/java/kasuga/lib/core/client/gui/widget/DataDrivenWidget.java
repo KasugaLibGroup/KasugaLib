@@ -59,6 +59,6 @@ public class DataDrivenWidget extends SimpleWidget {
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        if (hasBackground()) getBackground().render(bgx, bgy, bgWidth, bgHeight);
+        if (hasBackground()) getBackground().render(x, y, width, height);
     }
 }
