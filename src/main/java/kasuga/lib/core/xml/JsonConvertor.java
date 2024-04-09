@@ -3,12 +3,15 @@ package kasuga.lib.core.xml;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import kasuga.lib.core.annos.Util;
 
 import java.util.Map;
 import java.util.Set;
 
+@Util
 public class JsonConvertor {
 
+    @Util
     public static IXmlObject<?> json2Xml(String key, JsonElement jsonObject) {
         if (jsonObject.isJsonPrimitive()) {
             JsonPrimitive primitive = (JsonPrimitive) jsonObject;
@@ -48,6 +51,7 @@ public class JsonConvertor {
         } else return null;
     }
 
+    @Util
     public static JsonElement xml2Json(IXmlObject<?> xmlObject) {
         if (xmlObject.isPrimitive()) {
             Set<IXmlObject<?>> attr = xmlObject.attributes();
