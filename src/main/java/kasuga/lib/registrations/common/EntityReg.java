@@ -110,6 +110,9 @@ public class EntityReg<T extends Entity> extends Reg {
      */
     @Mandatory
     public EntityReg<T> submit(SimpleRegistry registry) {
+        if (builder == null) {
+            crashOnNotPresent(EntityBuilder.class, "entityType", "submit");
+        }
         EntityType.Builder<T> tBuilder = EntityType.Builder.of(builder::build, mobCategory);
         if(identifier != null)
             identifier.apply(tBuilder);

@@ -123,7 +123,7 @@ public class BucketItemReg<T extends BucketItem> extends ItemReg<T> {
         if(customRender)
             registry.stackCustomRenderedItemIn(this.registrationKey);
         registryObject = registry.item().register(registrationKey, () -> builder.build(fluid, properties));
-        if(menuReg != null) {
+        if(menuReg != null && registerMenu) {
             if(!registry.hasMenuCache(this.toString())) {
                 registry.cacheMenuIn(menuReg);
             }

@@ -105,6 +105,9 @@ public class BlockEntityReg<T extends BlockEntity> extends Reg {
      */
     @Mandatory
     public BlockEntityReg<T> submit(SimpleRegistry registry) {
+        if (builder == null) {
+            crashOnNotPresent(BlockEntityType.BlockEntitySupplier.class, "blockEntityType", "submit");
+        }
         registryObject = registry.blockEntity()
                 .register(registrationKey, () -> BlockEntityType.Builder.of(builder, getBlockList()).build(dataType));
         return this;

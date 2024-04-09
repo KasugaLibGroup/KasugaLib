@@ -56,9 +56,13 @@ public class MenuReg<T extends AbstractContainerMenu, F extends Screen, U extend
     @Override
     @Mandatory
     public MenuReg<T, F, U> submit(SimpleRegistry registry) {
-        if(menuFactory == null) return this;
+        if (menuFactory == null) {
+            crashOnNotPresent(IContainerFactory.class, "withMenuAndScreen", "submit");
+        }
+        if (screenFactory == null) {
+            crashOnNotPresent(Screen.class, "withMenuAndScreen", "submit");
+        }
         this.registryObject = registry.menus().register(registrationKey, () -> IForgeMenuType.create(menuFactory));
-        if(screenFactory == null) return this;
         MenuScreens.register(registryObject.get(), screenFactory);
         return this;
     }

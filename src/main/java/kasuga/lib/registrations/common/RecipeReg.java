@@ -45,6 +45,12 @@ public class RecipeReg<T extends Recipe<?>, F extends RecipeSerializer<?>> exten
     @Override
     @Mandatory
     public RecipeReg<T, F> submit(SimpleRegistry registry) {
+        if (recipe == null) {
+            crashOnNotPresent(Recipe.class, "recipe", "submit");
+        }
+        if (recipeSerializer == null) {
+            crashOnNotPresent(RecipeSerializer.class, "recipeSerializer", "submit");
+        }
         this.recipeRegistryObject = registry.recipe().register(registrationKey, () -> new RecipeType<T>() {
             @Override
             public String toString() {return registrationKey;}

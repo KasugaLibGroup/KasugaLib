@@ -83,7 +83,9 @@ public class EffectReg<T extends MobEffect> extends Reg {
      */
     @Override
     public Reg submit(SimpleRegistry registry) {
-        Objects.requireNonNull(builder);
+        if (builder == null) {
+            crashOnNotPresent(EffectBuilder.class, "effectType", "submit");
+        }
         registryObject = registry.mob_effect().register(registrationKey, () -> builder.build(category, color));
         return this;
     }
