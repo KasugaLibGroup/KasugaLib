@@ -34,6 +34,7 @@ public class ItemReg<T extends Item> extends Reg {
     private RegistryObject<T> registryObject = null;
     private MenuReg<?, ?, ?> menuReg = null;
     private final List<TagKey<?>> tags;
+    boolean registerMenu = false;
 
     /**
      * Create an item reg.
@@ -155,6 +156,7 @@ public class ItemReg<T extends Item> extends Reg {
     withMenu(String registrationKey, IContainerFactory<?> menu, MenuScreens.ScreenConstructor<?, ?> screen) {
         menuReg = new MenuReg<F, R, U>(registrationKey)
                 .withMenuAndScreen((IContainerFactory<F>) menu, (MenuScreens.ScreenConstructor<F, U>) screen);
+        registerMenu = true;
         return this;
     }
 
@@ -167,6 +169,7 @@ public class ItemReg<T extends Item> extends Reg {
     @Optional
     public ItemReg<T> withMenu(MenuReg<?, ?, ?> menuReg) {
         this.menuReg = menuReg;
+        registerMenu = false;
         return this;
     }
 
@@ -199,6 +202,9 @@ public class ItemReg<T extends Item> extends Reg {
      */
     @Mandatory
     public ItemReg<T> submit(SimpleRegistry registry) {
+        if (builder == null) {
+            crashOnNotPresent(Item.class, "itemType", "submit");
+        }
         if(model != null) {
             registry.modelMappings().addMapping(
                     new ResourceLocation(registry.namespace, "item/" + registrationKey + ".json"), model
@@ -207,7 +213,7 @@ public class ItemReg<T extends Item> extends Reg {
         if(customRender)
             registry.stackCustomRenderedItemIn(this.registrationKey);
         registryObject = registry.item().register(registrationKey, () -> builder.build(properties));
-        if(menuReg != null) {
+        if(menuReg != null && registerMenu) {
             if(!registry.hasMenuCache(this.toString())) {
                 registry.cacheMenuIn(menuReg);
             }

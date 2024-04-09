@@ -44,6 +44,7 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     private Supplier<? extends ForgeFlowingFluid> fluid;
     private RegistryObject<T> registryObject;
     private final List<TagKey<?>> tags;
+    boolean registerBe = false, registerMenu = false;
 
     /**
      * Create a fluid block reg.
@@ -109,6 +110,7 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
         this.blockEntityReg = new BlockEntityReg<R>(beRegistrationKey)
                 .blockEntityType(supplier)
                 .addBlock(() -> this.registryObject.get());
+        registerBe = true;
         return this;
     }
 
@@ -120,6 +122,7 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     @Optional
     public FluidBlockReg<T> withBlockEntity(BlockEntityReg<? extends BlockEntity> blockEntityReg) {
         this.blockEntityReg = blockEntityReg.addBlock(() -> this.registryObject.get());
+        registerBe = false;
         return this;
     }
 
@@ -130,12 +133,16 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
      */
     @Optional
     public FluidBlockReg<T> withBlockEntityRenderer(BlockEntityReg.BlockEntityRendererBuilder builder) {
+        if (blockEntityReg == null) {
+            crashOnNotPresent(BlockEntityReg.class, "blockEntityReg", "withBlockEntityRenderer");
+            return this;
+        }
         blockEntityReg.withRenderer(builder);
         return this;
     }
 
     /**
-     * See {@link BlockReg#withItemMenu(String, IContainerFactory, MenuScreens.ScreenConstructor)}
+     * See {@link BlockReg#withMenu(String, IContainerFactory, MenuScreens.ScreenConstructor)}
      * @param registrationKey the name of your menu.
      * @param menu the menu instance supplier.
      * @param screen the screen instance supplier.
@@ -149,17 +156,19 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     withMenu(String registrationKey, IContainerFactory<?> menu, MenuScreens.ScreenConstructor<?, ?> screen) {
         menuReg = new MenuReg<F, R, U>(registrationKey)
                 .withMenuAndScreen((IContainerFactory<F>) menu, (MenuScreens.ScreenConstructor<F, U>) screen);
+        registerMenu = true;
         return this;
     }
 
     /**
-     * see {@link BlockReg#withItemMenu(MenuReg)}
+     * see {@link BlockReg#withMenu(MenuReg)}
      * @param menuReg the reg of your menu.
      * @return self.
      */
     @Optional
     public FluidBlockReg<T> withMenu(MenuReg<?, ?, ?> menuReg) {
         this.menuReg = menuReg;
+        registerMenu = false;
         return this;
     }
 
@@ -182,15 +191,18 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     @Mandatory
     public FluidBlockReg<T> submit(SimpleRegistry registry) {
         initProperties();
+        if (builder == null) {
+            crashOnNotPresent(FluidBlockBuilder.class, "fluid", "submit");
+        }
         registryObject = registry.block().register(registrationKey, () -> builder.build(fluid, properties));
-        if(blockEntityReg != null) {
+        if(blockEntityReg != null && registerBe) {
             if(registry.hasBeCache(this.toString())) {
                 registry.getBeCached(this.toString()).withBlocks(() -> this.registryObject.get());
             } else {
                 registry.cacheBeIn(blockEntityReg);
             }
         }
-        if(menuReg != null) {
+        if(menuReg != null && registerMenu) {
             if(!registry.hasMenuCache(this.toString())) {
                 registry.cacheMenuIn(menuReg);
             }
