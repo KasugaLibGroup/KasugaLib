@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import java.util.function.Supplier;
 
 /**
  * Use this registration to register fluids like water of lava.
@@ -49,6 +50,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     private String overlayTexturePath = null;
     private MenuReg<?, ?, ?> menuReg = null;
     private int tintColor = 0xffffff;
+    boolean registerItem = false, registerBlock = false, registerMenu = false;
 
     /**
      * Create a fluid registration.
@@ -96,6 +98,13 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     @Mandatory
     public FluidReg<E> blockType(FluidBlockReg.FluidBlockBuilder<? extends LiquidBlock> builder) {
         block.blockType(builder);
+        registerBlock = true;
+        return this;
+    }
+
+    public FluidReg<E> blockType(FluidBlockReg<? extends LiquidBlock> reg) {
+        block = reg;
+        registerBlock = false;
         return this;
     }
 
@@ -119,6 +128,13 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     public <R extends BucketItem> FluidReg<E> bucketItem(BucketItemReg.BucketBuilder<? extends BucketItem> builder) {
         itemReg = new BucketItemReg<R>(registrationKey + ".bucket");
         itemReg.itemType((BucketItemReg.BucketBuilder<R>) builder);
+        registerItem = true;
+        return this;
+    }
+
+    public FluidReg<E> bucketItem(BucketItemReg<? extends BucketItem> reg) {
+        itemReg = reg;
+        registerItem = false;
         return this;
     }
 
@@ -129,6 +145,10 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
      */
     @Optional
     public FluidReg<E> bucketModel(ResourceLocation resourceLocation) {
+        if (itemReg == null) {
+            crashOnNotPresent(ItemReg.class, "itemReg", "bucketModel");
+            return this;
+        }
         itemReg.model(resourceLocation);
         return this;
     }
@@ -140,6 +160,10 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
      */
     @Optional
     public FluidReg<E> itemProperty(ItemReg.PropertyIdentifier identifier) {
+        if (itemReg == null) {
+            crashOnNotPresent(ItemReg.class, "itemReg", "itemProperty");
+            return this;
+        }
         itemReg.withProperty(identifier);
         return this;
     }
@@ -151,6 +175,10 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
      */
     @Optional
     public FluidReg<E> shouldCustomRenderItem(boolean flag) {
+        if (itemReg == null) {
+            crashOnNotPresent(ItemReg.class, "itemReg", "shouldCustomRenderItem");
+            return this;
+        }
         itemReg.shouldCustomRender(flag);
         return this;
     }
@@ -162,6 +190,10 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
      */
     @Optional
     public FluidReg<E> tab(CreativeModeTab tab) {
+        if (itemReg == null) {
+            crashOnNotPresent(ItemReg.class, "itemReg", "tab");
+            return this;
+        }
         itemReg.tab(tab);
         return this;
     }
@@ -173,6 +205,10 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
      */
     @Optional
     public FluidReg<E> tab(CreativeTabReg reg) {
+        if (itemReg == null) {
+            crashOnNotPresent(ItemReg.class, "itemReg", "tab");
+            return this;
+        }
         itemReg.tab(reg);
         return this;
     }
@@ -183,7 +219,11 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
      * @return self.
      */
     @Optional
-    public FluidReg<E> stacksTo(int size) {
+    public FluidReg<E> stackTo(int size) {
+        if (itemReg == null) {
+            crashOnNotPresent(ItemReg.class, "itemReg", "stackTo");
+            return this;
+        }
         itemReg.stackTo(size);
         return this;
     }
@@ -204,6 +244,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     withMenu(String registrationKey, IContainerFactory<?> menu, MenuScreens.ScreenConstructor<?, ?> screen) {
         menuReg = new MenuReg<F, R, U>(registrationKey)
                 .withMenuAndScreen((IContainerFactory<F>) menu, (MenuScreens.ScreenConstructor<F, U>) screen);
+        registerMenu = true;
         return this;
     }
 
@@ -215,6 +256,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     @Optional
     public FluidReg<E> withMenu(MenuReg<?, ?, ?> menuReg) {
         this.menuReg = menuReg;
+        registerMenu = false;
         return this;
     }
 
@@ -225,6 +267,10 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
      */
     @Optional
     public FluidReg<E> withBlockProperty(BlockReg.PropertyIdentifier identifier) {
+        if (block == null) {
+            crashOnNotPresent(FluidBlockReg.class, "fluidBlockReg", "withBlockProperty");
+            return this;
+        }
         block.addProperty(identifier);
         return this;
     }
@@ -299,6 +345,12 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         if(propertyBuilder != null) {
             propertyBuilder.build(properties);
         }
+        if (flowingBuilder == null) {
+            crashOnNotPresent(ForgeFlowingFluid.class, "flow", "submit");
+        }
+        if (stillBuilder == null) {
+            crashOnNotPresent(ForgeFlowingFluid.class, "still", "submit");
+        }
         block.fluid(() -> stillObject.get());
         block.submit(registry);
         // type = type == null ? initDefaultType(registry) : type;
@@ -310,8 +362,8 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
             stillObject = registry.fluid().register(registrationKey + "_still", () -> stillBuilder.build(fluidProp));
         if(flowingBuilder != null)
             flowingObject = registry.fluid().register(registrationKey + "_flow", () -> flowingBuilder.build(fluidProp));
-        itemReg.submit(registry);
-        if(menuReg != null) {
+        if (registerItem) itemReg.submit(registry);
+        if(menuReg != null && registerMenu) {
             if(!registry.hasMenuCache(this.toString()))
                 registry.cacheMenuIn(menuReg);
         }
@@ -332,6 +384,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     public RegistryObject<E> still() {
         return stillObject;
     }
+
     public RegistryObject<E> flowing() {
         return flowingObject;
     }
@@ -344,6 +397,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     public ForgeFlowingFluid stillFluid() {
         return stillObject.get();
     }
+
     public ForgeFlowingFluid flowingFluid() {
         return flowingObject.get();
     }
