@@ -226,9 +226,9 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
      */
     @Optional
     public <F extends AbstractContainerMenu, R extends Screen, U extends Screen & MenuAccess<F>> FluidReg<E>
-    withMenu(String registrationKey, IContainerFactory<?> menu, MenuScreens.ScreenConstructor<?, ?> screen) {
+    withMenu(String registrationKey, IContainerFactory<?> menu, MenuReg.ScreenInvoker<U> screen) {
         menuReg = new MenuReg<F, R, U>(registrationKey)
-                .withMenuAndScreen((IContainerFactory<F>) menu, (MenuScreens.ScreenConstructor<F, U>) screen);
+                .withMenuAndScreen((IContainerFactory<F>) menu, screen);
         registerMenu = true;
         return this;
     }
