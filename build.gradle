@@ -252,7 +252,7 @@ publishing {
         }
         maven {
             name "github"
-            url "https://maven.pkg.github.com/MegumiKasuga/KasugaLib"
+            url "https://maven.pkg.github.com/KasugaLibGroup/"
             credentials {
                 username = USERNAME
                 password = TOKEN

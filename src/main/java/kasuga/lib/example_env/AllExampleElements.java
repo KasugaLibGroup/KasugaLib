@@ -4,6 +4,7 @@ import com.simibubi.create.Create;
 import com.simibubi.create.content.trains.track.TrackBlock;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.create.TrackStateGenerator;
+import kasuga.lib.core.config.SimpleConfig;
 import kasuga.lib.example_env.block.GreenAppleBlock;
 import kasuga.lib.example_env.block.GreenAppleItem;
 import kasuga.lib.example_env.block.track.StandardTrackBlock;
@@ -65,6 +66,17 @@ public class AllExampleElements {
 
     public static final CreativeTabReg tab = new CreativeTabReg("test")
             .icon(greenAppleItem).submit(testRegistry);
+
+    public static final SimpleConfig config = new SimpleConfig()
+            .common("common settings")
+            .rangedIntConfig("cfg1", "this is a test cfg", 0, -1, 1)
+            .doubleConfig("cfg2", 0d)
+            .client("only in client")
+            .boolConfig("bool", false)
+            .server("only in server")
+            .intConfig("int_cfg", 4)
+            .registerConfigs();
+
 
     /*
     public static final FluidReg<ExampleFluid> exampleFluid = new FluidReg<ExampleFluid>("example_fluid")

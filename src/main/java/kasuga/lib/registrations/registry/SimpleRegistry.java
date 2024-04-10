@@ -235,7 +235,6 @@ public class SimpleRegistry {
         FLUID.register(eventBus);
         for(String key : CACHE_OF_BLOCK_ENTITIES.keySet()) {CACHE_OF_BLOCK_ENTITIES.get(key).submit(this);}
         for(String key : CACHE_OF_MENUS.keySet()) {CACHE_OF_MENUS.get(key).submit(this);}
-        CACHE_OF_MENUS.clear();
         BLOCK_ENTITIES.register(eventBus);
         MENUS.register(eventBus);
         ENTITIES.register(eventBus);
@@ -316,6 +315,10 @@ public class SimpleRegistry {
     @Inner
     public MenuReg<?, ?, ?> getMenuCached(String registrationKey) {
         return CACHE_OF_MENUS.getOrDefault(registrationKey, null);
+    }
+
+    public HashMap<String, MenuReg<?, ?, ?>> getCahcedMenus() {
+        return CACHE_OF_MENUS;
     }
 
     /**
