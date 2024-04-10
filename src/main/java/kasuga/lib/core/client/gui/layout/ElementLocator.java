@@ -29,7 +29,7 @@ public class ElementLocator {
     }
 
     private void set(Locators target,Locators keep,Locators drop,int value) {
-        if(anchors.containsKey(keep) && anchors.containsKey(drop)){
+        if(anchors.containsKey(keep)){
             anchors.remove(drop);
         }
         anchors.put(target,value);
