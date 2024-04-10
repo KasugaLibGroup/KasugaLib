@@ -202,9 +202,9 @@ public class BlockReg<T extends Block> extends Reg {
      */
     @Optional
     public <F extends AbstractContainerMenu, R extends Screen, U extends Screen & MenuAccess<F>> BlockReg<T>
-    withMenu(String registrationKey, IContainerFactory<?> menu, MenuScreens.ScreenConstructor<?, ?> screen) {
+    withMenu(String registrationKey, IContainerFactory<?> menu, MenuReg.ScreenInvoker<U> screen) {
         menuReg = new MenuReg<F, R, U>(registrationKey)
-                .withMenuAndScreen((IContainerFactory<F>) menu, (MenuScreens.ScreenConstructor<F, U>) screen);
+                .withMenuAndScreen((IContainerFactory<F>) menu, screen);
         registerMenu = true;
         return this;
     }
@@ -235,7 +235,7 @@ public class BlockReg<T extends Block> extends Reg {
      */
     @Optional
     public <F extends AbstractContainerMenu, R extends Screen, U extends Screen & MenuAccess<F>> BlockReg<T>
-    withItemMenu(String registrationKey, IContainerFactory<?> menu, MenuScreens.ScreenConstructor<?, ?> screen) {
+    withItemMenu(String registrationKey, IContainerFactory<?> menu, MenuReg.ScreenInvoker<U> screen) {
         if (itemReg == null) {
             crashOnNotPresent(ItemReg.class, "itemReg", "withItemMenu");
             return this;

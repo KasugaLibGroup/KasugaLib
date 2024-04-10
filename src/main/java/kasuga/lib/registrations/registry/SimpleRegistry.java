@@ -318,6 +318,10 @@ public class SimpleRegistry {
         return CACHE_OF_MENUS.getOrDefault(registrationKey, null);
     }
 
+    public HashMap<String, MenuReg<?, ?, ?>> getCahcedMenus() {
+        return CACHE_OF_MENUS;
+    }
+
     /**
      * Don't use.
      * @param reg the reg to cache in.

@@ -6,6 +6,7 @@ import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
@@ -42,9 +43,9 @@ public class MenuReg<T extends AbstractContainerMenu, F extends Screen, U extend
      */
     @Mandatory
     public MenuReg<T, F, U>
-    withMenuAndScreen(IContainerFactory<T> menu, MenuScreens.ScreenConstructor<T, U> screen) {
+    withMenuAndScreen(IContainerFactory<T> menu, ScreenInvoker<U> screen) {
         this.menuFactory = menu;
-        this.screenFactory = screen;
+        this.screenFactory = (a, b, c) -> screen.invoke(c);
         return this;
     }
 
@@ -56,6 +57,7 @@ public class MenuReg<T extends AbstractContainerMenu, F extends Screen, U extend
     @Override
     @Mandatory
     public MenuReg<T, F, U> submit(SimpleRegistry registry) {
+        registry.cacheMenuIn(this);
         if (menuFactory == null) {
             crashOnNotPresent(IContainerFactory.class, "withMenuAndScreen", "submit");
         }
@@ -63,7 +65,6 @@ public class MenuReg<T extends AbstractContainerMenu, F extends Screen, U extend
             crashOnNotPresent(Screen.class, "withMenuAndScreen", "submit");
         }
         this.registryObject = registry.menus().register(registrationKey, () -> IForgeMenuType.create(menuFactory));
-        MenuScreens.register(registryObject.get(), screenFactory);
         return this;
     }
 
@@ -79,5 +80,13 @@ public class MenuReg<T extends AbstractContainerMenu, F extends Screen, U extend
     @Override
     public String getIdentifier() {
         return "menu";
+    }
+
+    public void hookMenuAndScreen() {
+        MenuScreens.register(registryObject.get(), screenFactory);
+    }
+
+    public interface ScreenInvoker<U extends Screen> {
+        U invoke(Component title);
     }
 }
