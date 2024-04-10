@@ -87,24 +87,24 @@ public class ElementLocator {
                 parentAbsoluteTop + parentHeight - anchors.get(Locators.BOTTOM) - anchors.get(Locators.HEIGHT);
     }
 
-    public int getWidth(){
+    public int getWidth(int parentWidth){
         return anchors.containsKey(Locators.WIDTH)
                 ? anchors.get(Locators.WIDTH) :
-                anchors.get(Locators.RIGHT) - anchors.get(Locators.LEFT);
+                parentWidth - anchors.get(Locators.RIGHT) - anchors.get(Locators.LEFT);
     }
 
-    public int getHeight(){
+    public int getHeight(int parentHeight){
         return anchors.containsKey(Locators.HEIGHT) ?
                 anchors.get(Locators.HEIGHT) :
-                anchors.get(Locators.BOTTOM) - anchors.get(Locators.TOP);
+                parentHeight - anchors.get(Locators.BOTTOM) - anchors.get(Locators.TOP);
     }
 
     public ElementBoundingBox locateAbsolute(ElementBoundingBox parent){
         return ElementBoundingBox.ofHeightWidth(
                 getAbsoluteLeft(parent.left,parent.getWidth()),
                 getAbsoluteTop(parent.top,parent.getHeight()),
-                getWidth(),
-                getHeight()
+                getWidth(parent.getWidth()),
+                getHeight(parent.getHeight())
         );
     }
 }

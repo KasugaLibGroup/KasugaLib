@@ -21,7 +21,7 @@ public class LayoutAllocator {
     int lastHeight = 0;
 
     public ElementBoundingBox allocate(PositionType positionType, DisplayType displayType, ElementLocator locator){
-        if(element == null || positionType == PositionType.FIXED){
+        if(positionType == PositionType.FIXED){
             Screen screen = Minecraft.getInstance().screen;
             if(screen == null)
                 return ElementBoundingBox.ofHeightWidth(0,0,0,0);
@@ -29,13 +29,13 @@ public class LayoutAllocator {
         }
 
         if(positionType == PositionType.ABSOLUTE){
-            if(element.getPositionType() != PositionType.ABSOLUTE)
+            if(element.getPositionType() != PositionType.ABSOLUTE && element.getPositionType() != PositionType.FIXED)
                 return element.getParent().getAllocator().allocate(positionType, displayType, locator);
             return locator.locateAbsolute(selfBoundingBox);
         }
 
-        int elementHeight = locator.getHeight();
-        int elementWidth = locator.getWidth();
+        int elementHeight = locator.getHeight(selfBoundingBox.getHeight());
+        int elementWidth = locator.getWidth(selfBoundingBox.getWidth());
 
         if(displayType == DisplayType.BLOCK || elementWidth > this.selfBoundingBox.getWidth() - lastX){
             lastY += lastHeight;
