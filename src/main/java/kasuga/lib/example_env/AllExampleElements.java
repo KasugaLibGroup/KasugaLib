@@ -7,12 +7,16 @@ import kasuga.lib.example_env.block.GreenAppleItem;
 import kasuga.lib.example_env.block_entity.GreenAppleTile;
 import kasuga.lib.example_env.client.block_entity.renderer.GreenAppleTileRenderer;
 import kasuga.lib.example_env.client.entity.renderer.WuLingRenderer;
+import kasuga.lib.example_env.client.gui.ExampleContainer;
+import kasuga.lib.example_env.client.gui.ExampleScreen;
 import kasuga.lib.example_env.entity.WuLingEntity;
 import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.client.ModelReg;
 import kasuga.lib.registrations.common.*;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.SoundType;
@@ -30,6 +34,7 @@ public class AllExampleElements {
             .withSound(SoundType.CROP)
             .withBlockEntity("green_apple_tile", GreenAppleTile::new)
             .withBlockEntityRenderer(GreenAppleTileRenderer::new)
+            .withMenu("green_apple_menu", ExampleContainer::new, ExampleScreen::new)
             .defaultBlockItem(new ResourceLocation(KasugaLib.MOD_ID, "block/test/green_apple"))
             .stackSize(32)
             .tabTo(CreativeModeTab.TAB_DECORATIONS)
@@ -78,7 +83,6 @@ public class AllExampleElements {
             .bucketItem(BucketItem::new)
             .blockType(ExampleFluidBlock::new)
             .submit(testRegistry);
-
      */
 
     public static final ChannelReg Channel = new ChannelReg("example_channel")

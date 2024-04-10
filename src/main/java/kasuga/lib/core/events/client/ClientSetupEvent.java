@@ -17,6 +17,7 @@ public class ClientSetupEvent {
         Start.printLogo(KasugaLib.MAIN_LOGGER);
         for (SimpleRegistry registry : KasugaLib.STACKS.getRegistries().values()) {
             registry.getCahcedMenus().forEach((a, b) -> b.hookMenuAndScreen());
+            registry.getCahcedMenus().clear();
         }
     }
 }
