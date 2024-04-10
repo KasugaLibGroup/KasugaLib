@@ -89,12 +89,12 @@ public abstract class SimpleWidget extends AbstractWidget implements IBackground
     }
 
     public void setX(int x) {
-        this.elementLocator.setTop(x);
+        this.elementLocator.setLeft(x);
         this.triggerLocate();
     }
 
     public void setY(int y) {
-        this.elementLocator.setLeft(x);
+        this.elementLocator.setTop(y);
         this.triggerLocate();
     }
     public void setLeft(int left) {
