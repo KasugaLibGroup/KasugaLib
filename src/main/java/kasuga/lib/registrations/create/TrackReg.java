@@ -10,6 +10,7 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import kasuga.lib.core.create.BlockStateGenerator;
 import kasuga.lib.core.create.TrackStateGenerator;
 import kasuga.lib.registrations.common.BlockReg;
 import kasuga.lib.registrations.common.CreativeTabReg;
@@ -32,7 +33,7 @@ public class TrackReg<T extends TrackBlock> extends BlockReg<T> {
     private NonNullSupplier<CreativeModeTab> tabSupplier;
     private TrackStateGenerator.Builder generator;
     private ResourceLocation trackItemModelLocation;
-    private int transformType = 0;
+    int transformType = 0;
     private String trackNameSuffix = "";
 
     /**
