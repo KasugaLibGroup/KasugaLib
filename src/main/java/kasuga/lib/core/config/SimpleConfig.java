@@ -245,6 +245,10 @@ public class SimpleConfig {
         return (Double) values.get(key).min;
     }
 
+    public ConfigContext<?> getContext(String key) {
+        return values.getOrDefault(key, null);
+    }
+
     private void popIfPushed() {
         if (cachedBuilder == COMMON_BUILDER && common_pushed) {
             cachedBuilder.pop();
