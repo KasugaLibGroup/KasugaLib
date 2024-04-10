@@ -18,7 +18,7 @@ public final class Start {
     };
 
     public static final String[] CREDIT = new String[]{
-            "MegumiKasuga"
+            "KasugaLibTeam"
     };
 
     public static void printLogo(Logger logger) {
