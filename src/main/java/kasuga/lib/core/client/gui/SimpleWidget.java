@@ -119,7 +119,9 @@ public abstract class SimpleWidget extends AbstractWidget implements IBackground
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        if (this.visible) {
+            this.isHovered = pMouseX >= this.x && pMouseY >= this.y && pMouseX < this.x + this.width && pMouseY < this.y + this.height;
+        }
     }
 
     @Override
