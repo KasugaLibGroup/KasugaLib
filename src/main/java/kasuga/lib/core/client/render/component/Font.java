@@ -9,13 +9,14 @@ public class Font {
     private Style style = Style.EMPTY;
     public Font(ResourceLocation location) {
         this.location = location;
-        style.withColor(0xffffff);
+        style = style.withColor(0xffffff);
         if(KasugaLib.STACKS.isTextureRegistryFired()) {loadFont();}
         else KasugaLib.STACKS.fontRegistry().stackIn(this);
     }
 
     public Font() {
         this.location = null;
+        style = style.withColor(0x000000);
     }
 
     public Style getFont() {
