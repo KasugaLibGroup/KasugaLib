@@ -11,13 +11,15 @@ import kasuga.lib.core.client.gui.widget.DataDrivenBox;
 import kasuga.lib.core.client.gui.widget.DataDrivenButton;
 import kasuga.lib.core.client.gui.widget.DataDrivenComponent;
 import kasuga.lib.core.client.render.texture.SimpleTexture;
+import kasuga.lib.example_env.AllExampleElements;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-public class ExampleScreen extends SimpleScreen {
+public class ExampleScreen extends SimpleScreen implements MenuAccess {
 
     private DataDrivenBox box;
 
@@ -85,5 +87,10 @@ public class ExampleScreen extends SimpleScreen {
         button.setParent(containerBox);
 
         box.locate();
+    }
+
+    @Override
+    public AbstractContainerMenu getMenu() {
+        return new ExampleContainer(AllExampleElements.greenApple.getMenuReg().getMenuType(), 0);
     }
 }
