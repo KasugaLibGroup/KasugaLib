@@ -164,4 +164,17 @@ public abstract class SimpleWidget extends AbstractWidget implements IBackground
         this.width = boundingBox.getWidth();
         this.height = boundingBox.getHeight();
     }
+
+    @Override
+    public void setHeight(int value) {
+        this.elementLocator.setHeight(value);
+        this.triggerLocate();
+    }
+
+    @Override
+    public void setWidth(int pWidth) {
+        this.elementLocator.setWidth(pWidth);
+        this.triggerLocate();
+
+    }
 }
