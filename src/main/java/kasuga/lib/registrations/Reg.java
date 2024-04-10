@@ -1,7 +1,11 @@
 package kasuga.lib.registrations;
 
 import kasuga.lib.core.annos.Mandatory;
+import kasuga.lib.registrations.common.ItemReg;
+import kasuga.lib.registrations.exception.RegistryElementNotPresentException;
 import kasuga.lib.registrations.registry.SimpleRegistry;
+import net.minecraft.CrashReport;
+import net.minecraft.client.Minecraft;
 
 /**
  * Reg is the core class for KasugaLib style registration. We use this to complete most kinds of registrations.
@@ -26,5 +30,11 @@ public abstract class Reg {
     public abstract String getIdentifier();
     public String toString() {
         return getIdentifier() + "." + registrationKey;
+    }
+
+    public void crashOnNotPresent(Class<?> clazz, String regType, String method) {
+        RegistryElementNotPresentException exception =
+                RegistryElementNotPresentException.of(clazz, regType, method);
+        Minecraft.crash(CrashReport.forThrowable(exception, "Oops!"));
     }
 }
