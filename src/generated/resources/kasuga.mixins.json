@@ -7,7 +7,8 @@
 
   ],
   "client": [
-    "client.MixinBlockModelBinding"
+    "client.MixinBlockModelBinding",
+    "client.MixinBezierConnection"
   ],
   "minVersion": "0.8"
 }

@@ -3,6 +3,7 @@ package kasuga.lib.example_env;
 import com.simibubi.create.AllTags;
 import com.simibubi.create.content.trains.track.TrackBlock;
 import kasuga.lib.core.create.TrackStateGenerator;
+import kasuga.lib.example_env.block.track.StandardTrackBlock;
 import kasuga.lib.registrations.create.TrackReg;
 import kasuga.lib.registrations.registry.CreateRegistry;
 
@@ -20,7 +21,7 @@ public class ExampleTracks {
                     .addModelContext(TrackStateGenerator.ModelBuilderContext.of
                             (TrackStateGenerator.ModelActionType.TEXTURE, "particle", null));
 
-    public static final TrackReg<TrackBlock> exampleTrack = new TrackReg<TrackBlock>("example_track")
+    public static final TrackReg<StandardTrackBlock> exampleTrack = new TrackReg<StandardTrackBlock>("standard_track")
             .trackState(stateBuilder)
             .trackNameSuffix("Train Track")
             .trackMaterial(ExampleTrackMaterial.exampleMaterial::getMaterial)

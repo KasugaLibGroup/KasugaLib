@@ -1,6 +1,8 @@
 package kasuga.lib.example_env.block.track;
 
+import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
+import com.simibubi.create.Create;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.content.schematics.requirement.ISpecialBlockItemRequirement;
 import com.simibubi.create.content.trains.track.*;
@@ -16,6 +18,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class StandardTrackBlock extends TrackBlock
         implements IBE<TrackBlockEntity>,
@@ -30,7 +34,7 @@ public class StandardTrackBlock extends TrackBlock
 
     @Override
     public BlockState getBogeyAnchor(BlockGetter world, BlockPos pos, BlockState state) {
-        return state;
+        // return state;
         /*
         return TrackBlockInit.KY_STANDARD_BOGEY
                 .getDefaultState()
@@ -41,6 +45,7 @@ public class StandardTrackBlock extends TrackBlock
                                 : Direction.Axis.Z);
 
          */
+        return super.getBogeyAnchor(world, pos, state);
     }
 
     @Override

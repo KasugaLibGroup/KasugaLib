@@ -98,8 +98,9 @@ public class TrackReg<T extends TrackBlock> extends BlockReg<T> {
         CreateRegistrate registrate = createRegistry.createRegistry();
         if (tabSupplier != null) registrate.creativeModeTab(tabSupplier);
         TrackMaterial material = trackMaterialSupplier.get();
-        com.tterrag.registrate.builders.BlockBuilder<TrackBlock, CreateRegistrate> builder =
-                registrate.block(registrationKey, material::createBlock)
+        com.tterrag.registrate.builders.BlockBuilder<T, CreateRegistrate> builder =
+                (com.tterrag.registrate.builders.BlockBuilder<T, CreateRegistrate>)
+                        registrate.block(registrationKey, material::createBlock)
                 .initialProperties(super.material);
         switch (transformType) {
             case 1 -> builder.transform(TagGen.axeOnly());
@@ -114,7 +115,7 @@ public class TrackReg<T extends TrackBlock> extends BlockReg<T> {
                 .item(TrackBlockItem::new)
                 .model((c, p) -> p.generated(c, trackItemModelLocation))
                 .build();
-        entry = (BlockEntry<T>) builder.register();
+        entry = builder.register();
         return this;
     }
 

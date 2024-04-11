@@ -1,15 +1,19 @@
 package kasuga.lib.registrations.create;
 
 import com.jozufozu.flywheel.core.PartialModel;
+import com.simibubi.create.content.trains.track.BezierConnection;
 import com.simibubi.create.content.trains.track.TrackBlock;
 import com.simibubi.create.content.trains.track.TrackMaterial;
 import com.simibubi.create.content.trains.track.TrackMaterialFactory;
+import com.simibubi.create.foundation.utility.Couple;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import kasuga.lib.KasugaLib;
 import kasuga.lib.core.create.TrackType;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.function.Supplier;
 
@@ -20,6 +24,9 @@ public class TrackMaterialReg extends Reg {
     private NonNullSupplier<NonNullSupplier<? extends TrackBlock>> blockSupplier = null;
     private ItemLike[] sleepers = null, rails = null;
     private String langKey = "";
+
+    private TrackOffsetIdentifier
+            rightOffset = (segment -> segment.scale(.965f));
     private TrackMaterial material = null;
     private boolean isCustomRendered = false;
     public TrackMaterialReg(String registrationKey) {
@@ -74,6 +81,21 @@ public class TrackMaterialReg extends Reg {
         return this;
     }
 
+    public TrackMaterialReg simpleTrackModelOffset(float halfDistance) {
+        rightOffset = (segment -> segment.scale(halfDistance));
+        return this;
+    }
+
+    public TrackMaterialReg defaultTrackModelOffset() {
+        rightOffset = (segment -> segment.scale(.965f));
+        return this;
+    }
+
+    public TrackMaterialReg customTrackModelOffset(TrackOffsetIdentifier left, TrackOffsetIdentifier right) {
+        rightOffset = right;
+        return this;
+    }
+
     public TrackMaterialReg lang(String langKey) {
         this.langKey = langKey;
         return this;
@@ -92,6 +114,7 @@ public class TrackMaterialReg extends Reg {
         else
             factory.defaultModels();
         material = factory.build();
+        KasugaLib.STACKS.cacheTrackMaterialIn(this);
         return this;
     }
 
@@ -107,8 +130,17 @@ public class TrackMaterialReg extends Reg {
         return trackParticle;
     }
 
+    public TrackOffsetIdentifier trackOffsets() {
+        return rightOffset;
+    }
+
     @Override
     public String getIdentifier() {
         return "track_material";
+    }
+
+    @FunctionalInterface
+    public interface TrackOffsetIdentifier {
+        Vec3 apply(Vec3 vector);
     }
 }
