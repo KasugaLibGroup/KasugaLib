@@ -7,10 +7,10 @@ public class ExampleMain {
 
     public static final CreateRegistry testRegistry = new CreateRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
     public static void invoke() {
-        ExampleTrackMaterial.invoke();
+        // ExampleTrackMaterial.invoke();
         AllExampleElements.invoke();
-        ExampleTracks.invoke();
-        AllExampleBogey.invoke();
+        // ExampleTracks.invoke();
+        // AllExampleBogey.invoke();
         AllExampleElements.testRegistry.submit();
     }
 }
