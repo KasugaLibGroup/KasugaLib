@@ -105,6 +105,10 @@ public class CreativeTabReg extends Reg {
         return tabRegistryObject.get();
     }
 
+    public RegistryObject<CreativeModeTab> getTabRegistryObject() {
+        return tabRegistryObject;
+    }
+
     @Override
     public String getIdentifier() {
         return "tab";

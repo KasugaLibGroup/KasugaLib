@@ -385,7 +385,7 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     @Inner
-    private void initProperties() {
+    public void initProperties() {
         properties = BlockBehaviour.Properties.of().mapColor(color);
         if(identifier != null) identifier.apply(properties);
     }

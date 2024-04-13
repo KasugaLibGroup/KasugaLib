@@ -1,0 +1,7 @@
+{
+	"parent": "block/block",
+	"loader": "forge:obj",
+	"flip_v": true,
+	"model": "kasuga_lib:models/block/bogey/cw2/cw2_wheel.obj"
+
+}
