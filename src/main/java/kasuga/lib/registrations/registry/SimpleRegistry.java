@@ -236,7 +236,13 @@ public class SimpleRegistry {
         ITEMS.register(eventBus);
         FLUID_TYPE.register(eventBus);
         FLUID.register(eventBus);
-        for(String key : CACHE_OF_BLOCK_ENTITIES.keySet()) {CACHE_OF_BLOCK_ENTITIES.get(key).submit(this);}
+        for(String key : CACHE_OF_BLOCK_ENTITIES.keySet()) {
+            try {
+                BlockEntityReg<?> reg = CACHE_OF_BLOCK_ENTITIES.get(key);
+                reg.getType();
+                reg.submit(this);
+            } catch (Exception ignore) {}
+        }
         for(String key : CACHE_OF_MENUS.keySet()) {CACHE_OF_MENUS.get(key).submit(this);}
         BLOCK_ENTITIES.register(eventBus);
         MENUS.register(eventBus);
@@ -356,12 +362,8 @@ public class SimpleRegistry {
      */
     @Inner
     public void onEntityRendererReg() {
-        for(EntityReg<?> entityReg : CACHE_OF_ENTITIES) {
-            entityReg.registerRenderer();
-        }
-        for(String key: CACHE_OF_BLOCK_ENTITIES.keySet()) {
-            CACHE_OF_BLOCK_ENTITIES.get(key).registerRenderer(this);
-        }
+        CACHE_OF_ENTITIES.forEach(EntityReg::registerRenderer);
+        CACHE_OF_BLOCK_ENTITIES.forEach((a, b) -> b.registerRenderer(this));
         CACHE_OF_BLOCK_ENTITIES.clear();
         CACHE_OF_ENTITIES.clear();
     }

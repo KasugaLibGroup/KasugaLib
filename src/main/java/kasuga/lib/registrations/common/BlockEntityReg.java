@@ -110,6 +110,7 @@ public class BlockEntityReg<T extends BlockEntity> extends Reg {
         }
         registryObject = registry.blockEntity()
                 .register(registrationKey, () -> BlockEntityType.Builder.of(builder, getBlockList()).build(dataType));
+        registry.cacheBeIn(this);
         return this;
     }
 
