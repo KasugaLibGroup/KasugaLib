@@ -1,0 +1,7 @@
+{
+  "parent": "kasuga_lib:block/track/standard/obj_track",
+  "loader": "forge:obj",
+  "flip_v": true,
+  "render_type": "cutout_mipped",
+  "model": "kasuga_lib:models/block/track/tieless/diag_2.obj"
+}

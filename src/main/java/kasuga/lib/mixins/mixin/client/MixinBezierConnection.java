@@ -2,7 +2,6 @@ package kasuga.lib.mixins.mixin.client;
 
 import com.simibubi.create.content.trains.track.BezierConnection;
 import com.simibubi.create.content.trains.track.TrackMaterial;
-import com.simibubi.create.foundation.utility.Couple;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.registrations.create.TrackMaterialReg;
 import net.minecraft.world.phys.Vec3;
@@ -19,16 +18,16 @@ public class MixinBezierConnection {
     TrackMaterial trackMaterial;
     @Redirect(method = "getBakedGirders", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;scale(D)Lnet/minecraft/world/phys/Vec3;"))
     public Vec3 doScale(Vec3 instance, double factor) {
-        return innerScale(instance, factor);
+        return kasugaLib$innerScale(instance, factor);
     }
 
     @Redirect(method = "getBakedSegments", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;scale(D)Lnet/minecraft/world/phys/Vec3;"))
     public Vec3 doScale2(Vec3 instance, double factor) {
-        return innerScale(instance, factor);
+        return kasugaLib$innerScale(instance, factor);
     }
 
     @Unique
-    protected final Vec3 innerScale(Vec3 instance, double factor) {
+    protected final Vec3 kasugaLib$innerScale(Vec3 instance, double factor) {
         if (factor != .965f) return instance.scale(factor);
         TrackMaterialReg reg = KasugaLib.STACKS.getCachedTrackMaterial(trackMaterial);
         if (reg == null) return instance.scale(factor);

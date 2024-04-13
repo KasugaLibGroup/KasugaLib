@@ -8,6 +8,7 @@ import com.simibubi.create.content.schematics.requirement.ISpecialBlockItemRequi
 import com.simibubi.create.content.trains.track.*;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.block.ProperWaterloggedBlock;
+import kasuga.lib.example_env.AllExampleBogey;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -35,34 +36,14 @@ public class StandardTrackBlock extends TrackBlock
     @Override
     public BlockState getBogeyAnchor(BlockGetter world, BlockPos pos, BlockState state) {
         // return state;
-        /*
-        return TrackBlockInit.KY_STANDARD_BOGEY
+
+        return AllExampleBogey.standardBogey.getEntry()
                 .getDefaultState()
                 .setValue(
                         BlockStateProperties.HORIZONTAL_AXIS,
                         state.getValue(SHAPE) == TrackShape.XO
                                 ? Direction.Axis.X
                                 : Direction.Axis.Z);
-
-         */
-        return super.getBogeyAnchor(world, pos, state);
-    }
-
-    @Override
-    public InteractionResult use(
-            BlockState state,
-            Level world,
-            BlockPos pos,
-            Player player,
-            InteractionHand hand,
-            BlockHitResult hit) {
-        InteractionResult result = super.use(state, world, pos, player, hand, hit);
-        if (result.consumesAction()) return result;
-
-        if (!world.isClientSide && AllItems.BRASS_HAND.isIn(player.getItemInHand(hand))) {
-            TrackPropagator.onRailAdded(world, pos, state);
-            return InteractionResult.SUCCESS;
-        }
-        return result;
+        // return super.getBogeyAnchor(world, pos, state);
     }
 }

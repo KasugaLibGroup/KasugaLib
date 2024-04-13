@@ -1,28 +1,20 @@
 package kasuga.lib.example_env;
 
-import com.simibubi.create.Create;
-import com.simibubi.create.content.trains.track.TrackBlock;
 import kasuga.lib.KasugaLib;
-import kasuga.lib.core.create.TrackStateGenerator;
 import kasuga.lib.core.config.SimpleConfig;
 import kasuga.lib.example_env.block.GreenAppleBlock;
 import kasuga.lib.example_env.block.GreenAppleItem;
-import kasuga.lib.example_env.block.track.StandardTrackBlock;
 import kasuga.lib.example_env.block_entity.GreenAppleTile;
 import kasuga.lib.example_env.client.block_entity.renderer.GreenAppleTileRenderer;
 import kasuga.lib.example_env.client.entity.renderer.WuLingRenderer;
 import kasuga.lib.example_env.entity.WuLingEntity;
 import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
-import kasuga.lib.registrations.create.TrackMaterialReg;
-import kasuga.lib.registrations.create.TrackReg;
 import kasuga.lib.registrations.registry.CreateRegistry;
-import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.client.ModelReg;
 import kasuga.lib.registrations.common.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
@@ -78,6 +70,8 @@ public class AllExampleElements {
             .registerConfigs();
 
 
+
+
     /*
     public static final FluidReg<ExampleFluid> exampleFluid = new FluidReg<ExampleFluid>("example_fluid")
             .still(ExampleFluid::new, "block/fluid/water_still")
@@ -95,7 +89,5 @@ public class AllExampleElements {
             .loadPacket(ExampleS2CPacket.class, ExampleS2CPacket::new)
             .submit(testRegistry);
 
-    public static void invoke(){
-        testRegistry.submit();
-    }
+    public static void invoke(){}
 }

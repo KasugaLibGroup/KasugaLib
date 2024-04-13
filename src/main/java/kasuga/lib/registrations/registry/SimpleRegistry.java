@@ -233,7 +233,13 @@ public class SimpleRegistry {
         ITEMS.register(eventBus);
         FLUID_TYPE.register(eventBus);
         FLUID.register(eventBus);
-        for(String key : CACHE_OF_BLOCK_ENTITIES.keySet()) {CACHE_OF_BLOCK_ENTITIES.get(key).submit(this);}
+        for(String key : CACHE_OF_BLOCK_ENTITIES.keySet()) {
+            BlockEntityReg<?> reg = CACHE_OF_BLOCK_ENTITIES.get(key);
+            try {
+                reg.getType();
+                reg.submit(this);
+            } catch (Exception ignored) {}
+        }
         for(String key : CACHE_OF_MENUS.keySet()) {CACHE_OF_MENUS.get(key).submit(this);}
         BLOCK_ENTITIES.register(eventBus);
         MENUS.register(eventBus);

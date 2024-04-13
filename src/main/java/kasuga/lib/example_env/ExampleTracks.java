@@ -3,9 +3,11 @@ package kasuga.lib.example_env;
 import com.simibubi.create.AllTags;
 import com.simibubi.create.content.trains.track.TrackBlock;
 import kasuga.lib.core.create.TrackStateGenerator;
+import kasuga.lib.example_env.block.track.SimpleTrackBlock;
 import kasuga.lib.example_env.block.track.StandardTrackBlock;
 import kasuga.lib.registrations.create.TrackReg;
 import kasuga.lib.registrations.registry.CreateRegistry;
+import net.minecraft.world.level.material.Material;
 
 public class ExampleTracks {
     public static final CreateRegistry testRegistry = ExampleMain.testRegistry;
@@ -21,15 +23,29 @@ public class ExampleTracks {
                     .addModelContext(TrackStateGenerator.ModelBuilderContext.of
                             (TrackStateGenerator.ModelActionType.TEXTURE, "particle", null));
 
-    public static final TrackReg<StandardTrackBlock> exampleTrack = new TrackReg<StandardTrackBlock>("standard_track")
-            .trackState(stateBuilder)
-            .trackNameSuffix("Train Track")
-            .trackMaterial(ExampleTrackMaterial.exampleMaterial::getMaterial)
-            .pickaxeOnly()
-            .addTags(AllTags.AllBlockTags.TRACKS.tag)
-            .addTags(AllTags.AllBlockTags.GIRDABLE_TRACKS.tag)
-            .addTags(AllTags.AllBlockTags.RELOCATION_NOT_SUPPORTED.tag)
-            .submit(testRegistry);
+    public static final TrackReg<SimpleTrackBlock> exampleTrack =
+            new TrackReg<SimpleTrackBlock>("standard_track")
+                    .trackState(stateBuilder)
+                    .trackNameSuffix("Train Track")
+                    .material(Material.STONE)
+                    .trackMaterial(ExampleTrackMaterial.exampleMaterial::getMaterial)
+                    .pickaxeOnly()
+                    .addTags(AllTags.AllBlockTags.TRACKS.tag)
+                    .addTags(AllTags.AllBlockTags.GIRDABLE_TRACKS.tag)
+                    .addTags(AllTags.AllBlockTags.RELOCATION_NOT_SUPPORTED.tag)
+                    .submit(testRegistry);
+
+    public static final TrackReg<SimpleTrackBlock> tielessTrack =
+            new TrackReg<SimpleTrackBlock>("tieless_track")
+                    .trackState(stateBuilder)
+                    .trackNameSuffix("Tieless Track")
+                    .material(Material.STONE)
+                    .trackMaterial(ExampleTrackMaterial.tielessMaterial::getMaterial)
+                    .pickaxeOnly()
+                    .addTags(AllTags.AllBlockTags.TRACKS.tag)
+                    .addTags(AllTags.AllBlockTags.GIRDABLE_TRACKS.tag)
+                    .addTags(AllTags.AllBlockTags.RELOCATION_NOT_SUPPORTED.tag)
+                    .submit(testRegistry);
 
     public static void invoke(){}
 }

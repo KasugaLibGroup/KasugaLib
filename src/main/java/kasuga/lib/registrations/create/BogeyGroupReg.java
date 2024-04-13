@@ -23,7 +23,6 @@ import java.util.function.Supplier;
 public class BogeyGroupReg extends Reg {
     Component translationName = null;
     private final List<BogeyStyleBuilderContext> contexts;
-    private final HashMap<BogeyStyleBuilderContext, BlockReg> regHashMap;
     private NonNullSupplier<BogeyRenderer> defaultRenderer = null;
     private String cycleGroup = "";
     private ParticleOptions contactParticle = null, smokeParticle = null;
@@ -35,7 +34,6 @@ public class BogeyGroupReg extends Reg {
      */
     public BogeyGroupReg(String registrationKey, String cycleGroup) {
         super(registrationKey);
-        this.regHashMap = new HashMap<>();
         this.cycleGroup = cycleGroup;
         contexts = new ArrayList<>();
     }
@@ -46,7 +44,7 @@ public class BogeyGroupReg extends Reg {
     }
 
     public BogeyGroupReg cycleGroup(String group) {
-        this.cycleGroup = cycleGroup;
+        this.cycleGroup = group;
         return this;
     }
 
@@ -60,7 +58,7 @@ public class BogeyGroupReg extends Reg {
         return this;
     }
 
-    public BogeyGroupReg bogeyWithDefaultRenderer(BogeySizes.BogeySize size, String namespace, BlockReg<? extends TrackBlock> reg) {
+    public BogeyGroupReg bogeyWithDefaultRenderer(BogeySizes.BogeySize size, String namespace, BogeyBlockReg<?> reg) {
         contexts.add(new BogeyStyleBuilderContext(size, defaultRenderer, new ResourceLocation(namespace, reg.registrationKey)));
         return this;
     }
@@ -70,7 +68,7 @@ public class BogeyGroupReg extends Reg {
         return this;
     }
 
-    public BogeyGroupReg bogey(BogeySizes.BogeySize size, Supplier<BogeyRenderer> rendererSupplier, String namespace, BlockReg<? extends TrackBlock> reg) {
+    public BogeyGroupReg bogey(BogeySizes.BogeySize size, Supplier<BogeyRenderer> rendererSupplier, String namespace, BogeyBlockReg<?> reg) {
         contexts.add(new BogeyStyleBuilderContext(size, rendererSupplier, new ResourceLocation(namespace, reg.registrationKey)));
         return this;
     }
@@ -80,7 +78,7 @@ public class BogeyGroupReg extends Reg {
         return this;
     }
 
-    public BogeyGroupReg bogey(BogeySizeReg size, Supplier<BogeyRenderer> rendererSupplier, String namespace, BlockReg<? extends TrackBlock> reg) {
+    public BogeyGroupReg bogey(BogeySizeReg size, Supplier<BogeyRenderer> rendererSupplier, String namespace, BogeyBlockReg<?> reg) {
         contexts.add(new BogeyStyleBuilderContext(size.getSize(), rendererSupplier, new ResourceLocation(namespace, reg.registrationKey)));
         return this;
     }

@@ -24,7 +24,7 @@ public class TrackMaterialReg extends Reg {
     private NonNullSupplier<NonNullSupplier<? extends TrackBlock>> blockSupplier = null;
     private ItemLike[] sleepers = null, rails = null;
     private String langKey = "";
-
+    private boolean replaceable = false;
     private TrackOffsetIdentifier
             rightOffset = (segment -> segment.scale(.965f));
     private TrackMaterial material = null;
@@ -65,6 +65,11 @@ public class TrackMaterialReg extends Reg {
 
     public TrackMaterialReg rails(ItemLike... rali) {
         this.rails = rali;
+        return this;
+    }
+
+    public TrackMaterialReg isReplaceable(boolean replaceable) {
+        this.replaceable = replaceable;
         return this;
     }
 
@@ -113,6 +118,7 @@ public class TrackMaterialReg extends Reg {
             factory.customModels(() -> tieModel, () -> leftSegModel, () -> rightSegModel);
         else
             factory.defaultModels();
+
         material = factory.build();
         KasugaLib.STACKS.cacheTrackMaterialIn(this);
         return this;

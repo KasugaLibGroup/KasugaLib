@@ -10,5 +10,7 @@ public class ExampleMain {
         ExampleTrackMaterial.invoke();
         AllExampleElements.invoke();
         ExampleTracks.invoke();
+        AllExampleBogey.invoke();
+        AllExampleElements.testRegistry.submit();
     }
 }

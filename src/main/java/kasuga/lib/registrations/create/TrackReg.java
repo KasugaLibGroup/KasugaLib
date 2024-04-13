@@ -16,11 +16,14 @@ import kasuga.lib.registrations.common.BlockReg;
 import kasuga.lib.registrations.common.CreativeTabReg;
 import kasuga.lib.registrations.registry.CreateRegistry;
 import kasuga.lib.registrations.registry.SimpleRegistry;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +61,11 @@ public class TrackReg<T extends TrackBlock> extends BlockReg<T> {
 
     public TrackReg<T> tab(CreativeTabReg tabReg) {
         this.tabSupplier = tabReg::getTab;
+        return this;
+    }
+
+    public TrackReg<T> material(Material material) {
+        super.material(material);
         return this;
     }
 
@@ -109,12 +117,12 @@ public class TrackReg<T extends TrackBlock> extends BlockReg<T> {
         }
         builder
                 .blockstate(generator.build()::generate)
-                .lang(material.langName + trackNameSuffix);
+                .lang(material.langName + trackNameSuffix)
+                .properties(BlockBehaviour.Properties::noOcclusion);
         tags.forEach(builder::tag);
         builder.onRegister(CreateRegistrate.blockModel(() -> TrackModel::new))
                 .item(TrackBlockItem::new)
-                .model((c, p) -> p.generated(c, trackItemModelLocation))
-                .build();
+                .model((c, p) -> p.generated(c, trackItemModelLocation)).build();
         entry = builder.register();
         return this;
     }
