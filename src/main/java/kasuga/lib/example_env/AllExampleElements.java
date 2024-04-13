@@ -10,8 +10,6 @@ import kasuga.lib.example_env.client.entity.renderer.WuLingRenderer;
 import kasuga.lib.example_env.entity.WuLingEntity;
 import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
-import kasuga.lib.registrations.BundledReg;
-import kasuga.lib.registrations.registry.CreateRegistry;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.client.ModelReg;
 import kasuga.lib.registrations.common.*;
@@ -21,7 +19,7 @@ import net.minecraft.world.level.material.MapColor;
 
 public class AllExampleElements {
 
-    public static final CreateRegistry testRegistry = ExampleMain.testRegistry;
+    public static final SimpleRegistry testRegistry = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
 
     public static final BlockReg<GreenAppleBlock> greenApple = new BlockReg<GreenAppleBlock>("green_apple")
             .blockType(GreenAppleBlock::new)
