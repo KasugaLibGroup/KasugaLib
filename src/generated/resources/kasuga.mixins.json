@@ -4,10 +4,10 @@
   "package": "kasuga.lib.mixins.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-
   ],
   "client": [
     "client.MixinBlockModelBinding",
+    "client.MixinBlockRenderDispatcher",
     "client.MixinDirectoryLister"
   ],
   "minVersion": "0.8"
