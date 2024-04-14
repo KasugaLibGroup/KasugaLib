@@ -40,6 +40,7 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     private RegistryObject<T> registryObject;
     private final List<TagKey<?>> tags;
     boolean registerBe = false, registerMenu = false;
+    BlockReg.BlockRendererBuilder<T> rendererBuilder;
 
     /**
      * Create a fluid block reg.
@@ -136,6 +137,11 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
         return this;
     }
 
+    public FluidBlockReg<T> withBlockRenderer(BlockReg.BlockRendererBuilder<T> builder) {
+        this.rendererBuilder = builder;
+        return this;
+    }
+
     /**
      * See {@link BlockReg#withMenu(String, IContainerFactory, MenuReg.ScreenInvoker)}
      * @param registrationKey the name of your menu.
@@ -202,6 +208,7 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
                 registry.cacheMenuIn(menuReg);
             }
         }
+        if (rendererBuilder != null) registry.cacheBlockRendererIn(this, rendererBuilder);
         return this;
     }
 

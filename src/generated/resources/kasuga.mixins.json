@@ -7,11 +7,12 @@
     "MixinStationBlockEntity"
   ],
   "client": [
+    "client.MixinBezierConnection",
     "client.MixinBlockModelBinding",
-    "client.MixinDirectoryLister",
-    "client.MixinStationBlockEntityClient",
+    "client.MixinBlockRenderDispatcher",
     "client.MixinCarriageContraptionEntityRenderer",
-    "client.MixinBezierConnection"
+    "client.MixinDirectoryLister",
+    "client.MixinStationBlockEntityClient"
   ],
   "minVersion": "0.8"
 }
