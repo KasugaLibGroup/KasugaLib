@@ -2,6 +2,7 @@ package kasuga.lib.core;
 
 import com.simibubi.create.content.trains.track.TrackMaterial;
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.base.CustomBlockRenderer;
 import kasuga.lib.core.client.animation.Constants;
 import kasuga.lib.core.events.both.EntityAttributeEvent;
 import kasuga.lib.core.events.client.PacketEvent;
@@ -15,6 +16,7 @@ import kasuga.lib.registrations.create.TrackMaterialReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.registry.FontRegistry;
 import kasuga.lib.registrations.registry.TextureRegistry;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 
@@ -28,12 +30,14 @@ public class KasugaLibStacks {
     private final TextureRegistry TEXTURES;
     private final FontRegistry FONTS;
     private final Random random = new Random();
+    private final HashMap<Block, CustomBlockRenderer> BLOCK_RENDERERS;
     private final HashMap<TrackMaterial, TrackMaterialReg> TRACK_MATERIALS;
     public KasugaLibStacks(IEventBus bus) {
         this.bus = bus;
         this.registries = new HashMap<>();
         TEXTURES = new TextureRegistry(KasugaLib.MOD_ID);
         FONTS = new FontRegistry(KasugaLib.MOD_ID);
+        BLOCK_RENDERERS = new HashMap<>();
         TRACK_MATERIALS = new HashMap<>();
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverAboutToStart);
@@ -62,6 +66,14 @@ public class KasugaLibStacks {
     public void fireTextureRegistry() {
         this.hasTextureRegistryFired = true;
         TEXTURES.onRegister();
+    }
+
+    public void cacheBlockRendererIn(Block block, CustomBlockRenderer blockRenderer) {
+        BLOCK_RENDERERS.put(block, blockRenderer);
+    }
+
+    public CustomBlockRenderer getBlockRenderer(Block block) {
+        return BLOCK_RENDERERS.getOrDefault(block, null);
     }
 
     public void cacheTrackMaterialIn(TrackMaterialReg reg) {
