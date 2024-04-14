@@ -8,7 +8,9 @@ import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Util;
 import kasuga.lib.core.client.ModelMappings;
 import kasuga.lib.core.client.render.model.CustomRenderedItemModel;
-import kasuga.lib.registrations.common.*;
+import kasuga.lib.registrations.common.BlockEntityReg;
+import kasuga.lib.registrations.common.EntityReg;
+import kasuga.lib.registrations.common.MenuReg;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -39,11 +41,10 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.function.Supplier;
 
 /**
  * SimpleRegistry is the core registry of KasugaLib provide Registration.
- * call via {@link kasuga.lib.registrations.registry.SimpleRegistry#SimpleRegistry(String, IEventBus)} with your namespace
+ * call via {@link SimpleRegistry#SimpleRegistry(String, IEventBus)} with your namespace
  * name and your mod event bus. We have provided registries for some types of game elements.
  * To use these registrations, see {@link kasuga.lib.registrations.Reg} and its subClasses.
  */
@@ -67,7 +68,6 @@ public class SimpleRegistry {
     private final ModelRegistry MODELS;
     private final HashMap<String, BlockEntityReg<?>> CACHE_OF_BLOCK_ENTITIES;
     private final HashMap<String, MenuReg<?, ?, ?>> CACHE_OF_MENUS;
-    private final HashMap<Supplier<Block>, BlockReg.BlockRendererBuilder<Block>> CACHE_OF_BLOCK_RENDERER;
     private final HashSet<EntityReg<?>> CACHE_OF_ENTITIES;
     private final HashSet<String> CUSTOM_RENDERED_ITEMS;
     private final HashSet<EntityReg<? extends LivingEntity>> CACHE_OF_LIVING_ENTITIES;
@@ -106,7 +106,6 @@ public class SimpleRegistry {
         CACHE_OF_LIVING_ENTITIES = new HashSet<>();
         modelMappings = new ModelMappings(namespace);
         CACHE_OF_ENTITIES = new HashSet<>();
-        CACHE_OF_BLOCK_RENDERER = new HashMap<>();
         TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, namespace);
     }
 
@@ -141,7 +140,7 @@ public class SimpleRegistry {
     }
 
     /**
-     * return the registry of BlockEntities. See {@link kasuga.lib.registrations.common.BlockEntityReg}
+     * return the registry of BlockEntities. See {@link BlockEntityReg}
      * @return Registry of BlockEntities.
      */
     public DeferredRegister<BlockEntityType<?>> blockEntity() {
@@ -149,7 +148,7 @@ public class SimpleRegistry {
     }
 
     /**
-     * return the registry of ContainerMenus and GUI Screens. See {@link kasuga.lib.registrations.common.MenuReg}
+     * return the registry of ContainerMenus and GUI Screens. See {@link MenuReg}
      * @return Registry of ContainerMenus.
      */
     public DeferredRegister<MenuType<?>> menus() {
@@ -157,7 +156,7 @@ public class SimpleRegistry {
     }
 
     /**
-     * return the registry of Entities. See {@link kasuga.lib.registrations.common.EntityReg}
+     * return the registry of Entities. See {@link EntityReg}
      * @return Registry of Entities.
      */
     public DeferredRegister<EntityType<?>> entity() {
@@ -358,23 +357,6 @@ public class SimpleRegistry {
         CACHE_OF_ENTITIES.add(entityReg);
     }
 
-
-
-
-    @Inner
-    public void cacheBlockRendererIn(BlockReg reg, BlockReg.BlockRendererBuilder rendererBuilder) {
-        this.CACHE_OF_BLOCK_RENDERER.put(reg::getBlock, rendererBuilder);
-    }
-
-    @Inner
-    public void cacheBlockRendererIn(FluidBlockReg reg, BlockReg.BlockRendererBuilder rendererBuilder) {
-        this.CACHE_OF_BLOCK_RENDERER.put(reg::getBlock, rendererBuilder);
-    }
-
-    public void onBlockRendererReg() {
-        KasugaLibStacks stacks = KasugaLib.STACKS;
-        CACHE_OF_BLOCK_RENDERER.forEach((a, b) -> stacks.cacheBlockRendererIn(a.get(), b.build(a).get()));
-    }
     /**
      * Don't use. This would be call via {@link kasuga.lib.core.events.client.ModelRegistryEvent}
      */

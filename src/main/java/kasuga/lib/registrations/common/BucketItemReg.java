@@ -1,21 +1,12 @@
 package kasuga.lib.registrations.common;
 
 import kasuga.lib.core.annos.Mandatory;
-import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
-import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
-import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
 

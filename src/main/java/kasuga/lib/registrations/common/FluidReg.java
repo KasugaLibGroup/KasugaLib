@@ -5,13 +5,11 @@ import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Optional;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
@@ -24,7 +22,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * Use this registration to register fluids like water of lava.

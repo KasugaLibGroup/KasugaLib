@@ -1,8 +1,8 @@
 package kasuga.lib.registrations.common;
 
 import kasuga.lib.core.annos.Mandatory;
-import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.TagReg;
+import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;

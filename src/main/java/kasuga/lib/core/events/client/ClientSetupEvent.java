@@ -1,7 +1,6 @@
 package kasuga.lib.core.events.client;
 
 import kasuga.lib.KasugaLib;
-import kasuga.lib.core.KasugaLibStacks;
 import kasuga.lib.core.util.Start;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraftforge.api.distmarker.Dist;

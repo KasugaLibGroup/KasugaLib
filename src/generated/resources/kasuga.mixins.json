@@ -4,11 +4,14 @@
   "package": "kasuga.lib.mixins.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "MixinStationBlockEntity"
   ],
   "client": [
     "client.MixinBlockModelBinding",
-    "client.MixinBlockRenderDispatcher",
-    "client.MixinDirectoryLister"
+    "client.MixinDirectoryLister",
+    "client.MixinStationBlockEntityClient",
+    "client.MixinCarriageContraptionEntityRenderer",
+    "client.MixinBezierConnection"
   ],
   "minVersion": "0.8"
 }

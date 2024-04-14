@@ -2,8 +2,8 @@ package kasuga.lib.core.events.both;
 
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.annos.Inner;
-import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.common.EntityReg;
+import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

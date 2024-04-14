@@ -2,7 +2,6 @@ package kasuga.lib.example_env.block;
 
 import kasuga.lib.example_env.AllExampleElements;
 import kasuga.lib.example_env.block_entity.GreenAppleTile;
-import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;

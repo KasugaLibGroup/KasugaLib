@@ -1,22 +1,15 @@
 package kasuga.lib.registrations.common;
 
-import kasuga.lib.core.annos.Beta;
 import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Optional;
-import kasuga.lib.core.base.CustomBlockRenderer;
 import kasuga.lib.registrations.Reg;
-import kasuga.lib.registrations.exception.RegistryElementNotPresentException;
 import kasuga.lib.registrations.registry.SimpleRegistry;
-import net.minecraft.CrashReport;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -29,7 +22,6 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 
 /**
@@ -51,7 +43,6 @@ public class BlockReg<T extends Block> extends Reg {
     private RegistryObject<T> registryObject;
     private final List<TagKey<?>> tags;
     boolean registerItem = false, registerBe = false, registerMenu = false;
-    private BlockRendererBuilder<T> rendererBuilder = null;
 
     /**
      * Use this to create a BlockReg.
@@ -119,11 +110,6 @@ public class BlockReg<T extends Block> extends Reg {
     @Optional
     public BlockReg<T> withSound(SoundType sound) {
         this.properties.sound(sound);
-        return this;
-    }
-
-    public BlockReg<T> withBlockRenderer(BlockRendererBuilder<T> builder) {
-        this.rendererBuilder = builder;
         return this;
     }
 
@@ -358,7 +344,6 @@ public class BlockReg<T extends Block> extends Reg {
                 registry.cacheMenuIn(menuReg);
             }
         }
-        if (rendererBuilder != null) registry.cacheBlockRendererIn(this, rendererBuilder);
         return this;
     }
 
@@ -405,10 +390,5 @@ public class BlockReg<T extends Block> extends Reg {
 
     public interface BlockBuilder<T extends Block> {
         T build(BlockBehaviour.Properties properties);
-    }
-
-
-    public interface BlockRendererBuilder<T extends Block> {
-        Supplier<CustomBlockRenderer> build(Supplier<T> block);
     }
 }

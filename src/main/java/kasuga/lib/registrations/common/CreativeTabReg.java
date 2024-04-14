@@ -3,7 +3,6 @@ package kasuga.lib.registrations.common;
 import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;

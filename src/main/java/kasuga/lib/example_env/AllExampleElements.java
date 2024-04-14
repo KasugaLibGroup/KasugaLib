@@ -3,23 +3,23 @@ package kasuga.lib.example_env;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.config.SimpleConfig;
 import kasuga.lib.example_env.block.GreenAppleBlock;
-import kasuga.lib.example_env.item.GreenAppleItem;
 import kasuga.lib.example_env.block_entity.GreenAppleTile;
 import kasuga.lib.example_env.client.block_entity.renderer.GreenAppleTileRenderer;
 import kasuga.lib.example_env.client.entity.renderer.WuLingRenderer;
 import kasuga.lib.example_env.entity.WuLingEntity;
+import kasuga.lib.example_env.item.GreenAppleItem;
 import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
-import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.client.ModelReg;
 import kasuga.lib.registrations.common.*;
+import kasuga.lib.registrations.registry.CreateRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 
 public class AllExampleElements {
 
-    public static final SimpleRegistry testRegistry = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
+    public static final CreateRegistry testRegistry = ExampleMain.testRegistry;
 
     public static final BlockReg<GreenAppleBlock> greenApple = new BlockReg<GreenAppleBlock>("green_apple")
             .blockType(GreenAppleBlock::new)

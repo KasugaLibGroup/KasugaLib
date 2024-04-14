@@ -5,21 +5,16 @@ import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Optional;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.network.IContainerFactory;
@@ -45,7 +40,6 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     private RegistryObject<T> registryObject;
     private final List<TagKey<?>> tags;
     boolean registerBe = false, registerMenu = false;
-    BlockReg.BlockRendererBuilder<T> rendererBuilder;
 
     /**
      * Create a fluid block reg.
@@ -142,11 +136,6 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
         return this;
     }
 
-    public FluidBlockReg<T> withBlockRenderer(BlockReg.BlockRendererBuilder<T> builder) {
-        this.rendererBuilder = builder;
-        return this;
-    }
-
     /**
      * See {@link BlockReg#withMenu(String, IContainerFactory, MenuReg.ScreenInvoker)}
      * @param registrationKey the name of your menu.
@@ -213,7 +202,6 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
                 registry.cacheMenuIn(menuReg);
             }
         }
-        if (rendererBuilder != null) registry.cacheBlockRendererIn(this, rendererBuilder);
         return this;
     }
 

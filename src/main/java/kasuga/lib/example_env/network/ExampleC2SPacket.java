@@ -1,7 +1,6 @@
 package kasuga.lib.example_env.network;
 
 import kasuga.lib.core.network.C2SPacket;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 

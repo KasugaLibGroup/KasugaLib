@@ -9,7 +9,6 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
-import java.util.Objects;
 
 /**
  * This registration is used for poison effect registration. You could register your custom poison effect with it.
