@@ -1,9 +1,7 @@
 package kasuga.lib.example_env;
 
 import com.jozufozu.flywheel.core.PartialModel;
-import com.simibubi.create.Create;
-import kasuga.lib.example_env.block.track.SimpleTrackBlock;
-import kasuga.lib.example_env.block.track.StandardTrackBlock;
+import kasuga.lib.core.create.SimpleTrackBlock;
 import kasuga.lib.registrations.create.TrackMaterialReg;
 import kasuga.lib.registrations.registry.CreateRegistry;
 import net.minecraft.resources.ResourceLocation;

@@ -50,13 +50,13 @@ public class PK209PRenderer extends BogeyRenderer {
                         : Direction.NORTH;
 
         boolean inInstancedContraption = vb == null;
-        // 转向架架体
+
         BogeyModelData main = getTransform(PK209P_MAIN, ms, inInstancedContraption);
-        // 发电轮对
+
         BogeyModelData wheel = getTransform(PK209P_WHEEL, ms, inInstancedContraption);
-        // 普通轮对
+
         BogeyModelData wheel2 = getTransform(PK209P_WHEEL2, ms, inInstancedContraption);
-        // 发电机小轮
+
         BogeyModelData motorWheel = getTransform(PK209P_MOTORWHEEL, ms, inInstancedContraption);
 
         if (direction == Direction.SOUTH || direction == Direction.EAST) {

@@ -19,16 +19,7 @@ public class CW2BogeyRenderer extends BogeyRenderer {
     }
 
     /**
-     * 方法变更
-     *
-     * <p>1. 传参增加一个 CarriageBogey 参数
-     *
-     * <p>2. createModelInstances() -> createModelInstance()
-     *
-     * <p>
-     *
-     * @param materialManager The material manager
-     * @param carriageBogey The bogey to create data for
+     * createModelInstances() -> createModelInstance()
      */
     public static final PartialModel CW2_FRAME = new PartialModel(asBlockModelResource("bogey/cw2/bogey_cw2_temple"));
     public static final PartialModel CW2_WHEEL = new PartialModel(asBlockModelResource("bogey/cw2/cw2_wheel"));
@@ -46,16 +37,6 @@ public class CW2BogeyRenderer extends BogeyRenderer {
     }
 
     /**
-     * 方法变更
-     *
-     * <p>1. Transform -> BogeyModelData
-     *
-     * <p>2. getTransformPartialModel -> getTransForm
-     *
-     * <p>3. finalize() 已经被弃用 -> 调用 BogeyModelData.render()
-     *
-     * <p>
-     *
      * @param bogeyData Custom data stored on the bogey able to be used for rendering
      * @param wheelAngle The angle of the wheel
      * @param ms The posestack to render to

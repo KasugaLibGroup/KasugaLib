@@ -22,6 +22,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 public class KasugaLibStacks {
     private final HashMap<String, SimpleRegistry> registries;

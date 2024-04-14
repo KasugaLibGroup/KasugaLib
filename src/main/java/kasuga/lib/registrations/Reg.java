@@ -27,6 +27,11 @@ public abstract class Reg {
      */
     @Mandatory
     public abstract Reg submit(SimpleRegistry registry);
+
+    /**
+     * The identifier of your reg.
+     * @return reg identifier.
+     */
     public abstract String getIdentifier();
     public String toString() {
         return getIdentifier() + "." + registrationKey;

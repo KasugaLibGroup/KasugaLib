@@ -30,16 +30,11 @@ public abstract class MixinStationBlockEntityClient {
                 CompoundTag tag = ((AbstractBogeyBlockEntity) entity).getBogeyData();
                 Direction d = getAssemblyDirection().getOpposite();
 
-                // 这里改成 true 就可以返回正确的朝向数据，如果为 false 则不改变从 Carriage 返回的值
-                // 以下为对应方向的转置顺序, 前者为从Carriage中拿到的方块，后者为正确朝向
                 // North -> West
                 // South -> East
                 // West -> South
                 // East -> North
 
-                if(false) {
-                    d = Direction.fromYRot(d.toYRot() - 90);
-                }
                 NBTHelper.writeEnum(tag, BogeyDataConstants.BOGEY_ASSEMBLY_DIRECTION_KEY, d);
                 ((AbstractBogeyBlockEntity) entity).setBogeyData(tag);
             }

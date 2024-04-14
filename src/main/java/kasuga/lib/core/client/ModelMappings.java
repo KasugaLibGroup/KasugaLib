@@ -1,5 +1,6 @@
 package kasuga.lib.core.client;
 
+import kasuga.lib.KasugaLib;
 import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.util.Resources;
 import net.minecraft.client.renderer.block.model.BlockModel;
@@ -36,10 +37,12 @@ public class ModelMappings {
 
     public void map() throws IOException {
         Map<String, Resource> resources = Resources.getFullPathResources(new ResourceLocation(namespace, IDENTIFIER), false);
+        KasugaLib.MAIN_LOGGER.error("mapping: " + namespace);
         for(String name : resources.keySet()) {
             if(!name.endsWith(".json") || !name.startsWith(IDENTIFIER)) continue;
             String plainName = IDENTIFIER + name.substring(name.lastIndexOf("/"));
             map.put(new ResourceLocation(namespace, plainName), new ResourceLocation(namespace, name));
+            KasugaLib.MAIN_LOGGER.error("mapping block:" + name);
         }
         map_finished = true;
     }

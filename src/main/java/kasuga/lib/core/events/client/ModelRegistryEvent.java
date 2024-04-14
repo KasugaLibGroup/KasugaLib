@@ -65,6 +65,7 @@ public class ModelRegistryEvent {
             registry.onCustomItemRendererReg(models);
             registry.model().clearUnbaked();
             registry.onEntityRendererReg();
+            registry.onBlockRendererReg();
         }
     }
 }

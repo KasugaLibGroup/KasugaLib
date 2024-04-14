@@ -9,10 +9,7 @@ public class CreateRegistry extends SimpleRegistry {
      * This constructor is used for create a new KasugaLib registration.
      *
      * @param namespace your mod namespace name
-     * @param bus       your mod namespace eventbus. For more info see
-     *                  {@link FMLJavaModLoadingContext#get()}
-     *                  and
-     *                  {@link FMLJavaModLoadingContext#getModEventBus()}
+     * @param bus       mod bus
      */
     public CreateRegistry(String namespace, IEventBus bus) {
         super(namespace, bus);

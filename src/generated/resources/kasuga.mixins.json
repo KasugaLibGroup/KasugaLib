@@ -1,6 +1,6 @@
 {
   "required": true,
-  "priority": 65535,
+  "priority": 1200,
   "package": "kasuga.lib.mixins.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
@@ -10,7 +10,8 @@
     "client.MixinBlockModelBinding",
     "client.MixinBezierConnection",
     "client.MixinCarriageContraptionEntityRenderer",
-    "client.MixinStationBlockEntityClient"
+    "client.MixinStationBlockEntityClient",
+    "client.MixinBlockRenderDispatcher"
   ],
   "minVersion": "0.8"
 }

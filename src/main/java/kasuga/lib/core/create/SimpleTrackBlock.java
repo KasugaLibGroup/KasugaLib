@@ -1,9 +1,8 @@
-package kasuga.lib.example_env.block.track;
+package kasuga.lib.core.create;
 
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.content.schematics.requirement.ISpecialBlockItemRequirement;
 import com.simibubi.create.content.trains.bogey.AbstractBogeyBlock;
-import com.simibubi.create.content.trains.bogey.BogeyRenderer;
 import com.simibubi.create.content.trains.track.*;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.block.ProperWaterloggedBlock;
