@@ -4,6 +4,7 @@ import kasuga.lib.core.annos.Beta;
 import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Optional;
+import kasuga.lib.core.base.CustomBlockRenderer;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.exception.RegistryElementNotPresentException;
 import kasuga.lib.registrations.registry.SimpleRegistry;
@@ -28,6 +29,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 
 /**
@@ -49,6 +51,7 @@ public class BlockReg<T extends Block> extends Reg {
     private RegistryObject<T> registryObject;
     private final List<TagKey<?>> tags;
     boolean registerItem = false, registerBe = false, registerMenu = false;
+    private BlockRendererBuilder<T> rendererBuilder = null;
 
     /**
      * Use this to create a BlockReg.
@@ -116,6 +119,11 @@ public class BlockReg<T extends Block> extends Reg {
     @Optional
     public BlockReg<T> withSound(SoundType sound) {
         this.properties.sound(sound);
+        return this;
+    }
+
+    public BlockReg<T> withBlockRenderer(BlockRendererBuilder<T> builder) {
+        this.rendererBuilder = builder;
         return this;
     }
 
@@ -350,6 +358,7 @@ public class BlockReg<T extends Block> extends Reg {
                 registry.cacheMenuIn(menuReg);
             }
         }
+        if (rendererBuilder != null) registry.cacheBlockRendererIn(this, rendererBuilder);
         return this;
     }
 
@@ -396,5 +405,10 @@ public class BlockReg<T extends Block> extends Reg {
 
     public interface BlockBuilder<T extends Block> {
         T build(BlockBehaviour.Properties properties);
+    }
+
+
+    public interface BlockRendererBuilder<T extends Block> {
+        Supplier<CustomBlockRenderer> build(Supplier<T> block);
     }
 }
