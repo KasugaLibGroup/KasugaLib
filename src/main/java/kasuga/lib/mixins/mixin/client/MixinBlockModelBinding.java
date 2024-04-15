@@ -16,7 +16,6 @@ public abstract class MixinBlockModelBinding {
 
     @Redirect(method = "loadModel", at = @At(value = "NEW", target = "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/resources/ResourceLocation;"))
     public ResourceLocation resourceLocation(String pNamespace, String pPath) {
-        KasugaLib.MAIN_LOGGER.error("logging bakery");
         SimpleRegistry registry = KasugaLib.STACKS.getRegistries().getOrDefault(pNamespace, null);
         if(registry == null) return new ResourceLocation(pNamespace, pPath);
         ModelMappings mappings = registry.modelMappings();
