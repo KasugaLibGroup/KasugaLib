@@ -15,12 +15,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = CarriageContraptionEntityRenderer.class, remap = false)
+@Mixin(CarriageContraptionEntityRenderer.class)
 public class MixinCarriageContraptionEntityRenderer {
 
     @Redirect(method = "render(Lcom/simibubi/create/content/trains/entity/CarriageContraptionEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
-            at = @At(value = "INVOKE", target = "Lcom/simibubi/create/content/trains/entity/CarriageContraptionEntity;getPosition(F)Lnet/minecraft/world/phys/Vec3;"),
-            remap = false)
+            at = @At(value = "INVOKE", target = "Lcom/simibubi/create/content/trains/entity/CarriageContraptionEntity;getPosition(F)Lnet/minecraft/world/phys/Vec3;"), remap = false)
     private Vec3 doGetPosition(CarriageContraptionEntity instance, float partial_ticks){
         Carriage carriage = instance.getCarriage();
 

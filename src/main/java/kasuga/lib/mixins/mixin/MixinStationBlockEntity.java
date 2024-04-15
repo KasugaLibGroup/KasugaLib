@@ -38,17 +38,9 @@ import java.util.Map;
 @Mixin(value = StationBlockEntity.class, remap = false)
 public abstract class MixinStationBlockEntity extends BlockEntity {
 
-    @Shadow(remap = false) abstract Direction getAssemblyDirection();
-
     @Shadow(remap = false)
-    @Nullable
-    public abstract GlobalStation getStation();
-    @Shadow public abstract void invalidateCaps();
-
-    @Shadow public LerpedFloat flag;
-    @Unique private static AbstractBogeyBlockEntity oldBe = null;
-    @Unique private static Player player = null;
-    private static InteractionHand hand = null;
+    public abstract Direction getAssemblyDirection();
+    @Shadow(remap = false) public abstract void invalidateCaps();
 
     private MixinStationBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);

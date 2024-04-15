@@ -11,10 +11,11 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(value = BezierConnection.class)
+@Mixin(BezierConnection.class)
 public class MixinBezierConnection {
 
     @Shadow(remap = false)
+    protected
     TrackMaterial trackMaterial;
     @Redirect(method = "getBakedGirders", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;scale(D)Lnet/minecraft/world/phys/Vec3;"))
     public Vec3 doScale(Vec3 instance, double factor) {

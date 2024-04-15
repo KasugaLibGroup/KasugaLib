@@ -40,7 +40,7 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
-            arg '-mixin.config=kasuga.mixins.json'
+            arg '-mixin.config=kasuga_lib.mixins.json'
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
             // "SCAN": For mods scan.
@@ -66,7 +66,7 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
-            arg '-mixin.config=kasuga.mixins.json'
+            arg '-mixin.config=kasuga_lib.mixins.json'
 
             property 'forge.logging.markers', 'REGISTRIES'
 
@@ -88,7 +88,7 @@ minecraft {
         // The gametest system is also enabled by default for other run configs under the /test command.
         gameTestServer {
             workingDirectory project.file('run')
-            arg '-mixin.config=kasuga.mixins.json'
+            arg '-mixin.config=kasuga_lib.mixins.json'
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
             // "SCAN": For mods scan.
@@ -114,7 +114,7 @@ minecraft {
         }
 
         data {
-            arg '-mixin.config=kasuga.mixins.json'
+            arg '-mixin.config=kasuga_lib.mixins.json'
             workingDirectory project.file('run')
 
             property 'forge.logging.markers', 'REGISTRIES'
@@ -232,7 +232,7 @@ jar {
                 "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "MegumiKasuga",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                'MixinConfigs': 'kasuga.mixins.json'
+                'MixinConfigs': 'kasuga_lib.mixins.json'
         ])
     }
 }
@@ -261,7 +261,7 @@ publishing {
             artifact jar
             artifact sourcesJar
             // artifact javadocJar
-            groupId = "kasuga_lib_group"
+            groupId = "kasuga.lib"
             artifactId = "kasuga_lib"
             version = "0.13"
 
@@ -288,6 +288,6 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 mixin {
-    //add sourceSets.main, 'mixins.example.refmap.json'
-    config 'kasuga.mixins.json'
+    // add sourceSets.main, 'mixins.kasuga_lib.refmap.json'
+    config 'kasuga_lib.mixins.json'
 }
