@@ -44,4 +44,8 @@ public class DataDrivenComponent extends DataDrivenWidget {
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
         f.draw(pPoseStack, component, this.x, this.y, font.getFont().getColor().getValue());
     }
+
+    public void setComponentType(ComponentType type) {
+        this.type = type;
+    }
 }
