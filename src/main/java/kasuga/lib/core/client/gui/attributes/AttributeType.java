@@ -28,6 +28,9 @@ public class AttributeType<T> {
     @SuppressWarnings("unchecked")
     public Attribute<T> castGet(HashMap<AttributeType<?>,Attribute<?>> map){
         Attribute<?> attribute = map.get(this);
+        if(attribute.getType() != this){
+            throw new IllegalStateException("Invalid attribute type: "+attribute.getType() + ",expected: "+this);
+        }
         return (Attribute<T>) attribute;
     }
 }

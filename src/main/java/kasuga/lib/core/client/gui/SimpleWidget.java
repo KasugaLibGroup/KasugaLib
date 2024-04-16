@@ -50,10 +50,17 @@ public abstract class SimpleWidget extends AbstractWidget implements IBackground
     }
 
     public void setAttribute(AttributeType<?> attributeType,Attribute<?> attribute){
+        if(attribute.getType() != attributeType){
+            throw new IllegalStateException("Invalid attribute type: "+attribute.getType() + ",expected: "+this);
+        }
         if(attribute.canApplyTo(this)){
             this.attributes.put(attributeType,attribute);
             attribute.apply(this);
         }
+    }
+
+    public void setAttributes(Attribute<?> attribute){
+        setAttribute(attribute.getType(),attribute);
     }
 
     public void setBackground(SimpleTexture texture) {
