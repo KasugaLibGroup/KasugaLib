@@ -25,6 +25,9 @@ version = "${mod_version}"
 group = 'kasuga.lib' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'kasuga_lib'
 
+// 通过这个来设置输出的jar是sdk jar还是实例jar
+isSdk = false;
+
 println(project.name)
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
@@ -237,21 +240,22 @@ jar {
     }
 }
 
+javadoc {
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
 // Example configuration to allow publishing using the maven-publish plugin
 // This is the preferred method to reobfuscate your jar file
 // 当需要发布正式版本的时候用下面这个，给开发用的版本则不要用这个，task 跑 jarJar
-jar.finalizedBy('reobfJar')
+if (!isSdk) {
+    jar.finalizedBy('reobfJar')
+}
 
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 // publish.dependsOn('reobfJar')
-tasks.named("jar").configure {
-    archiveClassifier = ''
 
-    // finalizedBy 'reobfJar'
-}
 
 java {
-    // withJavadocJar()
+    withJavadocJar()
     withSourcesJar()
 }
 
@@ -259,7 +263,7 @@ publishing {
     publications {
         register('mavenJava', MavenPublication) {
             artifact jar
-            artifact sourcesJar
+            artifact javadocJar
             // artifact javadocJar
             groupId = "kasuga.lib"
             artifactId = "kasuga_lib"
@@ -271,14 +275,6 @@ publishing {
     repositories {
         maven {
             url "file://${project.projectDir}/mcmodsrepo"
-        }
-        maven {
-            name "github"
-            url "https://maven.pkg.github.com/MegumiKasuga/kasuga-maven/"
-            credentials {
-                username = USERNAME
-                password = TOKEN
-            }
         }
     }
 }
