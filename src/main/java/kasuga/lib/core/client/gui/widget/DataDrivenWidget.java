@@ -16,6 +16,10 @@ public class DataDrivenWidget extends SimpleWidget {
         super(width, height, type, displayType);
     }
 
+    public DataDrivenWidget(){
+        super();
+    }
+
     @Override
     public void init() {}
 

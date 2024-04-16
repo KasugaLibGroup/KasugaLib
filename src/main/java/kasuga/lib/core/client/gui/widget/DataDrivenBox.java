@@ -14,6 +14,10 @@ public class DataDrivenBox extends DataDrivenWidget implements IBoxWidget {
         super(pX, pY, pWidth, pHeight, type, displayType);
         widgets = new ArrayList<>();
     }
+    public DataDrivenBox(){
+        super();
+        widgets = new ArrayList<>();
+    }
 
     @Override
     public List<SimpleWidget> getChildren() {
