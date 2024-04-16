@@ -1,5 +1,6 @@
 package kasuga.lib.core.client;
 
+import kasuga.lib.KasugaLib;
 import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.util.Resources;
 import net.minecraft.client.renderer.block.model.BlockModel;
