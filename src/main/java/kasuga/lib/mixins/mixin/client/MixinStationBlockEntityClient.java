@@ -19,7 +19,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(StationBlockEntity.class)
 public abstract class MixinStationBlockEntityClient {
 
-    @Shadow(remap = false) abstract Direction getAssemblyDirection();
+    @Shadow(remap = false)
+    public abstract Direction getAssemblyDirection();
 
     @Redirect(method = "refreshAssemblyInfo", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"))
     public BlockState doGetBlockState(Level instance, BlockPos pos){

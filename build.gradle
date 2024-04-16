@@ -67,7 +67,7 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
-
+            arg '-mixin.config=kasuga.mixins.json'
             property 'forge.logging.markers', 'REGISTRIES'
 
             property 'forge.logging.console.level', 'debug'
@@ -88,7 +88,7 @@ minecraft {
         // The gametest system is also enabled by default for other run configs under the /test command.
         gameTestServer {
             workingDirectory project.file('run')
-
+            arg '-mixin.config=kasuga.mixins.json'
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
             // "SCAN": For mods scan.
@@ -115,7 +115,7 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
-
+            arg '-mixin.config=kasuga.mixins.json'
             property 'forge.logging.markers', 'REGISTRIES'
 
             property 'forge.logging.console.level', 'debug'
