@@ -7,7 +7,7 @@ import net.minecraftforge.common.util.NonNullConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public abstract class IntegerAttribute implements Attribute<Integer> {
+public abstract class IntegerAttribute extends Attribute<Integer> {
     int value = 0;
 
     IntegerAttribute(int value){
@@ -25,6 +25,11 @@ public abstract class IntegerAttribute implements Attribute<Integer> {
     @Override
     public Integer getValue() {
         return value;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
     }
 
     public static AttributeType<Integer> of(NonNullBiConsumer<SimpleWidget,Integer> consumer){

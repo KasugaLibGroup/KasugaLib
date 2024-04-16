@@ -6,7 +6,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public abstract class SimpleAttribute<T> implements Attribute<T> {
+public abstract class SimpleAttribute<T> extends Attribute<T> {
     T value;
 
     SimpleAttribute(T value){
@@ -18,6 +18,10 @@ public abstract class SimpleAttribute<T> implements Attribute<T> {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return String.valueOf(value);
+    }
 
     public static <T> AttributeType<T> of(Function<String,T> parse, Function<T,String> toString, BiConsumer<SimpleWidget,T> consumer){
         return of(parse, toString, consumer, (w,t)->true);

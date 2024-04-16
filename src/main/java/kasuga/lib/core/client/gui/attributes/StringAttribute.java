@@ -9,7 +9,7 @@ import net.minecraftforge.common.util.NonNullSupplier;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public abstract class StringAttribute implements Attribute<String> {
+public abstract class StringAttribute extends Attribute<String> {
     String value = "";
 
     StringAttribute(String value){
@@ -19,6 +19,11 @@ public abstract class StringAttribute implements Attribute<String> {
     @Override
     public String getValue() {
         return value;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
     }
 
     public static AttributeType<String> of(NonNullBiConsumer<SimpleWidget,String> consumer){

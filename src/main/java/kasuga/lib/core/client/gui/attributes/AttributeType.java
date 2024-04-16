@@ -18,7 +18,7 @@ public class AttributeType<T> {
     }
 
     public Attribute<T> parse(String string){
-        return parser.apply(string);
+        return parser.apply(string).setType(this);
     }
 
     public static <T> AttributeType<T> of(NonNullFunction<T,Attribute<T>> create,NonNullFunction<String,Attribute<T>> parse){
