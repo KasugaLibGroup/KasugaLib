@@ -4,19 +4,19 @@ package kasuga.lib.core.client.gui.attributes;
 import kasuga.lib.core.client.gui.SimpleWidget;
 
 public abstract class Attribute<T> {
-    abstract void apply(SimpleWidget widget);
-    abstract boolean canApplyTo(SimpleWidget widget);
-    abstract T getValue();
-    abstract public String toString();
+    public abstract void apply(SimpleWidget widget);
+    public abstract boolean canApplyTo(SimpleWidget widget);
+    public abstract T getValue();
+    public abstract String toString();
 
     AttributeType<T> type;
 
-    Attribute<T> setType(AttributeType<T> tAttributeType){
+    public Attribute<T> setType(AttributeType<T> tAttributeType){
         this.type = tAttributeType;
         return this;
     }
 
-    AttributeType<T> getType(){
+    public AttributeType<T> getType(){
         return type;
     }
 }
