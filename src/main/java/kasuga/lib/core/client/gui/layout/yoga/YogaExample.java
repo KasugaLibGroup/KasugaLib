@@ -1,4 +1,4 @@
-package kasuga.lib.core;
+package kasuga.lib.core.client.gui.layout.yoga;
 
 import kasuga.lib.core.client.gui.layout.yoga.YogaMeasureFunction;
 import kasuga.lib.core.client.gui.layout.yoga.YogaMeasureOutput;
