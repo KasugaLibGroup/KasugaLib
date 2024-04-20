@@ -3,6 +3,7 @@ package kasuga.lib;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import kasuga.lib.core.KasugaLibStacks;
+import kasuga.lib.core.client.gui.layout.yoga.YogaFileLocator;
 import kasuga.lib.example_env.AllExampleElements;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.sensing.Sensor;
@@ -29,6 +30,7 @@ public class KasugaLib {
     public KasugaLib() {
         EVENTS.register(this);
         AllExampleElements.invoke();
+        YogaFileLocator.configureLWJGLPath();
     }
 
     public static Logger createLogger(String name) {
