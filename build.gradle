@@ -16,10 +16,16 @@ buildscript {
 plugins {
     id 'eclipse'
     id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '7.1.+'
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'org.spongepowered.mixin'
+
+configurations {
+    shadedLib
+    implementation.extendsFrom shadedLib
+}
 
 version = "${mod_version}"
 group = 'kasuga.lib' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -198,8 +204,30 @@ dependencies {
     testAnnotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
 
     // implementation files('libs/Mixed-Arithmetic-Logic-Interpreter-1.0.0.jar')
+
+    minecraftLibrary ('org.lwjgl:lwjgl-yoga:3.3.1') {
+        exclude group: 'org.lwjgl',module: 'lwjgl'
+    };
+    jarJar(group: "org.lwjgl", name: "lwjgl-yoga", version: "[3.3.1, 4.0.0)"){
+        exclude group: 'org.lwjgl',module: 'lwjgl'
+    };
+
+    minecraftLibrary ('org.lwjgl:lwjgl-yoga:3.3.1-natives-windows'){
+        exclude group: 'org.lwjgl',module: 'lwjgl'
+    };
+    jarJar ('org.lwjgl:lwjgl-yoga:3.3.1-natives-windows'){
+        exclude group: 'org.lwjgl',module: 'lwjgl'
+    };
+
     minecraftLibrary "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.0"
     jarJar(group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)")
+
+    shadedLib "org.graalvm.polyglot:polyglot:23.1.0";
+    // shadedLib("org.graalvm.polyglot:js-community:23.1.0");
+    implementation("org.graalvm.sdk:graal-sdk:22.0.2");
+    shadedLib("org.graalvm.sdk:graal-sdk:22.0.2")
+    shadedLib("org.graalvm.js:js:22.3.2")
+    jarJar("org.lwjgl:lwjgl-yoga:3.3.1")
     // testImplementation "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.0"
     // clientAnnotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
     // apiAnnotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
@@ -218,6 +246,7 @@ dependencies {
 
 // Example for how to get properties into the manifest for reading at runtime.
 jar {
+    archiveClassifier = 'slim'
     manifest {
         attributes([
                 "Specification-Title"     : "kasuga_lib",
@@ -237,6 +266,22 @@ jar {
 jar.finalizedBy('reobfJar')
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 // publish.dependsOn('reobfJar')
+
+shadowJar{
+    mergeServiceFiles() // To fix graal issue: https://github.com/oracle/graaljs/issues/125
+    configurations = [project.configurations.shadedLib]
+    archiveClassifier.set('');
+    relocate 'org.graalvm', 'kasuga.lib.modules.org.graalvm'
+    relocate 'com.oracle', 'kasuga.lib.modules.com.oracle'
+    relocate 'com.ibm', 'kasuga.lib.modules.com.ibm'
+    finalizedBy 'reobfShadowJar'
+}
+
+assemble.dependsOn shadowJar
+
+reobf{
+    shadowJar {}
+}
 
 publishing {
     publications {
