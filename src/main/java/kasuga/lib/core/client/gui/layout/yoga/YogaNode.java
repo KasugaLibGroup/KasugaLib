@@ -1,12 +1,14 @@
 package kasuga.lib.core.client.gui.layout.yoga;
 
+import org.lwjgl.util.yoga.YGNode;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.lwjgl.util.yoga.Yoga.*;
 
 public class YogaNode implements AutoCloseable {
-    private final long pointer;
+    private long pointer;
 
     private final List<YogaNode> children = new ArrayList<>(4);
 
@@ -300,8 +302,29 @@ public class YogaNode implements AutoCloseable {
         return YGNodeLayoutGetHeight(pointer);
     }
 
+    public void setNodeType(YogaNodeType type) {
+        YGNodeSetNodeType(pointer, type.getValue());
+    }
+
+    public boolean hasNewLayout(){
+        return YGNodeGetHasNewLayout(pointer);
+    }
+
+    public void visited(){
+        YGNodeSetHasNewLayout(pointer,false);
+    }
+
+    public void free() {
+        System.out.println("[GC] Yoga Node Free");
+        if (pointer != 0) {
+            long nativePointer = pointer;
+            pointer = 0;
+            YGNodeFree(nativePointer);
+        }
+    }
+
     @Override
     public void close() throws Exception {
-        YGNodeFree(pointer);
+        free();
     }
 }
