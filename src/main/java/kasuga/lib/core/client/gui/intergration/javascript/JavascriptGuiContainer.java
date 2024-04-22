@@ -78,4 +78,11 @@ public class JavascriptGuiContainer {
     public Node getRoot() {
         return root;
     }
+
+    public void close() {
+        for (JavascriptGuiElement attachedNode : attachedNodes) {
+            attachedNode.getNode().close();
+        }
+        attachedNodes.clear();
+    }
 }

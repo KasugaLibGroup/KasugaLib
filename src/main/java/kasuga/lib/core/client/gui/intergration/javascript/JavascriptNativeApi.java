@@ -63,5 +63,9 @@ public class JavascriptNativeApi {
         KasugaTimer.CLIENT.unregister(x);
     }
 
-
+    public void close(){
+        for (Integer tracedScheduler : this.tracedSchedulers) {
+            KasugaTimer.CLIENT.unregister(tracedScheduler);
+        }
+    }
 }

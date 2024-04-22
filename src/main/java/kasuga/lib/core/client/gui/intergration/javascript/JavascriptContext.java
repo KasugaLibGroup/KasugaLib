@@ -32,6 +32,7 @@ public class JavascriptContext {
     }
 
     public void close(){
+        this.container.close();
         this.graalContext.close();
     }
 }
