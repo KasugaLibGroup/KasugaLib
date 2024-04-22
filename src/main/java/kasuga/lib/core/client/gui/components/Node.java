@@ -6,7 +6,6 @@ import kasuga.lib.core.client.gui.layout.yoga.YogaNode;
 import kasuga.lib.core.client.gui.style.StyleList;
 import kasuga.lib.core.client.render.texture.SimpleTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,7 @@ public class Node implements GuiComponent{
     StyleList styles = new StyleList();
     boolean isClosed = false;
 
-    Node(){
+    public Node(){
         locatorNode = YogaNode.create();
         children = new ArrayList<>();
         YogaMeasureFunction measureFunction = measure();
@@ -110,7 +109,7 @@ public class Node implements GuiComponent{
     public static SimpleTexture TEST_TEXTURE = new SimpleTexture(new ResourceLocation("kasuga_lib","textures/gui/pixel.png"),32,32);;
 
     public void render(RenderContext context){
-        // TEST_TEXTURE.render((int)positionCache.x,(int)positionCache.y,(int)positionCache.width,(int)positionCache.height);
+        TEST_TEXTURE.render((int)positionCache.x,(int)positionCache.y,(int)positionCache.width,(int)positionCache.height);
     }
 
     public StyleList style(){

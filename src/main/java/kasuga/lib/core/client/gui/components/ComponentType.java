@@ -2,8 +2,6 @@ package kasuga.lib.core.client.gui.components;
 
 import com.google.gson.JsonObject;
 
-import java.util.Map;
-
-public class View extends DocumentNode {
-
+public interface ComponentType<T extends Node> {
+    T create(JsonObject attributes);
 }
