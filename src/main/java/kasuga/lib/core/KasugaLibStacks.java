@@ -3,6 +3,7 @@ package kasuga.lib.core;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.animation.Constants;
 import kasuga.lib.core.events.both.EntityAttributeEvent;
+import kasuga.lib.core.events.both.TimerEvent;
 import kasuga.lib.core.events.client.PacketEvent;
 import kasuga.lib.core.events.client.ClientSetupEvent;
 import kasuga.lib.core.events.client.ModelRegistryEvent;
@@ -35,6 +36,7 @@ public class KasugaLibStacks {
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverAboutToStart);
         MinecraftForge.EVENT_BUS.addListener(PacketEvent::onClientPayloadHandleEvent);
         MinecraftForge.EVENT_BUS.addListener(PacketEvent::onServerPayloadHandleEvent);
+        MinecraftForge.EVENT_BUS.addListener(TimerEvent::onClientSideTick);
         MinecraftForge.EVENT_BUS.addListener(Constants::onClientTick);
         MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStart);
         MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStop);
