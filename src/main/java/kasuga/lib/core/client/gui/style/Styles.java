@@ -3,6 +3,9 @@ package kasuga.lib.core.client.gui.style;
 import kasuga.lib.core.client.gui.layout.yoga.YogaEdge;
 import kasuga.lib.core.client.gui.style.layout.PositionStyle;
 import kasuga.lib.core.client.gui.style.layout.SizeStyle;
+import kasuga.lib.core.client.gui.style.rendering.BackgroundImageStyle;
+import kasuga.lib.core.client.gui.style.rendering.BackgroundUVStyle;
+import kasuga.lib.core.client.gui.style.rendering.SimpleStyleType;
 
 public class Styles {
     public static PositionStyle.PositionStyleType TOP =
@@ -26,6 +29,12 @@ public class Styles {
                     case PERCENTAGE -> n.getLocatorNode().setHeightPercent(v.getFirst());
                 }
             }));
+
+    public static SimpleStyleType<BackgroundImageStyle> BACKGROUND_IMAGE =
+            StyleRegistry.register("backgroundImage",SimpleStyleType.of(BackgroundImageStyle::new, BackgroundImageStyle.EMPTY));
+
+    public static SimpleStyleType<BackgroundUVStyle> BACKGROUND_UV =
+            StyleRegistry.register("backgroundUV",SimpleStyleType.of(BackgroundUVStyle::new,BackgroundUVStyle.EMPTY));
 
     public static void init(){
 

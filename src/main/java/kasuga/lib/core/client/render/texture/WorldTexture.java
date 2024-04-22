@@ -69,6 +69,10 @@ public class WorldTexture extends SimpleTexture {
         return new WorldTexture(location, uOffset + left, vOffset + up, uWidth - right - left, vHeight - down - up, color.getRGB(), color.getA());
     }
 
+    public WorldTexture cutSize(int left,int up,int width,int height){
+        return new WorldTexture(location, uOffset + left, vOffset+up, width,height,color.getRGB(),color.getA());
+    }
+
     public WorldTexture flipY() {
         return new WorldTexture(location, uOffset + uWidth, vOffset, - uWidth, vHeight, color.getRGB(), color.getA());
     }
@@ -132,6 +136,12 @@ public class WorldTexture extends SimpleTexture {
     public RenderType getCachedType() {
         return cachedType;
     }
+
+    @Override
+    public WorldTexture withColor(int color,float alpha){
+        return new WorldTexture(location,uOffset,vOffset,uWidth,vHeight,color,alpha);
+    }
+
 
     public void turnToPlayer(@Nullable Player player, Vec3 position) {
         this.rotateY((float) RendererUtil.getVecHorizontalAngles(position, player == null ? position : player.getEyePosition()));

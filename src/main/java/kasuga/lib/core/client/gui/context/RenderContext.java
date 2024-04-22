@@ -106,5 +106,13 @@ public class RenderContext {
     public void setMouseContext(MouseContext mouse) {
         this.mouse = mouse;
     }
+
+    public RenderContextType getContextType() {
+        return contextType;
+    }
+
+    public int getLight() {
+        return packedLight;
+    }
 }
 

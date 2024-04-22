@@ -3,6 +3,7 @@ package kasuga.lib.core.client.gui.components;
 import kasuga.lib.core.client.gui.context.RenderContext;
 import kasuga.lib.core.client.gui.layout.yoga.YogaMeasureFunction;
 import kasuga.lib.core.client.gui.layout.yoga.YogaNode;
+import kasuga.lib.core.client.gui.render.BackgroundRender;
 import kasuga.lib.core.client.gui.style.StyleList;
 import kasuga.lib.core.client.render.texture.SimpleTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -19,6 +20,8 @@ public class Node implements GuiComponent{
 
     private boolean shouldCalculateLayout = true;
     CalculatedPositionCache positionCache = new CalculatedPositionCache();
+
+    BackgroundRender background = new BackgroundRender();
 
     StyleList styles = new StyleList();
     boolean isClosed = false;
@@ -109,7 +112,7 @@ public class Node implements GuiComponent{
     public static SimpleTexture TEST_TEXTURE = new SimpleTexture(new ResourceLocation("kasuga_lib","textures/gui/pixel.png"),32,32);;
 
     public void render(RenderContext context){
-        TEST_TEXTURE.render((int)positionCache.x,(int)positionCache.y,(int)positionCache.width,(int)positionCache.height);
+        background.render(context,(int)positionCache.x,(int)positionCache.y,(int)positionCache.width,(int)positionCache.height);
     }
 
     public StyleList style(){
@@ -123,5 +126,9 @@ public class Node implements GuiComponent{
         for (Node child : this.children) {
             child.close();
         }
+    }
+
+    public BackgroundRender getBackground() {
+        return background;
     }
 }

@@ -122,6 +122,10 @@ public class SimpleTexture {
         return new SimpleTexture(location, uOffset + left, vOffset + up, uWidth - right - left, vHeight - down - up, color.getRGB(), color.getA());
     }
 
+    public SimpleTexture cutSize(int left,int up,int width,int height){
+        return new SimpleTexture(location, uOffset + left, vOffset+up, width,height,color.getRGB(),color.getA());
+    }
+
     public SimpleTexture flipY() {
         return new SimpleTexture(location, uOffset + uWidth, vOffset, - uWidth, vHeight, color.getRGB(), color.getA());
     }
@@ -240,6 +244,10 @@ public class SimpleTexture {
 
     public void setColor(int r, int g, int b, float a) {
         this.color = color.setR(r).setG(g).setB(b).setA(a);
+    }
+
+    public SimpleTexture withColor(int color,float alpha){
+        return new SimpleTexture(location,uOffset,vOffset,uWidth,vHeight,color,alpha);
     }
 
     public void refreshImage() {
