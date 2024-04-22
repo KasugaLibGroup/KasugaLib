@@ -222,11 +222,14 @@ dependencies {
     minecraftLibrary "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.0"
     jarJar(group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)")
 
-    shadedLib "org.graalvm.polyglot:polyglot:23.1.0";
     // shadedLib("org.graalvm.polyglot:js-community:23.1.0");
-    implementation("org.graalvm.sdk:graal-sdk:22.0.2");
-    shadedLib("org.graalvm.sdk:graal-sdk:22.0.2")
-    shadedLib("org.graalvm.js:js:22.3.2")
+    // implementation("org.graalvm.sdk:graal-sdk:22.0.2");
+    minecraftLibrary("org.graalvm.sdk:graal-sdk:22.3.2")
+    jarJar("org.graalvm.sdk:graal-sdk:22.3.2")
+
+    minecraftLibrary("org.graalvm.js:js:22.3.2")
+    jarJar("org.graalvm.js:js:22.3.2")
+
     jarJar("org.lwjgl:lwjgl-yoga:3.3.1")
     // testImplementation "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.0"
     // clientAnnotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
