@@ -65,12 +65,14 @@ public class Node implements GuiComponent{
     }
 
     public void markMeasureDirty(){
+        if(this.isClosed)
+            return;
         this.locatorNode.dirty();
         markReLayout();
     }
 
     public void checkShouldReLayout(){
-        if(!locatorNode.hasNewLayout())
+        if(this.isClosed || !locatorNode.hasNewLayout())
             return;
 
         locatorNode.visited();
@@ -103,6 +105,8 @@ public class Node implements GuiComponent{
     }
 
     public void applyStyles(){
+        if(this.isClosed)
+            return;
         styles.apply(this);
         for (Node child : this.children) {
             child.applyStyles();
