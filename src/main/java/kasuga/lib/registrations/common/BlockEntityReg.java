@@ -87,7 +87,7 @@ public class BlockEntityReg<T extends BlockEntity> extends Reg {
      * @return self.
      */
     @Optional
-    public BlockEntityReg<T> withRenderer(BlockEntityRendererBuilder<?> builder) {
+    public BlockEntityReg<T> withRenderer(BlockEntityRendererBuilder builder) {
         this.rendererBuilder = (BlockEntityRendererBuilder<T>) builder;
         return this;
     }
