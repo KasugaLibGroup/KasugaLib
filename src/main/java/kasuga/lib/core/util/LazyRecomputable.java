@@ -25,6 +25,7 @@ public class LazyRecomputable<T> {
     public T get(){
         if(!isCached){
             this.cachedValue = supplier.get();
+            this.isCached = true;
         }
         return this.cachedValue;
     }
