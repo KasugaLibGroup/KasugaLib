@@ -135,4 +135,9 @@ public class Node implements GuiComponent{
     public BackgroundRender getBackground() {
         return background;
     }
+
+    public List<Node> children() {
+        return children;
+    }
+
 }
