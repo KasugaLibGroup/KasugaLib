@@ -57,6 +57,8 @@ public class Node implements GuiComponent{
 
     public void removeChild(Node node){
         int index = this.children.indexOf(node);
+        if(index == -1)
+            return;
         this.removeChild(index);
     }
 
