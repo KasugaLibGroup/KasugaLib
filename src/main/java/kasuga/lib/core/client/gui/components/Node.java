@@ -1,15 +1,19 @@
 package kasuga.lib.core.client.gui.components;
 
+import kasuga.lib.core.client.gui.context.MouseEvent;
 import kasuga.lib.core.client.gui.context.RenderContext;
 import kasuga.lib.core.client.gui.layout.yoga.YogaMeasureFunction;
 import kasuga.lib.core.client.gui.layout.yoga.YogaNode;
 import kasuga.lib.core.client.gui.render.BackgroundRender;
 import kasuga.lib.core.client.gui.style.StyleList;
 import kasuga.lib.core.client.render.texture.SimpleTexture;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
 
 public class Node implements GuiComponent{
     YogaNode locatorNode;
@@ -117,6 +121,8 @@ public class Node implements GuiComponent{
 
     public void render(RenderContext context){
         background.render(context,(int)positionCache.x,(int)positionCache.y,(int)positionCache.width,(int)positionCache.height);
+        if(Minecraft.getInstance().options.renderDebug)
+            Minecraft.getInstance().font.draw(context.pose(),String.format("x=%.1f,y=%.1f,w=%.1f,h=%.1f",positionCache.x,positionCache.y,positionCache.width,positionCache.height),positionCache.x,positionCache.y,0xff0000ff);
     }
 
     public StyleList style(){
@@ -140,4 +146,35 @@ public class Node implements GuiComponent{
         return children;
     }
 
+    public MouseEvent transformMouseEvent(MouseEvent event){
+        MouseEvent newEvent = new MouseEvent(
+                event.mouseX() - this.positionCache.x,
+                event.mouseY() - this.positionCache.y,
+                event.button());
+        if(newEvent.mouseX() < 0 ||
+                newEvent.mouseY() < 0 ||
+                newEvent.mouseX() > this.positionCache.width ||
+                newEvent.mouseY() > this.positionCache.height
+        ){
+            return null;
+        }
+        return newEvent;
+    }
+
+    HashMap<String, Function<MouseEvent,Boolean>> mouseEvents = new HashMap<>();
+
+    public void onClick(MouseEvent fromParent){
+        MouseEvent localMouseEvent = transformMouseEvent(fromParent);
+        if(localMouseEvent == null)
+            return;
+        if(mouseEvents.containsKey("click") && mouseEvents.get("click").apply(localMouseEvent))
+            return;
+        for (Node child : this.children) {
+            child.onClick(localMouseEvent);
+        }
+    }
+
+    public void listenMouseEvent(String name,Function<MouseEvent,Boolean> callback){
+        this.mouseEvents.put(name,callback);
+    }
 }

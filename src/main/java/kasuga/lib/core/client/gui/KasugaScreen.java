@@ -2,6 +2,7 @@ package kasuga.lib.core.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import kasuga.lib.core.client.gui.components.Node;
+import kasuga.lib.core.client.gui.context.MouseEvent;
 import kasuga.lib.core.client.gui.context.PlaneMouseContext;
 import kasuga.lib.core.client.gui.context.RenderContext;
 import net.minecraft.client.gui.screens.Screen;
@@ -36,5 +37,11 @@ public class KasugaScreen extends Screen {
     public void onClose() {
         super.onClose();
         this.root.close();
+    }
+
+    @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        this.root.onClick(new MouseEvent((float) pMouseX, (float) pMouseY,pButton));
+        return true;
     }
 }

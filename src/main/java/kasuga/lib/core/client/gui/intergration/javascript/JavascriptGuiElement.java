@@ -27,4 +27,21 @@ public class JavascriptGuiElement {
     public Node getNode(){
         return component;
     }
+
+    public void close() {
+        this.component.close();
+    }
+
+    @HostAccess.Export
+    public void listenMouse(Value name,Value listenHandler){
+        if(!name.isString() || !listenHandler.canExecute())
+            return;
+        listenHandler.pin();
+        this.component.listenMouseEvent(name.asString(),(event)->{
+            Value returnVal = listenHandler.execute(event);
+            if(!returnVal.isBoolean())
+                return false;
+            return returnVal.asBoolean();
+        });
+    }
 }
