@@ -3,6 +3,7 @@ package kasuga.lib.core.client.gui.intergration.javascript;
 import kasuga.lib.core.client.gui.components.Node;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
+import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Value;
 
 import java.util.HashSet;
@@ -28,7 +29,11 @@ public class JavascriptContext {
     }
 
     public void run() {
-        this.graalContext.eval("js",this.code);
+        try{
+            this.graalContext.eval("js",this.code);
+        }catch (PolyglotException e){
+            System.out.println(e.toString());
+        }
     }
 
     public void close(){
