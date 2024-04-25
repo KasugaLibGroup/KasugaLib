@@ -1,12 +1,9 @@
 package kasuga.lib.core.client.gui.intergration.javascript;
 
-import kasuga.lib.core.client.gui.components.Node;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Value;
-
-import java.util.HashSet;
 
 public class JavascriptContext {
     public final String code;
@@ -39,5 +36,9 @@ public class JavascriptContext {
     public void close(){
         this.container.close();
         this.graalContext.close();
+    }
+
+    public JavascriptNativeApi getNative() {
+        return nativeApi;
     }
 }

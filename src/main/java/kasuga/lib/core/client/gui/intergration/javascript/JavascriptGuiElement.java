@@ -5,8 +5,13 @@ import kasuga.lib.core.client.gui.components.Text;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.Value;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class JavascriptGuiElement {
     final Node component;
+
+    public List<JavascriptGuiElement> children = new ArrayList<>();
     JavascriptGuiElement(Node component){
         this.component = component;
     }
@@ -22,6 +27,29 @@ public class JavascriptGuiElement {
         if(this.component instanceof Text){
             ((Text) this.component).setContent(content);
         }
+    }
+
+    @HostAccess.Export
+    public void addChild(Value child){
+        if(child.isHostObject() && child.asHostObject() instanceof JavascriptGuiElement element)
+            addChild(element);
+    }
+
+    public void addChild(JavascriptGuiElement element){
+        this.getNode().addChild(element.getNode());
+        children.add(element);
+    }
+
+
+    @HostAccess.Export
+    public void removeChild(Value child){
+        if(child.isHostObject() && child.asHostObject() instanceof JavascriptGuiElement element)
+            removeChild(element);
+    }
+
+    public void removeChild(JavascriptGuiElement element){
+        this.getNode().removeChild(element.getNode());
+        children.remove(element);
     }
 
     public Node getNode(){

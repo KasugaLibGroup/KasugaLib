@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import org.apache.commons.io.FileUtils;
+import org.graalvm.polyglot.Value;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,7 +31,14 @@ public class JavascriptScreen {
     }
 
     public void attach(){
-        Minecraft.getInstance().setScreen(KasugaScreen.screen(this.guiContext.getContainer().getRoot()));
+        Screen screen = KasugaScreen.screenWithTickFunction(this.guiContext.getContainer().getRoot(),()->{
+            Value cb;
+            while((cb = this.guiContext.getNative().callbackQueue.poll())!=null){
+                cb.executeVoid();
+            };
+            return null;
+        });
+        Minecraft.getInstance().setScreen(screen);
         guiContext.run();
     }
 
@@ -39,6 +47,8 @@ public class JavascriptScreen {
     }
 
     public static void test() throws IOException{
+        if(Minecraft.getInstance().screen != null)
+            return;
         JavascriptScreen screen = new JavascriptScreen(new ResourceLocation("kasuga_lib","guis/test_screen.js"));
         screen.attach();
     }

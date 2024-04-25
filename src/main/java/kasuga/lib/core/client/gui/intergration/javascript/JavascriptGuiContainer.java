@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Objects;
 
 public class JavascriptGuiContainer {
-    private final HashSet<JavascriptGuiElement> attachedNodes = new HashSet<>();
+    private final JavascriptElementCollector collector = new JavascriptElementCollector();
 
     private final Node root = new Node();
 
@@ -43,7 +43,7 @@ public class JavascriptGuiContainer {
         ComponentType<?> componentType = ComponentRegistry.getComponent(type);
         Node component = componentType.create(props);
         JavascriptGuiElement guiElement = new JavascriptGuiElement(component);
-        attachedNodes.add(guiElement);
+        this.collector.collect(guiElement);
         return guiElement;
     }
 
@@ -80,9 +80,6 @@ public class JavascriptGuiContainer {
     }
 
     public void close() {
-        for (JavascriptGuiElement attachedNode : attachedNodes) {
-            attachedNode.getNode().close();
-        }
-        attachedNodes.clear();
+        this.collector.close();
     }
 }

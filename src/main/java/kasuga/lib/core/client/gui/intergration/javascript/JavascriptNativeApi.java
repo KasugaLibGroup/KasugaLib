@@ -1,10 +1,14 @@
 package kasuga.lib.core.client.gui.intergration.javascript;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import kasuga.lib.core.KasugaTimer;
+import net.minecraft.client.Minecraft;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.Value;
 
+import java.util.ArrayDeque;
 import java.util.HashSet;
+import java.util.Queue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class JavascriptNativeApi {
@@ -30,6 +34,7 @@ public class JavascriptNativeApi {
         return requestScheduled(KasugaTimer.TimerType.INTERVAL,callback::executeVoid,interval);
     }
 
+    Queue<Value> callbackQueue = new ArrayDeque<>();
 
     @HostAccess.Export
     @HostAccess.DisableMethodScoping
@@ -39,7 +44,7 @@ public class JavascriptNativeApi {
         AtomicInteger scheduleId = new AtomicInteger();
         scheduleId.set(requestScheduled(KasugaTimer.TimerType.TIMEOUT,()->{
             tracedSchedulers.remove(scheduleId.get());
-            callback.executeVoid();
+            callbackQueue.add(callback);
         },interval));
         return scheduleId.get();
     }

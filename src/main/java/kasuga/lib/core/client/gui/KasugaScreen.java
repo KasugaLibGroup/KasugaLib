@@ -8,13 +8,27 @@ import kasuga.lib.core.client.gui.context.RenderContext;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
+import java.util.function.Supplier;
+
 public class KasugaScreen extends Screen {
 
     private final Node root;
+    private final Supplier<Void> callback;
 
     protected KasugaScreen(Node root) {
         super(Component.literal(""));
         this.root = root;
+        this.callback = null;
+    }
+
+    public KasugaScreen(Node root, Supplier<Void> callback) {
+        super(Component.literal(""));
+        this.root = root;
+        this.callback = callback;
+    }
+
+    public static Screen screenWithTickFunction(Node root, Supplier<Void> callback){
+        return new KasugaScreen(root,callback);
     }
 
     public static Screen screen(Node root){
@@ -23,6 +37,8 @@ public class KasugaScreen extends Screen {
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        if(this.callback != null)
+            this.callback.get();
         RenderContext context = new RenderContext(RenderContext.RenderContextType.SCREEN);
         context.setPoseStack(pPoseStack);
         context.setPartialTicks(pPartialTick);
