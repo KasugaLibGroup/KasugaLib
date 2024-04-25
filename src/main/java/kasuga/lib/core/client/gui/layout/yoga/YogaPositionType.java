@@ -4,7 +4,7 @@ import static org.lwjgl.util.yoga.Yoga.*;
 public enum YogaPositionType {
     STATIC(YGPositionTypeStatic),
     ABSOLUTE(YGPositionTypeAbsolute),
-    RELATIVE(YGPositionTypeRelative)
+    RELATIVE(YGPositionTypeRelative),
     ;
 
     private final int value;
@@ -13,7 +13,8 @@ public enum YogaPositionType {
         this.value = value;
     }
 
-    int getValue(){
+
+    public int getValue(){
         return value;
     }
 }
