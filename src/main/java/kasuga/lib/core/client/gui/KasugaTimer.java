@@ -1,4 +1,4 @@
-package kasuga.lib.core;
+package kasuga.lib.core.client.gui;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -38,8 +38,6 @@ public class KasugaTimer {
             return Long.compare(this.nextTicks,target.nextTicks);
         }
     }
-
-    public static final KasugaTimer CLIENT = new KasugaTimer();
 
     public final PriorityQueue<CallbackEntry> queue = new PriorityQueue<>();
 

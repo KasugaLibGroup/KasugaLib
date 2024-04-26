@@ -1,8 +1,6 @@
 package kasuga.lib.core.client.gui.intergration.javascript;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import kasuga.lib.core.KasugaTimer;
-import net.minecraft.client.Minecraft;
+import kasuga.lib.core.client.gui.KasugaTimer;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.Value;
 
@@ -12,9 +10,9 @@ import java.util.Queue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class JavascriptNativeApi {
-    private final JavascriptContext context;
+    private final JavascriptGuiBinding context;
 
-    JavascriptNativeApi(JavascriptContext context){
+    JavascriptNativeApi(JavascriptGuiBinding context){
         this.context = context;
     }
 
@@ -52,7 +50,7 @@ public class JavascriptNativeApi {
     public int requestScheduled(KasugaTimer.TimerType type, KasugaTimer.Callback callback, Value interval){
         if(!interval.isNumber())
             return -1;
-        int traced = KasugaTimer.CLIENT.register(type, callback,Math.max(1,interval.asInt() / 50));
+        int traced = this.context.getPlatform().getContext().getTimer().register(type, callback,Math.max(1,interval.asInt() / 50));
         tracedSchedulers.add(traced);
         return traced;
     }
@@ -65,12 +63,12 @@ public class JavascriptNativeApi {
         }
         int x = scheduleId.asInt();
         tracedSchedulers.remove(x);
-        KasugaTimer.CLIENT.unregister(x);
+        this.context.getPlatform().getContext().getTimer().unregister(x);
     }
 
     public void close(){
         for (Integer tracedScheduler : this.tracedSchedulers) {
-            KasugaTimer.CLIENT.unregister(tracedScheduler);
+            this.context.getPlatform().getContext().getTimer().unregister(tracedScheduler);
         }
     }
 }

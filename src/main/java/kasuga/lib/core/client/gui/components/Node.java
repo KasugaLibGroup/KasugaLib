@@ -94,14 +94,20 @@ public class Node implements GuiComponent{
         return null;
     }
 
-    @Override
-    public void dispatchRender(RenderContext context) {
-        if(isClosed)
-            return;
+    public void renderPreTick(){
         if(shouldCalculateLayout){
             positionCache.fromYoga(parent,this,locatorNode);
             shouldCalculateLayout = false;
         }
+        for (Node child : children) {
+            child.renderPreTick();
+        }
+    }
+
+    @Override
+    public void dispatchRender(RenderContext context) {
+        if(isClosed)
+            return;
         render(context);
         context.pushZStack();
         for (Node child : this.children) {

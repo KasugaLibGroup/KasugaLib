@@ -12,6 +12,14 @@ import java.util.Stack;
 
 public class RenderContext {
 
+    public static RenderContext fromScreen(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick){
+        RenderContext context = new RenderContext(RenderContextType.SCREEN);
+        context.setPoseStack(pPoseStack);
+        context.setMouseContext(new PlaneMouseContext(pMouseX,pMouseY));
+        context.setPartialTicks(pPartialTick);
+        return context;
+    }
+
     public static enum RenderContextType{
         WORLD, SCREEN
     }

@@ -18,7 +18,11 @@ import java.util.Objects;
 public class JavascriptGuiContainer {
     private final JavascriptElementCollector collector = new JavascriptElementCollector();
 
-    private final Node root = new Node();
+    private final Node root;
+
+    public JavascriptGuiContainer(Node root) {
+        this.root = root;
+    }
 
     @HostAccess.Export
     public JavascriptGuiElement createElement(Value type,Value propsJson){
@@ -81,5 +85,6 @@ public class JavascriptGuiContainer {
 
     public void close() {
         this.collector.close();
+        this.root.children().clear();
     }
 }
