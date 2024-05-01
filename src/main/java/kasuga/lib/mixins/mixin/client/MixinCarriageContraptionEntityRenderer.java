@@ -27,17 +27,16 @@ public class MixinCarriageContraptionEntityRenderer {
             carriage.bogeys.forEach(
                     bogey -> {
                         Direction d1 = instance.getInitialOrientation();
-                        Direction d2 = d1;
 
                         // North -> West
                         // South -> East
                         // West -> South
                         // East -> North
 
-                        d2 = Direction.fromYRot(d1.toYRot() + 90);
+                        Direction d2 = Direction.fromYRot(d1.toYRot() + 90);
                         if(bogey != null) {
                             NBTHelper.writeEnum(bogey.bogeyData, BogeyDataConstants.BOGEY_ASSEMBLY_DIRECTION_KEY, d2);
-                            bogey.bogeyData.putFloat("PartialTicks", partial_ticks);
+                            bogey.bogeyData.putFloat(BogeyDataConstants.PARTIAL_TICK_KEY, partial_ticks);
                         }
                     }
             );

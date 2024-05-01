@@ -9,6 +9,7 @@ public class BogeyDataConstants {
     public static final String BOGEY_ASSEMBLY_DIRECTION_KEY = "assembly_direction";
     public static final String BOGEY_DIRECTION_KEY = "is_forwards";
     public static final String BOGEY_LINK_KEY = "linked";
+    public static final String PARTIAL_TICK_KEY = "partial_ticks";
 
     public static boolean isForwards(CompoundTag bogeyData, boolean inContraption) {
         boolean isForwards =

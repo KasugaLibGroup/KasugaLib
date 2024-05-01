@@ -63,43 +63,21 @@ public abstract class MixinStationBlockEntity extends BlockEntity {
             CallbackInfoReturnable<Boolean> cir) {
         if (level == null) return;
 
-        if(!level.isClientSide) {
-            BlockState bogey_state = level.getBlockState(pos.above());
-            if(bogey_state.getBlock() instanceof AbstractBogeyBlock<?>) {
-                BlockEntity entity = level.getBlockEntity(pos.above());
-                if(entity instanceof AbstractBogeyBlockEntity) {
-                    CompoundTag tag = ((AbstractBogeyBlockEntity) entity).getBogeyData();
-                    Direction d = getAssemblyDirection().getOpposite();
+        BlockState bogey_state = level.getBlockState(pos.above());
+        if(bogey_state.getBlock() instanceof AbstractBogeyBlock<?>) {
+            BlockEntity entity = level.getBlockEntity(pos.above());
+            if(entity instanceof AbstractBogeyBlockEntity) {
+                CompoundTag tag = ((AbstractBogeyBlockEntity) entity).getBogeyData();
+                Direction d = getAssemblyDirection().getOpposite();
 
-                    // North -> West
-                    // South -> East
-                    // West -> South
-                    // East -> North
+                // North -> West
+                // South -> East
+                // West -> South
+                // East -> North
 
-                    NBTHelper.writeEnum(tag, BogeyDataConstants.BOGEY_ASSEMBLY_DIRECTION_KEY, d);
-                    ((AbstractBogeyBlockEntity) entity).setBogeyData(tag);
-                }
+                NBTHelper.writeEnum(tag, BogeyDataConstants.BOGEY_ASSEMBLY_DIRECTION_KEY, d);
+                ((AbstractBogeyBlockEntity) entity).setBogeyData(tag);
             }
         }
-
-        BlockPos up = new BlockPos(track.getUpNormal(level, pos, state));
-        BlockPos down = new BlockPos(track.getUpNormal(level, pos, state).scale(-1));
-
-        boolean upsideDown =
-                (player.getViewXRot(1.0F) < 0
-                        && (track.getBogeyAnchor(level, pos, state)).getBlock()
-                                instanceof AbstractBogeyBlock<?> bogey
-                        && bogey.canBeUpsideDown());
-        BlockPos targetPos = upsideDown ? pos.offset(down) : pos.offset(up);
-
-        BlockEntity blockEntity = level.getBlockEntity(targetPos);
-
-        if (!(blockEntity instanceof AbstractBogeyBlockEntity bogeyBlockEntity)) return;
-
-        CompoundTag bogeyData = bogeyBlockEntity.getBogeyData();
-
-        NBTHelper.writeEnum(bogeyData, BogeyDataConstants.BOGEY_ASSEMBLY_DIRECTION_KEY, getAssemblyDirection());
-
-        bogeyBlockEntity.setBogeyData(bogeyData);
     }
 }
