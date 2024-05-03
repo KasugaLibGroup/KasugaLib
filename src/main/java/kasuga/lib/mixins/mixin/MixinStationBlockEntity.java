@@ -75,9 +75,6 @@ public abstract class MixinStationBlockEntity extends BlockEntity {
                 // West -> South
                 // East -> North
 
-                if(false) {
-                    d = Direction.fromYRot(d.toYRot() - 90);
-                }
                 NBTHelper.writeEnum(tag, BogeyDataConstants.BOGEY_ASSEMBLY_DIRECTION_KEY, d);
                 ((AbstractBogeyBlockEntity) entity).setBogeyData(tag);
             }
