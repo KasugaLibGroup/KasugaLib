@@ -46,7 +46,7 @@ public class BlockEntityReg<T extends BlockEntity> extends Reg {
      * @return self.
      */
     @Mandatory
-    public BlockEntityReg<T> blockEntityType(BlockEntityType.BlockEntitySupplier<? extends BlockEntity> blockEntity) {
+    public BlockEntityReg<T> blockEntityType(BlockEntityType.BlockEntitySupplier blockEntity) {
         this.builder =(BlockEntityType.BlockEntitySupplier<T>) blockEntity;
         return this;
     }
