@@ -39,13 +39,13 @@ public class KasugaLibStacks {
         BLOCK_RENDERERS = new HashMap<>();
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverAboutToStart);
-        MinecraftForge.EVENT_BUS.addListener(PacketEvent::onClientPayloadHandleEvent);
         MinecraftForge.EVENT_BUS.addListener(PacketEvent::onServerPayloadHandleEvent);
-        MinecraftForge.EVENT_BUS.addListener(Constants::onClientTick);
-        MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStart);
-        MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStop);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
         if(Envs.isClient()) {
+            MinecraftForge.EVENT_BUS.addListener(PacketEvent::onClientPayloadHandleEvent);
+            MinecraftForge.EVENT_BUS.addListener(Constants::onClientTick);
+            MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStart);
+            MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStop);
             bus.addListener(ModelRegistryEvent::registerAdditionalModels);
             bus.addListener(ModelRegistryEvent::bakingCompleted);
             bus.addListener(TextureRegistryEvent::onModelRegistry);

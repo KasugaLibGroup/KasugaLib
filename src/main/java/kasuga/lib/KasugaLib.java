@@ -3,6 +3,7 @@ package kasuga.lib;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import kasuga.lib.core.KasugaLibStacks;
+import kasuga.lib.core.util.Envs;
 import kasuga.lib.example_env.AllExampleElements;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -19,7 +20,8 @@ public class KasugaLib {
     public static final Gson GSON = new GsonBuilder().enableComplexMapKeySerialization().create();
     public KasugaLib() {
         EVENTS.register(this);
-        AllExampleElements.invoke();
+        if (Envs.isClient())
+            AllExampleElements.invoke();
     }
 
     public static Logger createLogger(String name) {
