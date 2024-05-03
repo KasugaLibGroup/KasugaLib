@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import kasuga.lib.core.KasugaLibStacks;
+import kasuga.lib.core.util.Envs;
 import kasuga.lib.example_env.AllExampleElements;
 import kasuga.lib.example_env.ExampleMain;
 import net.minecraft.resources.ResourceLocation;
@@ -32,7 +33,8 @@ public class KasugaLib {
     public static final Gson GSON = new GsonBuilder().enableComplexMapKeySerialization().create();
     public KasugaLib() {
         EVENTS.register(this);
-        ExampleMain.invoke();
+        if (Envs.isClient())
+            ExampleMain.invoke();
     }
 
     public static Logger createLogger(String name) {
