@@ -61,48 +61,26 @@ public abstract class MixinStationBlockEntity extends BlockEntity {
             CallbackInfoReturnable<Boolean> cir) {
         if (level == null) return;
 
-        if(!level.isClientSide) {
-            BlockState bogey_state = level.getBlockState(pos.above());
-            if(bogey_state.getBlock() instanceof AbstractBogeyBlock<?>) {
-                BlockEntity entity = level.getBlockEntity(pos.above());
-                if(entity instanceof AbstractBogeyBlockEntity) {
-                    CompoundTag tag = ((AbstractBogeyBlockEntity) entity).getBogeyData();
-                    Direction d = getAssemblyDirection().getOpposite();
+        BlockState bogey_state = level.getBlockState(pos.above());
+        if(bogey_state.getBlock() instanceof AbstractBogeyBlock<?>) {
+            BlockEntity entity = level.getBlockEntity(pos.above());
+            if(entity instanceof AbstractBogeyBlockEntity) {
+                CompoundTag tag = ((AbstractBogeyBlockEntity) entity).getBogeyData();
+                Direction d = getAssemblyDirection().getOpposite();
 
-                    // 这里改成 true 就可以返回正确的朝向数据，如果为 false 则不改变从 Carriage 返回的值
-                    // 以下为对应方向的转置顺序, 前者为从Carriage中拿到的方块，后者为正确朝向
-                    // North -> West
-                    // South -> East
-                    // West -> South
-                    // East -> North
+                // 这里改成 true 就可以返回正确的朝向数据，如果为 false 则不改变从 Carriage 返回的值
+                // 以下为对应方向的转置顺序, 前者为从Carriage中拿到的方块，后者为正确朝向
+                // North -> West
+                // South -> East
+                // West -> South
+                // East -> North
 
-                    if(false) {
-                        d = Direction.fromYRot(d.toYRot() - 90);
-                    }
-                    NBTHelper.writeEnum(tag, BogeyDataConstants.BOGEY_ASSEMBLY_DIRECTION_KEY, d);
-                    ((AbstractBogeyBlockEntity) entity).setBogeyData(tag);
+                if(false) {
+                    d = Direction.fromYRot(d.toYRot() - 90);
                 }
+                NBTHelper.writeEnum(tag, BogeyDataConstants.BOGEY_ASSEMBLY_DIRECTION_KEY, d);
+                ((AbstractBogeyBlockEntity) entity).setBogeyData(tag);
             }
         }
-
-        BlockPos up = BlockPos.containing(track.getUpNormal(level, pos, state));
-        BlockPos down = BlockPos.containing(track.getUpNormal(level, pos, state).scale(-1));
-
-        boolean upsideDown =
-                (player.getViewXRot(1.0F) < 0
-                        && (track.getBogeyAnchor(level, pos, state)).getBlock()
-                                instanceof AbstractBogeyBlock<?> bogey
-                        && bogey.canBeUpsideDown());
-        BlockPos targetPos = upsideDown ? pos.offset(down) : pos.offset(up);
-
-        BlockEntity blockEntity = level.getBlockEntity(targetPos);
-
-        if (!(blockEntity instanceof AbstractBogeyBlockEntity bogeyBlockEntity)) return;
-
-        CompoundTag bogeyData = bogeyBlockEntity.getBogeyData();
-
-        NBTHelper.writeEnum(bogeyData, BogeyDataConstants.BOGEY_ASSEMBLY_DIRECTION_KEY, getAssemblyDirection());
-
-        bogeyBlockEntity.setBogeyData(bogeyData);
     }
 }
