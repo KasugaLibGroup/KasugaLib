@@ -60,8 +60,9 @@ public class MovementReg<T extends MovementBehaviour> extends Reg implements Int
 
     @Override
     public MovementReg<T> submit(SimpleRegistry registry) {
-        if (!(registry instanceof CreateRegistry createRegistry))
+        if (!(registry instanceof CreateRegistry))
             crashOnNotPresent(InteractionReg.class, getIdentifier(), "Use CreateRegistry instead of SimpleRegistry");
+        ((CreateRegistry) registry).cacheMovementIn(this);
         return this;
     }
 

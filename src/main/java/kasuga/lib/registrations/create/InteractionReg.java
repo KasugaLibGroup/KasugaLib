@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.function.Predicate;
 
-public class InteractionReg<T extends MovingInteractionBehaviour> extends Reg {
+public class InteractionReg<T extends MovingInteractionBehaviour> extends Reg implements InteractionMovementReg {
     private TagKey[] tags = null;
     private BlockReg[] blocks = null;
     private InteractionPredicate predicate = null;
@@ -62,9 +62,9 @@ public class InteractionReg<T extends MovingInteractionBehaviour> extends Reg {
 
     @Override
     public InteractionReg<T> submit(SimpleRegistry registry) {
-        if (!(registry instanceof CreateRegistry createRegistry))
+        if (!(registry instanceof CreateRegistry))
             crashOnNotPresent(InteractionReg.class, getIdentifier(), "Use CreateRegistry instead of SimpleRegistry");
-
+        ((CreateRegistry) registry).cacheMovementIn(this);
         return this;
     }
 

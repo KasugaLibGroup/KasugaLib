@@ -37,7 +37,7 @@ public class ModelMappings {
 
     public void map() throws IOException {
         Map<String, Resource> resources = Resources.getFullPathResources(new ResourceLocation(namespace, IDENTIFIER), false);
-        KasugaLib.MAIN_LOGGER.error("mapping: " + namespace);
+        // KasugaLib.MAIN_LOGGER.error("mapping: " + namespace);
         for(String name : resources.keySet()) {
             if(!name.endsWith(".json") || !name.startsWith(IDENTIFIER)) continue;
             String plainName = IDENTIFIER + name.substring(name.lastIndexOf("/"));

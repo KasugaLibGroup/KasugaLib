@@ -23,6 +23,10 @@ public class CreateRegistry extends SimpleRegistry {
         bus.addListener(this::onSetup);
     }
 
+    public void cacheMovementIn(InteractionMovementReg movementReg) {
+        this.movements.add(movementReg);
+    }
+
     public CreateRegistrate createRegistry() {
         return createRegistry;
     }
