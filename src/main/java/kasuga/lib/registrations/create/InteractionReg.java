@@ -5,6 +5,7 @@ import com.simibubi.create.content.contraptions.behaviour.MovingInteractionBehav
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.common.BlockReg;
 import kasuga.lib.registrations.exception.RegistryElementNotPresentException;
+import kasuga.lib.registrations.registry.CreateRegistry;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -61,6 +62,13 @@ public class InteractionReg<T extends MovingInteractionBehaviour> extends Reg {
 
     @Override
     public InteractionReg<T> submit(SimpleRegistry registry) {
+        if (!(registry instanceof CreateRegistry createRegistry))
+            crashOnNotPresent(InteractionReg.class, getIdentifier(), "Use CreateRegistry instead of SimpleRegistry");
+
+        return this;
+    }
+
+    public void onSetup() {
         if (behaviour == null)
             crashOnNotPresent(InteractionReg.class, getIdentifier(), "you must provide a type of interaction for registration");
         switch (workType) {
@@ -120,7 +128,6 @@ public class InteractionReg<T extends MovingInteractionBehaviour> extends Reg {
                 }
             }
         }
-        return this;
     }
 
     @Override

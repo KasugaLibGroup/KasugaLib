@@ -4,13 +4,14 @@ import com.simibubi.create.AllMovementBehaviours;
 import com.simibubi.create.content.contraptions.behaviour.MovementBehaviour;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.common.BlockReg;
+import kasuga.lib.registrations.registry.CreateRegistry;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.function.Predicate;
 
-public class MovementReg<T extends MovementBehaviour> extends Reg {
+public class MovementReg<T extends MovementBehaviour> extends Reg implements InteractionMovementReg {
     private TagKey[] tags = null;
     private BlockReg[] blocks = null;
     private InteractionReg.InteractionPredicate predicate = null;
@@ -59,6 +60,12 @@ public class MovementReg<T extends MovementBehaviour> extends Reg {
 
     @Override
     public MovementReg<T> submit(SimpleRegistry registry) {
+        if (!(registry instanceof CreateRegistry createRegistry))
+            crashOnNotPresent(InteractionReg.class, getIdentifier(), "Use CreateRegistry instead of SimpleRegistry");
+        return this;
+    }
+
+    public void onSetup() {
         if (behaviour == null)
             crashOnNotPresent(MovementReg.class, getIdentifier(), "you must provide a type of interaction for registration");
         switch (workType) {
@@ -118,7 +125,6 @@ public class MovementReg<T extends MovementBehaviour> extends Reg {
                 }
             }
         }
-        return this;
     }
 
     @Override
