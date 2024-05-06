@@ -155,8 +155,11 @@ public class WorldTexture extends SimpleTexture {
         return height * (float) widthHeightRatio();
     }
 
+    public void render(PoseStack pose, MultiBufferSource buffer, float width, float height, int light){
+        render(pose, buffer, width, height, light, false);
+    }
 
-    public void render(PoseStack pose, MultiBufferSource buffer, float width, float height, int light) {
+    public void render(PoseStack pose, MultiBufferSource buffer, float width, float height, int light, boolean reverse) {
         if(builder == null) return;
         if(cachedType == null)
             cachedType = builder.build(location);
@@ -174,10 +177,17 @@ public class WorldTexture extends SimpleTexture {
         context.apply(pose);
         Matrix4f matrix = pose.last().pose();
         VertexConsumer consumer = buffer.getBuffer(cachedType);
-        buildVertex(consumer, matrix, 0, 0, 0, fuOffset, fvOffset, color, light);
-        buildVertex(consumer, matrix, width, 0, 0, fuOffset + fuWidth, fvOffset, color, light);
-        buildVertex(consumer, matrix, width, height, 0, fuOffset + fuWidth, fvOffset + fvHeight, color, light);
-        buildVertex(consumer, matrix, 0, height, 0, fuOffset, fvOffset + fvHeight, color, light);
+        if(!reverse){
+            buildVertex(consumer, matrix, 0, 0, 0, fuOffset, fvOffset, color, light);
+            buildVertex(consumer, matrix, width, 0, 0, fuOffset + fuWidth, fvOffset, color, light);
+            buildVertex(consumer, matrix, width, height, 0, fuOffset + fuWidth, fvOffset + fvHeight, color, light);
+            buildVertex(consumer, matrix, 0, height, 0, fuOffset, fvOffset + fvHeight, color, light);
+        }else{
+            buildVertex(consumer, matrix, 0, height, 0, fuOffset, fvOffset + fvHeight, color, light);
+            buildVertex(consumer, matrix, width, height, 0, fuOffset + fuWidth, fvOffset + fvHeight, color, light);
+            buildVertex(consumer, matrix, width, 0, 0, fuOffset + fuWidth, fvOffset, color, light);
+            buildVertex(consumer, matrix, 0, 0, 0, fuOffset, fvOffset, color, light);
+        }
         pose.popPose();
         if(!shouldPush) {
             pose.pushPose();
