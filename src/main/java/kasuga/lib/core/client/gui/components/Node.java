@@ -16,33 +16,27 @@ import java.util.List;
 import java.util.function.Function;
 
 public class Node implements GuiComponent{
-    YogaNode locatorNode;
-
+    MultipleLocator locator;
     List<Node> children;
-
     Node parent;
-
-    private boolean shouldCalculateLayout = true;
-    CalculatedPositionCache positionCache = new CalculatedPositionCache();
-
     BackgroundRender background = new BackgroundRender();
-
     StyleList styles = new StyleList();
     boolean isClosed = false;
 
     public Node(){
-        locatorNode = YogaNode.create();
         children = new ArrayList<>();
         YogaMeasureFunction measureFunction = measure();
-        if(measureFunction != null){
-            this.locatorNode.setMeasureFunction(measureFunction);
-        }
+        locator = new MultipleLocator(measureFunction);
     }
 
     public void insertChild(int index,Node node){
-        this.locatorNode.addChildAt(index,node.getLocatorNode());
+        this.locator.addChildrenAt(index,node.getLocator());
         this.children.add(index,node);
         node.parent = this;
+    }
+
+    public MultipleLocator getLocator() {
+        return locator;
     }
 
     public void addChild(Node node){
@@ -51,7 +45,7 @@ public class Node implements GuiComponent{
     }
 
     public void removeChild(int index){
-        this.locatorNode.removeChildAt(index);
+        this.locator.removeChildAt(index);
         this.children.remove(index).parent = null;
     }
 
@@ -62,31 +56,23 @@ public class Node implements GuiComponent{
         this.removeChild(index);
     }
 
-    public YogaNode getLocatorNode(){
-        return locatorNode;
-    }
-
-    public void markReLayout(){
-        this.shouldCalculateLayout = true;
-    }
-
     public void markMeasureDirty(){
         if(this.isClosed)
             return;
-        this.locatorNode.dirty();
-        markReLayout();
+        this.locator.markDirty();
+        this.locator.markAllCacheDirty();
     }
 
-    public void checkShouldReLayout(){
-        if(this.isClosed || !locatorNode.hasNewLayout())
+    public void checkShouldReLayout(Object source){
+        if(this.isClosed || !this.locator.hasNewLayout(source))
             return;
 
-        locatorNode.visited();
+        this.locator.visited(source);
 
-        markReLayout();
+        this.locator.markCacheDirty(source);
 
         for (Node child : children) {
-            child.checkShouldReLayout();
+            child.checkShouldReLayout(source);
         }
     }
 
@@ -94,13 +80,11 @@ public class Node implements GuiComponent{
         return null;
     }
 
-    public void renderPreTick(){
-        if(shouldCalculateLayout){
-            positionCache.fromYoga(parent,this,locatorNode);
-            shouldCalculateLayout = false;
-        }
+    public void renderPreTick(Object source){
+        this.locator.updateCache(source);
+
         for (Node child : children) {
-            child.renderPreTick();
+            child.renderPreTick(source);
         }
     }
 
@@ -108,7 +92,10 @@ public class Node implements GuiComponent{
     public void dispatchRender(RenderContext context) {
         if(isClosed)
             return;
-        render(context);
+        CalculatedPositionCache positionCache = this.locator.getPosition(context.getSource());
+        if(positionCache == null)
+            return;
+        render(context,positionCache);
         context.pushZStack();
         for (Node child : this.children) {
             child.dispatchRender(context);
@@ -125,9 +112,7 @@ public class Node implements GuiComponent{
         }
     }
 
-    public static SimpleTexture TEST_TEXTURE = new SimpleTexture(new ResourceLocation("kasuga_lib","textures/gui/pixel.png"),32,32);;
-
-    public void render(RenderContext context){
+    public void render(RenderContext context,CalculatedPositionCache positionCache){
         background.render(context,(int)positionCache.x,(int)positionCache.y,(int)positionCache.width,(int)positionCache.height);
         if(Minecraft.getInstance().options.renderDebug)
             Minecraft.getInstance().font.draw(context.pose(),String.format("x=%.1f,y=%.1f,w=%.1f,h=%.1f",positionCache.x,positionCache.y,positionCache.width,positionCache.height),positionCache.x,positionCache.y,0xff0000ff);
@@ -140,7 +125,7 @@ public class Node implements GuiComponent{
     public void close(){
         System.out.println("[GC] Kasuga GUI Node Free");
         isClosed = true;
-        this.locatorNode.free();
+        locator.close();
         for (Node child : this.children) {
             child.close();
         }
@@ -154,25 +139,11 @@ public class Node implements GuiComponent{
         return children;
     }
 
-    public MouseEvent transformMouseEvent(MouseEvent event){
-        MouseEvent newEvent = new MouseEvent(
-                event.mouseX() - this.positionCache.x,
-                event.mouseY() - this.positionCache.y,
-                event.button());
-        if(newEvent.mouseX() < 0 ||
-                newEvent.mouseY() < 0 ||
-                newEvent.mouseX() > this.positionCache.width ||
-                newEvent.mouseY() > this.positionCache.height
-        ){
-            return null;
-        }
-        return newEvent;
-    }
 
     HashMap<String, Function<MouseEvent,Boolean>> mouseEvents = new HashMap<>();
 
     public void onClick(MouseEvent fromParent){
-        MouseEvent localMouseEvent = transformMouseEvent(fromParent);
+        MouseEvent localMouseEvent = locator.transformMouseEvent(fromParent);
         if(localMouseEvent == null)
             return;
         if(mouseEvents.containsKey("click") && mouseEvents.get("click").apply(localMouseEvent))

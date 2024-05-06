@@ -2,6 +2,7 @@ package kasuga.lib.core.client.gui.style.layout;
 
 import kasuga.lib.core.client.gui.components.Node;
 import kasuga.lib.core.client.gui.layout.yoga.YogaEdge;
+import kasuga.lib.core.client.gui.layout.yoga.YogaNode;
 import kasuga.lib.core.client.gui.style.PixelUnit;
 import kasuga.lib.core.client.gui.style.Style;
 import kasuga.lib.core.client.gui.style.StyleType;
@@ -24,20 +25,19 @@ public abstract class PositionStyle extends Style<Pair<Float, PixelUnit>> {
     }
 
     @Override
-    public void apply(Node node){
+    public void apply(YogaNode node){
         if(!this.isValid(null))
             return;
         switch (value.getSecond()){
             case NATIVE -> {
-                    node.getLocatorNode().setPosition(getEdgeType(),value.getFirst());
+                    node.setPosition(getEdgeType(),value.getFirst());
                     System.out.println("Apply static("+ getEdgeType() +" = "+ value.getSecond().toString(value.getFirst())+")");
             }
             case PERCENTAGE -> {
-                node.getLocatorNode().setPositionPercent(getEdgeType(), value.getFirst());
+                node.setPositionPercent(getEdgeType(), value.getFirst());
                 System.out.println("Apply percentage(" + getEdgeType() + " = " + value.getSecond().toString(value.getFirst()) + ")");
             }
         }
-        node.markReLayout();
     }
 
     @Override

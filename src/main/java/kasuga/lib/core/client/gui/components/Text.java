@@ -1,5 +1,6 @@
 package kasuga.lib.core.client.gui.components;
 
+import com.mojang.math.Quaternion;
 import kasuga.lib.core.client.gui.context.RenderContext;
 import kasuga.lib.core.client.gui.layout.yoga.YogaMeasureFunction;
 import kasuga.lib.core.client.gui.layout.yoga.YogaMeasureOutput;
@@ -12,7 +13,7 @@ public class Text extends DocumentNode{
     String content = "";
     public Text(){
         super();
-        this.locatorNode.setNodeType(YogaNodeType.TEXT);
+        this.locator.setNodeType(YogaNodeType.TEXT);
     }
 
     public void setContent(String content) {
@@ -30,8 +31,15 @@ public class Text extends DocumentNode{
     }
 
     @Override
-    public void render(RenderContext context) {
-        super.render(context);
+    public void render(RenderContext context,CalculatedPositionCache positionCache) {
+        super.render(context,positionCache);
+        boolean isWorldRendering = context.getContextType() == RenderContext.RenderContextType.WORLD;
+        if(isWorldRendering){
+            context.pushPose();
+            context.pose().mulPose(Quaternion.fromXYZ(0,0,3.14159267f));
+        }
         font.draw(context.pose(),content,positionCache.x,positionCache.y,0xff000000);
+        if(isWorldRendering)
+            context.popPose();
     }
 }

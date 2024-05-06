@@ -1,7 +1,9 @@
 package kasuga.lib.core.client.gui.style.layout;
 
 import kasuga.lib.core.client.gui.components.Node;
+import kasuga.lib.core.client.gui.layout.yoga.YogaNode;
 import kasuga.lib.core.client.gui.style.Style;
+import kasuga.lib.core.client.gui.style.StyleFunctionalHelper;
 import kasuga.lib.core.client.gui.style.StyleType;
 
 import java.util.Map;
@@ -31,18 +33,18 @@ public abstract class EnumStyle<T> extends Style<T> {
 
         private final Function<String, T> type;
         private final BiFunction<T, Map<StyleType<?>, Style<?>>, Boolean> validator;
-        private final BiConsumer<Node, T> applicator;
         private final Style<T> defaultStyle;
+        private final StyleFunctionalHelper.StyleAccessor<T> accessor;
 
-        public EnumStyleType(Function<String, T> type, BiFunction<T, Map<StyleType<?>, Style<?>>, Boolean> validator, BiConsumer<Node, T> applicator, T defaultValue) {
+        public EnumStyleType(Function<String, T> type, BiFunction<T, Map<StyleType<?>, Style<?>>, Boolean> validator, StyleFunctionalHelper.StyleAccessor<T> accessor, T defaultValue) {
             this.type = type;
             this.validator = validator;
-            this.applicator = applicator;
+            this.accessor = accessor;
             this.defaultStyle = create(defaultValue.toString());
         }
 
-        public static <T> EnumStyleType<T> of(Function<String,T> type, BiFunction<T, Map<StyleType<?>, Style<?>>, Boolean> validator, BiConsumer<Node,T> applicator, T defaultValue){
-            return new EnumStyleType<>(type, validator,applicator,defaultValue);
+        public static <T> EnumStyleType<T> of(Function<String,T> type, BiFunction<T, Map<StyleType<?>, Style<?>>, Boolean> validator,StyleFunctionalHelper.StyleAccessor<T> accessor, T defaultValue){
+            return new EnumStyleType<>(type, validator,accessor,defaultValue);
         }
 
         @Override
@@ -66,7 +68,15 @@ public abstract class EnumStyle<T> extends Style<T> {
 
                 @Override
                 public void apply(Node node) {
-                    applicator.accept(node,value);
+                    if(accessor instanceof StyleFunctionalHelper.StyleNodeAccessor<T> nodeAccessor){
+                        nodeAccessor.apply(node,value);
+                    }
+                }
+
+                public void apply(YogaNode yogaNode){
+                    if(accessor instanceof StyleFunctionalHelper.StyleYogaNodeAccessor<T> yogaNodeAccessor){
+                        yogaNodeAccessor.apply(yogaNode,value);
+                    }
                 }
             };
         }

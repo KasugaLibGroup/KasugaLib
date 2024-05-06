@@ -15,20 +15,20 @@ public class Styles {
             StyleRegistry.register("left",PositionStyle.createType(YogaEdge.LEFT));
 
     public static SizeStyle.SizeStyleType WIDTH =
-            StyleRegistry.register("width",SizeStyle.createType((n,v)->{
+            StyleRegistry.register("width",SizeStyle.createType(StyleFunctionalHelper.layout((n,v)->{
                 switch (v.getSecond()){
-                    case NATIVE -> n.getLocatorNode().setWidth(v.getFirst());
-                    case PERCENTAGE -> n.getLocatorNode().setWidthPercent(v.getFirst());
+                    case NATIVE -> n.setWidth(v.getFirst());
+                    case PERCENTAGE -> n.setWidthPercent(v.getFirst());
                 }
-            }));
+            })));
 
     public static SizeStyle.SizeStyleType HEIGHT =
-            StyleRegistry.register("height",SizeStyle.createType((n,v)->{
+            StyleRegistry.register("height",SizeStyle.createType(StyleFunctionalHelper.layout((n,v)->{
                 switch (v.getSecond()){
-                    case NATIVE -> n.getLocatorNode().setHeight(v.getFirst());
-                    case PERCENTAGE -> n.getLocatorNode().setHeightPercent(v.getFirst());
+                    case NATIVE -> n.setHeight(v.getFirst());
+                    case PERCENTAGE -> n.setHeightPercent(v.getFirst());
                 }
-            }));
+            })));
 
     public static SimpleStyleType<BackgroundImageStyle> BACKGROUND_IMAGE =
             StyleRegistry.register("backgroundImage",SimpleStyleType.of(BackgroundImageStyle::new, BackgroundImageStyle.EMPTY));
@@ -41,7 +41,7 @@ public class Styles {
             StyleRegistry.register("positionType", EnumStyle.EnumStyleType.of(
                     PositionType::fromString,
                     (v,i)->v!=PositionType.INVALID,
-                    (w,i)->w.getLocatorNode().setPositionType(i.getValue()),
+                    StyleFunctionalHelper.layout((w,i)->w.setPositionType(i.getValue())),
                     PositionType.STATIC
             ));
 
@@ -49,7 +49,7 @@ public class Styles {
             StyleRegistry.register("displayType", EnumStyle.EnumStyleType.of(
                     DisplayType::fromString,
                     (v,i)->v!=DisplayType.INVALID,
-                    (w,i)->w.getLocatorNode().setDisplay(i.getValue()),
+                    StyleFunctionalHelper.layout((w,i)->w.setDisplay(i.getValue())),
                     DisplayType.UNSET
             ));
 
@@ -57,7 +57,7 @@ public class Styles {
             StyleRegistry.register("alignContent", EnumStyle.EnumStyleType.of(
                     AlignType::fromString,
                     (v,i)->v!=AlignType.INVALID,
-                    (w,i)->w.getLocatorNode().setAlignContent(i.getValue()),
+                    StyleFunctionalHelper.layout((w,i)->w.setAlignContent(i.getValue())),
                     AlignType.AUTO
             ));
 
@@ -65,7 +65,7 @@ public class Styles {
             StyleRegistry.register("alignSelf", EnumStyle.EnumStyleType.of(
                     AlignType::fromString,
                     (v,i)->v!=AlignType.INVALID,
-                    (w,i)->w.getLocatorNode().setAlignSelf(i.getValue()),
+                    StyleFunctionalHelper.layout((w,i)->w.setAlignSelf(i.getValue())),
                     AlignType.AUTO
             ));
 
@@ -73,7 +73,7 @@ public class Styles {
             StyleRegistry.register("alignItems", EnumStyle.EnumStyleType.of(
                     AlignType::fromString,
                     (v,i)->v!=AlignType.INVALID,
-                    (w,i)->w.getLocatorNode().setAlignItems(i.getValue()),
+                    StyleFunctionalHelper.layout((w,i)->w.setAlignItems(i.getValue())),
                     AlignType.AUTO
             ));
 
@@ -81,7 +81,7 @@ public class Styles {
             StyleRegistry.register("justifyContent", EnumStyle.EnumStyleType.of(
                     JustifyType::fromString,
                     (v,i)->v!=JustifyType.INVALID,
-                    (w,i)->w.getLocatorNode().setJustifyContent(i.getValue()),
+                    StyleFunctionalHelper.layout((w,i)->w.setJustifyContent(i.getValue())),
                     JustifyType.FLEX_START
             ));
 
@@ -89,7 +89,7 @@ public class Styles {
             StyleRegistry.register("flexDirection", EnumStyle.EnumStyleType.of(
                     FlexDirection::fromString,
                     (v,i)->v!=FlexDirection.INVALID,
-                    (w,i)->w.getLocatorNode().setFlexDirection(i.getValue()),
+                    StyleFunctionalHelper.layout((w,i)->w.setFlexDirection(i.getValue())),
                     FlexDirection.INVALID
             ));
 

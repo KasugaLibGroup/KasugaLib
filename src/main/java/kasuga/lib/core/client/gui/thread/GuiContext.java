@@ -1,5 +1,6 @@
 package kasuga.lib.core.client.gui.thread;
 
+import kasuga.lib.core.client.gui.KasugaScreen;
 import kasuga.lib.core.client.gui.KasugaTimer;
 import kasuga.lib.core.client.gui.components.Node;
 import kasuga.lib.core.client.gui.context.RenderContext;
@@ -7,7 +8,13 @@ import kasuga.lib.core.client.gui.intergration.javascript.JavascriptGuiBinding;
 import kasuga.lib.core.client.gui.intergration.javascript.JavascriptPlatformRuntime;
 import kasuga.lib.core.client.gui.runtime.PlatformModule;
 import kasuga.lib.core.client.gui.runtime.PlatformRuntime;
+import kasuga.lib.core.client.gui.style.Styles;
+import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.resources.ResourceLocation;
+import org.lwjgl.util.yoga.Yoga;
+
+import java.util.Map;
+import java.util.WeakHashMap;
 
 public class GuiContext {
     PlatformRuntime<? extends PlatformModule> runtime;
@@ -20,15 +27,17 @@ public class GuiContext {
     private boolean closable;
 
     private final JavascriptGuiBinding guiBinding;
-    private int width;
-    private int height;
-    private boolean closed = false;
-    private boolean ready;
 
+    Map<Object, Pair<Float,Float>> sizes = new WeakHashMap<>();
+
+    static Pair<Float,Float> INFINITY_SIZE = Pair.of(Yoga.YGUndefined,Yoga.YGUndefined);
+    private boolean closed = false;
     public GuiContext(GuiThread thread){
         this.runtime = thread.createRuntime();
         this.guiBinding = new JavascriptGuiBinding((JavascriptPlatformRuntime) runtime,root);
         this.runtime.bindContext(this);
+        root.style().addStyle(Styles.WIDTH.create("100%"));
+        root.style().addStyle(Styles.HEIGHT.create("100%"));
     }
 
     public boolean closable(){
@@ -37,14 +46,6 @@ public class GuiContext {
 
     public Node getRootNode(){
         return root;
-    }
-
-    public void setSize(int width,int height){
-        this.width = width;
-        this.height = height;
-        root.getLocatorNode().setWidth(width);
-        root.getLocatorNode().setHeight(height);
-        renderPreTick();
     }
 
     public void tick(){
@@ -60,13 +61,19 @@ public class GuiContext {
     public void renderPreTick(){
         if(closed)
             return;
-        root.applyStyles();
-        root.getLocatorNode().calculateLayout(width,height);
-        root.checkShouldReLayout();
-        root.renderPreTick();
-        if(width != 0 && height !=0){
-            this.ready = true;
+        for (Object attachedTarget : this.attachedTargets) {
+            renderPreTick(attachedTarget);
         }
+    }
+
+    public void renderPreTick(Object target){
+        if(closed || !root.getLocator().alive(target))
+            return;
+        root.applyStyles();
+        Pair<Float,Float> size = sizes.getOrDefault(target,INFINITY_SIZE);
+        root.getLocator().calculateLayout(target,size.getFirst(),size.getSecond());
+        root.checkShouldReLayout(target);
+        root.renderPreTick(target);
     }
 
     public void execute(String code){
@@ -76,10 +83,6 @@ public class GuiContext {
     public void render(RenderContext renderContext){
         if(closed)
             return;
-        if(!ready){
-            // TODO: Display the waiting page
-            return;
-        }
         root.dispatchRender(renderContext);
     }
 
@@ -114,5 +117,17 @@ public class GuiContext {
 
     public boolean closed() {
         return closed;
+    }
+
+    public void size(Object object,float width, float height) {
+        this.sizes.put(object,Pair.of(width,height));
+    }
+
+    public void createSource(Object source) {
+        this.root.getLocator().addSource(source);
+    }
+
+    public void removeSource(Object source){
+        this.root.getLocator().removeSource(source);
     }
 }

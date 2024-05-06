@@ -1,6 +1,7 @@
 package kasuga.lib.core.client.gui.style;
 
 import kasuga.lib.core.client.gui.components.Node;
+import kasuga.lib.core.client.gui.layout.yoga.YogaNode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +12,13 @@ public abstract class Style<P> {
 
     public abstract StyleType<?> getType();
 
-    public abstract void apply(Node node);
+    public void apply(Node node){
+
+    }
+
+    public void apply(YogaNode node){
+
+    }
 
     public abstract String getValueString();
 

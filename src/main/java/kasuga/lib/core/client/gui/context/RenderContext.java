@@ -3,6 +3,8 @@ package kasuga.lib.core.client.gui.context;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
+import kasuga.lib.core.client.render.texture.WorldTexture;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -12,12 +14,17 @@ import java.util.Stack;
 
 public class RenderContext {
 
-    public static RenderContext fromScreen(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick){
+    public static RenderContext fromScreen(Screen screen,PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick){
         RenderContext context = new RenderContext(RenderContextType.SCREEN);
         context.setPoseStack(pPoseStack);
         context.setMouseContext(new PlaneMouseContext(pMouseX,pMouseY));
         context.setPartialTicks(pPartialTick);
+        context.setSource(screen);
         return context;
+    }
+
+    public WorldTexture.RenderTypeBuilder getRenderType() {
+        return renderType;
     }
 
     public static enum RenderContextType{
@@ -26,7 +33,7 @@ public class RenderContext {
 
     protected RenderContextType contextType;
 
-    protected MultiBufferSource.BufferSource bufferSource;
+    protected MultiBufferSource bufferSource;
     protected PoseStack poseStack;
 
     protected MouseContext mouse = MouseContext.EMPTY;
@@ -39,7 +46,7 @@ public class RenderContext {
 
     protected int packedOverlay = OverlayTexture.NO_OVERLAY;
 
-    protected RenderType renderType = RenderType.solid();
+    protected WorldTexture.RenderTypeBuilder renderType = RenderType::text;
 
     public PlaneVertexScissorStack scissorStack = new PlaneVertexScissorStack();
 
@@ -86,20 +93,24 @@ public class RenderContext {
         this.packedLight = this.lightStack.isEmpty() ? 0 :this.lightStack.peek();
     }
 
-    public MultiBufferSource.BufferSource getBufferSource(){
+    public MultiBufferSource getBufferSource(){
         return bufferSource;
+    }
+
+    public void setBufferSource(MultiBufferSource bufferSource) {
+        this.bufferSource = bufferSource;
     }
 
     protected int zStack;
 
     public void pushZStack(){
         zStack++;
-        poseStack.translate(0,-0.01,0);
+        poseStack.translate(0,0,-1);
     }
 
     public void popZStack(){
         zStack--;
-        poseStack.translate(0,0.01,0);
+        poseStack.translate(0,0,1);
     }
 
 
@@ -121,6 +132,18 @@ public class RenderContext {
 
     public int getLight() {
         return packedLight;
+    }
+
+    public static Object EMPTY_SOURCE = new Object();
+
+    public Object source = EMPTY_SOURCE;
+
+    public Object getSource(){
+        return source;
+    }
+
+    public void setSource(Object source){
+        this.source = source;
     }
 }
 

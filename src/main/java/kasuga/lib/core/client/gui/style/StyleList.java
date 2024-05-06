@@ -1,6 +1,8 @@
 package kasuga.lib.core.client.gui.style;
 
+import kasuga.lib.core.client.gui.components.MultipleLocator;
 import kasuga.lib.core.client.gui.components.Node;
+import kasuga.lib.core.client.gui.layout.yoga.YogaNode;
 
 import java.util.*;
 
@@ -9,11 +11,13 @@ public class StyleList {
 
     protected HashMap<StyleType<?>,Style<?>> cache = new HashMap<>();
 
-    protected HashMap<StyleType<?>,Style<?>> waiting = new HashMap<>();
+    protected HashMap<StyleType<?>,Style<?>> waitingNode = new HashMap<>();
+
+    protected HashMap<StyleType<?>,Style<?>> waitingLocator = new HashMap<>();
 
     public void freshCache(){
         this.cache.clear();
-        this.waiting.clear();
+        this.waitingNode.clear();
         freshCache(null);
     }
     public int freshCache(StyleType<?> type){
@@ -23,7 +27,7 @@ public class StyleList {
                 continue;
             if(style.isValid(cache)){
                 cache.put(style.getType(),style);
-                waiting.put(style.getType(),style);
+                waitingNode.put(style.getType(),style);
                 i++;
             }
         }
@@ -38,7 +42,7 @@ public class StyleList {
         }
         if(style.isValid(cache)){
             cache.put(style.getType(),style);
-            waiting.put(style.getType(),style);
+            waitingNode.put(style.getType(),style);
         }
     }
 
@@ -51,12 +55,15 @@ public class StyleList {
         this.cache.remove(type);
         int i = freshCache(type);
         if(i == 0)
-            waiting.put(type,type.getDefault());
+            waitingNode.put(type,type.getDefault());
     }
 
     public void apply(Node node){
-        waiting.forEach((styleType,style)->style.apply(node));
-        waiting.clear();
+        waitingNode.forEach((styleType, style)->{
+            style.apply(node);
+            node.getLocator().applyStyleInstant(styleType,style);
+        });
+        waitingNode.clear();
     }
 
     public String toString(){
