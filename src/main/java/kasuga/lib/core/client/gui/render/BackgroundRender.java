@@ -1,5 +1,6 @@
 package kasuga.lib.core.client.gui.render;
 
+import com.mojang.math.Quaternion;
 import kasuga.lib.core.client.gui.context.RenderContext;
 import kasuga.lib.core.client.render.texture.SimpleTexture;
 import kasuga.lib.core.client.render.texture.WorldTexture;
@@ -33,9 +34,14 @@ public class BackgroundRender {
                 return;
             this.simple.get().render(x,y,width,height);
         }else{
-            if(this.simple.get() == null)
+            if(this.world.get() == null)
                 return;
-            this.world.get().render(context.pose(),context.getBufferSource(),width,height,context.getLight());
+            context.pose().pushPose();
+            context.pose().mulPose(Quaternion.fromXYZ(0f,3.14159267f,0f));
+            context.pose().translate(x,-y,0f);
+            this.world.get().renderType(context.getRenderType());
+            this.world.get().render(context.pose(),context.getBufferSource(),width,height,context.getLight(),true);
+            context.pose().popPose();
         }
     }
 
