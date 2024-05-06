@@ -5,20 +5,19 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-public class GuiAttachTarget {
+public class GuiAttachTarget implements Iterable<Object> {
     Set<Entity> entity = new HashSet<>();
     Set<BlockEntity> block = new HashSet<>();
-    Screen screen;
+    Set<Screen> screen = new HashSet<>();
     Set<GuiContext> context = new HashSet<>();
     int unattachedLivingTicks = 0;
 
     public void detach(){
-        this.entity = null;
-        this.block = null;
-        this.screen = null;
+        this.entity.clear();
+        this.block.clear();
+        this.screen.clear();
     }
 
     public boolean isClosable(){
@@ -41,7 +40,7 @@ public class GuiAttachTarget {
 
     public boolean isScreenSourceClosable(){
         Minecraft minecraft = Minecraft.getInstance();
-        return screen==null || minecraft.level == null || minecraft.screen != screen;
+        return screen.isEmpty();
     }
 
     public boolean isContextClosable(){
@@ -59,7 +58,7 @@ public class GuiAttachTarget {
     }
 
     public void attach(Screen screen){
-        this.screen = screen;
+        this.screen.add(screen);
     }
 
     public void attach(Entity entity){
@@ -75,8 +74,8 @@ public class GuiAttachTarget {
         this.block.remove(block);
     }
 
-    public void detachScreen(){
-        this.screen = null;
+    public void detach(Screen screen){
+        this.screen.remove(null);
     }
 
     public void detach(Entity entity){
