@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -84,5 +85,16 @@ public class GuiAttachTarget implements Iterable<Object> {
 
     public void detach(GuiContext context){
         this.context.remove(context);
+    }
+
+    @NotNull
+    @Override
+    public Iterator<Object> iterator() {
+        ArrayList<Object> list = new ArrayList<>();
+        list.addAll(this.entity);
+        list.addAll(this.block);
+        list.addAll(this.context);
+        list.addAll(this.screen);
+        return list.iterator();
     }
 }
