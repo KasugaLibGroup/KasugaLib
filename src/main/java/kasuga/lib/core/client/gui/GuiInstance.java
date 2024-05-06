@@ -7,6 +7,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -22,6 +23,7 @@ public class GuiInstance {
 
     public void open(Entity entity){
         this.openInternal(entity);
+        this.context.createSource(entity);
         this.context.getAttachedTargets().attach(entity);
         this.loadInternal();
     }
@@ -32,6 +34,7 @@ public class GuiInstance {
 
     public void open(BlockEntity block){
         this.openInternal(block);
+        this.context.createSource(block);
         this.context.getAttachedTargets().attach(block);
         this.loadInternal();
     }
@@ -39,6 +42,7 @@ public class GuiInstance {
     public Screen createScreen(){
         KasugaScreen kasugaScreen = new KasugaScreen(this);
         this.openInternal(kasugaScreen);
+        this.context.createSource(kasugaScreen);
         this.context.getAttachedTargets().attach(kasugaScreen);
         this.loadInternal();
         return kasugaScreen;
@@ -46,17 +50,20 @@ public class GuiInstance {
 
     public void close(Screen screen){
         this.closeInternal(screen);
-        this.context.getAttachedTargets().detachScreen();
+        this.context.removeSource(screen);
+        this.context.getAttachedTargets().detach(screen);
     }
 
     public void close(Entity entity){
         this.closeInternal(entity);
         this.context.getAttachedTargets().detach(entity);
+        this.context.removeSource(entity);
     }
 
     public void close(BlockEntity block){
         this.closeInternal(block);
         this.context.getAttachedTargets().detach(block);
+        this.context.removeSource(block);
     }
 
     public void openInternal(Object target){
@@ -84,5 +91,9 @@ public class GuiInstance {
     protected void stop() {
         this.context.close();
         this.context = null;
+    }
+
+    public Optional<GuiContext> getContext() {
+        return Optional.ofNullable(context);
     }
 }
