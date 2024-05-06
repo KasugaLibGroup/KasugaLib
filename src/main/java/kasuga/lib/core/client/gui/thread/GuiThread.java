@@ -27,7 +27,7 @@ public class GuiThread extends Thread {
                     this.contextManager.tick();
             }
         }catch (InterruptedException e){
-
+            System.out.println(e.toString());
         }
     }
 
