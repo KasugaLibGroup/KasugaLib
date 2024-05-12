@@ -10,7 +10,8 @@ import kasuga.lib.example_env.client.entity.renderer.WuLingRenderer;
 import kasuga.lib.example_env.entity.WuLingEntity;
 import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
-import kasuga.lib.registrations.registry.CreateRegistry;
+import kasuga.lib.registrations.client.AnimReg;
+import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.client.ModelReg;
 import kasuga.lib.registrations.common.*;
 import net.minecraft.resources.ResourceLocation;
@@ -21,7 +22,7 @@ import net.minecraft.world.level.material.MaterialColor;
 
 public class AllExampleElements {
 
-    public static final CreateRegistry testRegistry = ExampleMain.testRegistry;
+    public static final SimpleRegistry testRegistry = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
 
     public static final BlockReg<GreenAppleBlock> greenApple = new BlockReg<GreenAppleBlock>("green_apple")
             .blockType(GreenAppleBlock::new)
@@ -58,6 +59,9 @@ public class AllExampleElements {
 
     public static final CreativeTabReg tab = new CreativeTabReg("test")
             .icon(greenAppleItem).submit(testRegistry);
+    public static final AnimReg test_anim =
+            new AnimReg("test_anim", testRegistry.asResource("models/entity/test/wuling/wuling_anim.json"))
+            .submit(testRegistry);
 
     public static final SimpleConfig config = new SimpleConfig()
             .common("common settings")
@@ -68,8 +72,6 @@ public class AllExampleElements {
             .server("only in server")
             .intConfig("int_cfg", 4)
             .registerConfigs();
-
-
 
 
     /*
@@ -89,5 +91,7 @@ public class AllExampleElements {
             .loadPacket(ExampleS2CPacket.class, ExampleS2CPacket::new)
             .submit(testRegistry);
 
-    public static void invoke(){}
+    public static void invoke(){
+        testRegistry.submit();
+    }
 }
