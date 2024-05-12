@@ -3,18 +3,17 @@ package kasuga.lib.registrations.common;
 import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Optional;
+import kasuga.lib.registrations.BlockEntityRendererBuilder;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * The registration element of block entity. Block entity is a custom block data container, which makes us can
@@ -29,7 +28,7 @@ public class BlockEntityReg<T extends BlockEntity> extends Reg {
     private RegistryObject<BlockEntityType<T>> registryObject;
     private com.mojang.datafixers.types.Type<?> dataType = null;
     private BlockEntityType.BlockEntitySupplier<T> builder;
-    private BlockEntityRendererBuilder<T> rendererBuilder = null;
+    private Supplier<BlockEntityRendererBuilder<T>> rendererBuilder = null;
 
     /**
      * Use this to create a block entity reg.
@@ -87,8 +86,8 @@ public class BlockEntityReg<T extends BlockEntity> extends Reg {
      * @return self.
      */
     @Optional
-    public BlockEntityReg<T> withRenderer(BlockEntityRendererBuilder builder) {
-        this.rendererBuilder = (BlockEntityRendererBuilder<T>) builder;
+    public BlockEntityReg<T> withRenderer(Supplier<BlockEntityRendererBuilder<T>> builder) {
+        this.rendererBuilder = builder;
         return this;
     }
 
@@ -135,7 +134,7 @@ public class BlockEntityReg<T extends BlockEntity> extends Reg {
     }
 
     public BlockEntityRendererBuilder<T> getRendererBuilder() {
-        return rendererBuilder;
+        return rendererBuilder.get();
     }
 
     public BlockEntityType<T> getType() {
@@ -149,7 +148,7 @@ public class BlockEntityReg<T extends BlockEntity> extends Reg {
     @Inner
     public void registerRenderer(SimpleRegistry registry) {
         if(this.rendererBuilder != null)
-            registry.registerBlockEntityRenderer(() -> registryObject.get(), rendererBuilder);
+            registry.registerBlockEntityRenderer(() -> registryObject.get(), rendererBuilder.get());
     }
 
     /**
@@ -171,16 +170,5 @@ public class BlockEntityReg<T extends BlockEntity> extends Reg {
      */
     public interface BlockEntityProvider<T extends BlockEntity> {
         BlockEntityType<T> provide();
-    }
-
-    /**
-     * A function interface that provides a block entity renderer. If you want to use a block entity renderer on your block and
-     * block entity, you should first override the {@link Block#getRenderShape(BlockState)} method under your block class.
-     * Then, pass a block entity renderer builder into {@link BlockEntityReg#withRenderer(BlockEntityRendererBuilder)} method.
-     * The lib would deal with it for you.
-     * @param <T> the block entity your renderer belongs to.
-     */
-    public interface BlockEntityRendererBuilder<T extends BlockEntity> {
-        BlockEntityRenderer<T> build(BlockEntityRendererProvider.Context context);
     }
 }

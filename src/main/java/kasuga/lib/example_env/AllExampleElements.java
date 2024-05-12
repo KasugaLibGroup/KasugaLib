@@ -31,7 +31,7 @@ public class AllExampleElements {
             .materialColor(MaterialColor.COLOR_GREEN)
             .withSound(SoundType.CROP)
             .withBlockEntity("green_apple_tile", GreenAppleTile::new)
-            .withBlockEntityRenderer(GreenAppleTileRenderer::new)
+            .withBlockEntityRenderer(() -> GreenAppleTileRenderer::new)
             .defaultBlockItem(new ResourceLocation(KasugaLib.MOD_ID, "block/test/green_apple"))
             .stackSize(32)
             .tabTo(CreativeModeTab.TAB_DECORATIONS)
@@ -41,7 +41,7 @@ public class AllExampleElements {
             .entityType(WuLingEntity::new)
             .size(3, 3)
             .attribute(WuLingEntity::createAttributes)
-            .withRenderer(WuLingRenderer::new)
+            .withRenderer(() -> (WuLingRenderer::new))
             .submit(testRegistry);
 
     public static final ModelReg greenAppleModel = new ModelReg("green_apple", new ResourceLocation(KasugaLib.MOD_ID, "block/test/green_apple"))
@@ -51,7 +51,8 @@ public class AllExampleElements {
             ModelReg("wuling_vans", new ResourceLocation(KasugaLib.MOD_ID, "entity/test/wuling/wuling_base"))
             .submit(testRegistry);
 
-    public static final ItemReg<GreenAppleItem> greenAppleItem = new ItemReg<GreenAppleItem>("green_apple_item")
+    public static final ItemReg<GreenAppleItem> greenAppleItem =
+            new ItemReg<GreenAppleItem>("green_apple_item")
             .itemType(GreenAppleItem::new)
             .stackTo(16)
             .shouldCustomRender(true)

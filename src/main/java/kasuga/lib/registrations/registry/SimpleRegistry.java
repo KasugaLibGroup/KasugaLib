@@ -9,6 +9,7 @@ import kasuga.lib.core.annos.Util;
 import kasuga.lib.core.client.ModelMappings;
 import kasuga.lib.core.client.render.model.CustomRenderedItemModel;
 import kasuga.lib.core.base.SimpleCreativeTab;
+import kasuga.lib.registrations.BlockEntityRendererBuilder;
 import kasuga.lib.registrations.client.AnimReg;
 import kasuga.lib.registrations.common.*;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -419,7 +420,7 @@ public class SimpleRegistry {
      */
     @Inner
     public <T extends BlockEntity> void registerBlockEntityRenderer(BlockEntityReg.BlockEntityProvider<T> type,
-                                                                    BlockEntityReg.BlockEntityRendererBuilder<T> rendererBuilder) {
+                                                                    BlockEntityRendererBuilder<T> rendererBuilder) {
         BlockEntityRenderers.register(type.provide(), rendererBuilder::build);
     }
 }
