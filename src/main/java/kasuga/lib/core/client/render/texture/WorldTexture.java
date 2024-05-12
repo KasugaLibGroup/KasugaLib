@@ -81,10 +81,6 @@ public class WorldTexture extends SimpleTexture {
         context.addAct(act);
     }
 
-    public void addAction(int index, PoseContext.Action act) {
-        context.addAct(index, act);
-    }
-
     public void translate(double x, double y, double z) {
         context.translate(x, - y, z);
     }

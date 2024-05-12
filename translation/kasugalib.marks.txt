@@ -1,0 +1,292 @@
+kasuga.lib.core.util.DevelopEnvFileContainer
+Still under construction. Don't use this.
+正在开发，请勿使用
+
+
+kasuga.lib.core.util.Envs
+This class is a utility for environment detecting.
+这是一个用于运行环境检测的工具类
+
+kasuga.lib.core.util.Envs#isDevEnvironment
+Dev means the environment in IDEs like IDEA, Eclipse and so on.
+@return is we are in dev environment?
+Dev意味着处在一个IDE的开发环境，类似IDEA，Eclipse
+@return 是否处在开发环境中
+
+kasuga.lib.core.util.Envs#isClient
+Client means we are in the client game side. The client controls rendering or client ticks.
+@return is the game a client?
+Client意味着处在客户端环境中。客户端负责渲染与tick
+@return 是否处在一个客户端中
+
+kasuga.lib.core.util.Envs#isDedicateServer
+DedicateServer is a kind of server that used for multiplayer gaming. These servers have no client,
+they only runs the logical side of your world.
+@return is the game a dedicate server?
+DedicateServer是一类专门用于多人游戏的服务器，并不运行客户端
+这种用户仅运行世界的逻辑处理等功能
+@retuen 是否处在一个服务器中
+
+
+
+kasuga.lib.core.util.Resources#getResources
+Get resources with their path.
+@param location The location of file or folder.
+@param isFile is the location pointing at a file or a folder?
+@return the map of resource path and the resource.
+@throws IOException if the file/folder don't exist, throw this.
+通过资源路径获取资源
+@param location 文件/文件夹的路径
+@param isFile 提供的路径是文件还是文件夹
+@return 资源与资源的map
+@throws IOException 如果资源不存在则抛出此错误
+
+kasuga.lib.core.util.Resources#getFullPathResources
+Get resources with their full path. Full path means that the path contains the location path you gave.
+@param location The location of file or folder.
+@param isFile is the location pointing at a file or a folder?
+@return the map of resource full path and the resource.
+@throws IOException if the file/folder don't exist, throw this.
+通过绝对资源路径获取资源
+@param location 文件/文件夹的路径
+@param isFile 提供的路径是文件还是文件夹
+@return 资源与资源的map
+@throws IOException 如果资源不存在则抛出此错误
+
+kasuga.lib.core.util.Resources#getResource
+Get single resource file from your asset or data.
+@param location the file location.
+@return the resource.
+@throws IOException if the file don't exist, throw this.
+从asset或data获取资源文件
+@param location 文件位置
+@return 资源
+@throws IOException 如果文件不存在则抛出此错误
+
+kasuga.lib.core.util.Resources#getBlock
+Get Block from its registration key.
+@param location the block registration key (we usually use them in data-gen)
+@return the block we got.
+通过注册key获取方块
+@param location 方块注册的key(在数据生成中使用的)
+@return 获取到的方块
+
+kasuga.lib.core.util.Resources#getItem
+Get item from its registration key.
+@param location the item registration key (we usually use them in data-gen)
+@return the item we got.
+通过注册key获取物品
+@param location 物品注册的key(在数据生成中使用的)
+@return 获取到的物品
+
+
+kasuga.lib.core.util.data_type.Pair
+A simple data struct that contains two elements.
+@param <K> Type of first data.
+@param <V> Type of second data.
+一个简易的数据结构，包含两个元素
+@param <K> 第一个数据的类型
+@param <V> 第二个数据的类型
+
+
+kasuga.lib.core.network.C2SPacket
+This packet should be sent by logical client and received by logical server.
+It is used for your custom packets that transmit custom data from client to server.
+To register one of this, see {@link kasuga.lib.registrations.common.ChannelReg}
+这个数据包应当由客户端发送，由服务器接收
+这个部分适用于在服务器与客户端中传输你的自定义数据包中的自定义数据
+如需注册一个，请见 {@link kasuga.lib.registrations.common.ChannelReg}
+
+kasuga.lib.core.network.C2SPacket#C2SPacket
+This function is the deserializer of your packet.
+See {@link Packet} for more constructor info.
+@param buf data bytes you got from the network.
+这个函数是你数据包的反序列化器
+见 {@link Packet} 以获得更多有关构造器的信息
+@param buf 从网络获取到的字节数据
+
+kasuga.lib.core.network.C2SPacket#handle
+The handler of your packet. After this packet has been received by
+logical server, we would handle this packet in this method.
+@param context some server info, such level, player and so on.
+你的数据包的处理器，当这个数据包被服务器接收是，将在这个方法(Method)中处理这个包
+@param context 一些服务器的信息，像世界(level)，玩家等
+
+kasuga.lib.core.network.C2SPacket#encode
+The encoder of your packet. You must put all your data into this
+byte buffer in order to transmit them.
+@param buf the data container buffer, push your data into it.
+你的数据包的编码器，你需要将所有数据传输到这个缓冲区中以传输他们
+@param buf 你的数据缓冲区，把所有的数据都传输至其中
+
+
+kasuga.lib.core.network.S2CPacket
+This packet should be sent by logical server and received by logical client.
+It is used for your custom packets that transmit custom data from server to client.
+To register one of this, see {@link kasuga.lib.registrations.common.ChannelReg}
+这个数据包应当从服务器发送，由客户端接收
+这个部分适用于在服务器与客户端中传输你的自定义数据包中的自定义数据
+如需注册一个，请见 {@link kasuga.lib.registrations.common.ChannelReg}
+
+kasuga.lib.core.network.S2CPacket#S2CPacket
+The decoder constructor of your packet. Take all your data out from the byte buffer here.
+@param buf the received byte buffer.
+你的数据包的解码与构造器，从这里的缓冲区中取出所有的数据
+@param buf 收到的数据缓冲区
+
+kasuga.lib.core.network.S2CPacket#handle
+The handler of your packet, the packet would be handled here.
+@param minecraft Your minecraft client.
+你的数据包的处理器，数据包将在这里被处理
+@param minecraft 你的minecraft客户端
+
+kasuga.lib.core.network.S2CPacket#encode
+Push your data into the byte buffer here.
+@param buf the data container buffer, push your data into it.
+将你的数据传输到这个缓冲区中
+@param buf 你的数据缓冲区，把所有的数据都传输至其中
+
+kasuga.lib.core.network.Packet
+This class is designed for network packages. Network packages transmit our custom data between client and server.
+ For packages from client to server, use {@link C2SPacket}.
+ For packages from server to client, use {@link S2CPacket}
+ 这个类适用于网络数据包。网络数据包在客户端与服务器当中传输自定义数据
+ 有关从客户端传输数据包到服务器，使用 {@link C2SPacket}
+ 有关从服务器传输数据包到客户端，使用 {@link S2CPacket}
+
+kasuga.lib.core.network.Packet#Packet
+This constructor is also used as decoder. While the program get data from network, it would
+use this deserializer to create our packet.
+@param buf the bytes we got from network.
+这个构造器也可以用作一个解码器。
+当程序从网络获取到数据时，将使用这个反序列化器来创建一个数据包
+@param buf 从网络中获取到的数据
+
+kasuga.lib.core.network.Packet#encode
+The encoder of your packet, you must push all your data into this byte buffer.
+@param buf the data container buffer, push your data into it.
+你的数据包的编码器，你需要将所有数据传输到这个缓冲区中以传输他们
+@param buf 你的数据缓冲区，把所有的数据都传输至其中
+
+
+kasuga.lib.core.events.both.EntityAttributeEvent#entityAttributeCreation
+This event deal with your entity attributes like HEALTH.
+An entity which belongs to the LivingEntity class should have "MAX_HEALTH" attribute.
+Or your game would crash while dealing with your entity's health.
+@param event the given forge event.
+这是一个处理实体属性——类似HEALTH，血量——的事件
+一个属于LivingEntity类的实体应当有“MAX_HEALTH”属性
+不然你的游戏将在处理实体血量的时候崩溃
+@param event 给定的forge event
+
+
+kasuga.lib.core.base.CustomRenderedItem
+This class is created for any item which needs to customize rendering.
+Customize rendering means that we would not use the vanilla renderer to finish our render process.
+Needs more Examples? You could google "create" for their amazing custom rendered items.
+这一个类是用于创建一个需要自定义渲染的物品
+自定义渲染意味着不使用原版渲染来完成渲染进程
+更多的“自定义渲染物品”范例可参照机械动力mod
+
+kasuga.lib.core.base.CustomRenderedItem#CustomRenderedItem
+Use this to create your customRenderedItem.
+@param pProperties The given itemProperties.
+使用这一个方法(Method)来创建的的自定义渲染物品
+@param pProperties 给定的itemProperties
+
+kasuga.lib.core.base.CustomRenderedItem#getCustomItemRenderer
+Override this to link to your custom renderer,
+the renderer should be a subClass of {@link BlockEntityWithoutLevelRenderer}.
+@param dispatcher the given render dispatcher.
+@param modelSet the given model set.
+@return your custom render renderer
+请覆写这个地方来连接你的自定义渲染
+渲染器应当是一个{@link BlockEntityWithoutLevelRenderer}的子类
+@param dispatcher 给定的渲染线程调度器
+@param modelSet 给定的model set
+@return 你的自定义渲染器
+
+
+kasuga.lib.core.base.Saved
+This class is for SavedData. SavedData is a type of data that would be saved/load with the
+game while the game paused, quit or load. The path of your file would be
+".minecraft/saves/save_name/data/resourceKey.dat".
+All data should be serialized as nbt in order to be saved.
+So you must prepare your SavedData class with valid serializer and deserializer method.
+For more info, see {@link SavedData}
+@param <T> the SavedData content Type
+这个类是用于SavedData的。SavedData是在游戏暂停，退出，加载时会被加载/保存的一类数据。
+你的文件的路径将是：
+".minecraft/saves/save_name/data/resourceKey.dat"
+所有数据应当被转化为nbt来存储
+所以你应当在使用SavedData类前准备好有效的序列化器和反序列化器
+更多信息请见{@link SavedData}
+@param <T> SavedData内容类型
+
+kasuga.lib.core.base.Saved#Saved
+
+kasuga.lib.core.base.Saved#loadFromDisk
+
+kasuga.lib.core.base.Saved#saveToDisk
+
+kasuga.lib.core.base.Saved#getData
+
+kasuga.lib.core.base.Saved#save
+
+kasuga.lib.core.base.Saved#saveToFile
+
+
+kasuga.lib.core.base.SimpleCreativeTab
+This class is for CreativeModeTab functioning. Without this class we have to override the {@link CreativeModeTab#makeIcon()}
+method over and over again only for apply our icons, which makes no scene.
+这个类是用于CreatvieModeTab(创造物品栏)工作的
+如果没有这一个类，我们将要在添加图标时重复覆写 {@link CreativeModeTab#makeIcon()} ，但这并不必要
+
+kasuga.lib.core.base.SimpleCreativeTab#SimpleCreativeTab
+Use this to get a SimpleCreativeTab
+@param label the name of your tab, usually a translation key.
+@param icon the icon supplier. We would use this to get the icon automatically.
+使用这个方法(Method)来得到一个简易的创造物品栏
+@param label 你的创造物品栏的名称，通常是一个翻译key
+@param icon 你的创造物品栏的图标获取器，将使用这个来自动获取图标
+
+
+kasuga.lib.core.annos.Beta
+This Annotation means the marked element is still under construction
+or still without sufficient verification.
+So these elements would be changed between lib versions.
+Please try not to use these class or methods.
+这个注释意味着标记的元素仍在开发中
+或并未经过足够的验证
+因此这些元素将在不同的lib版本中改变
+请不要尝试使用这些类或者方法(Method)
+
+
+kasuga.lib.core.annos.Inner
+This annotation means that the marked element (class or method) is only for the inner lib usage.
+Don't use them in your codes. So as not to cause mistakes or other adverse consequences.
+这个注释意味着这些标记的元素(类或者方法)仅用于内部lib使用
+请不要在你的代码中使用这些，使用可能会导致错误或其他不利后果
+
+
+kasuga.lib.core.annos.Mandatory
+This annotation means you should use this method at least once in your registration or other code.
+It's very important for your registration. Your code would not work properly without them.
+这个标记意味着你至少需要再注册或其他代码中至少调用该代码一次
+这对于你的注册进程十分重要，你的代码在不使用这些代码时可能不会正常工作
+
+
+kasuga.lib.core.annos.Optional
+This annotation means that the marked method is not necessary for your registration. Your registration could
+run well without them. Only use them if you need their functions.
+这个注释意味着这个标记的方法(Method)对于你的注册并不重要
+你的注册进程将在不使用这些代码的时候运行正常
+仅在需要使用相关功能时使用这些函数
+
+
+kasuga.lib.core.annos.Util
+This annotation marks a utility. Any marked element could be used as util and you could use them to boost your coding.
+这个注释标记了一个工具类。任意标记的元素可以被用作一个工具类，可以在编程时加速你的编程速度
+
+
+kasuga.lib.registrations
