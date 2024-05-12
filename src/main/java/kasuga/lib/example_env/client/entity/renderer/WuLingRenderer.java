@@ -16,20 +16,8 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.Optional;
 
 public class WuLingRenderer extends EntityRenderer<WuLingEntity> {
-    public final MultiPartModel wuling_model;
-    public final Animation test_anim;
     public WuLingRenderer(EntityRendererProvider.Context pContext) {
         super(pContext);
-        wuling_model = ((MultiPartModel) AllExampleElements.wuLingVans.getModel()).clone();
-        wuling_model.renderType(RenderType::solid);
-        wuling_model.applyParentRenderTypeForAllBones();
-        Optional<Animation> optional = Animation.decode(Constants.root(),
-                new ResourceLocation(KasugaLib.MOD_ID, "models/entity/test/wuling/wuling_anim.json"),
-                "test_anim");
-        test_anim = optional.orElse(null);
-        if(test_anim != null) {
-            test_anim.loadModel(wuling_model);
-        }
     }
 
     @Override
@@ -39,16 +27,13 @@ public class WuLingRenderer extends EntityRenderer<WuLingEntity> {
 
     @Override
     public void render(WuLingEntity entity, float yaw, float partial, PoseStack pose, MultiBufferSource buffer, int light) {
-        wuling_model.translate(0, 0, -.5);
+        Animation test_anim = entity.getAnimation();
         if(test_anim != null) {
+            test_anim.getModel().translate(0, 0, -.5);
             test_anim.assign(entity, partial);
-            test_anim.assign("left_front", entity.doorControl.isLeftFront() ? 1 : 0);
-            test_anim.assign("left_back", entity.doorControl.isLeftBack() ? 1 : 0);
-            test_anim.assign("right_front", entity.doorControl.isRightFront() ? 1 : 0);
-            test_anim.assign("right_back", entity.doorControl.isRightBack() ? 1 : 0);
-            test_anim.assign("mid_back", entity.doorControl.isMidBack() ? 1 : 0);
+            entity.actAnimation();
             test_anim.action();
+            test_anim.getModel().render(pose, buffer, 0, 0, 0, (int)(light * .9), 0);
         }
-        wuling_model.render(pose, buffer, 0, 0, 0, (int)(light * .9), 0);
     }
 }

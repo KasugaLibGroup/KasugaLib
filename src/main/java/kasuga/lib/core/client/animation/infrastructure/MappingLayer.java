@@ -32,6 +32,10 @@ public class MappingLayer {
         }
     }
 
+    public SimpleModel getModel() {
+        return model;
+    }
+
     public void setModel(SimpleModel model) {
         this.model = model;
     }
