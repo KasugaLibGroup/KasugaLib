@@ -1,7 +1,12 @@
 package kasuga.lib.example_env.entity;
 
+import com.mojang.math.Vector3f;
+import kasuga.lib.core.client.animation.data.Animation;
 import kasuga.lib.core.client.render.RendererUtil;
+import kasuga.lib.core.client.render.model.MultiPartModel;
 import kasuga.lib.example_env.AllExampleElements;
+import kasuga.lib.example_env.client.entity.renderer.WuLingRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -23,8 +28,16 @@ import java.util.List;
 public class WuLingEntity extends LivingEntity {
     public DoorControl doorControl = new DoorControl();
 
+    public final Animation animation;
     public WuLingEntity(EntityType<? extends LivingEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        animation = level.isClientSide ? AllExampleElements.test_anim.getInstance() : null;
+        if (level.isClientSide) {
+            MultiPartModel model = (MultiPartModel) AllExampleElements.wuLingVans.getModel().clone();
+            model.renderType(RenderType::solid);
+            model.applyParentRenderTypeForAllBones();
+            animation.loadModel(model);
+        }
     }
 
     // public WuLingEntity(Level world) {
@@ -108,6 +121,18 @@ public class WuLingEntity extends LivingEntity {
             doorControl.setLeftFront(!doorControl.isLeftFront());
         }
         return InteractionResult.SUCCESS;
+    }
+
+    public Animation getAnimation() {
+        return animation;
+    }
+
+    public void actAnimation() {
+        animation.assign("left_front", doorControl.isLeftFront() ? 1 : 0);
+        animation.assign("left_back", doorControl.isLeftBack() ? 1 : 0);
+        animation.assign("right_front", doorControl.isRightFront() ? 1 : 0);
+        animation.assign("right_back", doorControl.isRightBack() ? 1 : 0);
+        animation.assign("mid_back", doorControl.isMidBack() ? 1 : 0);
     }
 
     public void onDrive(Player driver) {}

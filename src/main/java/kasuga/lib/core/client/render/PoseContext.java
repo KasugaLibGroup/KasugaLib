@@ -5,12 +5,14 @@ import com.mojang.math.Axis;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class PoseContext {
-    private final ArrayList<Action> list;
+    private final Queue<Action> list;
     private boolean lock, autoClear = true;
     protected PoseContext() {
-        list = new ArrayList<>();
+        list = new LinkedBlockingQueue<Action>();
     }
 
     protected PoseContext(Action... acts) {
@@ -28,11 +30,6 @@ public class PoseContext {
 
     public PoseContext addAct(Action act) {
         this.list.add(act);
-        return this;
-    }
-
-    public PoseContext addAct(int index, Action act) {
-        this.list.add(index, act);
         return this;
     }
 
