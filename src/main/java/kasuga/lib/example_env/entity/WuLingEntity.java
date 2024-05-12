@@ -1,6 +1,5 @@
 package kasuga.lib.example_env.entity;
 
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.animation.data.Animation;
 import kasuga.lib.core.client.render.RendererUtil;
 import kasuga.lib.core.client.render.model.MultiPartModel;
@@ -31,8 +30,8 @@ public class WuLingEntity extends LivingEntity {
     public final Animation animation;
     public WuLingEntity(EntityType<? extends LivingEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        animation = level.isClientSide ? AllExampleElements.test_anim.getInstance() : null;
-        if (level.isClientSide) {
+        animation = level().isClientSide ? AllExampleElements.test_anim.getInstance() : null;
+        if (level().isClientSide) {
             MultiPartModel model = (MultiPartModel) AllExampleElements.wuLingVans.getModel().clone();
             model.renderType(RenderType::solid);
             model.applyParentRenderTypeForAllBones();

@@ -8,7 +8,6 @@ import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Util;
 import kasuga.lib.core.client.ModelMappings;
 import kasuga.lib.core.client.render.model.CustomRenderedItemModel;
-import kasuga.lib.core.base.SimpleCreativeTab;
 import kasuga.lib.registrations.client.AnimReg;
 import kasuga.lib.registrations.common.*;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -219,7 +218,7 @@ public class SimpleRegistry {
      * return the registry of Creative Mode Tabs. See {@link kasuga.lib.registrations.common.CreativeTabReg}
      * @return the regsitry of kasuga lib style models.
      */
-    public HashMap<String, SimpleCreativeTab> tab() {return TABS;}
+    public DeferredRegister<CreativeModeTab> tab() {return TABS;}
 
 
     public HashMap<String, AnimReg> animation() {return ANIMS;}

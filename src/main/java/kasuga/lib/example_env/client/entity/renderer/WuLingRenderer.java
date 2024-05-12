@@ -18,17 +18,6 @@ import java.util.Optional;
 public class WuLingRenderer extends EntityRenderer<WuLingEntity> {
     public WuLingRenderer(EntityRendererProvider.Context pContext) {
         super(pContext);
-
-        wuling_model = ((MultiPartModel) AllExampleElements.wuLingVans.getModel()).clone();
-        wuling_model.renderType(RenderType::solid);
-        wuling_model.applyParentRenderTypeForAllBones();
-        Optional<Animation> optional = Animation.decode(Constants.root(),
-                new ResourceLocation(KasugaLib.MOD_ID, "models/entity/test/wuling/wuling_anim.json"),
-                "test_anim");
-        test_anim = optional.orElse(null);
-        if(test_anim != null) {
-            test_anim.loadModel(wuling_model);
-        }
     }
 
     @Override

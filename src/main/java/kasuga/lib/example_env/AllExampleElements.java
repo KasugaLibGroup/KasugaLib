@@ -89,5 +89,7 @@ public class AllExampleElements {
             .loadPacket(ExampleS2CPacket.class, ExampleS2CPacket::new)
             .submit(testRegistry);
 
-    public static void invoke(){}
+    public static void invoke(){
+        testRegistry.submit();
+    }
 }
