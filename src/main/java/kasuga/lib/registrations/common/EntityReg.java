@@ -3,9 +3,9 @@ package kasuga.lib.registrations.common;
 import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Optional;
+import kasuga.lib.registrations.EntityRendererBuilder;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -18,6 +18,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Entity is a basic element of minecraft. We use it to create mobs, minecarts and other movable creators.
@@ -30,8 +31,9 @@ public class EntityReg<T extends Entity> extends Reg {
     MobCategory mobCategory;
     public final List<Object> externalArgs;
     private EntityAttributeBuilder attributeBuilder;
-    private EntityRendererProvider<T> provider = null;
+    private Supplier<EntityRendererBuilder<T>> provider = null;
     private EntityPropertyIdentifier<T> identifier;
+
     public float height = 1f, width = 1f;
 
     /**
@@ -61,7 +63,7 @@ public class EntityReg<T extends Entity> extends Reg {
      * @return self.
      */
     @Mandatory
-    public EntityReg<T> withRenderer(EntityRendererProvider<T> provider) {
+    public EntityReg<T> withRenderer(Supplier<EntityRendererBuilder<T>> provider) {
         this.provider = provider;
         return this;
     }
@@ -140,7 +142,7 @@ public class EntityReg<T extends Entity> extends Reg {
 
     @Inner
     public void registerRenderer() {
-        EntityRenderers.register(registryObject.get(), provider);
+        EntityRenderers.register(registryObject.get(), provider.get()::build);
     }
 
     public interface EntityBuilder<T extends Entity> {
