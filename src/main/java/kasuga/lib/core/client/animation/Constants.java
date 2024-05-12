@@ -5,7 +5,9 @@ import interpreter.compute.data.Namespace;
 import interpreter.compute.data.functions.SingleParamFunction;
 import interpreter.compute.data.functions.TripleParamFunction;
 import interpreter.compute.infrastructure.Formula;
+import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.animation.data.Animation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -16,7 +18,7 @@ import java.util.HashSet;
 public class Constants {
     private static int tick = 0;
     private static boolean shouldAct = false;
-    private static final HashSet<Animation> animations = new HashSet<>();
+    private static final HashMap<Integer, Animation> animations = new HashMap<>();
     public static final Namespace ANIM_ROOT_NAMESPACE = new Namespace(Code.ROOT_NAMESPACE);
     public static final TripleParamFunction animTranslate = ANIM_ROOT_NAMESPACE.register3Param("translate", (x, y, z) -> 0f);
     public static final TripleParamFunction animScale = ANIM_ROOT_NAMESPACE.register3Param("scale", (x, y, z) -> 0f);
@@ -32,26 +34,32 @@ public class Constants {
     }
 
     public static void stackAnimateIn(Animation animation) {
-        animations.add(animation);
+        animations.put(KasugaLib.STACKS.random().nextInt(), animation);
     }
 
     public static boolean haAnimation(Animation animation) {
-        return animations.contains(animation);
+        return animations.containsValue(animation);
     }
 
     public static void removeAnimation(Animation animation) {
-        animations.remove(animation);
+        Integer i = -1;
+        for (Integer key : animations.keySet()) {
+            if (animations.get(key).equals(animation)) {
+                i = key;
+                break;
+            }
+        }
+        animations.remove(i);
     }
 
     public static int tick(){return tick;}
-    public void invoke() {}
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if(!shouldAct) return;
         if(tick >= 19) tick = 0;
         else tick++;
-        animations.forEach(Animation::tick);
+        animations.forEach((integer, animation) -> animation.tick());
     }
 
     @SubscribeEvent
