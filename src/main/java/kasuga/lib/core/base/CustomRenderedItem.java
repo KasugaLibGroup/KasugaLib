@@ -6,6 +6,8 @@ import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
 
 import java.util.function.Consumer;
@@ -26,6 +28,7 @@ public abstract class CustomRenderedItem extends Item {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void initializeClient(Consumer<IItemRenderProperties> consumer) {
         // super.initializeClient(consumer);
         consumer.accept(
@@ -46,5 +49,6 @@ public abstract class CustomRenderedItem extends Item {
      * @param modelSet the given model set.
      * @return your custom render renderer
      */
+    @OnlyIn(Dist.CLIENT)
     public abstract BlockEntityWithoutLevelRenderer getCustomItemRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet modelSet);
 }
