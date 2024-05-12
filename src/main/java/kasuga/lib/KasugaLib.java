@@ -29,7 +29,7 @@ public class KasugaLib {
     public static final Gson GSON = new GsonBuilder().enableComplexMapKeySerialization().create();
     public KasugaLib() {
         EVENTS.register(this);
-        if (Envs.isClient())
+        if (Envs.isDevEnvironment())
             AllExampleElements.invoke();
     }
 
