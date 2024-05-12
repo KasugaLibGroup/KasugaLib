@@ -5,7 +5,6 @@ import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Optional;
 import kasuga.lib.core.base.CustomBlockRenderer;
 import kasuga.lib.registrations.Reg;
-import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -20,6 +19,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.RegistryObject;
+import kasuga.lib.registrations.registry.SimpleRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
