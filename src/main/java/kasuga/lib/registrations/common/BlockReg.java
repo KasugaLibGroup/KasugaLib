@@ -4,6 +4,7 @@ import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Optional;
 import kasuga.lib.core.base.CustomBlockRenderer;
+import kasuga.lib.registrations.BlockEntityRendererBuilder;
 import kasuga.lib.registrations.Reg;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -157,12 +158,12 @@ public class BlockReg<T extends Block> extends Reg {
      * @return self.
      */
     @Optional
-    public BlockReg<T> withBlockEntityRenderer(BlockEntityReg.BlockEntityRendererBuilder builder) {
+    public BlockReg<T> withBlockEntityRenderer(Supplier<BlockEntityRendererBuilder> builder) {
         if (blockEntityReg == null) {
             crashOnNotPresent(BlockEntityReg.class, "BlockEntityReg", "withBlockEntityRenderer");
             return this;
         }
-        blockEntityReg.withRenderer(builder);
+        blockEntityReg.withRenderer(builder::get);
         return this;
     }
 
