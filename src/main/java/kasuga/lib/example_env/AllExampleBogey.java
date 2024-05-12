@@ -58,14 +58,14 @@ public class AllExampleBogey {
             new BlockEntityReg<StandardBogeyBlockEntity>("standard_bogey_entity")
             .blockEntityType(StandardBogeyBlockEntity::new)
             .addBlock(() -> standardBogey.getEntry().get())
-            .withRenderer(BogeyBlockEntityRenderer::new)
+            .withRenderer(() -> BogeyBlockEntityRenderer::new)
             .submit(testRegistry);
 
     public static final BlockEntityReg<TestBogeyBlockEntity> testBogeyEntity =
             new BlockEntityReg<TestBogeyBlockEntity>("test_bogey_entity")
                     .blockEntityType(TestBogeyBlockEntity::new)
                     .addBlock(() -> cw2Bogey.getEntry().get())
-                    .withRenderer(BogeyBlockEntityRenderer::new)
+                    .withRenderer(() -> BogeyBlockEntityRenderer::new)
                     .submit(testRegistry);
 
     public static void invoke(){}
