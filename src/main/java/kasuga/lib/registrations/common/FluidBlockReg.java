@@ -3,6 +3,7 @@ package kasuga.lib.registrations.common;
 import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Optional;
+import kasuga.lib.registrations.BlockEntityRendererBuilder;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -159,12 +160,12 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
      * @return self.
      */
     @Optional
-    public FluidBlockReg<T> withBlockEntityRenderer(BlockEntityReg.BlockEntityRendererBuilder builder) {
+    public FluidBlockReg<T> withBlockEntityRenderer(Supplier<BlockEntityRendererBuilder> builder) {
         if (blockEntityReg == null) {
             crashOnNotPresent(BlockEntityReg.class, "blockEntityReg", "withBlockEntityRenderer");
             return this;
         }
-        blockEntityReg.withRenderer(builder);
+        blockEntityReg.withRenderer(builder::get);
         return this;
     }
 
