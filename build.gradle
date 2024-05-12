@@ -200,8 +200,7 @@ dependencies {
     testAnnotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
 
     // implementation files('libs/Mixed-Arithmetic-Logic-Interpreter-1.0.0.jar')
-    minecraftLibrary "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.0"
-    jarJar(group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)")
+
     // testImplementation "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.0"
     // clientAnnotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
     // apiAnnotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
@@ -209,7 +208,8 @@ dependencies {
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
     // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
     // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
-
+    minecraftLibrary "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.2"
+    jarJar(group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)")
     // Examples using mod jars from ./libs
     // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
 

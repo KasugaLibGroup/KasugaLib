@@ -36,8 +36,8 @@ import java.util.Optional;
 
 @OnlyIn(Dist.CLIENT)
 public class Animation {
-    private String key;
-    private ResourceLocation location;
+    private final String key;
+    private final ResourceLocation location;
     private final Namespace namespace;
     private final MappingLayer mappingLayer;
     private final TriggerGroup triggerGroup;
@@ -82,9 +82,24 @@ public class Animation {
         return result;
     }
 
+    public SimpleModel getModel() {
+        return mappingLayer.getModel();
+    }
+
     public static Optional<Animation> decode(Namespace namespace, ResourceLocation location, String name) {
         try {
             Map<String, Animation> map = decode(namespace, location);
+            if(map.containsKey(name))
+                return Optional.of(map.get(name));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+        return Optional.empty();
+    }
+
+    public static Optional<Animation> decode(ResourceLocation location, String name) {
+        try {
+            Map<String, Animation> map = decode(Constants.root().clone(), location);
             if(map.containsKey(name))
                 return Optional.of(map.get(name));
         } catch (Exception e) {
@@ -194,5 +209,9 @@ public class Animation {
     }
     public String getName() {
         return key;
+    }
+
+    public Animation clone() {
+        return decode(this.location, this.key).orElse(null);
     }
 }

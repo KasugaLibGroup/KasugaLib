@@ -8,6 +8,7 @@ import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Util;
 import kasuga.lib.core.client.ModelMappings;
 import kasuga.lib.core.client.render.model.CustomRenderedItemModel;
+import kasuga.lib.registrations.client.AnimReg;
 import kasuga.lib.registrations.common.*;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.resources.model.BakedModel;
@@ -73,6 +74,7 @@ public class SimpleRegistry {
     private final HashSet<EntityReg<? extends LivingEntity>> CACHE_OF_LIVING_ENTITIES;
     private final ModelMappings modelMappings;
     private final DeferredRegister<CreativeModeTab> TABS;
+    private final HashMap<String, AnimReg> ANIMS;
 
     /**
      * This constructor is used for create a new KasugaLib registration.
@@ -108,6 +110,7 @@ public class SimpleRegistry {
         CACHE_OF_ENTITIES = new HashSet<>();
         CACHE_OF_BLOCK_RENDERER = new HashMap<>();
         TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, namespace);
+        ANIMS = new HashMap<>();
     }
 
     /**
@@ -216,6 +219,9 @@ public class SimpleRegistry {
      * @return the regsitry of kasuga lib style models.
      */
     public DeferredRegister<CreativeModeTab> tab() {return TABS;}
+
+
+    public HashMap<String, AnimReg> animation() {return ANIMS;}
 
     /**
      * method for get location for resource under given namespace
@@ -397,6 +403,10 @@ public class SimpleRegistry {
             registry.put(location, model);
         }
         CUSTOM_RENDERED_ITEMS.clear();
+    }
+
+    public void onAnimationReg() {
+        ANIMS.forEach((k, v) -> v.onResourceLoading());
     }
 
     /**

@@ -10,6 +10,8 @@ import kasuga.lib.example_env.entity.WuLingEntity;
 import kasuga.lib.example_env.item.GreenAppleItem;
 import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
+import kasuga.lib.registrations.client.AnimReg;
+import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.client.ModelReg;
 import kasuga.lib.registrations.common.*;
 import kasuga.lib.registrations.registry.CreateRegistry;
@@ -56,6 +58,9 @@ public class AllExampleElements {
 
     public static final CreativeTabReg tab = new CreativeTabReg("test")
             .icon(greenAppleItem).submit(testRegistry);
+    public static final AnimReg test_anim =
+            new AnimReg("test_anim", testRegistry.asResource("models/entity/test/wuling/wuling_anim.json"))
+            .submit(testRegistry);
 
     public static final SimpleConfig config = new SimpleConfig()
             .common("common settings")
