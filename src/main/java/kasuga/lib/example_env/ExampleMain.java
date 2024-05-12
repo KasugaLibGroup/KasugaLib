@@ -11,6 +11,6 @@ public class ExampleMain {
         AllExampleElements.invoke();
         // ExampleTracks.invoke();
         // AllExampleBogey.invoke();
-        AllExampleElements.testRegistry.submit();
+        testRegistry.submit();
     }
 }

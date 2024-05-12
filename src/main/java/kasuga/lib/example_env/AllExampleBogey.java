@@ -17,7 +17,7 @@ import net.minecraft.world.level.material.MaterialColor;
 
 public class AllExampleBogey {
 
-    public static final CreateRegistry testRegistry = AllExampleElements.testRegistry;
+    public static final CreateRegistry testRegistry = ExampleMain.testRegistry;
 
     public static final BogeySizeReg pk209p = new BogeySizeReg("pk209p")
             .size(0.915F / 2F)

@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.Blocks;
 
 public class ExampleTrackMaterial {
 
-    public static final CreateRegistry testRegistry = AllExampleElements.testRegistry;
+    public static final CreateRegistry testRegistry = ExampleMain.testRegistry;
 
     public static final SimpleTrackBlock.Builder builder =
             new SimpleTrackBlock.Builder(() -> AllExampleBogey.standardBogey.getEntry().get());
