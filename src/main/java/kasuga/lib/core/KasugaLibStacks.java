@@ -3,6 +3,7 @@ package kasuga.lib.core;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.animation.Constants;
 import kasuga.lib.core.client.gui.GuiManager;
+import kasuga.lib.core.events.both.CommandEvent;
 import kasuga.lib.core.events.both.EntityAttributeEvent;
 import kasuga.lib.core.events.client.*;
 import kasuga.lib.core.events.server.ServerStartingEvents;
@@ -37,6 +38,7 @@ public class KasugaLibStacks {
         MinecraftForge.EVENT_BUS.addListener(Constants::onClientTick);
         MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStart);
         MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStop);
+        MinecraftForge.EVENT_BUS.addListener(CommandEvent::register);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
         if(Envs.isClient()) {
             bus.addListener(ModelRegistryEvent::registerAdditionalModels);

@@ -6,6 +6,7 @@ import kasuga.lib.core.KasugaLibStacks;
 import kasuga.lib.core.client.gui.components.Components;
 import kasuga.lib.core.client.gui.layout.yoga.YogaFileLocator;
 import kasuga.lib.core.client.gui.style.Styles;
+import kasuga.lib.core.packets.AllPackets;
 import kasuga.lib.example_env.AllExampleElements;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.sensing.Sensor;
@@ -32,6 +33,7 @@ public class KasugaLib {
     public KasugaLib() {
         EVENTS.register(this);
         AllExampleElements.invoke();
+        AllPackets.init();
         YogaFileLocator.configureLWJGLPath();
         // YogaExample.example();
         Styles.init();
