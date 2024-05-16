@@ -59,21 +59,21 @@ public class GuiInstance {
     }
 
     public void close(Screen screen){
-        this.closeInternal(screen);
         this.context.removeSource(screen);
         this.context.getAttachedTargets().detach(screen);
+        this.closeInternal(screen);
     }
 
     public void close(Entity entity){
-        this.closeInternal(entity);
         this.context.getAttachedTargets().detach(entity);
         this.context.removeSource(entity);
+        this.closeInternal(entity);
     }
 
     public void close(BlockEntity block){
-        this.closeInternal(block);
         this.context.getAttachedTargets().detach(block);
         this.context.removeSource(block);
+        this.closeInternal(block);
     }
 
     public void openInternal(Object target){
