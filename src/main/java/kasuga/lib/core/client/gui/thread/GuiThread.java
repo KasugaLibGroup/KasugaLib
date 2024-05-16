@@ -18,13 +18,20 @@ public class GuiThread extends Thread {
     public void run() {
         try{
             while(running) {
-                if(shouldRunTicks.get() <= 0){
-                    synchronized (shouldRunTicks){
-                        shouldRunTicks.wait();
+                try{
+                    if(shouldRunTicks.get() <= 0){
+                        synchronized (shouldRunTicks){
+                            shouldRunTicks.wait();
+                        }
                     }
+                    if(shouldRunTicks.getAndUpdate((x)->x>0 ? x-1 : 0) > 0)
+                        this.contextManager.tick();
+                }catch (Exception e){
+                    if(e instanceof InterruptedException ie){
+                        throw ie;
+                    }
+                    System.err.println(e.toString());
                 }
-                if(shouldRunTicks.getAndUpdate((x)->x>0 ? x-1 : 0) > 0)
-                    this.contextManager.tick();
             }
         }catch (InterruptedException e){
             System.out.println(e.toString());
