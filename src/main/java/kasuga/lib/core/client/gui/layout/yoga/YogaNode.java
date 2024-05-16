@@ -76,7 +76,7 @@ public class YogaNode implements AutoCloseable {
     public void removeChildAt(int i){
         final YogaNode node = children.remove(i);
         node.owner = null;
-        YGNodeRemoveChild(pointer,i);
+        YGNodeRemoveChild(pointer,node.pointer);
     }
 
     public YogaNode getOwner(){
