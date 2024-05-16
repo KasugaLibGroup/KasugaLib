@@ -5,6 +5,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.graalvm.polyglot.Source;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -12,13 +13,19 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public class GuiInstance {
-    private final ResourceLocation mainFile;
+    private ResourceLocation mainFile;
+    private Source mainSource;
     private final Supplier<GuiContext> contextSupplier;
     GuiContext context;
     Set<Object> targets = new HashSet<>();
     public GuiInstance(Supplier<GuiContext> guiContextSupplier, ResourceLocation mainFile) {
         this.contextSupplier = guiContextSupplier;
         this.mainFile = mainFile;
+    }
+
+    public GuiInstance(Supplier<GuiContext> guiContextSupplier, Source source){
+        this.contextSupplier = guiContextSupplier;
+        this.mainSource = source;
     }
 
     public void open(Entity entity){
@@ -29,7 +36,10 @@ public class GuiInstance {
     }
 
     private void loadInternal() {
-        context.runAsync(mainFile);
+        if(mainFile!=null)
+            context.runAsync(mainFile);
+        else if(mainSource != null)
+            context.runSource(mainSource);
     }
 
     public void open(BlockEntity block){
