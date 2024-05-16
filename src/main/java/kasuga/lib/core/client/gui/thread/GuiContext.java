@@ -11,6 +11,7 @@ import kasuga.lib.core.client.gui.runtime.PlatformRuntime;
 import kasuga.lib.core.client.gui.style.Styles;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.resources.ResourceLocation;
+import org.graalvm.polyglot.Source;
 import org.lwjgl.util.yoga.Yoga;
 
 import java.util.Map;
@@ -92,6 +93,10 @@ public class GuiContext {
 
     public void run(ResourceLocation main){
         this.runtime.importModule(main);
+    }
+
+    public void runSource(Source source){
+        this.runtime.run(source);
     }
 
     public void close() {

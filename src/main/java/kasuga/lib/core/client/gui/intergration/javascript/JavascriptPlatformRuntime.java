@@ -6,6 +6,7 @@ import kasuga.lib.core.client.gui.thread.GuiContext;
 import net.minecraft.resources.ResourceLocation;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
+import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.Value;
 
 import java.util.HashMap;
@@ -39,6 +40,11 @@ public class JavascriptPlatformRuntime implements PlatformRuntime<JavascriptPlat
     @Override
     public void run(String sourceCode) {
         javascriptVmContext.eval("js",sourceCode);
+    }
+
+    @Override
+    public void run(Source source) {
+        javascriptVmContext.eval(source);
     }
 
     @Override
