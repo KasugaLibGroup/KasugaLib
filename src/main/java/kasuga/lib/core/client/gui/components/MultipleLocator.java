@@ -137,8 +137,9 @@ public class MultipleLocator {
     }
 
     public void updateCache(Object target) {
-        this.caches.get(this.sourceLocators.get(target))
-                .attemptUpdate(this.parent == null ? null : this.parent.caches.get(this.parent.sourceLocators.get(target)),this.sourceLocators.get(target));
+        CalculatedPositionCache cache = this.caches.get(this.sourceLocators.get(target));
+        if(cache != null)
+            cache.attemptUpdate(this.parent == null ? null : this.parent.caches.get(this.parent.sourceLocators.get(target)),this.sourceLocators.get(target));
     }
 
     public void calculateLayout(Object source,float width, float height) {
