@@ -1,12 +1,13 @@
 package kasuga.lib.core.client.gui.intergration.javascript;
 
 import kasuga.lib.core.client.gui.KasugaTimer;
+import kasuga.lib.core.client.gui.intergration.javascript.modules.websocket.WebsocketInterface;
 import org.graalvm.polyglot.HostAccess;
+import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Value;
 
-import java.util.ArrayDeque;
-import java.util.HashSet;
-import java.util.Queue;
+import java.lang.ref.WeakReference;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class JavascriptNativeApi {
@@ -70,5 +71,41 @@ public class JavascriptNativeApi {
         for (Integer tracedScheduler : this.tracedSchedulers) {
             this.context.getPlatform().getContext().getTimer().unregister(tracedScheduler);
         }
+    }
+
+    protected Set<WeakReference<WebsocketInterface>> wsReferences = new HashSet<>();
+
+
+    @HostAccess.Export
+    @HostAccess.DisableMethodScoping
+    public WebsocketInterface createWebSocket(Value url){
+        if(!url.isString())
+            throw new IllegalArgumentException("Invalid URL");
+        WebsocketInterface websocketInterface = new WebsocketInterface(url.asString());
+        wsReferences.add(new WeakReference<>(websocketInterface));
+        return websocketInterface;
+    }
+
+    void tick(){
+        while(!callbackQueue.isEmpty()){
+            try{
+                callbackQueue.poll().executeVoid();
+            }catch (PolyglotException e){
+                System.err.println(e.toString());
+            }
+        }
+        Set<WeakReference<WebsocketInterface>> shouldClean = new HashSet<>();
+        for (WeakReference<WebsocketInterface> wsReference : wsReferences) {
+            WebsocketInterface websocketInterface = wsReference.get();
+            if(websocketInterface != null)
+                websocketInterface.tick();
+            else shouldClean.add(wsReference);
+        }
+        wsReferences.removeAll(shouldClean);
+    }
+
+    @HostAccess.Export
+    public boolean isDebugging(){
+        return true;
     }
 }

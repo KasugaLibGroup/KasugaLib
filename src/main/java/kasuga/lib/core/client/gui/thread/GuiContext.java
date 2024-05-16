@@ -57,6 +57,7 @@ public class GuiContext {
             return;
         }
         timer.onTick();
+        this.runtime.tick();
     }
 
     public void renderPreTick(){

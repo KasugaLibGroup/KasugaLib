@@ -16,5 +16,7 @@ public interface PlatformRuntime<M extends PlatformModule> {
 
     void close();
 
+    void tick();
+
     GuiContext getContext();
 }

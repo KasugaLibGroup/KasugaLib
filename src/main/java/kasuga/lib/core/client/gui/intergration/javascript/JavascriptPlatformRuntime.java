@@ -72,4 +72,9 @@ public class JavascriptPlatformRuntime implements PlatformRuntime<JavascriptPlat
     public GuiContext getContext() {
         return guiContext;
     }
+
+    @Override
+    public void tick() {
+        guiContext.getBinding().getNative().tick();
+    }
 }
