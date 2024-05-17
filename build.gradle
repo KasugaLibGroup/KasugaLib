@@ -220,6 +220,16 @@ dependencies {
         exclude group: 'org.lwjgl',module: 'lwjgl'
     };
 
+    minecraftLibrary ('io.netty:netty-codec-http:4.1.77.Final'){
+        exclude group: 'io.netty', module:'netty-handler';
+        exclude group: 'io.netty', module:'netty-handler-proxy';
+        exclude group: 'io.netty', module:'netty-codec';
+        exclude group: 'io.netty', module:'netty-transport';
+        exclude group: 'io.netty', module:'netty-buffer';
+        exclude group: 'io.netty', module:'netty-resolver';
+        exclude group: 'io.netty', module:'netty-common';
+    }
+
     minecraftLibrary "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.0"
     jarJar(group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)")
 
@@ -229,6 +239,7 @@ dependencies {
     jarJar("org.graalvm.sdk:graal-sdk:22.3.2")
 
     minecraftLibrary("org.graalvm.js:js:22.3.2")
+    minecraftLibrary("org.graalvm.tools:chromeinspector:22.3.2")
     jarJar("org.graalvm.js:js:22.3.2")
 
     jarJar("org.lwjgl:lwjgl-yoga:3.3.1")
