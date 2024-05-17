@@ -31,6 +31,7 @@ version = "${mod_version}"
 group = 'kasuga.lib' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'kasuga_lib'
 
+boolean isSdk = true
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -231,6 +232,7 @@ dependencies {
     jarJar("org.graalvm.js:js:22.3.2")
 
     jarJar("org.lwjgl:lwjgl-yoga:3.3.1")
+
     // testImplementation "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.0"
     // clientAnnotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
     // apiAnnotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
@@ -238,7 +240,8 @@ dependencies {
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
     // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
     // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
-
+    minecraftLibrary "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.2"
+    jarJar(group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)")
     // Examples using mod jars from ./libs
     // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
 
@@ -266,7 +269,9 @@ jar {
 
 // Example configuration to allow publishing using the maven-publish plugin
 // This is the preferred method to reobfuscate your jar file
-jar.finalizedBy('reobfJar')
+if (!isSdk) {
+    jar.finalizedBy('reobfJar')
+}
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 // publish.dependsOn('reobfJar')
 

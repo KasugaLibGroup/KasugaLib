@@ -4,6 +4,8 @@ import kasuga.lib.core.annos.Beta;
 import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Optional;
+import kasuga.lib.core.base.CustomBlockRenderer;
+import kasuga.lib.registrations.BlockEntityRendererBuilder;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.exception.RegistryElementNotPresentException;
 import kasuga.lib.registrations.registry.SimpleRegistry;
@@ -29,6 +31,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 
 /**
@@ -51,6 +54,7 @@ public class BlockReg<T extends Block> extends Reg {
     private RegistryObject<T> registryObject;
     private final List<TagKey<?>> tags;
     boolean registerItem = false, registerBe = false, registerMenu = false;
+    private BlockRendererBuilder<T> rendererBuilder = null;
 
     /**
      * Use this to create a BlockReg.
@@ -144,6 +148,11 @@ public class BlockReg<T extends Block> extends Reg {
         return this;
     }
 
+    public BlockReg<T> withBlockRenderer(BlockRendererBuilder<T> builder) {
+        this.rendererBuilder = builder;
+        return this;
+    }
+
     /**
      * Provide a block entity for the block. If you want your block to spawn a block entity, it must be a subClass of
      * BaseEntityBlock, see {@link net.minecraft.world.level.block.BaseEntityBlock}.
@@ -180,12 +189,12 @@ public class BlockReg<T extends Block> extends Reg {
      * @return self.
      */
     @Optional
-    public BlockReg<T> withBlockEntityRenderer(BlockEntityReg.BlockEntityRendererBuilder builder) {
+    public BlockReg<T> withBlockEntityRenderer(Supplier<BlockEntityRendererBuilder> builder) {
         if (blockEntityReg == null) {
             crashOnNotPresent(BlockEntityReg.class, "BlockEntityReg", "withBlockEntityRenderer");
             return this;
         }
-        blockEntityReg.withRenderer(builder);
+        blockEntityReg.withRenderer(builder::get);
         return this;
     }
 
@@ -390,6 +399,7 @@ public class BlockReg<T extends Block> extends Reg {
                 registry.cacheMenuIn(menuReg);
             }
         }
+        if (rendererBuilder != null) registry.cacheBlockRendererIn(this, rendererBuilder);
         return this;
     }
 
@@ -436,5 +446,10 @@ public class BlockReg<T extends Block> extends Reg {
 
     public interface BlockBuilder<T extends Block> {
         T build(BlockBehaviour.Properties properties);
+    }
+
+
+    public interface BlockRendererBuilder<T extends Block> {
+        Supplier<CustomBlockRenderer> build(Supplier<T> block);
     }
 }

@@ -3,6 +3,7 @@ package kasuga.lib.registrations.common;
 import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Optional;
+import kasuga.lib.registrations.BlockEntityRendererBuilder;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -48,6 +49,7 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     private RegistryObject<T> registryObject;
     private final List<TagKey<?>> tags;
     boolean registerBe = false, registerMenu = false;
+    BlockReg.BlockRendererBuilder<T> rendererBuilder;
 
     /**
      * Create a fluid block reg.
@@ -158,12 +160,17 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
      * @return self.
      */
     @Optional
-    public FluidBlockReg<T> withBlockEntityRenderer(BlockEntityReg.BlockEntityRendererBuilder builder) {
+    public FluidBlockReg<T> withBlockEntityRenderer(Supplier<BlockEntityRendererBuilder> builder) {
         if (blockEntityReg == null) {
             crashOnNotPresent(BlockEntityReg.class, "blockEntityReg", "withBlockEntityRenderer");
             return this;
         }
-        blockEntityReg.withRenderer(builder);
+        blockEntityReg.withRenderer(builder::get);
+        return this;
+    }
+
+    public FluidBlockReg<T> withBlockRenderer(BlockReg.BlockRendererBuilder<T> builder) {
+        this.rendererBuilder = builder;
         return this;
     }
 
@@ -233,6 +240,7 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
                 registry.cacheMenuIn(menuReg);
             }
         }
+        if (rendererBuilder != null) registry.cacheBlockRendererIn(this, rendererBuilder);
         return this;
     }
 

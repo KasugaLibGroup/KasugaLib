@@ -64,7 +64,9 @@ public class ModelRegistryEvent {
             }
             registry.onCustomItemRendererReg(models);
             registry.model().clearUnbaked();
+            registry.onBlockRendererReg();
             registry.onEntityRendererReg();
+            registry.onAnimationReg();
         }
     }
 }

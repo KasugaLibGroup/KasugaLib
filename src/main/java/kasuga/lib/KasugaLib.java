@@ -7,6 +7,7 @@ import kasuga.lib.core.client.gui.components.Components;
 import kasuga.lib.core.client.gui.layout.yoga.YogaFileLocator;
 import kasuga.lib.core.client.gui.style.Styles;
 import kasuga.lib.core.packets.AllPackets;
+import kasuga.lib.core.util.Envs;
 import kasuga.lib.example_env.AllExampleElements;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.sensing.Sensor;
@@ -38,6 +39,8 @@ public class KasugaLib {
         // YogaExample.example();
         Styles.init();
         Components.init();
+        if (Envs.isDevEnvironment())
+            AllExampleElements.invoke();
     }
 
     public static Logger createLogger(String name) {
