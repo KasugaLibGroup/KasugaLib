@@ -97,7 +97,8 @@ public class AllExampleElements {
             .loadPacket(ExampleS2CPacket.class, ExampleS2CPacket::new)
             .submit(testRegistry);
 
-    public static final CommandReg reg = new CommandReg("nihao")
+    public static final CommandReg reg = CommandReg
+            .create("nihao")
             .appendEnumable(new ArrayList<>(List.of("in", "om", "at")), false)
             .appendDouble("double", true)
             .appendResourceLocation("rl", false)

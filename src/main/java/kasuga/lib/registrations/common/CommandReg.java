@@ -7,6 +7,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import kasuga.lib.core.events.both.CommandEvent;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.commands.CommandSourceStack;
@@ -14,6 +15,8 @@ import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.DistExecutor;
 
 import java.util.*;
@@ -33,15 +36,19 @@ public class CommandReg extends Reg {
     private boolean isClientOnly = false;
     private int permission = 2;
 
+    private CommandReg(String registrationKey) {
+        super(registrationKey);
+        this.commandName = registrationKey;
+        this.tree = new CommandTree(new CommandNode(registrationKey));
+    }
+
     /**
      * Registry of commands. Here's we go!
      *
      * @param registrationKey The name of your command. Duplicatable
      */
-    public CommandReg(String registrationKey) {
-        super(registrationKey);
-        this.commandName = registrationKey;
-        this.tree = new CommandTree(new CommandNode(registrationKey));
+    public static CommandReg create(String registrationKey) {
+        return new CommandReg(registrationKey);
     }
 
     /**
@@ -164,17 +171,26 @@ public class CommandReg extends Reg {
         return this;
     }
 
-    //TODO handle me
+    /**
+     * Should this command be client-only?
+     * @param arg Should this command be client-only?
+     * @return The Reg itself
+     */
     public CommandReg isClientOnly(boolean arg) {
         this.isClientOnly = arg;
         return this;
     }
 
+    /**
+     * Marks that your command is over.
+     * @param registry the mod SimpleRegistry.
+     * @return
+     */
     @Override
     public CommandReg submit(SimpleRegistry registry) {
         ENTRIES.add(this);
         registry.command().put(this.commandName, this);
-        return this;
+        return null;
     }
 
     @Override
@@ -182,10 +198,26 @@ public class CommandReg extends Reg {
         return "command";
     }
 
+    /**
+     * Subscribe to CommandEvent to get your commands registered.
+     * @param dispatcher
+     * @see net.minecraftforge.event.RegisterCommandsEvent
+     */
     public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
-//        DistExecutor.safeRunForDist()
-
         ENTRIES.forEach(commandReg -> {
+            if(commandReg.isClientOnly){
+                DistExecutor.safeRunWhenOn(Dist.CLIENT, ()-> ()->register(commandReg, dispatcher));
+            } else {
+                register(commandReg,dispatcher);
+            }
+        });
+    }
+
+    /**
+     * Internal, do not use directly
+     */
+    private static void register(final CommandReg commandReg, final CommandDispatcher<CommandSourceStack> dispatcher){
+
             if (commandReg.handler == null) {
                 throw new NullPointerException();
             }
@@ -220,15 +252,15 @@ public class CommandReg extends Reg {
                         post = setArgumentType(node)
                                 .requires(p -> p.hasPermission(commandReg.permission))
                                 .executes(ctx -> {
-                            commandReg.handler.setCtx(ctx).setKeys(finalNode.parameters);
-                            try {
-                                commandReg.handler.run();
-                            } catch (Exception e) {
-                                MAIN_LOGGER.error("Error during command: ", e);
-                                return -1;
-                            }
-                            return 1;
-                        });
+                                    commandReg.handler.setCtx(ctx).setKeys(finalNode.parameters);
+                                    try {
+                                        commandReg.handler.run();
+                                    } catch (Exception e) {
+                                        MAIN_LOGGER.error("Error during command: ", e);
+                                        return -1;
+                                    }
+                                    return 1;
+                                });
                     } else {
                         post = argument;
                     }
@@ -243,7 +275,6 @@ public class CommandReg extends Reg {
                 }
                 dispatcher.register(builder);
             }
-        });
     }
 
     private static ArgumentBuilder<CommandSourceStack, ?> setArgumentType(CommandNode node) {
@@ -396,6 +427,7 @@ public class CommandReg extends Reg {
         public Integer getInteger(String name) {
             if (!keys.containsKey(name) || keys.get(name) != ArgType.INT) {
                 MAIN_LOGGER.error("no such element :" + name, new NoSuchElementException());
+                throw new NoSuchElementException();
             }
             return IntegerArgumentType.getInteger(ctx, name);
         }
@@ -403,6 +435,7 @@ public class CommandReg extends Reg {
         public Double getDouble(String name) {
             if (!keys.containsKey(name) || keys.get(name) != ArgType.DOUBLE) {
                 MAIN_LOGGER.error("no such element :" + name, new NoSuchElementException());
+                throw new NoSuchElementException();
             }
             return DoubleArgumentType.getDouble(ctx, name);
         }
@@ -410,6 +443,7 @@ public class CommandReg extends Reg {
         public String getString(String name) {
             if (!keys.containsKey(name) || keys.get(name) != ArgType.STRING) {
                 MAIN_LOGGER.error("no such element :" + name, new NoSuchElementException());
+                throw new NoSuchElementException();
             }
             return StringArgumentType.getString(ctx, name);
         }
@@ -417,6 +451,7 @@ public class CommandReg extends Reg {
         public ResourceLocation getResourceLocation(String name) {
             if (!keys.containsKey(name) || keys.get(name) != ArgType.RESOURCE_LOCATION) {
                 MAIN_LOGGER.error("no such element :" + name, new NoSuchElementException());
+                throw new NoSuchElementException();
             }
             return ResourceLocationArgument.getId(ctx, name);
         }
@@ -424,6 +459,7 @@ public class CommandReg extends Reg {
         public Vec3 getVec3(String name) {
             if (!keys.containsKey(name) || keys.get(name) != ArgType.VECTOR3) {
                 MAIN_LOGGER.error("no such element :" + name, new NoSuchElementException());
+                throw new NoSuchElementException();
             }
             return Vec3Argument.getVec3(ctx, name);
         }
