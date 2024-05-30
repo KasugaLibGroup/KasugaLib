@@ -11,14 +11,19 @@ import kasuga.lib.example_env.entity.WuLingEntity;
 import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
 import kasuga.lib.registrations.client.AnimReg;
-import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.client.ModelReg;
 import kasuga.lib.registrations.common.*;
+import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static kasuga.lib.registrations.common.CommandReg.INSTANCE;
 
 public class AllExampleElements {
 
@@ -91,6 +96,20 @@ public class AllExampleElements {
             .loadPacket(ExampleC2SPacket.class, ExampleC2SPacket::new)
             .loadPacket(ExampleS2CPacket.class, ExampleS2CPacket::new)
             .submit(testRegistry);
+
+    public static final CommandReg reg = new CommandReg("nihao")
+            .appendEnumable(new ArrayList<>(List.of("in", "om", "at")), false)
+            .appendDouble("double", true)
+            .appendResourceLocation("rl", false)
+            .appendInteger("int",false)
+            .appendString("str", false)
+            .setHandler(INSTANCE.new CommandHandler(){
+                @Override
+                public void run() {
+                    System.out.println(getOptionalDouble("double", 0d));
+                    System.out.println(getResourceLocation("rl"));
+                }
+            }).submit(testRegistry);
 
     public static void invoke(){
         testRegistry.submit();

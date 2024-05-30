@@ -74,6 +74,7 @@ public class SimpleRegistry {
     private final HashSet<EntityReg<? extends LivingEntity>> CACHE_OF_LIVING_ENTITIES;
     private final ModelMappings modelMappings;
     private final HashMap<String, SimpleCreativeTab> TABS;
+    private final HashMap<String, CommandReg> COMMANDS;
     private final HashMap<String, AnimReg> ANIMS;
 
     /**
@@ -109,6 +110,7 @@ public class SimpleRegistry {
         CACHE_OF_ENTITIES = new HashSet<>();
         CACHE_OF_BLOCK_RENDERER = new HashMap<>();
         TABS = new HashMap<>();
+        COMMANDS = new HashMap<>();
         ANIMS = new HashMap<>();
     }
 
@@ -215,10 +217,15 @@ public class SimpleRegistry {
 
     /**
      * return the registry of Creative Mode Tabs. See {@link kasuga.lib.registrations.common.CreativeTabReg}
-     * @return the regsitry of kasuga lib style models.
+     * @return the regsitry of kasuga lib's tabs.
      */
     public HashMap<String, SimpleCreativeTab> tab() {return TABS;}
 
+    /**
+     * return the registry of Commands. See {@link kasuga.lib.registrations.common.CommandReg}
+     * @return the regsitry of kasuga lib's commands.
+     */
+    public HashMap<String, CommandReg> command() {return COMMANDS;}
 
     public HashMap<String, AnimReg> animation() {return ANIMS;}
 
