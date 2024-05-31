@@ -1,6 +1,7 @@
 package kasuga.lib.example_env;
 
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.base.commands.CommandHandler;
 import kasuga.lib.core.config.SimpleConfig;
 import kasuga.lib.example_env.block.GreenAppleBlock;
 import kasuga.lib.example_env.block.GreenAppleItem;
@@ -22,8 +23,6 @@ import net.minecraft.world.level.material.MaterialColor;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static kasuga.lib.registrations.common.CommandReg.INSTANCE;
 
 public class AllExampleElements {
 
@@ -99,16 +98,13 @@ public class AllExampleElements {
 
     public static final CommandReg reg = CommandReg
             .create("nihao")
-            .appendEnumable(new ArrayList<>(List.of("in", "om", "at")), false)
-            .appendDouble("double", true)
-            .appendResourceLocation("rl", false)
             .appendInteger("int",false)
-            .appendString("str", false)
-            .setHandler(INSTANCE.new CommandHandler(){
+            .appendInteger("int2",true)
+            .appendInteger("int3",false)
+            .appendInteger("int4",true)
+            .setHandler(new CommandHandler(){
                 @Override
                 public void run() {
-                    System.out.println(getOptionalDouble("double", 0d));
-                    System.out.println(getResourceLocation("rl"));
                 }
             }).submit(testRegistry);
 
