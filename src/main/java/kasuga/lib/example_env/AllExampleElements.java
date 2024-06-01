@@ -109,23 +109,12 @@ public class AllExampleElements {
                 }
             }))
             .appendEnumable(new ArrayList<>(List.of("wiorjh")), false)
-            .appendSingleParameter("int2",true, CommandReg.getType("int"))
             .appendSingleParameter("int",false, CommandReg.getType("int"))
-            .appendSingleParameter("dou", false, CommandReg.getType("double"))
+            .appendSingleParameter("dou", true, CommandReg.getType("double"))
             .setHandler(new CommandHandler(){
                 @Override
                 public void run() {
                     System.out.println(getArgument("int", CommandReg.getType("int")));
-                    System.out.println(getArgument("dou", CommandReg.getType("double")));
-                }
-            }).submit(testRegistry);
-
-    public static final CommandReg command2 = new CommandReg("nihao")
-            .appendEnumable(new ArrayList<>(List.of("qewewe")), false)
-            .appendSingleParameter("dou", false, CommandReg.getType("double"))
-            .setHandler(new CommandHandler(){
-                @Override
-                public void run() {
                     System.out.println(getArgument("dou", CommandReg.getType("double")));
                 }
             }).submit(testRegistry);

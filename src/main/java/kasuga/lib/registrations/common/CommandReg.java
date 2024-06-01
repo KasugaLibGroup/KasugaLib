@@ -35,8 +35,10 @@ public class CommandReg extends Reg {
     private CommandHandler handler;
 
     private boolean isClientOnly = false;
+    private boolean startOptional = false;
     private int permission = 2;
 
+    private static final HashMap<String, LiteralArgumentBuilder<CommandSourceStack>> ROOTS = new HashMap<>();
     public static final HashMap<ResourceLocation, BaseArgument> types = new HashMap<>();
     public static final CommandReg INSTANCE = new CommandReg("null");
 
@@ -62,6 +64,7 @@ public class CommandReg extends Reg {
         super(registrationKey);
         this.commandName = registrationKey;
         this.tree = new CommandTree(new Node(registrationKey));
+        ROOTS.put(registrationKey, literal(registrationKey));
     }
 
 
@@ -79,12 +82,16 @@ public class CommandReg extends Reg {
      * Append an enumable string parameter to the end of your command.
      *
      * @param list     List of your enums
-     * @param optional Is this property optional?
+     * @param optional Is this property optional? You can't append required parameters after any optional parameters!
      * @return The Reg itself
      */
     public CommandReg appendEnumable(ArrayList<String> list, boolean optional) {
         System.out.println(tree.leaves.size());
         tree.addEnums(optional, list);
+        if(this.startOptional && !optional){
+            throw new IllegalArgumentException();
+        }
+        this.startOptional = optional;
         return this;
     }
 
@@ -92,11 +99,15 @@ public class CommandReg extends Reg {
      * Append an integer parameter to the end of your command.
      *
      * @param defaultName Name of your property
-     * @param optional    Is this property optional?
+     * @param optional Is this property optional? You can't append required parameters after any optional parameters!
      * @return The Reg itself
      */
     public CommandReg appendSingleParameter(String defaultName, boolean optional, BaseArgument type) {
         tree.addNode(optional, defaultName, type);
+        if(this.startOptional && !optional){
+            throw new IllegalArgumentException();
+        }
+        this.startOptional = optional;
         return this;
     }
 
@@ -142,19 +153,6 @@ public class CommandReg extends Reg {
     }
 
     /**
-     * Subscribe to CommandEvent to get your commands registered.
-     *
-     * @param dispatcher The dispatcher of CommandEvent
-     * @see net.minecraftforge.event.RegisterCommandsEvent
-     */
-    @Inner
-    public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
-        ENTRIES.forEach(commandReg -> {
-            register(commandReg, dispatcher);
-        });
-    }
-
-    /**
      * Get your registered type
      *
      * @param name your type's name
@@ -170,9 +168,20 @@ public class CommandReg extends Reg {
         return types.get(name);
     }
 
+    /**
+     * Subscribe the CommandEvent to get your commands registered.
+     *
+     * @param dispatcher The dispatcher of CommandEvent
+     * @see net.minecraftforge.event.RegisterCommandsEvent
+     */
     @Inner
-    private static void register(final CommandReg commandReg, final CommandDispatcher<CommandSourceStack> dispatcher) {
+    public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
+        ENTRIES.forEach(CommandReg::register);
+        ROOTS.values().forEach(dispatcher::register);
+    }
 
+    @Inner
+    private static void register(final CommandReg commandReg) {
         System.out.println(commandReg.tree.leaves.size());
         for (Node leaf : commandReg.tree.leaves) {
             while (true) {
@@ -188,45 +197,22 @@ public class CommandReg extends Reg {
             throw new NullPointerException();
         }
 
-        if (commandReg.tree.leaves.size() == 1) {
-            dispatcher.register(literal(commandReg.commandName));
-            return;
-        }
-
         for (Node leaf : commandReg.tree.leaves) {
             Node node = leaf;
-            LiteralArgumentBuilder<CommandSourceStack> builder = literal(commandReg.commandName);
+            LiteralArgumentBuilder<CommandSourceStack> builder = ROOTS.get(commandReg.commandName);
             ArgumentBuilder<CommandSourceStack, ?> argument, post;
             argument = null;
             if (node.isRoot()) {
-                dispatcher.register(builder.executes(ctx -> {
-                    commandReg.handler.setCtx(ctx);
-                    try {
-                        commandReg.handler.run();
-                    } catch (Exception e) {
-                        MAIN_LOGGER.error("Error during command: ", e);
-                        return -1;
-                    }
-                    return 1;
-                }));
+                builder.executes(commandReg.handler::execute);
                 continue;
             }
             while (true) {
                 if (node.isLeaf) {
                     post = parseArgumentType(node)
                             .requires(p -> p.hasPermission(commandReg.permission))
-                            .executes(ctx -> {
-                                commandReg.handler.setCtx(ctx);
-                                try {
-                                    commandReg.handler.run();
-                                } catch (Exception e) {
-                                    MAIN_LOGGER.error("Error during command: ", e);
-                                    return -1;
-                                }
-                                return 1;
-                            });
+                            .executes(commandReg.handler::execute);
                     if(node.father.isRoot()){
-                        dispatcher.register(builder.then(post));
+                        builder.then(post);
                         break;
                     }
                 } else {
@@ -234,11 +220,17 @@ public class CommandReg extends Reg {
                 }
                 if (node.father.isRoot()) {
                     builder.then(argument == null ? parseArgumentType(node) : argument);
-                    dispatcher.register(builder);
                     break;
                 }
                 node = node.father;
-                argument = parseArgumentType(node).then(post);
+                if(node.children.stream().anyMatch(node1 -> node1.required)){
+                    argument = parseArgumentType(node).then(post);
+                } else {
+                    argument = parseArgumentType(node)
+                            .requires(p -> p.hasPermission(commandReg.permission))
+                            .executes(commandReg.handler::execute)
+                            .then(post);
+                }
             }
         }
     }

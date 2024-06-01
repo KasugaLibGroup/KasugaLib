@@ -6,6 +6,8 @@ import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import net.minecraft.commands.CommandSourceStack;
 
+import java.util.LinkedList;
+
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
@@ -19,16 +21,20 @@ public class Node {
     public Node father = null;
 
     public boolean root;
+    public boolean required;
+
+    public final LinkedList<Node> children = new LinkedList<>();
 
     public Node(String name) {
-        this(name, BaseArgument.STRING, true);
+        this(name, BaseArgument.STRING, true, true);
         this.root = true;
     }
 
-    public Node(String name, BaseArgument type, boolean isLiteral) {
+    public Node(String name, BaseArgument type, boolean isLiteral, boolean isRequired) {
         this.name = name;
         this.parser = type;
         this.isLiteral = isLiteral;
+        this.required = isRequired;
     }
 
     public Node setFather(Node father) {
