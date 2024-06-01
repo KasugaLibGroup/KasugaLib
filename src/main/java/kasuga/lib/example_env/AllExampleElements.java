@@ -1,6 +1,8 @@
 package kasuga.lib.example_env;
 
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.client.gui.commands.BaseArgument;
+import kasuga.lib.core.client.gui.commands.BaseArgumentInfo;
 import kasuga.lib.core.config.SimpleConfig;
 import kasuga.lib.example_env.block.GreenAppleBlock;
 import kasuga.lib.example_env.block.GreenAppleItem;
@@ -14,15 +16,21 @@ import kasuga.lib.registrations.client.AnimReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.client.ModelReg;
 import kasuga.lib.registrations.common.*;
+import net.minecraft.commands.synchronization.ArgumentTypeInfo;
+import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
+import net.minecraftforge.registries.DeferredRegister;
+
+import static kasuga.lib.KasugaLib.MOD_ID;
+import static net.minecraft.core.Registry.COMMAND_ARGUMENT_TYPE_REGISTRY;
 
 public class AllExampleElements {
 
-    public static final SimpleRegistry testRegistry = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
+    public static final SimpleRegistry testRegistry = new SimpleRegistry(MOD_ID, KasugaLib.EVENTS);
 
     public static final BlockReg<GreenAppleBlock> greenApple = new BlockReg<GreenAppleBlock>("green_apple")
             .blockType(GreenAppleBlock::new)
@@ -31,7 +39,7 @@ public class AllExampleElements {
             .withSound(SoundType.CROP)
             .withBlockEntity("green_apple_tile", GreenAppleTile::new)
             .withBlockEntityRenderer(() -> GreenAppleTileRenderer::new)
-            .defaultBlockItem(new ResourceLocation(KasugaLib.MOD_ID, "block/test/green_apple"))
+            .defaultBlockItem(new ResourceLocation(MOD_ID, "block/test/green_apple"))
             .stackSize(32)
             .tabTo(CreativeModeTab.TAB_DECORATIONS)
             .submit(testRegistry);
@@ -43,11 +51,11 @@ public class AllExampleElements {
             .withRenderer(() -> (WuLingRenderer::new))
             .submit(testRegistry);
 
-    public static final ModelReg greenAppleModel = new ModelReg("green_apple", new ResourceLocation(KasugaLib.MOD_ID, "block/test/green_apple"))
+    public static final ModelReg greenAppleModel = new ModelReg("green_apple", new ResourceLocation(MOD_ID, "block/test/green_apple"))
             .submit(testRegistry);
 
     public static final ModelReg wuLingVans = new
-            ModelReg("wuling_vans", new ResourceLocation(KasugaLib.MOD_ID, "entity/test/wuling/wuling_base"))
+            ModelReg("wuling_vans", new ResourceLocation(MOD_ID, "entity/test/wuling/wuling_base"))
             .submit(testRegistry);
 
     public static final ItemReg<GreenAppleItem> greenAppleItem =

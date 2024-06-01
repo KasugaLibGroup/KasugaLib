@@ -9,18 +9,10 @@ import kasuga.lib.core.client.gui.style.Styles;
 import kasuga.lib.core.packets.AllPackets;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.example_env.AllExampleElements;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.ai.sensing.Sensor;
-import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.minecraft.world.entity.ai.sensing.WardenEntitySensor;
-import net.minecraftforge.eventbus.api.Event;
+import kasuga.lib.registrations.common.TemporaryRegs;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,12 +25,13 @@ public class KasugaLib {
     public static final Gson GSON = new GsonBuilder().enableComplexMapKeySerialization().create();
     public KasugaLib() {
         EVENTS.register(this);
-        AllExampleElements.invoke();
+//        AllExampleElements.invoke();
         AllPackets.init();
         YogaFileLocator.configureLWJGLPath();
         // YogaExample.example();
         Styles.init();
         Components.init();
+        TemporaryRegs.register(EVENTS);
         if (Envs.isDevEnvironment())
             AllExampleElements.invoke();
     }

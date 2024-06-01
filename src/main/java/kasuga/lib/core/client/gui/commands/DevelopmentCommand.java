@@ -20,7 +20,7 @@ public class DevelopmentCommand {
         dispatcher.register(literal("kasugalib")
                 .then(literal("gui")
                         .then(literal("debug").then(
-                                        Commands.argument("bundle", new SimpleStringParser())
+                                        Commands.argument("bundle", BaseArgument.STRING)
                                                 .executes((ctx) -> {
                                                     //kasugalib gui debug <Bundle>
                                                     String bundleName = StringArgumentType.getString(ctx, "bundle");
@@ -31,14 +31,14 @@ public class DevelopmentCommand {
                         )
                 ).then(literal("js")
                         .then(literal("open").then(
-                                        argument("img", new SimpleStringParser())
+                                        argument("img", BaseArgument.STRING)
                                                 .executes((ctx) -> {
                                                     //kasugalib js open <ImageLocation>
                                                     String imageAddress = StringArgumentType.getString(ctx, "img");
                                                     //TODO Handle me
                                                     return 1;
                                                 }).then(
-                                                        argument("container-id", new SimpleStringParser())
+                                                        argument("container-id", BaseArgument.STRING)
                                                                 .executes((ctx) -> {
                                                                     //kasugalib js open <ImageLocation> [ContainerID]
                                                                     String imageAddress = StringArgumentType.getString(ctx, "img");
@@ -49,7 +49,7 @@ public class DevelopmentCommand {
                                                 )
                                 )
                         ).then(literal("stop").then(
-                                        argument("context-id", new SimpleStringParser())
+                                        argument("context-id", BaseArgument.STRING)
                                                 .executes((ctx) -> {
                                                     //kasugalib js stop <ContextID>
                                                     String contextID = StringArgumentType.getString(ctx, "context-id");
@@ -58,7 +58,7 @@ public class DevelopmentCommand {
                                                 })
                                 )
                         ).then(literal("require").then(
-                                        argument("context-id", new SimpleStringParser()).then(
+                                        argument("context-id", BaseArgument.STRING).then(
                                                 argument("module-id", StringArgumentType.greedyString())
                                                         .executes((ctx) -> {
                                                             //kasugalib js require <ContextID> <ModuleID>
@@ -70,14 +70,14 @@ public class DevelopmentCommand {
                                 )
                         ).then(literal("client")
                                 .then(literal("open").then(
-                                                argument("img", new SimpleStringParser())
+                                                argument("img", BaseArgument.STRING)
                                                         .executes((ctx) -> {
                                                             //kasugalib js client open <ImageLocation>
                                                             String imageAddress = StringArgumentType.getString(ctx, "img");
                                                             //TODO Handle me
                                                             return 1;
                                                         }).then(
-                                                                argument("container-id", new SimpleStringParser())
+                                                                argument("container-id", BaseArgument.STRING)
                                                                         .executes((ctx) -> {
                                                                             //kasugalib js client open <ImageLocation> [ContainerID]
                                                                             String imageAddress = StringArgumentType.getString(ctx, "img");
@@ -88,7 +88,7 @@ public class DevelopmentCommand {
                                                         )
                                         )
                                 ).then(literal("stop").then(
-                                                argument("context-id", new SimpleStringParser())
+                                                argument("context-id", BaseArgument.STRING)
                                                         .executes((ctx) -> {
                                                             //kasugalib js client stop <ContextID>
                                                             String contextID = StringArgumentType.getString(ctx, "context-id");
@@ -97,7 +97,7 @@ public class DevelopmentCommand {
                                                         })
                                         )
                                 ).then(literal("require").then(
-                                                argument("context-id", new SimpleStringParser()).then(
+                                                argument("context-id", BaseArgument.STRING).then(
                                                         argument("module-id", StringArgumentType.greedyString())
                                                                 .executes((ctx) -> {
                                                                     //kasugalib js client require <ContextID> <ModuleID>
@@ -114,7 +114,7 @@ public class DevelopmentCommand {
                                             //kasugalib js channel info
                                             //TODO Handle me
                                             return 1;
-                                        }).then(argument("channel-id", new SimpleStringParser())
+                                        }).then(argument("channel-id", BaseArgument.STRING)
                                                 .executes((ctx) -> {
                                                     //kasugalib js channel info [ChannelID]
                                                     String channelID = StringArgumentType.getString(ctx, "channel-id");
@@ -125,7 +125,7 @@ public class DevelopmentCommand {
 
                                 ).then(literal("monitor")
                                         .then(literal("start")
-                                                .then(argument("channel-id", new SimpleStringParser())
+                                                .then(argument("channel-id", BaseArgument.STRING)
                                                         .executes((ctx) -> {
                                                             //kasugalib js channel monitor start <ChannelID>
                                                             String channelID = StringArgumentType.getString(ctx, "channel-id");
@@ -133,7 +133,7 @@ public class DevelopmentCommand {
                                                             return 1;
                                                         }))
                                         ).then(literal("stop")
-                                                .then(argument("channel-id", new SimpleStringParser())
+                                                .then(argument("channel-id", BaseArgument.STRING)
                                                         .executes((ctx) -> {
                                                             //kasugalib js channel monitor stop <ChannelID>
                                                             String channelID = StringArgumentType.getString(ctx, "channel-id");
@@ -148,7 +148,7 @@ public class DevelopmentCommand {
                                                     return 1;
                                                 })
                                         ).then(literal("accept")
-                                                .then(argument("channel-id", new SimpleStringParser())
+                                                .then(argument("channel-id", BaseArgument.STRING)
                                                         .executes((ctx) -> {
                                                             //kasugalib js channel mock accept <ChannelID>
                                                             String channelID = StringArgumentType.getString(ctx, "channel-id");
@@ -156,7 +156,7 @@ public class DevelopmentCommand {
                                                             return 1;
                                                         }))
                                         ).then(literal("next")
-                                                .then(argument("channel-id", new SimpleStringParser())
+                                                .then(argument("channel-id", BaseArgument.STRING)
                                                         .executes((ctx) -> {
                                                             //kasugalib js channel mock next <ChannelID>
                                                             String channelID = StringArgumentType.getString(ctx, "channel-id");
@@ -164,7 +164,7 @@ public class DevelopmentCommand {
                                                             return 1;
                                                         }))
                                         ).then(literal("disconnect")
-                                                .then(argument("channel-id", new SimpleStringParser())
+                                                .then(argument("channel-id", BaseArgument.STRING)
                                                         .executes((ctx) -> {
                                                             //kasugalib js channel mock disconnect <ChannelID>
                                                             String channelID = StringArgumentType.getString(ctx, "channel-id");
@@ -172,7 +172,7 @@ public class DevelopmentCommand {
                                                             return 1;
                                                         }))
                                         ).then(literal("active")
-                                                .then(argument("channel-id", new SimpleStringParser())
+                                                .then(argument("channel-id", BaseArgument.STRING)
                                                         .executes((ctx) -> {
                                                             //kasugalib js channel mock active <ChannelID>
                                                             String channelID = StringArgumentType.getString(ctx, "channel-id");
@@ -181,7 +181,7 @@ public class DevelopmentCommand {
                                                         }))
                                         )
                                         .then(literal("send")
-                                                .then(argument("content", new SimpleStringParser())
+                                                .then(argument("content", BaseArgument.STRING)
                                                         .executes((ctx) -> {
                                                             //kasugalib js channel mock send <Content>
                                                             String content = StringArgumentType.getString(ctx, "content");
@@ -205,14 +205,14 @@ public class DevelopmentCommand {
                         .then(
                                 literal("gui-debug").then(
                                         literal("load-metro").then(
-                                                argument("bundle", new SimpleStringParser())
+                                                argument("bundle", BaseArgument.STRING)
                                                         .executes((ctx) -> {
                                                             //kasuga gui-debug load-metro <Bundle>
                                                             String bundleName = StringArgumentType.getString(ctx, "bundle");
                                                             loadMetro(bundleName);
                                                             return 1;
                                                         }).then(
-                                                                argument("server-address", new SimpleStringParser())
+                                                                argument("server-address", BaseArgument.STRING)
                                                                         .executes((ctx) -> {
                                                                             //kasuga gui-debug load-metro <Bundle> [Server-Address]
                                                                             String bundleName = StringArgumentType.getString(ctx, "bundle");
