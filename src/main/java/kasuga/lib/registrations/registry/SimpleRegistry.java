@@ -256,6 +256,7 @@ public class SimpleRegistry {
         RECIPES.register(eventBus);
         RECIPE_SERIALIZERS.register(eventBus);
         KasugaLib.STACKS.stackIn(this);
+        TemporaryRegs.register(eventBus);
     }
 
     /**
