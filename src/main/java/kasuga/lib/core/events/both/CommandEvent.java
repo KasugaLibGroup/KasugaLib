@@ -12,4 +12,5 @@ public class CommandEvent {
     public static void register(RegisterCommandsEvent event){
         CommandReg.register(event.getDispatcher());
     }
+
 }

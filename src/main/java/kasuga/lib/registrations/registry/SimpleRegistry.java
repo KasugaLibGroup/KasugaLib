@@ -15,6 +15,7 @@ import kasuga.lib.registrations.common.*;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
@@ -34,6 +35,7 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +67,7 @@ public class SimpleRegistry {
     private final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS;
     private final DeferredRegister<FluidType> FLUID_TYPE;
     private final DeferredRegister<Fluid> FLUID;
+    private final DeferredRegister<ArgumentTypeInfo<?, ?>> ARGUMENT_TYPES;
     private final ModelRegistry MODELS;
     private final HashMap<String, BlockEntityReg<?>> CACHE_OF_BLOCK_ENTITIES;
     private final HashMap<String, MenuReg<?, ?, ?>> CACHE_OF_MENUS;
@@ -101,6 +104,7 @@ public class SimpleRegistry {
         ATTRIBUTES = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, namespace);
         FLUID_TYPE = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, namespace);
         FLUID = DeferredRegister.create(ForgeRegistries.Keys.FLUIDS, namespace);
+        ARGUMENT_TYPES = DeferredRegister.create(ForgeRegistries.Keys.COMMAND_ARGUMENT_TYPES, namespace);
         MODELS = new ModelRegistry(namespace, this);
         CACHE_OF_BLOCK_ENTITIES = new HashMap<>();
         CUSTOM_RENDERED_ITEMS = new HashSet<>();
@@ -210,6 +214,12 @@ public class SimpleRegistry {
     public DeferredRegister<Fluid> fluid() {return FLUID;}
 
     /**
+     * return the registry of Command Argument Type. See {@link kasuga.lib.registrations.common.ArgumentTypeReg}
+     * @return the registry of fluid.
+     */
+    public DeferredRegister<ArgumentTypeInfo<?, ?>> argumentTypes() {return ARGUMENT_TYPES;}
+
+    /**
      * retrun the registry of kasuga lib style models. See {@link kasuga.lib.registrations.client.ModelReg}
      * @return the registry of kasuga lib style models.
      */
@@ -249,6 +259,7 @@ public class SimpleRegistry {
         ITEMS.register(eventBus);
         FLUID_TYPE.register(eventBus);
         FLUID.register(eventBus);
+        ARGUMENT_TYPES.register(eventBus);
         for(String key : CACHE_OF_BLOCK_ENTITIES.keySet()) {
             try {
                 BlockEntityReg<?> reg = CACHE_OF_BLOCK_ENTITIES.get(key);

@@ -1,6 +1,7 @@
 package kasuga.lib.example_env;
 
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.base.commands.CommandHandler;
 import kasuga.lib.core.config.SimpleConfig;
 import kasuga.lib.example_env.block.GreenAppleBlock;
@@ -21,7 +22,10 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AllExampleElements {
@@ -96,15 +100,33 @@ public class AllExampleElements {
             .loadPacket(ExampleS2CPacket.class, ExampleS2CPacket::new)
             .submit(testRegistry);
 
-    public static final CommandReg reg = CommandReg
-            .create("nihao")
-            .appendInteger("int",false)
-            .appendInteger("int2",true)
-            .appendInteger("int3",false)
-            .appendInteger("int4",true)
+    public static final CommandReg command = new CommandReg("nihao")
+            .registerType("url", new BaseArgument(s -> {
+                try {
+                    return new URL(s);
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }))
+            .appendEnumable(new ArrayList<>(List.of("wiorjh")), false)
+            .appendSingleParameter("int2",true, CommandReg.getType("int"))
+            .appendSingleParameter("int",false, CommandReg.getType("int"))
+            .appendSingleParameter("dou", false, CommandReg.getType("double"))
             .setHandler(new CommandHandler(){
                 @Override
                 public void run() {
+                    System.out.println(getArgument("int", CommandReg.getType("int")));
+                    System.out.println(getArgument("dou", CommandReg.getType("double")));
+                }
+            }).submit(testRegistry);
+
+    public static final CommandReg command2 = new CommandReg("nihao")
+            .appendEnumable(new ArrayList<>(List.of("qewewe")), false)
+            .appendSingleParameter("dou", false, CommandReg.getType("double"))
+            .setHandler(new CommandHandler(){
+                @Override
+                public void run() {
+                    System.out.println(getArgument("dou", CommandReg.getType("double")));
                 }
             }).submit(testRegistry);
 

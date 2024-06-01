@@ -1,16 +1,17 @@
 package kasuga.lib.core.base.commands;
 
+import kasuga.lib.core.annos.Inner;
+import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.registrations.common.CommandReg;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-/**
- * Internal, do not use directly
- */
+@Inner
 public class CommandTree {
     public Node root;
+    public LinkedList<Node> allNodes = new LinkedList<>();
     public LinkedList<Node> leaves = new LinkedList<>();
 
     public CommandTree(Node root) {
@@ -22,7 +23,9 @@ public class CommandTree {
         HashSet<Node> update = new HashSet<>();
         for (Node n : leaves) {
             for (String str : strings) {
-                update.add(new Node(str, ArgType.STRING, true).setFather(n));
+                Node node = new Node(str, CommandReg.getType("string"), true).setFather(n);
+                update.add(node);
+                allNodes.add(node);
             }
             if (optional) {
                 update.add(n);
@@ -32,10 +35,12 @@ public class CommandTree {
         leaves = new LinkedList<>(update);
     }
 
-    public void addNode(boolean optional, String name, ArgType argType) {
+    public void addNode(boolean optional, String name, BaseArgument argType) {
         HashSet<Node> update = new HashSet<>();
         for (Node n : leaves) {
-            update.add(new Node(name, argType).setFather(n));
+            Node node = new Node(name, argType, false).setFather(n);
+            update.add(node);
+            allNodes.add(node);
             if (optional) {
                 update.add(n);
             }

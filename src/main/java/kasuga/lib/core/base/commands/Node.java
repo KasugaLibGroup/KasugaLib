@@ -1,38 +1,54 @@
 package kasuga.lib.core.base.commands;
 
-import java.util.HashMap;
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.builder.ArgumentBuilder;
+import kasuga.lib.core.annos.Inner;
+import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
+import net.minecraft.commands.CommandSourceStack;
 
-/**
- * Internal, do not use directly
- */
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
+
+@Inner
 public class Node {
     public String name;
-    public ArgType type;
+    public ArgumentType parser;
     public boolean isLiteral;
     public boolean isLeaf = true;
-    public HashMap<String, ArgType> parameters;
 
     public Node father = null;
 
+    public boolean root;
+
     public Node(String name) {
-        this(name, ArgType.ROOT, false);
+        this(name, BaseArgument.STRING, true);
+        this.root = true;
     }
 
-    public Node(String name, ArgType type) {
-        this(name, type, false);
-    }
-
-    public Node(String name, ArgType type, boolean isLiteral) {
+    public Node(String name, BaseArgument type, boolean isLiteral) {
         this.name = name;
-        this.type = type;
+        this.parser = type;
         this.isLiteral = isLiteral;
-        this.parameters = new HashMap<>();
-        this.parameters.put(this.name, this.type);
     }
 
     public Node setFather(Node father) {
         this.father = father;
-        this.parameters.putAll(father.parameters);
         return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isRoot() {
+        return root;
+    }
+
+    public static ArgumentBuilder<CommandSourceStack, ?> parseArgumentType(Node node){
+        if(node.isLiteral){
+            return literal(node.name);
+        }else{
+            return argument(node.name, node.parser);
+        }
     }
 }
