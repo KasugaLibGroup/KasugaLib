@@ -3,12 +3,13 @@ package kasuga.lib.core;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.CustomBlockRenderer;
 import kasuga.lib.core.client.animation.Constants;
-import kasuga.lib.core.client.gui.GuiManager;
-import kasuga.lib.core.events.both.CommandEvent;
+import kasuga.lib.core.client.frontend.gui.GuiEngine;
+import kasuga.lib.core.events.both.BothSetupEvent;
 import kasuga.lib.core.events.both.EntityAttributeEvent;
 import kasuga.lib.core.events.client.*;
 import kasuga.lib.core.events.server.ServerStartingEvents;
 import kasuga.lib.core.client.render.texture.SimpleTexture;
+import kasuga.lib.core.javascript.JavascriptApi;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.registry.FontRegistry;
@@ -28,7 +29,10 @@ public class KasugaLibStacks {
     private final FontRegistry FONTS;
     private final RandomSource random = RandomSource.create();
     private final HashMap<Block, CustomBlockRenderer> BLOCK_RENDERERS;
-    public GuiManager GUI_MANAGER;
+    public final JavascriptApi JAVASCRIPT = new JavascriptApi();
+
+    public GuiEngine GUI;
+
     public KasugaLibStacks(IEventBus bus) {
         this.bus = bus;
         this.registries = new HashMap<>();
@@ -38,8 +42,12 @@ public class KasugaLibStacks {
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverAboutToStart);
         MinecraftForge.EVENT_BUS.addListener(PacketEvent::onServerPayloadHandleEvent);
+        bus.addListener(BothSetupEvent::onFMLCommonSetup);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
+        JAVASCRIPT.init();
         if(Envs.isClient()) {
+            GUI = new GuiEngine();
+            GUI.init();
             MinecraftForge.EVENT_BUS.addListener(PacketEvent::onClientPayloadHandleEvent);
             MinecraftForge.EVENT_BUS.addListener(Constants::onClientTick);
             MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStart);
@@ -49,7 +57,6 @@ public class KasugaLibStacks {
             bus.addListener(TextureRegistryEvent::onModelRegistry);
             bus.addListener(ClientSetupEvent::onClientSetup);
             MinecraftForge.EVENT_BUS.addListener(RenderTickEvent::onRenderTick);
-            GUI_MANAGER = new GuiManager();
         }
     }
 

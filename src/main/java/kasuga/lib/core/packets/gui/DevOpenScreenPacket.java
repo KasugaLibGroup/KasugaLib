@@ -67,7 +67,7 @@ public class DevOpenScreenPacket extends S2CPacket {
             return;
         }
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()->()-> {
-            Minecraft.getInstance().setScreen(KasugaLib.STACKS.GUI_MANAGER.create(source).createScreen());
+            // Minecraft.getInstance().setScreen(KasugaLib.STACKS.GUI_MANAGER.create(source).createScreen());
         });
     }
 

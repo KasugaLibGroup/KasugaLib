@@ -2,7 +2,6 @@ package kasuga.lib.example_env.block;
 
 import kasuga.lib.example_env.AllExampleElements;
 import kasuga.lib.example_env.block_entity.GreenAppleTile;
-import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,8 +18,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.Nullable;
 
 public class GreenAppleBlock extends BaseEntityBlock {
@@ -40,6 +37,12 @@ public class GreenAppleBlock extends BaseEntityBlock {
         if(!pLevel.isClientSide) {
             AllExampleElements.Channel.sendToClient(new ExampleS2CPacket(), (ServerPlayer) pPlayer);
             // AllExampleElements.Channel.sendToServer(new ExampleC2SPacket());
+        }
+        if(pLevel.isClientSide){
+            BlockEntity be = pLevel.getBlockEntity(pPos);
+            if(be instanceof GreenAppleTile tile){
+                tile.openScreen();
+            }
         }
         return super.use(pState, pLevel, pPos, pPlayer, pHand, pHit);
     }

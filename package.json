@@ -1,0 +1,17 @@
+{
+  "name": "kasugalib",
+  "version": "0.1.0",
+  "description": "The javascript part of KasugaLib",
+  "main": "index.js",
+  "repository": "https://github.com/KasugaLibGroup/KasugaLib",
+  "author": "TimeBather <open-source@timebather.cn>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "esbuild": "^0.21.3"
+  },
+  "scripts": {
+    "build:bootstrap": "esbuild ./lib/bootstrap/bootstrap.ts --bundle --outfile=./src/generated/resources/assets/kasuga_lib/js/bootstrap.js",
+    "build:registry": "esbuild ./lib/modules/registry.ts --bundle --outfile=./src/generated/resources/assets/kasuga_lib/js/modules/registry.js --external:kasuga:internal/registry --platform=node"
+  }
+}
