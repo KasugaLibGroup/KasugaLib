@@ -99,7 +99,7 @@ public class CommandReg extends Reg {
     /**
      * Set all the command of the same prefix to be executed only in specified side.
      * @param dist The dist you'd like to let your command be executed. Null for both sides.
-     * @return
+     * @return The Reg itself
      */
     public CommandReg onlyIn(Dist dist){
         ROOTS.remove(this.commandName);
@@ -120,7 +120,7 @@ public class CommandReg extends Reg {
      * Marks that your command is over.
      *
      * @param registry the mod SimpleRegistry.
-     * @return
+     * @return The Reg itself
      */
     @Override
     public CommandReg submit(SimpleRegistry registry) {
