@@ -16,9 +16,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 import static kasuga.lib.core.base.commands.CommandNode.parseArgumentType;
 import static net.minecraft.commands.Commands.literal;
@@ -56,9 +58,9 @@ public class CommandReg extends Reg {
      * @param isOptional Is this property optional? You can't append required parameters after any optional parameters!
      * @return The Reg itself
      */
-    public CommandReg appendEnumable(ArrayList<String> list, boolean isOptional) {
+    public CommandReg addEnum(List<String> list, boolean isOptional) {
         System.out.println(tree.leaves.size());
-        tree.addEnums(isOptional, list);
+        tree.addEnums(isOptional, new ArrayList<>(list));
         if(this.optionalStartFlag && !isOptional){
             throw new IllegalArgumentException();
         }
@@ -67,14 +69,122 @@ public class CommandReg extends Reg {
     }
 
     /**
-     * Append an integer parameter to the end of your command.
+     * Append your own type of parameter to the end of your command.
      *
-     * @param defaultName Name of your property
-     * @param isOptional Is this property optional? You can't append required parameters after any optional parameters!
+     * @param defaultName Name of your parameter
+     * @param isOptional Is this parameter optional? You can't append required parameters after any optional parameters!
+     * @param target Your target class. Register it before using.
+     * @see ArgumentTypeReg
      * @return The Reg itself
      */
-    public CommandReg appendSingleParameter(String defaultName, boolean isOptional, Class target) {
+    public CommandReg addParam(String defaultName, boolean isOptional, Class target) {
         tree.addNode(isOptional, defaultName, ArgumentTypeReg.types.get(target.getName()).getSecond());
+        if(this.optionalStartFlag && !isOptional){
+            throw new IllegalArgumentException();
+        }
+        this.optionalStartFlag = isOptional;
+        return this;
+    }
+
+    /**
+     * Some default types of parameters.
+     *
+     * @param defaultName Name of your parameter
+     * @param isOptional Is this parameter optional? You can't append required parameters after any optional parameters!
+     * @return The Reg itself
+     */
+    public CommandReg addByte(String defaultName, boolean isOptional) {
+        tree.addNode(isOptional, defaultName, ArgumentTypeReg.types.get(byte.class.getName()).getSecond());
+        if(this.optionalStartFlag && !isOptional){
+            throw new IllegalArgumentException();
+        }
+        this.optionalStartFlag = isOptional;
+        return this;
+    }
+
+    public CommandReg addShort(String defaultName, boolean isOptional) {
+        tree.addNode(isOptional, defaultName, ArgumentTypeReg.types.get(short.class.getName()).getSecond());
+        if(this.optionalStartFlag && !isOptional){
+            throw new IllegalArgumentException();
+        }
+        this.optionalStartFlag = isOptional;
+        return this;
+    }
+
+    public CommandReg addChar(String defaultName, boolean isOptional) {
+        tree.addNode(isOptional, defaultName, ArgumentTypeReg.types.get(char.class.getName()).getSecond());
+        if(this.optionalStartFlag && !isOptional){
+            throw new IllegalArgumentException();
+        }
+        this.optionalStartFlag = isOptional;
+        return this;
+    }
+
+    public CommandReg addInteger(String defaultName, boolean isOptional) {
+        tree.addNode(isOptional, defaultName, ArgumentTypeReg.types.get(int.class.getName()).getSecond());
+        if(this.optionalStartFlag && !isOptional){
+            throw new IllegalArgumentException();
+        }
+        this.optionalStartFlag = isOptional;
+        return this;
+    }
+
+    public CommandReg addLong(String defaultName, boolean isOptional) {
+        tree.addNode(isOptional, defaultName, ArgumentTypeReg.types.get(long.class.getName()).getSecond());
+        if(this.optionalStartFlag && !isOptional){
+            throw new IllegalArgumentException();
+        }
+        this.optionalStartFlag = isOptional;
+        return this;
+    }
+
+    public CommandReg addFloat(String defaultName, boolean isOptional) {
+        tree.addNode(isOptional, defaultName, ArgumentTypeReg.types.get(float.class.getName()).getSecond());
+        if(this.optionalStartFlag && !isOptional){
+            throw new IllegalArgumentException();
+        }
+        this.optionalStartFlag = isOptional;
+        return this;
+    }
+
+    public CommandReg addDouble(String defaultName, boolean isOptional) {
+        tree.addNode(isOptional, defaultName, ArgumentTypeReg.types.get(double.class.getName()).getSecond());
+        if(this.optionalStartFlag && !isOptional){
+            throw new IllegalArgumentException();
+        }
+        this.optionalStartFlag = isOptional;
+        return this;
+    }
+
+    public CommandReg addBoolean(String defaultName, boolean isOptional) {
+        tree.addNode(isOptional, defaultName, ArgumentTypeReg.types.get(boolean.class.getName()).getSecond());
+        if(this.optionalStartFlag && !isOptional){
+            throw new IllegalArgumentException();
+        }
+        this.optionalStartFlag = isOptional;
+        return this;
+    }
+
+    public CommandReg addString(String defaultName, boolean isOptional) {
+        tree.addNode(isOptional, defaultName, ArgumentTypeReg.types.get(String.class.getName()).getSecond());
+        if(this.optionalStartFlag && !isOptional){
+            throw new IllegalArgumentException();
+        }
+        this.optionalStartFlag = isOptional;
+        return this;
+    }
+
+    public CommandReg addResourceLocation(String defaultName, boolean isOptional) {
+        tree.addNode(isOptional, defaultName, ArgumentTypeReg.types.get(ResourceLocation.class.getName()).getSecond());
+        if(this.optionalStartFlag && !isOptional){
+            throw new IllegalArgumentException();
+        }
+        this.optionalStartFlag = isOptional;
+        return this;
+    }
+
+    public CommandReg addURL(String defaultName, boolean isOptional) {
+        tree.addNode(isOptional, defaultName, ArgumentTypeReg.types.get(URL.class.getName()).getSecond());
         if(this.optionalStartFlag && !isOptional){
             throw new IllegalArgumentException();
         }
@@ -98,7 +208,7 @@ public class CommandReg extends Reg {
 
     /**
      * Set all the command of the same prefix to be executed only in specified side.
-     * @param dist The dist you'd like to let your command be executed. Null for both sides.
+     * @param dist The dist you'd like to let your command be executed. Null for both sides(default).
      * @return The Reg itself
      */
     public CommandReg onlyIn(Dist dist){

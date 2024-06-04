@@ -102,9 +102,9 @@ public class AllExampleElements {
             .submit(testRegistry);
 
     public static final CommandReg command = new CommandReg("nihao")
-            .appendEnumable(new ArrayList<>(List.of("wiorjh")), false)
-            .appendSingleParameter("int",false, int.class)
-            .appendSingleParameter("dou", true, URL.class)
+            .addEnum(List.of("wiorjh"), false)
+            .addInteger("int", false)
+            .addURL("dou", true)
             .setHandler(new CommandHandler(){
                 @Override
                 public void run() {
