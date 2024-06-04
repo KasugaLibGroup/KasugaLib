@@ -12,32 +12,32 @@ import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
 @Inner
-public class Node {
+public class CommandNode {
     public String name;
     public ArgumentType parser;
     public boolean isLiteral;
     public boolean isLeaf = true;
 
-    public Node father = null;
+    public CommandNode father = null;
 
     public boolean root;
     public boolean required;
 
-    public final LinkedList<Node> children = new LinkedList<>();
+    public final LinkedList<CommandNode> children = new LinkedList<>();
 
-    public Node(String name) {
+    public CommandNode(String name) {
         this(name, BaseArgument.STRING, true, true);
         this.root = true;
     }
 
-    public Node(String name, BaseArgument type, boolean isLiteral, boolean isRequired) {
+    public CommandNode(String name, BaseArgument type, boolean isLiteral, boolean isRequired) {
         this.name = name;
         this.parser = type;
         this.isLiteral = isLiteral;
         this.required = isRequired;
     }
 
-    public Node setFather(Node father) {
+    public CommandNode setFather(CommandNode father) {
         this.father = father;
         return this;
     }
@@ -50,11 +50,11 @@ public class Node {
         return root;
     }
 
-    public static ArgumentBuilder<CommandSourceStack, ?> parseArgumentType(Node node){
-        if(node.isLiteral){
-            return literal(node.name);
+    public static ArgumentBuilder<CommandSourceStack, ?> parseArgumentType(CommandNode commandNode){
+        if(commandNode.isLiteral){
+            return literal(commandNode.name);
         }else{
-            return argument(node.name, node.parser);
+            return argument(commandNode.name, commandNode.parser);
         }
     }
 }

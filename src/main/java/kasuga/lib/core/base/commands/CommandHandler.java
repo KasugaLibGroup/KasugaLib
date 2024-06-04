@@ -1,10 +1,8 @@
 package kasuga.lib.core.base.commands;
 
 import com.mojang.brigadier.context.CommandContext;
-import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
+import kasuga.lib.registrations.common.ArgumentTypeReg;
 import net.minecraft.commands.CommandSourceStack;
-
-import java.util.function.Function;
 
 import static kasuga.lib.KasugaLib.MAIN_LOGGER;
 
@@ -25,14 +23,9 @@ public abstract class CommandHandler {
         return this;
     }
 
-    public <T extends BaseArgument> Object getArgument(String name, T type){
+    public <T> T parseString(String name, Class<T> type){
         String base = ctx.getArgument(name, String.class);
-        try {
-            Function func = (Function) BaseArgument.class.getDeclaredField("parser").get(type);
-            return func.apply(base);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return ArgumentTypeReg.INSTANCE.parse(base, type);
     }
 
     public int execute(CommandContext<CommandSourceStack> ctx){

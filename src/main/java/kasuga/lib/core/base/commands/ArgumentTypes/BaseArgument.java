@@ -2,11 +2,12 @@ package kasuga.lib.core.base.commands.ArgumentTypes;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import kasuga.lib.core.annos.Inner;
 
 import java.util.function.Function;
 
+@Inner
 public class BaseArgument implements ArgumentType<String> {
     public static final BaseArgument STRING = new BaseArgument(s->s);
 

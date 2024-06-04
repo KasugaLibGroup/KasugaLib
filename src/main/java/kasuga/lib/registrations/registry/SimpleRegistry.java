@@ -6,6 +6,8 @@ import kasuga.lib.core.annos.Beta;
 import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Util;
+import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
+import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgumentInfo;
 import kasuga.lib.core.client.ModelMappings;
 import kasuga.lib.core.client.render.model.CustomRenderedItemModel;
 import kasuga.lib.core.base.SimpleCreativeTab;
@@ -16,6 +18,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
+import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
@@ -259,6 +262,7 @@ public class SimpleRegistry {
         ITEMS.register(eventBus);
         FLUID_TYPE.register(eventBus);
         FLUID.register(eventBus);
+        ARGUMENT_TYPES.register("base", ()-> ArgumentTypeInfos.registerByClass(BaseArgument.class, new BaseArgumentInfo()));
         ARGUMENT_TYPES.register(eventBus);
         for(String key : CACHE_OF_BLOCK_ENTITIES.keySet()) {
             try {
