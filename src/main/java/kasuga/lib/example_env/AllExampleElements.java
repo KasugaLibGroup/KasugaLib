@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 
-import java.net.MalformedURLException;
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,13 +98,8 @@ public class AllExampleElements {
             .loadPacket(ExampleS2CPacket.class, ExampleS2CPacket::new)
             .submit(testRegistry);
 
-    public static final ArgumentTypeReg type = ArgumentTypeReg.INSTANCE.registerType(URL.class, s -> {
-        try {
-            return new URL(s);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-    }).submit(testRegistry);
+    public static final ArgumentTypeReg type = ArgumentTypeReg.INSTANCE.registerType(File.class, File::new)
+            .submit(testRegistry);
 
     public static final CommandReg command = new CommandReg("nihao")
             .appendEnumable(new ArrayList<>(List.of("wiorjh")), false)
@@ -113,8 +108,8 @@ public class AllExampleElements {
             .setHandler(new CommandHandler(){
                 @Override
                 public void run() {
-                    System.out.println(parseString("int", int.class));
-                    System.out.println(parseString("dou", URL.class));
+                    System.out.println(getParameter("int", int.class));
+                    System.out.println(getParameter("dou", URL.class));
                 }
             }).submit(testRegistry);
 

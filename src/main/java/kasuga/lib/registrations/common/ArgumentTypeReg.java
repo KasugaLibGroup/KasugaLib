@@ -6,14 +6,17 @@ import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.resources.ResourceLocation;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.function.Function;
 
 public class ArgumentTypeReg extends Reg {
     public static final HashMap<String, Pair<Class, BaseArgument>> types = new HashMap<>();
-    //Single to n
+    //Singleton
     public static final ArgumentTypeReg INSTANCE = new ArgumentTypeReg("argument_types");
 
+    //Some presets
     static {
         ArgumentTypeReg.INSTANCE.registerType(byte.class, Byte::parseByte);
         ArgumentTypeReg.INSTANCE.registerType(short.class, Short::parseShort);
@@ -24,6 +27,13 @@ public class ArgumentTypeReg extends Reg {
         ArgumentTypeReg.INSTANCE.registerType(long.class, Long::parseLong);
         ArgumentTypeReg.INSTANCE.registerType(String.class, s->s);
         ArgumentTypeReg.INSTANCE.registerType(ResourceLocation.class, ResourceLocation::new);
+        ArgumentTypeReg.INSTANCE.registerType(URL.class, s -> {
+            try {
+                return new URL(s);
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private ArgumentTypeReg(String registrationKey) {
@@ -31,9 +41,7 @@ public class ArgumentTypeReg extends Reg {
     }
 
     /**
-     * Call this to register your own type before using them.
-     *
-     *
+     * Call this to register your own type before using them.*
      * Use in tour registry.
      * @return The Reg itself
      */
@@ -44,8 +52,7 @@ public class ArgumentTypeReg extends Reg {
 
     /**
      * Parse your string with a registered type
-     *
-     * Use in you handler
+     * Use this inside in you handler
      * @param value Your string
      * @param target Target class
      * @return BaseArgument

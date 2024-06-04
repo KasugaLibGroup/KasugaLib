@@ -15,20 +15,12 @@ public abstract class CommandHandler {
     public CommandHandler() {
     }
 
-    /**
-     * Internal, do not use directly
-     */
-    private CommandHandler setCtx(CommandContext<CommandSourceStack> ctx) {
-        this.ctx = ctx;
-        return this;
-    }
-
-    public <T> T parseString(String name, Class<T> type){
+    public <T> T getParameter(String name, Class<T> type){
         String base = ctx.getArgument(name, String.class);
         return ArgumentTypeReg.INSTANCE.parse(base, type);
     }
 
-    public int execute(CommandContext<CommandSourceStack> ctx){
+    public int executeWithContext(CommandContext<CommandSourceStack> ctx){
         this.ctx = ctx;
         try {
             run();

@@ -180,14 +180,14 @@ public class CommandReg extends Reg {
             ArgumentBuilder<CommandSourceStack, ?> argument, post;
             argument = null;
             if (commandNode.isRoot()) {
-                builder.executes(commandReg.handler::execute);
+                builder.executes(commandReg.handler::executeWithContext);
                 continue;
             }
             while (true) {
                 if (commandNode.isLeaf) {
                     post = parseArgumentType(commandNode)
                             .requires(p -> p.hasPermission(commandReg.permission))
-                            .executes(commandReg.handler::execute);
+                            .executes(commandReg.handler::executeWithContext);
                     if(commandNode.father.isRoot()){
                         builder.then(post);
                         break;
@@ -205,7 +205,7 @@ public class CommandReg extends Reg {
                 } else {
                     argument = parseArgumentType(commandNode)
                             .requires(p -> p.hasPermission(commandReg.permission))
-                            .executes(commandReg.handler::execute)
+                            .executes(commandReg.handler::executeWithContext)
                             .then(post);
                 }
             }
