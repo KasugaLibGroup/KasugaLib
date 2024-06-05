@@ -218,8 +218,9 @@ public class SimpleRegistry {
 
     /**
      * return the registry of Command Argument Type. See {@link kasuga.lib.registrations.common.ArgumentTypeReg}
-     * @return the registry of fluid.
+     * @return the registry of argument types.
      */
+    @Deprecated
     public DeferredRegister<ArgumentTypeInfo<?, ?>> argumentTypes() {return ARGUMENT_TYPES;}
 
     /**
