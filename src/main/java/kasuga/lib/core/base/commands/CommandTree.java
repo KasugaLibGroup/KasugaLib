@@ -18,7 +18,7 @@ public class CommandTree {
         leaves.add(root);
     }
 
-    public void addLitaeral(boolean optional, String string) {
+    public void addLiteral(boolean optional, String string) {
         HashSet<CommandNode> update = new HashSet<>();
         for (CommandNode n : leaves) {
                 CommandNode commandNode = new CommandNode(string, ArgumentTypeReg.types.get(String.class.getName()).getSecond(),
