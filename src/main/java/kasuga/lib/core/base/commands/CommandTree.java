@@ -3,9 +3,7 @@ package kasuga.lib.core.base.commands;
 import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.registrations.common.ArgumentTypeReg;
-import kasuga.lib.registrations.common.CommandReg;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -20,16 +18,14 @@ public class CommandTree {
         leaves.add(root);
     }
 
-    public void addEnums(boolean optional, ArrayList<String> strings) {
+    public void addLitaeral(boolean optional, String string) {
         HashSet<CommandNode> update = new HashSet<>();
         for (CommandNode n : leaves) {
-            for (String str : strings) {
-                CommandNode commandNode = new CommandNode(str, ArgumentTypeReg.types.get(String.class.getName()).getSecond(),
+                CommandNode commandNode = new CommandNode(string, ArgumentTypeReg.types.get(String.class.getName()).getSecond(),
                                     true, !optional).setFather(n);
                 update.add(commandNode);
                 n.children.add(commandNode);
                 allCommandNodes.add(commandNode);
-            }
         }
         leaves.stream().filter(commandNode -> !update.contains(commandNode)).forEach(commandNode -> commandNode.isLeaf = false);
         leaves = new LinkedList<>(update);

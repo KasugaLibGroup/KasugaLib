@@ -23,8 +23,6 @@ import net.minecraft.world.level.material.MaterialColor;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AllExampleElements {
 
@@ -102,7 +100,7 @@ public class AllExampleElements {
             .submit(testRegistry);
 
     public static final CommandReg command = new CommandReg("nihao")
-            .addEnum(List.of("wiorjh"), false)
+            .addLiteral("wiorjh", false)
             .addInteger("int", false)
             .addURL("dou", true)
             .setHandler(new CommandHandler(){
