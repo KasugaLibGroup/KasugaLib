@@ -21,8 +21,8 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.net.URL;
 
 public class AllExampleElements {
 
@@ -96,15 +96,18 @@ public class AllExampleElements {
             .loadPacket(ExampleS2CPacket.class, ExampleS2CPacket::new)
             .submit(testRegistry);
 
-    public static final CommandReg reg = CommandReg
-            .create("nihao")
-            .appendInteger("int",false)
-            .appendInteger("int2",true)
-            .appendInteger("int3",false)
-            .appendInteger("int4",true)
+    public static final ArgumentTypeReg type = ArgumentTypeReg.INSTANCE.registerType(File.class, File::new)
+            .submit(testRegistry);
+
+    public static final CommandReg command = new CommandReg("nihao")
+            .addLiteral("wiorjh", false)
+            .addInteger("int", false)
+            .addURL("dou", true)
             .setHandler(new CommandHandler(){
                 @Override
                 public void run() {
+                    System.out.println(getParameter("int", int.class));
+                    System.out.println(getParameter("dou", URL.class));
                 }
             }).submit(testRegistry);
 

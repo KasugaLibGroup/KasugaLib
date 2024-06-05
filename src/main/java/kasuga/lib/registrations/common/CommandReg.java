@@ -3,23 +3,23 @@ package kasuga.lib.registrations.common;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import kasuga.lib.core.base.commands.ArgType;
+import kasuga.lib.core.annos.Inner;
+import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.base.commands.CommandHandler;
+import kasuga.lib.core.base.commands.CommandNode;
 import kasuga.lib.core.base.commands.CommandTree;
-import kasuga.lib.core.base.commands.Node;
+import kasuga.lib.core.util.data_type.Pair;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 
+import java.net.URL;
 import java.util.*;
-import java.util.function.Function;
 
-import static kasuga.lib.KasugaLib.MAIN_LOGGER;
-import static kasuga.lib.core.base.commands.ArgType.ROOT;
-import static kasuga.lib.core.base.commands.ArgType.parseArgumentType;
-import static net.minecraft.commands.Commands.argument;
+import static kasuga.lib.core.base.commands.CommandNode.parseArgumentType;
 import static net.minecraft.commands.Commands.literal;
 
 public class CommandReg extends Reg {
@@ -27,110 +27,111 @@ public class CommandReg extends Reg {
     private final String commandName;
     private final CommandTree tree;
     private CommandHandler handler;
-    public static final CommandReg INSTANCE = new CommandReg("null");
 
-    private boolean isClientOnly = false;
+    private boolean optionalStartFlag = false;
     private int permission = 2;
 
-    private CommandReg(String registrationKey) {
+    private static final HashMap<String, Pair<LiteralArgumentBuilder<CommandSourceStack>, Dist>> ROOTS = new HashMap<>();
+    public static final HashMap<ResourceLocation, BaseArgument> types = new HashMap<>();
+
+    /**
+     * Beginning of commands registries.
+     * For instance, if you need /lp <Enumpara1> <int> and /lp <double> <url>,
+     * please register twice.
+     *
+     * @param registrationKey The name of your command.
+     */
+    public CommandReg(String registrationKey) {
         super(registrationKey);
         this.commandName = registrationKey;
-        this.tree = new CommandTree(new Node(registrationKey));
+        this.tree = new CommandTree(new CommandNode(registrationKey));
+        ROOTS.put(registrationKey, Pair.of(literal(registrationKey), null));
     }
 
     /**
-     * Registry of commands. Here's we go!
+     * Append a literal string parameter to the end of your command.Think /gamemode
      *
-     * @param registrationKey The name of your command. Duplicatable
-     */
-    public static CommandReg create(String registrationKey) {
-        return new CommandReg(registrationKey);
-    }
-
-    /**
-     * Append an enumable string parameter to the end of your command.
-     *
-     * @param list     List of your enums
-     * @param optional Is this property optional?
+     * @param string     Your String
+     * @param isOptional Is this property optional? You can't append required parameters after any optional parameters!
      * @return The Reg itself
      */
-    public CommandReg appendEnumable(ArrayList<String> list, boolean optional) {
+    public CommandReg addLiteral(String string, boolean isOptional) {
         System.out.println(tree.leaves.size());
-        tree.addEnums(optional, list);
+        tree.addLiteral(isOptional, string);
+        if(this.optionalStartFlag && !isOptional){
+            throw new IllegalArgumentException();
+        }
+        this.optionalStartFlag = isOptional;
         return this;
     }
 
     /**
-     * Append an integer parameter to the end of your command.
+     * Append your own type of parameter to the end of your command.
      *
-     * @param defaultName Name of your property
-     * @param optional    Is this property optional?
+     * @param defaultName Name of your parameter
+     * @param isOptional Is this parameter optional? You can't append required parameters after any optional parameters!
+     * @param target Your target class. Register it before using.
+     * @see ArgumentTypeReg
      * @return The Reg itself
      */
-    public CommandReg appendInteger(String defaultName, boolean optional) {
-        tree.addNode(optional, defaultName, ArgType.INT);
+    public CommandReg addParam(String defaultName, boolean isOptional, Class target) {
+        tree.addNode(isOptional, defaultName, ArgumentTypeReg.types.get(target.getName()).getSecond());
+        if(this.optionalStartFlag && !isOptional){
+            throw new IllegalArgumentException();
+        }
+        this.optionalStartFlag = isOptional;
         return this;
     }
 
     /**
-     * Append a double parameter to the end of your command.
+     * Some default types of parameters.
      *
-     * @param defaultName Name of your property
-     * @param optional    Is this property optional?
+     * @param defaultName Name of your parameter
+     * @param isOptional Is this parameter optional? You can't append required parameters after any optional parameters!
      * @return The Reg itself
      */
-    public CommandReg appendDouble(String defaultName, boolean optional) {
-        tree.addNode(optional, defaultName, ArgType.DOUBLE);
-        return this;
+    public CommandReg addByte(String defaultName, boolean isOptional) {
+        return addParam(defaultName, isOptional, boolean.class);
     }
 
-    /**
-     * Append a single string parameter to the end of your command.
-     *
-     * @param defaultName Name of your property
-     * @param optional    Is this property optional?
-     * @return The Reg itself
-     */
-    public CommandReg appendString(String defaultName, boolean optional) {
-        tree.addNode(optional, defaultName, ArgType.STRING);
-        return this;
+    public CommandReg addShort(String defaultName, boolean isOptional) {
+        return addParam(defaultName, isOptional, short.class);
     }
 
-    /**
-     * Append a ResourceLocation parameter to the end of your command.
-     *
-     * @param defaultName Name of your property
-     * @param optional    Is this property optional?
-     * @return The Reg itself
-     */
-    public CommandReg appendResourceLocation(String defaultName, boolean optional) {
-        tree.addNode(optional, defaultName, ArgType.RESOURCE_LOCATION);
-        return this;
+    public CommandReg addCharacter(String defaultName, boolean isOptional) {
+        return addParam(defaultName, isOptional, char.class);
     }
 
-    /**
-     * Append a Vec3 parameter to the end of your command.
-     *
-     * @param defaultName Name of your property
-     * @param optional    Is this property optional?
-     * @return The Reg itself
-     */
-    public CommandReg appendVec3(String defaultName, boolean optional) {
-        tree.addNode(optional, defaultName, ArgType.VECTOR3);
-        return this;
+    public CommandReg addInteger(String defaultName, boolean isOptional) {
+        return addParam(defaultName, isOptional, int.class);
     }
 
-    /**
-     * Append an custom parameter to the end of your command.
-     *
-     * @param defaultName Name of your property
-     * @param optional    Is this property optional?
-     * @return The Reg itself
-     */
-    //TODO:Not completed yet
-    public <T> CommandReg appendCustom(String defaultName, boolean optional, Function<String, T> function) {
-        tree.addNode(optional, defaultName, ArgType.CUSTOM);
-        return this;
+    public CommandReg addLong(String defaultName, boolean isOptional) {
+        return addParam(defaultName, isOptional, long.class);
+    }
+
+    public CommandReg addFloat(String defaultName, boolean isOptional) {
+        return addParam(defaultName, isOptional, float.class);
+    }
+
+    public CommandReg addDouble(String defaultName, boolean isOptional) {
+        return addParam(defaultName, isOptional, double.class);
+    }
+
+    public CommandReg addBoolean(String defaultName, boolean isOptional) {
+        return addParam(defaultName, isOptional, boolean.class);
+    }
+
+    public CommandReg addString(String defaultName, boolean isOptional) {
+        return addParam(defaultName, isOptional, String.class);
+    }
+
+    public CommandReg addResourceLocation(String defaultName, boolean isOptional) {
+        return addParam(defaultName, isOptional, ResourceLocation.class);
+    }
+
+    public CommandReg addURL(String defaultName, boolean isOptional) {
+        return addParam(defaultName, isOptional, URL.class);
     }
 
     /**
@@ -148,6 +149,17 @@ public class CommandReg extends Reg {
     }
 
     /**
+     * Set all the command of the same prefix to be executed only in specified side.
+     * @param dist The dist you'd like to let your command be executed. Null for both sides(default).
+     * @return The Reg itself
+     */
+    public CommandReg onlyIn(Dist dist){
+        ROOTS.remove(this.commandName);
+        ROOTS.put(this.commandName, Pair.of(literal(registrationKey), dist));
+        return this;
+    }
+
+    /**
      * @param runnable your command's handler.
      * @return The Reg itself
      */
@@ -160,13 +172,13 @@ public class CommandReg extends Reg {
      * Marks that your command is over.
      *
      * @param registry the mod SimpleRegistry.
-     * @return
+     * @return The Reg itself
      */
     @Override
     public CommandReg submit(SimpleRegistry registry) {
         ENTRIES.add(this);
         registry.command().put(this.commandName, this);
-        return null;
+        return this;
     }
 
     @Override
@@ -175,27 +187,35 @@ public class CommandReg extends Reg {
     }
 
     /**
-     * Subscribe to CommandEvent to get your commands registered.
+     * Subscribe the CommandEvent to get your commands registered.
      *
-     * @param dispatcher
+     * @param dispatcher The dispatcher of CommandEvent
      * @see net.minecraftforge.event.RegisterCommandsEvent
      */
+    @Inner
     public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
-        ENTRIES.forEach(commandReg -> {
-            register(commandReg, dispatcher);
+        ENTRIES.forEach(CommandReg::register);
+        ROOTS.values().forEach(pair -> {
+            if(pair.getSecond() == null ){
+                dispatcher.register(pair.getFirst());
+                return;
+            }
+            switch (pair.getSecond()) {
+                case CLIENT ->
+                        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> () -> dispatcher.register(pair.getFirst()));
+                case DEDICATED_SERVER ->
+                        DistExecutor.safeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> dispatcher.register(pair.getFirst()));
+            }
         });
     }
 
-    /**
-     * Internal, do not use directly
-     */
-    private static void register(final CommandReg commandReg, final CommandDispatcher<CommandSourceStack> dispatcher) {
-
+    @Inner
+    private static void register(final CommandReg commandReg) {
         System.out.println(commandReg.tree.leaves.size());
-        for (Node leaf : commandReg.tree.leaves) {
+        for (CommandNode leaf : commandReg.tree.leaves) {
             while (true) {
                 System.out.println(leaf.name);
-                if (leaf.type == ROOT)
+                if (leaf.isRoot())
                     break;
                 leaf = leaf.father;
             }
@@ -206,58 +226,40 @@ public class CommandReg extends Reg {
             throw new NullPointerException();
         }
 
-        if (commandReg.tree.leaves.size() == 1) {
-            dispatcher.register(literal(commandReg.commandName));
-            return;
-        }
-
-        for (Node leaf : commandReg.tree.leaves) {
-            Node node = leaf;
-            LiteralArgumentBuilder<CommandSourceStack> builder = literal(commandReg.commandName);
+        for (CommandNode leaf : commandReg.tree.leaves) {
+            CommandNode commandNode = leaf;
+            LiteralArgumentBuilder<CommandSourceStack> builder = ROOTS.get(commandReg.commandName).getFirst();
             ArgumentBuilder<CommandSourceStack, ?> argument, post;
             argument = null;
-            if (node.type == ArgType.ROOT) {
-                dispatcher.register(builder.executes(ctx -> {
-                    commandReg.handler.setCtx(ctx);
-                    try {
-                        commandReg.handler.run();
-                    } catch (Exception e) {
-                        MAIN_LOGGER.error("Error during command: ", e);
-                        return -1;
-                    }
-                    return 1;
-                }));
+            if (commandNode.isRoot()) {
+                builder.executes(commandReg.handler::executeWithContext);
                 continue;
             }
             while (true) {
-                if (node.isLeaf) {
-                    Node finalNode = node;
-                    post = parseArgumentType(node)
+                if (commandNode.isLeaf) {
+                    post = parseArgumentType(commandNode)
                             .requires(p -> p.hasPermission(commandReg.permission))
-                            .executes(ctx -> {
-                                commandReg.handler.setCtx(ctx).setKeys(finalNode.parameters);
-                                try {
-                                    commandReg.handler.run();
-                                } catch (Exception e) {
-                                    MAIN_LOGGER.error("Error during command: ", e);
-                                    return -1;
-                                }
-                                return 1;
-                            });
-                    if(node.father.type == ROOT){
-                        dispatcher.register(builder.then(post));
+                            .executes(commandReg.handler::executeWithContext);
+                    if(commandNode.father.isRoot()){
+                        builder.then(post);
                         break;
                     }
                 } else {
                     post = argument;
                 }
-                if (node.father.type == ROOT) {
-                    builder.then(argument == null ? parseArgumentType(node) : argument);
-                    dispatcher.register(builder);
+                if (commandNode.father.isRoot()) {
+                    builder.then(argument == null ? parseArgumentType(commandNode) : argument);
                     break;
                 }
-                node = node.father;
-                argument = parseArgumentType(node).then(post);
+                commandNode = commandNode.father;
+                if(commandNode.children.stream().anyMatch(commandNode1 -> commandNode1.required)){
+                    argument = parseArgumentType(commandNode).then(post);
+                } else {
+                    argument = parseArgumentType(commandNode)
+                            .requires(p -> p.hasPermission(commandReg.permission))
+                            .executes(commandReg.handler::executeWithContext)
+                            .then(post);
+                }
             }
         }
     }

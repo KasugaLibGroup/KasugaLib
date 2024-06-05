@@ -251,14 +251,14 @@ publishing {
         maven {
             url "file://${project.projectDir}/mcmodsrepo"
         }
-        maven {
-            name "github"
-            url "https://maven.pkg.github.com/KasugaLibGroup/"
-            credentials {
-                username = USERNAME
-                password = TOKEN
-            }
-        }
+//        maven {
+//            name "github"
+//            url "https://maven.pkg.github.com/KasugaLibGroup/"
+//            credentials {
+//                username = USERNAME
+//                password = TOKEN
+//            }
+//        }
     }
 }
 
