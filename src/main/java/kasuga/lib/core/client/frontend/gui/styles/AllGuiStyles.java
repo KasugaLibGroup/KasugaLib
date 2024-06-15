@@ -6,65 +6,134 @@ import kasuga.lib.core.client.frontend.gui.styles.layout.*;
 
 public class AllGuiStyles {
     public static void register(GuiStyleRegistry styleRegistry) {
-        //Position Types
-        styleRegistry.register("left", PositionStyle.createType(YogaEdge.LEFT));
         styleRegistry.register("top", PositionStyle.createType(YogaEdge.TOP));
+        styleRegistry.register("left", PositionStyle.createType(YogaEdge.LEFT));
         styleRegistry.register("right", PositionStyle.createType(YogaEdge.RIGHT));
         styleRegistry.register("bottom", PositionStyle.createType(YogaEdge.BOTTOM));
-        styleRegistry.register("start", PositionStyle.createType(YogaEdge.START));
-        styleRegistry.register("end", PositionStyle.createType(YogaEdge.END));
-        styleRegistry.register("horizontal", PositionStyle.createType(YogaEdge.HORIZONTAL));
-        styleRegistry.register("vertical", PositionStyle.createType(YogaEdge.VERTICAL));
-        styleRegistry.register("all", PositionStyle.createType(YogaEdge.ALL));
 
-        styleRegistry.register("width", SizeStyle.createType((n, v) -> {
-            switch (v.getSecond()) {
+        styleRegistry.register("width", SizeStyle.createType((n,v)->{
+            switch (v.getSecond()){
                 case NATIVE -> n.setWidth(v.getFirst());
                 case PERCENTAGE -> n.setWidthPercent(v.getFirst());
             }
         }));
 
-        styleRegistry.register("height", SizeStyle.createType((n, v) -> {
-            switch (v.getSecond()) {
+        styleRegistry.register("height", SizeStyle.createType((n,v)->{
+            switch (v.getSecond()){
                 case NATIVE -> n.setHeight(v.getFirst());
                 case PERCENTAGE -> n.setHeightPercent(v.getFirst());
             }
         }));
 
-        styleRegistry.register("alignType", EnumStyle.EnumStyleType.of(
-                AlignType::fromString,
-                (v, i) -> v != AlignType.INVALID,
-                (v) -> StyleTarget.LAYOUT_NODE.create((node) -> {
-                    node.setAlignItems(v.getValue());
-                }),
-                AlignType.INVALID
-        ));
-
         styleRegistry.register("displayType", EnumStyle.EnumStyleType.of(
                 DisplayType::fromString,
-                (v, i) -> v != DisplayType.INVALID,
-                (v) -> StyleTarget.LAYOUT_NODE.create((node) -> {
+                (v,i)->v != DisplayType.INVALID,
+                (v)->StyleTarget.LAYOUT_NODE.create((node)->{
                     node.setDisplay(v.getValue());
                 }),
                 DisplayType.UNSET
         ));
 
+        styleRegistry.register("positionType", EnumStyle.EnumStyleType.of(
+                PositionType::fromString,
+                (v,i)->v != PositionType.INVALID,
+                (v)->StyleTarget.LAYOUT_NODE.create((node)->{
+                    node.setPositionType(v.getValue());
+                }),
+                PositionType.STATIC
+        ));
+
+        styleRegistry.register("alignContent", EnumStyle.EnumStyleType.of(
+                AlignType::fromString,
+                (v,i)->v != AlignType.INVALID,
+                (v)->StyleTarget.LAYOUT_NODE.create((node)->{
+                    node.setAlignContent(v.getValue());
+                }),
+                AlignType.AUTO
+        ));
+
+        styleRegistry.register("alignSelf", EnumStyle.EnumStyleType.of(
+                AlignType::fromString,
+                (v,i)->v != AlignType.INVALID,
+                (v)->StyleTarget.LAYOUT_NODE.create((node)->{
+                    node.setAlignSelf(v.getValue());
+                }),
+                AlignType.AUTO
+        ));
+
+        styleRegistry.register("alignItems", EnumStyle.EnumStyleType.of(
+                AlignType::fromString,
+                (v,i)->v != AlignType.INVALID,
+                (v)->StyleTarget.LAYOUT_NODE.create((node)->{
+                    node.setAlignItems(v.getValue());
+                }),
+                AlignType.AUTO
+        ));
+
+        styleRegistry.register("justifyContent", EnumStyle.EnumStyleType.of(
+                JustifyType::fromString,
+                (v,i)->v != JustifyType.INVALID,
+                (v)->StyleTarget.LAYOUT_NODE.create((node)->{
+                    node.setJustifyContent(v.getValue());
+                }),
+                JustifyType.FLEX_START
+        ));
+
         styleRegistry.register("flexDirection", EnumStyle.EnumStyleType.of(
                 FlexDirection::fromString,
-                (v, i) -> v != FlexDirection.INVALID,
-                (v) -> StyleTarget.LAYOUT_NODE.create((node) -> {
+                (v,i)->v != FlexDirection.INVALID,
+                (v)->StyleTarget.LAYOUT_NODE.create((node)->{
                     node.setFlexDirection(v.getValue());
                 }),
                 FlexDirection.INVALID
         ));
 
-        styleRegistry.register("justifyType", EnumStyle.EnumStyleType.of(
-                JustifyType::fromString,
-                (v, i) -> v != JustifyType.INVALID,
-                (v) -> StyleTarget.LAYOUT_NODE.create((node) -> {
-                    node.setJustifyContent(v.getValue());
-                }),
-                JustifyType.INVALID
-        ));
+        styleRegistry.register("flexBasis", SizeStyle.createType((n,v)->{
+            switch (v.getSecond()){
+                case NATIVE -> n.setFlexBasis(v.getFirst());
+                case PERCENTAGE -> n.setFlexBasisPercent(v.getFirst());
+            }
+        }));
+
+        //Border
+        styleRegistry.register("borderTop", BorderStyle.createType(YogaEdge.TOP));
+        styleRegistry.register("borderLeft", BorderStyle.createType(YogaEdge.LEFT));
+        styleRegistry.register("borderRight", BorderStyle.createType(YogaEdge.RIGHT));
+        styleRegistry.register("borderBottom", BorderStyle.createType(YogaEdge.BOTTOM));
+
+        // Margin
+        styleRegistry.register("marginTop", styleRegistry.register("width", SizeStyle.createType((n,v)->{
+            switch (v.getSecond()){
+                case NATIVE -> n.setMargin(YogaEdge.TOP,v.getFirst());
+                case PERCENTAGE -> n.setMarginPercent(YogaEdge.TOP,v.getFirst());
+            }
+        })));
+        styleRegistry.register("marginLeft", styleRegistry.register("width", SizeStyle.createType((n,v)->{
+            switch (v.getSecond()){
+                case NATIVE -> n.setMargin(YogaEdge.LEFT,v.getFirst());
+                case PERCENTAGE -> n.setMarginPercent(YogaEdge.LEFT,v.getFirst());
+            }
+        })));
+        styleRegistry.register("marginRight", styleRegistry.register("width", SizeStyle.createType((n,v)->{
+            switch (v.getSecond()){
+                case NATIVE -> n.setMargin(YogaEdge.RIGHT,v.getFirst());
+                case PERCENTAGE -> n.setMarginPercent(YogaEdge.RIGHT,v.getFirst());
+            }
+        })));
+        styleRegistry.register("marginBottom", styleRegistry.register("width", SizeStyle.createType((n,v)->{
+            switch (v.getSecond()){
+                case NATIVE -> n.setMargin(YogaEdge.BOTTOM,v.getFirst());
+                case PERCENTAGE -> n.setMarginPercent(YogaEdge.BOTTOM,v.getFirst());
+            }
+        })));
+
+
+
+
+
+
+
+
+
     }
 }
