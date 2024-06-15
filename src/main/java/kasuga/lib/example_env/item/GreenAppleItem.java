@@ -1,4 +1,4 @@
-package kasuga.lib.example_env.block;
+package kasuga.lib.example_env.item;
 
 import kasuga.lib.core.base.CustomRenderedItem;
 import kasuga.lib.example_env.client.item.renderer.GreenAppleItemRenderer;

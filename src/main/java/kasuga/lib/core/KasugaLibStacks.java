@@ -20,8 +20,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class KasugaLibStacks {
+    private static final HashSet<String> registeredNamespaces = new HashSet<>();
     private final HashMap<String, SimpleRegistry> registries;
     public final IEventBus bus;
     private boolean hasTextureRegistryFired = false;
@@ -49,6 +51,16 @@ public class KasugaLibStacks {
             bus.addListener(TextureRegistryEvent::onModelRegistry);
             bus.addListener(ClientSetupEvent::onClientSetup);
         }
+    }
+
+    public static void registerNamespace(SimpleRegistry registry) {
+        registeredNamespaces.add(registry.namespace);
+    }
+
+    public static HashSet<AtlasResources> getAdditionAtlasManager() {
+        HashSet<AtlasResources> result = new HashSet<>();
+        registeredNamespaces.forEach(namespace -> result.add(new AtlasResources(namespace)));
+        return result;
     }
 
     public void stackIn(SimpleRegistry registry) {

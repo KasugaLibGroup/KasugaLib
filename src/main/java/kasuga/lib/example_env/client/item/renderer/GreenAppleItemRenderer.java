@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 public class GreenAppleItemRenderer extends BlockEntityWithoutLevelRenderer {
@@ -21,9 +22,8 @@ public class GreenAppleItemRenderer extends BlockEntityWithoutLevelRenderer {
     }
 
     @Override
-    public void renderByItem(ItemStack item, ItemTransforms.TransformType transform,
+    public void renderByItem(ItemStack item,  ItemDisplayContext transform,
                              PoseStack pose, MultiBufferSource buffer, int light, int overlay) {
-        // super.renderByItem(pStack, pTransformType, pPoseStack, pBuffer, pPackedLight, pPackedOverlay);
         model.render(pose, buffer, 0, 0, 0, light, overlay);
     }
 }

@@ -1,14 +1,16 @@
 package kasuga.lib.registrations.common;
 
 import kasuga.lib.core.annos.Mandatory;
-import kasuga.lib.core.base.SimpleCreativeTab;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.HashSet;
 import java.util.function.Supplier;
 
 /**
@@ -16,19 +18,21 @@ import java.util.function.Supplier;
  * your creative tab because the minecraft tab reg would be changed violently in 1.19.3. If you use the original
  * minecraft registration, it would be a big trouble for you to deal with your items with their tabs.
  * If you use this to create your tab, call {@link ItemReg#tab(CreativeTabReg)}, {@link BlockReg#tabTo(CreativeTabReg)}
- * or {@link FluidReg#tab(CreativeTabReg)} to register your item to this tab. This reg would create an
- * {@link SimpleCreativeTab} instance for you.
+ * or {@link FluidReg#tab(CreativeTabReg)}.
  */
 public class CreativeTabReg extends Reg {
-    public SimpleCreativeTab tab = null;
-    public Supplier<ItemStack> iconSupplier = null;
-
+    CreativeModeTab.Builder builder;
+    RegistryObject<CreativeModeTab> tabRegistryObject;
+    private final HashSet<Supplier<Item>> items;
     /**
      * Use this to create your tab registration.
      * @param registrationKey the name or translation key of your tab.
      */
     public CreativeTabReg(String registrationKey) {
         super(registrationKey);
+        builder = CreativeModeTab.builder();
+        builder.title(Component.translatable("itemGroup." + registrationKey));
+        items = new HashSet<>();
     }
 
     /**
@@ -39,7 +43,7 @@ public class CreativeTabReg extends Reg {
      */
     @Mandatory
     public CreativeTabReg icon(Supplier<ItemStack> icon) {
-        iconSupplier = icon;
+        builder.icon(icon);
         return this;
     }
 
@@ -51,7 +55,7 @@ public class CreativeTabReg extends Reg {
      */
     @Mandatory
     public CreativeTabReg icon(ItemReg<?> reg) {
-        iconSupplier = () -> new ItemStack(reg.getItem());
+        builder.icon(() -> new ItemStack(reg.getItem()));
         return this;
     }
 
@@ -63,7 +67,22 @@ public class CreativeTabReg extends Reg {
      */
     @Mandatory
     public CreativeTabReg icon(RegistryObject<Item> itemRegistry) {
-        iconSupplier = () -> new ItemStack(itemRegistry.get());
+        builder.icon(() -> new ItemStack(itemRegistry.get()));
+        return this;
+    }
+
+    public CreativeTabReg item(Supplier<Item> input) {
+        items.add(input);
+        return this;
+    }
+
+    public CreativeTabReg item(ItemReg<?> input) {
+        items.add(input::getItem);
+        return this;
+    }
+
+    public CreativeTabReg item(RegistryObject<Item> input) {
+        items.add(input);
         return this;
     }
 
@@ -75,13 +94,19 @@ public class CreativeTabReg extends Reg {
     @Override
     @Mandatory
     public CreativeTabReg submit(SimpleRegistry registry) {
-        tab = new SimpleCreativeTab(registrationKey, iconSupplier);
-        registry.tab().put(registrationKey, tab);
+        builder.displayItems(
+                (pParameters, pOutput) -> items.forEach(sup -> pOutput.accept(sup.get().getDefaultInstance()))
+        );
+        tabRegistryObject = registry.tab().register(registrationKey,builder::build);
         return this;
     }
 
-    public SimpleCreativeTab getTab() {
-        return tab;
+    public CreativeModeTab getTab() {
+        return tabRegistryObject.get();
+    }
+
+    public RegistryObject<CreativeModeTab> getTabRegistryObject() {
+        return tabRegistryObject;
     }
 
     @Override

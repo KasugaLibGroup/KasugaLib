@@ -35,6 +35,7 @@ import java.util.function.Supplier;
 public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     private RegistryObject<E> stillObject = null;
     private RegistryObject<E> flowingObject = null;
+    private RegistryObject<? extends BucketItem> itemRegistryObject = null;
     private final FluidType.Properties properties;
     private ForgeFlowingFluid.Properties fluidProp = null;
     private FluidBuilder<E> stillBuilder = null, flowingBuilder = null;
@@ -179,21 +180,6 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
             return this;
         }
         itemReg.shouldCustomRender(flag);
-        return this;
-    }
-
-    /**
-     * Which creative mode tab would your item contained in.
-     * @param tab the creative mode tab.
-     * @return self.
-     */
-    @Optional
-    public FluidReg<E> tab(CreativeModeTab tab) {
-        if (itemReg == null) {
-            crashOnNotPresent(ItemReg.class, "itemReg", "tab");
-            return this;
-        }
-        itemReg.tab(tab);
         return this;
     }
 

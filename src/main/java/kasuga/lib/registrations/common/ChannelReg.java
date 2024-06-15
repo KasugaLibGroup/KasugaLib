@@ -165,7 +165,7 @@ public class ChannelReg extends Reg {
      * @param player player you would send.
      */
     public void sendToClient(S2CPacket msg, ServerPlayer player) {
-        sendToClient(msg, player.connection.getConnection());
+        sendToClient(msg, player.connection.connection);
     }
 
     /**

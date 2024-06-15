@@ -4,7 +4,7 @@ import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.commands.CommandHandler;
 import kasuga.lib.core.config.SimpleConfig;
 import kasuga.lib.example_env.block.GreenAppleBlock;
-import kasuga.lib.example_env.block.GreenAppleItem;
+import kasuga.lib.example_env.item.GreenAppleItem;
 import kasuga.lib.example_env.block_entity.GreenAppleTile;
 import kasuga.lib.example_env.client.block_entity.renderer.GreenAppleTileRenderer;
 import kasuga.lib.example_env.client.entity.renderer.WuLingRenderer;
@@ -16,10 +16,8 @@ import kasuga.lib.registrations.client.ModelReg;
 import kasuga.lib.registrations.common.*;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 
 import java.io.File;
 import java.net.URL;
@@ -30,15 +28,15 @@ public class AllExampleElements {
 
     public static final BlockReg<GreenAppleBlock> greenApple = new BlockReg<GreenAppleBlock>("green_apple")
             .blockType(GreenAppleBlock::new)
-            .material(Material.AIR)
-            .materialColor(MaterialColor.COLOR_GREEN)
+            .materialColor(MapColor.COLOR_GREEN)
             .withSound(SoundType.CROP)
             .withBlockEntity("green_apple_tile", GreenAppleTile::new)
             .withBlockEntityRenderer(() -> GreenAppleTileRenderer::new)
             .defaultBlockItem(new ResourceLocation(KasugaLib.MOD_ID, "block/test/green_apple"))
             .stackSize(32)
-            .tabTo(CreativeModeTab.TAB_DECORATIONS)
+            // .tabTo(CreativeModeTab.TAB_DECORATIONS)
             .submit(testRegistry);
+
 
     public static final EntityReg<WuLingEntity> wuling = new EntityReg<WuLingEntity>("wuling")
             .entityType(WuLingEntity::new)
@@ -59,7 +57,7 @@ public class AllExampleElements {
             .itemType(GreenAppleItem::new)
             .stackTo(16)
             .shouldCustomRender(true)
-            // .tab(tab)
+            // .tab(CreativeModeTab.TAB_FOOD)
             .submit(testRegistry);
 
     public static final CreativeTabReg tab = new CreativeTabReg("test")
@@ -110,8 +108,8 @@ public class AllExampleElements {
                     System.out.println(getParameter("dou", URL.class));
                 }
             }).submit(testRegistry);
-
-    public static void invoke(){
+  
+    public static void invoke() {
         testRegistry.submit();
     }
 }

@@ -10,7 +10,6 @@ import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgumentInfo;
 import kasuga.lib.core.client.ModelMappings;
 import kasuga.lib.core.client.render.model.CustomRenderedItemModel;
-import kasuga.lib.core.base.SimpleCreativeTab;
 import kasuga.lib.registrations.BlockEntityRendererBuilder;
 import kasuga.lib.registrations.client.AnimReg;
 import kasuga.lib.registrations.common.*;
@@ -19,6 +18,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
@@ -26,6 +26,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -79,8 +80,8 @@ public class SimpleRegistry {
     private final HashSet<String> CUSTOM_RENDERED_ITEMS;
     private final HashSet<EntityReg<? extends LivingEntity>> CACHE_OF_LIVING_ENTITIES;
     private final ModelMappings modelMappings;
-    private final HashMap<String, SimpleCreativeTab> TABS;
     private final HashMap<String, CommandReg> COMMANDS;
+    private final DeferredRegister<CreativeModeTab> TABS;
     private final HashMap<String, AnimReg> ANIMS;
 
     /**
@@ -93,6 +94,7 @@ public class SimpleRegistry {
      */
     public SimpleRegistry(String namespace, IEventBus bus) {
         this.namespace = namespace;
+        KasugaLibStacks.registerNamespace(this);
         this.eventBus = bus;
         logger = LoggerFactory.getLogger(namespace + "/reg");
         SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, namespace);
@@ -116,8 +118,8 @@ public class SimpleRegistry {
         modelMappings = new ModelMappings(namespace);
         CACHE_OF_ENTITIES = new HashSet<>();
         CACHE_OF_BLOCK_RENDERER = new HashMap<>();
-        TABS = new HashMap<>();
         COMMANDS = new HashMap<>();
+        TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, namespace);
         ANIMS = new HashMap<>();
     }
 
@@ -233,7 +235,7 @@ public class SimpleRegistry {
      * return the registry of Creative Mode Tabs. See {@link kasuga.lib.registrations.common.CreativeTabReg}
      * @return the regsitry of kasuga lib's tabs.
      */
-    public HashMap<String, SimpleCreativeTab> tab() {return TABS;}
+    public DeferredRegister<CreativeModeTab> tab() {return TABS;}
 
     /**
      * return the registry of Commands. See {@link kasuga.lib.registrations.common.CommandReg}

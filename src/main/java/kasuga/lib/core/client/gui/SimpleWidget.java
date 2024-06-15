@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import kasuga.lib.core.client.gui.enums.LocationType;
 import kasuga.lib.core.client.render.texture.SimpleTexture;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -74,19 +75,19 @@ public abstract class SimpleWidget extends AbstractWidget implements IBackground
     }
 
     public void setX(int x) {
-        this.x = isRelative() ? (x + parent.x()) : x;
+        super.setX(isRelative() ? (x + parent.x()) : x);
     }
 
     public void setY(int y) {
-        this.y = isRelative() ? (y + parent.y()) : y;
+        super.setY(isRelative() ? (y + parent.y()) : y);
     }
 
     public int x() {
-        return isRelative() ? (x - parent.x()) : x;
+        return isRelative() ? (super.getX() - parent.x()) : super.getX();
     }
 
     public int y() {
-        return isRelative() ? (y - parent.y()) : y;
+        return isRelative() ? (super.getY() - parent.y()) : super.getY();
     }
 
     public void setLeft(int left) {
@@ -98,13 +99,13 @@ public abstract class SimpleWidget extends AbstractWidget implements IBackground
     }
 
     public void setRight(int right) {
-        this.width = isRelative() ? (parent.x + parent.width - right - x) : (Minecraft.getInstance().screen == null ?
-                0 : Minecraft.getInstance().screen.width - right - x);
+        this.width = isRelative() ? (parent.getX() + parent.width - right - getX()) : (Minecraft.getInstance().screen == null ?
+                0 : Minecraft.getInstance().screen.width - right - getX());
     }
 
     public void setBottom(int bottom) {
-        this.height = isRelative() ? (parent.y + parent.height - bottom - y) : (Minecraft.getInstance().screen == null ?
-                0 : Minecraft.getInstance().screen.height - bottom - y);
+        this.height = isRelative() ? (parent.getY() + parent.height - bottom - getY()) : (Minecraft.getInstance().screen == null ?
+                0 : Minecraft.getInstance().screen.height - bottom - getY());
     }
 
     public int left() {
@@ -116,22 +117,19 @@ public abstract class SimpleWidget extends AbstractWidget implements IBackground
     }
 
     public int right() {
-        return isRelative() ? (parent.x + parent.width - x - width) : Minecraft.getInstance().screen == null ?
-                0 : Minecraft.getInstance().screen.width - x - width;
+        return isRelative() ? (parent.getX() + parent.width - getX() - width) : Minecraft.getInstance().screen == null ?
+                0 : Minecraft.getInstance().screen.width - getX() - width;
     }
 
     public int bottom () {
-        return isRelative() ? (parent.y + parent.height - y - height) : Minecraft.getInstance().screen == null ?
-                0 : Minecraft.getInstance().screen.height - y - height;
+        return isRelative() ? (parent.getY() + parent.height - getY() - height) : Minecraft.getInstance().screen == null ?
+                0 : Minecraft.getInstance().screen.height - getY() - height;
     }
 
     public abstract void init();
 
     @Override
-    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+    public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
     }
-
-    @Override
-    public void updateNarration(NarrationElementOutput pNarrationElementOutput) {}
 }

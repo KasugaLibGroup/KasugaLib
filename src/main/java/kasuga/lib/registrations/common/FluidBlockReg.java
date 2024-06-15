@@ -21,8 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.RegistryObject;
@@ -37,10 +36,8 @@ import java.util.function.Supplier;
  * @param <T> The class of fluid.
  */
 public class FluidBlockReg<T extends LiquidBlock> extends Reg {
-    private Material material = Material.AIR;
-    private MaterialColor color = MaterialColor.NONE;
-
-    public BlockBehaviour.Properties properties = BlockBehaviour.Properties.of(Material.AIR);
+    private MapColor color = MapColor.NONE;
+    public BlockBehaviour.Properties properties = BlockBehaviour.Properties.of();
     private FluidBlockBuilder<T> builder;
     private BlockEntityReg<? extends BlockEntity> blockEntityReg = null;
     private MenuReg<?, ?, ?> menuReg = null;
@@ -60,12 +57,6 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
         this.tags = new ArrayList<>();
     }
 
-    /**
-     * Specifies the fluid instance tha corresponds to the block. Pass a lambda that returns an valid fluid here.
-     * @param fluid the fluid supplier lambda.
-     * @return self.
-     */
-    @Mandatory
     public FluidBlockReg<T> fluid(Supplier<? extends ForgeFlowingFluid> fluid) {
         this.fluid = fluid;
         return this;
@@ -82,24 +73,7 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
         return this;
     }
 
-    /**
-     * As same as the block's material method, see {@link BlockReg#material(Material)}
-     * @param material the material color you'd like to show in the map.
-     * @return self.
-     */
-    @Mandatory
-    public FluidBlockReg<T> material(Material material) {
-        this.material = material;
-        return this;
-    }
-
-    /**
-     * The color you would like to make your fluid blok on the map.
-     * @param color color on map.
-     * @return self.
-     */
-    @Mandatory
-    public FluidBlockReg<T> materialColor(MaterialColor color) {
+    public FluidBlockReg<T> MapColor(MapColor color) {
         this.color = color;
         return this;
     }
@@ -254,7 +228,7 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
 
     @Inner
     private void initProperties() {
-        properties = BlockBehaviour.Properties.of(material, color);
+        properties = BlockBehaviour.Properties.of().mapColor(color);
         if(identifier != null) identifier.apply(properties);
     }
 

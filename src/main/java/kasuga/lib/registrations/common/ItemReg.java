@@ -136,18 +136,7 @@ public class ItemReg<T extends Item> extends Reg {
      */
     @Optional
     public ItemReg<T> tab(CreativeTabReg tab) {
-        properties.tab(tab.getTab());
-        return this;
-    }
-
-    /**
-     * Your item would be displayed in this tab.
-     * @param tab the creative mode tab you want your item in.
-     * @return self.
-     */
-    @Optional
-    public ItemReg<T> tab(CreativeModeTab tab) {
-        properties.tab(tab);
+        tab.item(this);
         return this;
     }
 

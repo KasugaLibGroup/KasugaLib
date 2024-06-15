@@ -1,20 +1,22 @@
 package kasuga.lib.core.client.render.component;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
 import kasuga.lib.core.client.render.SimpleColor;
 import kasuga.lib.core.client.render.PoseContext;
 import kasuga.lib.core.client.render.RendererUtil;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 public class SimpleComponent {
     public static final float DEFAULT_WORLD_ZOOM = .2f;
     private float zoom = DEFAULT_WORLD_ZOOM;
+    private Font.DisplayMode displayMode = Font.DisplayMode.NORMAL;
     Component content;
     Font font;
     SimpleColor color;
@@ -101,39 +103,48 @@ public class SimpleComponent {
     }
 
     public void renderInWorld(PoseStack pose, MultiBufferSource buffer, int xOffset, int yOffset, int light) {
-        render(pose, buffer, xOffset, yOffset, light, true);
+        render(pose, buffer, xOffset, yOffset, light);
     }
 
     public void renderInWorld(PoseStack pose, MultiBufferSource buffer, int light) {
-        render(pose, buffer, 0, 0, light, true);
+        render(pose, buffer, 0, 0, light);
     }
 
     public void renderCenteredInWorld(PoseStack pose, MultiBufferSource buffer, int xOffset, int yOffset, int light) {
-        render(pose, buffer, xOffset - font.width(content)/2, yOffset - font.lineHeight/2, light, true);
+        render(pose, buffer, xOffset - font.width(content)/2, yOffset - font.lineHeight/2, light);
     }
 
     public void renderCenteredInWorld(PoseStack pose, MultiBufferSource buffer, int light) {
         renderCenteredInWorld(pose, buffer, 0, 0, light);
     }
 
-    public void renderInGUI(PoseStack pose, MultiBufferSource buffer, int xOffset, int yOffset, int light) {
-        render(pose, buffer, xOffset, yOffset, light, false);
+    public void renderInGUI(GuiGraphics pose, int xOffset, int yOffset) {
+        render(pose, xOffset, yOffset);
     }
 
-    public void renderInGUI(PoseStack pose, MultiBufferSource buffer, int light) {
-        renderInGUI(pose, buffer, 0, 0, light);
+    public void renderCenteredInGUI(GuiGraphics pose, int xOffset, int yOffset) {
+        render(pose, xOffset - font.width(content)/2, yOffset - font.lineHeight/2);
     }
 
-    public void renderCenteredInGUI(PoseStack pose, MultiBufferSource buffer, int xOffset, int yOffset, int light) {
-        render(pose, buffer, xOffset - font.width(content)/2, yOffset - font.lineHeight/2, light, false);
+    public void renderCenteredInGUI(GuiGraphics pose) {
+        renderCenteredInGUI(pose, 0, 0);
     }
 
-    public void renderCenteredInGUI(PoseStack pose, MultiBufferSource buffer, int light) {
-        renderCenteredInGUI(pose, buffer, 0, 0, light);
+    public void setDisplayMode(Font.DisplayMode mode) {
+        this.displayMode = mode;
+    }
+
+    public Font.DisplayMode getDisplayMode() {
+        return displayMode;
     }
 
 
-    public void render(PoseStack pose, MultiBufferSource buffer, int xOffset, int yOffset, int light, boolean inWorld) {
+    public void render(GuiGraphics gui, int xOffset, int yOffset) {
+        if(font == null) return;
+        gui.drawString(font, content, xOffset, yOffset, color.getRGB());
+    }
+
+    public void render(PoseStack pose, MultiBufferSource buffer, int xOffset, int yOffset, int light) {
         if(font == null) return;
         boolean shouldPush = pose.clear();
         Matrix4f last = null;
@@ -145,13 +156,9 @@ public class SimpleComponent {
         pose.scale(1.0f, -1.0f, 1.0f);
         pose.translate(.5f, 0, .5f);
         context.apply(pose);
-        if(inWorld){
-            pose.scale(zoom, zoom, zoom);
-            font.drawInBatch(content, xOffset, yOffset, color.getRGB(), false,
-                    pose.last().pose(), buffer, true, 0xffffff, light);
-        } else {
-            font.draw(pose, content, xOffset, yOffset, color.getRGB());
-        }
+        pose.scale(zoom, zoom, zoom);
+        font.drawInBatch(content, xOffset, yOffset, color.getRGB(), false,
+                pose.last().pose(), buffer, displayMode, 0xffffff, light);
         pose.popPose();
         if(shouldPush) {
             pose.pushPose();

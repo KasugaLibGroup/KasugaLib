@@ -42,7 +42,7 @@ public class ModelRegistryEvent {
     }
 
     @SubscribeEvent
-    public static void bakingCompleted(ModelEvent.BakingCompleted event) {
+    public static void bakingCompleted(ModelEvent.ModifyBakingResult event) {
         Map<ResourceLocation, BakedModel> models = event.getModels();
         for(String key : KasugaLib.STACKS.getRegistries().keySet()) {
             SimpleRegistry registry = KasugaLib.STACKS.getRegistries().get(key);
