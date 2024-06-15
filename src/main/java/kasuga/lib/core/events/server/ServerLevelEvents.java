@@ -1,17 +1,17 @@
 package kasuga.lib.core.events.server;
 
 
-import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ServerLevelEvents {
 
     @SubscribeEvent
-    public void onLevelLoad(LevelEvent.Load event) {}
+    public void onLevelLoad(WorldEvent.Load event) {}
 
     @SubscribeEvent
-    public void onLevelSave(LevelEvent.Save event) {}
+    public void onLevelSave(WorldEvent.Save event) {}
 
     @SubscribeEvent
-    public void onLevelExit(LevelEvent.Unload event) {}
+    public void onLevelExit(WorldEvent.Unload event) {}
 }

@@ -13,19 +13,19 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.EmptyModelData;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Random;
 
 public class SimpleModel {
 
     public final String key;
-    RandomSource random;
+    Random random;
     BakedModel model = null;
     SimpleColor color;
     PoseContext context = PoseContext.of();
@@ -143,7 +143,7 @@ public class SimpleModel {
         if(useParentPose && lastMatrix != null) pose.mulPoseMatrix(lastMatrix);
         context.apply(pose);
         pose.translate(x, y, z);
-        renderModel(pose, source.getBuffer(cacheType), transform(random, cacheType), color, light, overlay);
+        renderModel(pose, source.getBuffer(cacheType), transform(random), color, light, overlay);
         pose.popPose();
         if (shouldPush) {
             pose.pushPose();
@@ -151,9 +151,9 @@ public class SimpleModel {
         }
     }
 
-    List<BakedQuad> transform(RandomSource random, RenderType type) {
+    List<BakedQuad> transform(Random random) {
         if(model == null) return List.of();
-        return model.getQuads(null, null, random, ModelData.EMPTY, type);
+        return model.getQuads(null, null, random, EmptyModelData.INSTANCE);
     }
 
     void renderModel(PoseStack pose, VertexConsumer consumer, List<BakedQuad> quads, SimpleColor color, int light, int overlay) {

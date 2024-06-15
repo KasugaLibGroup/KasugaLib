@@ -16,6 +16,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.lang.reflect.Type;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ import java.util.Map;
  * have their own data-gen animations, for more info about animations, see {@link kasuga.lib.core.client.animation.data.Animation}
  */
 public class ModelReg extends Reg {
+
     public static final String COMBINE_CODEC = "multi_part";
     SimpleModel baked;
     private final HashMap<String, ResourceLocation> mappingForBones;
@@ -105,7 +108,7 @@ public class ModelReg extends Reg {
         ResourceLocation location = new ResourceLocation(registry.namespace, "models/" + this.location.getPath() + ".json");
         Resource resource = getResource(location);
         if(resource == null) return;
-        JsonObject json = JsonParser.parseReader(new JsonReader(resource.openAsReader())).getAsJsonObject();
+        JsonObject json = JsonParser.parseReader(Resources.openAsJson(resource)).getAsJsonObject();
         if(!json.has(COMBINE_CODEC)) return;
         multiPart = true;
         JsonObject members = json.getAsJsonObject(COMBINE_CODEC);
@@ -149,8 +152,9 @@ public class ModelReg extends Reg {
     @Inner
     private JsonObject presentIfIsMulti(ResourceLocation location) throws IOException {
         Resource resource = getResource(location);
+        HashMap<String, ResourceLocation> result = new HashMap<>();
         if(resource == null) return null;
-        JsonObject json = JsonParser.parseReader(new JsonReader(resource.openAsReader())).getAsJsonObject();
+        JsonObject json = JsonParser.parseReader(Resources.openAsJson(resource)).getAsJsonObject();
         if(!json.has(COMBINE_CODEC)) return null;
         return json.getAsJsonObject(COMBINE_CODEC);
     }

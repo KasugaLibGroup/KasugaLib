@@ -70,7 +70,7 @@ public class Animation {
 
     public static Map<String, Animation> decode(Namespace namespace, ResourceLocation location) throws IOException {
         Resource resources = Resources.getResource(location);
-        JsonObject fileRoot = JsonParser.parseReader(new JsonReader(resources.openAsReader())).getAsJsonObject();
+        JsonObject fileRoot = JsonParser.parseReader(Resources.openAsJson(resources)).getAsJsonObject();
         if(!fileRoot.has("animation")) return new HashMap<>();
         HashMap<String, Animation> result = new HashMap<>();
         JsonObject root = fileRoot.getAsJsonObject("animation");

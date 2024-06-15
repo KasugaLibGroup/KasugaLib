@@ -16,13 +16,13 @@ public abstract class CustomBlockRenderer<T extends Block> {
         this.block = blockSupplier;
     }
     public abstract void render(BlockState state, BlockPos pos, BlockAndTintGetter level
-            , PoseStack stack, VertexConsumer consumer, RenderType type, int light);
+            , PoseStack stack, VertexConsumer consumer, int light);
 
     public T getBlock() {
         return block.get();
     }
 
-    public boolean shouldRender(BlockState state, BlockPos pos, BlockAndTintGetter level, RenderType type) {
+    public boolean shouldRender(BlockState state, BlockPos pos, BlockAndTintGetter level) {
         return true;
     }
 }

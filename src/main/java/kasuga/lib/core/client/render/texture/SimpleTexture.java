@@ -66,7 +66,7 @@ public class SimpleTexture {
     public void uploadPicture(@Nonnull ResourceLocation location) {
         try {
             Resource resource = Resources.getResource(location);
-            InputStream stream = resource.open();
+            InputStream stream = resource.getInputStream();
             image = ImageIO.read(stream);
             bytesOfImage = stream.readAllBytes();
             stream.close();
@@ -265,7 +265,8 @@ public class SimpleTexture {
         buffer.vertex(x, y + height, 0.0).uv(fuOffset, fvOffset + fvHeight).endVertex();
         buffer.vertex(x + width, y + height, 0.0).uv(fuOffset + fuWidth,fvOffset + fvHeight).endVertex();
         buffer.vertex(x + width, y, 0.0).uv(fuOffset + fuWidth, fvOffset).endVertex();
-        BufferUploader.drawWithShader(buffer.end());
+        buffer.end();
+        BufferUploader.end(buffer);
         RenderSystem.disableBlend();
     }
 

@@ -3,10 +3,7 @@ package kasuga.lib.core.client.render.component;
 import kasuga.lib.core.util.Resources;
 import kasuga.lib.core.xml.IXmlObject;
 import kasuga.lib.core.xml.XmlProcessor;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentContents;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.contents.LiteralContents;
+import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.FormattedCharSequence;
@@ -19,7 +16,7 @@ public class LazyComponents implements Component {
     private String key = "";
     private Style style;
     protected LazyComponents(String text) {
-        this.key = key;
+        this.key = text;
     }
 
     public static LazyComponents fromLiteral(String text) {
@@ -27,13 +24,13 @@ public class LazyComponents implements Component {
     }
 
     public static LazyComponents fromTranslatable(String translatableKey) {
-        Component component = Component.translatable(translatableKey);
+        Component component = new TranslatableComponent(translatableKey);
         return new LazyComponents(component.getString());
     }
 
     public static LazyComponents fromXml(ResourceLocation location) throws IOException {
         Resource resource = Resources.getResource(location);
-        IXmlObject<?> xml = XmlProcessor.decodeAndPull(resource.open());
+        IXmlObject<?> xml = XmlProcessor.decodeAndPull(resource.getInputStream());
         return new LazyComponents("");
     }
 
@@ -50,14 +47,30 @@ public class LazyComponents implements Component {
         return style;
     }
 
+    // @Override
+    // public @NotNull ComponentContents getContents() {
+        // return new LiteralContents(key);
+    // }
+
+
     @Override
-    public @NotNull ComponentContents getContents() {
-        return new LiteralContents(key);
+    public String getContents() {
+        return null;
     }
 
     @Override
     public @NotNull List<Component> getSiblings() {
         return null;
+    }
+
+    @Override
+    public MutableComponent plainCopy() {
+        return new TextComponent(this.key);
+    }
+
+    @Override
+    public MutableComponent copy() {
+        return new TextComponent(this.key);
     }
 
     @Override

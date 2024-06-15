@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public abstract class SimpleWidget extends AbstractWidget implements IBackground {
@@ -15,12 +16,12 @@ public abstract class SimpleWidget extends AbstractWidget implements IBackground
     private LocationType locationType;
 
     public SimpleWidget(int x, int y, int width, int height, LocationType type) {
-        super(x, y, width, height, Component.empty());
+        super(x, y, width, height, new TextComponent(""));
         this.locationType = type;
     }
 
     public SimpleWidget(int width, int height, LocationType type) {
-        super(0, 0, width, height, Component.empty());
+        super(0, 0, width, height, new TextComponent(""));
         this.locationType = type;
     }
 

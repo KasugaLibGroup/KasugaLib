@@ -2,6 +2,8 @@ package kasuga.lib.core.client.gui.enums;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.jetbrains.annotations.Nullable;
 
 public enum ComponentType {
@@ -32,9 +34,9 @@ public enum ComponentType {
 
     public static MutableComponent getComponent(String textOrKey, ComponentType type) {
         return switch (type) {
-            case TRANSLATABLE -> Component.translatable(textOrKey);
-            case LITERAL -> Component.literal(textOrKey);
-            default -> Component.empty();
+            case TRANSLATABLE -> new TranslatableComponent(textOrKey);
+            case LITERAL -> new TextComponent(textOrKey);
+            default -> new TextComponent("");
         };
     }
 

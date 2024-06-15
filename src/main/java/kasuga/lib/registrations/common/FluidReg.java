@@ -15,8 +15,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.RegistryObject;
@@ -24,6 +23,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 import java.util.function.Supplier;
 
 /**
@@ -35,14 +36,15 @@ import java.util.function.Supplier;
 public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     private RegistryObject<E> stillObject = null;
     private RegistryObject<E> flowingObject = null;
-    private final FluidType.Properties properties;
+    private RegistryObject<? extends BucketItem> itemRegistryObject = null;
+    private FluidAttributes.Builder properties;
     private ForgeFlowingFluid.Properties fluidProp = null;
     private FluidBuilder<E> stillBuilder = null, flowingBuilder = null;
     private PropertyBuilder propertyBuilder = null;
     private BucketItemReg<? extends BucketItem> itemReg = null;
     private final ArrayList<FluidPropertyBuilder> builders;
     private FluidBlockReg<? extends LiquidBlock> block;
-    private FluidType type = null;
+    private FluidAttributes type = null;
     private String stillTexturePath = null;
     private String flowingTexturePath = null;
     private String overlayTexturePath = null;
@@ -56,7 +58,6 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
      */
     public FluidReg(String registrationKey) {
         super(registrationKey);
-        properties = FluidType.Properties.create();
         builders = new ArrayList<>();
         block = new FluidBlockReg<>(registrationKey);
     }
@@ -113,7 +114,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
      * @return self.
      */
     @Optional
-    public FluidReg<E> type(FluidType type) {
+    public FluidReg<E> type(FluidAttributes type) {
         this.type = type;
         return this;
     }
@@ -124,7 +125,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
      * @return self.
      */
     @Mandatory
-    public <R extends BucketItem> FluidReg<E> bucketItem(BucketBuilder<? extends BucketItem> builder) {
+    public <R extends BucketItem> FluidReg<E> bucketItem(BucketItemReg.BucketBuilder<? extends BucketItem> builder) {
         itemReg = new BucketItemReg<R>(registrationKey + ".bucket");
         itemReg.itemType((BucketItemReg.BucketBuilder<R>) builder);
         registerItem = true;
@@ -339,7 +340,8 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     @Mandatory
     @Override
     public FluidReg<E> submit(SimpleRegistry registry) {
-        properties.descriptionId(registrationKey);
+        initDefaultType(registry);
+        properties.translationKey(registrationKey);
         if(propertyBuilder != null) {
             propertyBuilder.build(properties);
         }
@@ -350,10 +352,10 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
             crashOnNotPresent(ForgeFlowingFluid.class, "still", "submit");
         }
         block.fluid(() -> stillObject.get());
-        if (registerBlock) block.submit(registry);
-        type = type == null ? initDefaultType(registry) : type;
-        RegistryObject<FluidType> typeObj = registry.fluid_type().register(registrationKey, () -> type);
-        fluidProp = new ForgeFlowingFluid.Properties(typeObj, () -> stillObject.get(), () -> flowingObject.get());
+        block.submit(registry);
+        // type = type == null ? initDefaultType(registry) : type;
+        // RegistryObject<FluidAttributes> typeObj = registry.fluid_type().register(registrationKey, () -> properties.build());
+        fluidProp = new ForgeFlowingFluid.Properties(() -> stillObject.get(), () -> flowingObject.get(), properties);
         for(FluidPropertyBuilder builder : builders)
             builder.build(fluidProp);
         if(stillBuilder != null)
@@ -368,6 +370,17 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         return this;
     }
 
+    @Inner
+    private void initDefaultType(SimpleRegistry registry) {
+        ResourceLocation stillLoc = stillTexturePath == null ? null : new ResourceLocation(registry.namespace, stillTexturePath);
+        ResourceLocation flowingLoc = flowingTexturePath == null ? null : new ResourceLocation(registry.namespace, flowingTexturePath);
+        ResourceLocation overlayLoc = overlayTexturePath == null ? null : new ResourceLocation(registry.namespace, overlayTexturePath);
+
+        properties = FluidAttributes.builder(stillLoc, flowingLoc);
+        if(overlayLoc != null) properties.overlay(overlayLoc);
+        properties.color(tintColor);
+    }
+
     public RegistryObject<E> still() {
         return stillObject;
     }
@@ -376,7 +389,8 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         return flowingObject;
     }
 
-    public FluidType fluidType() {
+    public FluidAttributes FluidAttributes() {
+
         return type;
     }
 
@@ -389,77 +403,31 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     public RegistryObject<? extends BucketItem> itemRegistryObject() {
-        return itemReg.getRegistryObject();
+        return itemRegistryObject;
     }
 
     public BucketItem bucket() {
-        return itemReg.getItem();
+        return itemRegistryObject.get();
     }
 
     public LiquidBlock legacyBlock() {
         return block.getBlock();
     }
 
+
     @Override
     public String getIdentifier() {
         return "fluid";
-    }
-
-    @Inner
-    private FluidType initDefaultType(SimpleRegistry registry) {
-        ResourceLocation stillLoc = stillTexturePath == null ? null : new ResourceLocation(registry.namespace, stillTexturePath);
-        ResourceLocation flowingLoc = flowingTexturePath == null ? null : new ResourceLocation(registry.namespace, flowingTexturePath);
-        ResourceLocation overlayLoc = overlayTexturePath == null ? null : new ResourceLocation(registry.namespace, overlayTexturePath);
-
-        FluidType type  = new FluidType(properties) {
-            @Override
-            public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-                consumer.accept(
-                        new IClientFluidTypeExtensions() {
-                            @Override
-                            public int getTintColor() {
-                                return tintColor;
-                            }
-
-                            @Override
-                            public ResourceLocation getStillTexture() {
-                                if(stillLoc != null)
-                                    return stillLoc;
-                                return IClientFluidTypeExtensions.super.getStillTexture();
-                            }
-
-                            @Override
-                            public ResourceLocation getFlowingTexture() {
-                                if(flowingLoc != null)
-                                    return flowingLoc;
-                                return IClientFluidTypeExtensions.super.getFlowingTexture();
-                            }
-
-                            @Override
-                            public @Nullable ResourceLocation getOverlayTexture() {
-                                if(overlayLoc != null)
-                                    return overlayLoc;
-                                return IClientFluidTypeExtensions.super.getOverlayTexture();
-                            }
-                        }
-                );
-            }
-        };
-        return type;
     }
 
     public interface FluidBuilder<T extends Fluid> {
         T build(ForgeFlowingFluid.Properties properties);
     }
     public interface PropertyBuilder {
-        void build(FluidType.Properties properties);
+        void build(FluidAttributes.Builder properties);
     }
 
     public interface FluidPropertyBuilder {
         void build(ForgeFlowingFluid.Properties properties);
-    }
-
-    public interface BucketBuilder<T extends BucketItem> {
-        T build(ForgeFlowingFluid fluid, Item.Properties properties);
     }
 }

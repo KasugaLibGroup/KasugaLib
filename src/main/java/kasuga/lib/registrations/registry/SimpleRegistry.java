@@ -19,6 +19,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
@@ -34,8 +35,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.checkerframework.checker.units.qual.A;
@@ -68,7 +68,7 @@ public class SimpleRegistry {
     private final DeferredRegister<RecipeType<?>> RECIPES;
     private final DeferredRegister<MobEffect> EFFECT;
     private final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS;
-    private final DeferredRegister<FluidType> FLUID_TYPE;
+    private final DeferredRegister<FluidAttributes> FLUID_TYPE;
     private final DeferredRegister<Fluid> FLUID;
     private final DeferredRegister<ArgumentTypeInfo<?, ?>> ARGUMENT_TYPES;
     private final ModelRegistry MODELS;
@@ -98,14 +98,14 @@ public class SimpleRegistry {
         SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, namespace);
         BLOCK = DeferredRegister.create(ForgeRegistries.BLOCKS, namespace);
         ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, namespace);
-        BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, namespace);
-        MENUS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, namespace);
-        ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, namespace);
-        RECIPES = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, namespace);
+        BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, namespace);
+        MENUS = DeferredRegister.create(ForgeRegistries.CONTAINERS, namespace);
+        ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, namespace);
+        RECIPES = DeferredRegister.create(Registry.RECIPE_TYPE.key(), namespace);
         RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, namespace);
         EFFECT = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, namespace);
         ATTRIBUTES = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, namespace);
-        FLUID_TYPE = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, namespace);
+        FLUID_TYPE = DeferredRegister.create(Registry.FLUID_REGISTRY.registry(), namespace);
         FLUID = DeferredRegister.create(ForgeRegistries.Keys.FLUIDS, namespace);
         ARGUMENT_TYPES = DeferredRegister.create(ForgeRegistries.Keys.COMMAND_ARGUMENT_TYPES, namespace);
         MODELS = new ModelRegistry(namespace, this);
@@ -205,15 +205,10 @@ public class SimpleRegistry {
     public DeferredRegister<MobEffect> mob_effect() {return EFFECT;}
 
     /**
-     * return the registry of fluid types. See {@link kasuga.lib.registrations.common.FluidReg}
-     * @return the registry of fluid types.
-     */
-    public DeferredRegister<FluidType> fluid_type() {return FLUID_TYPE;}
-
-    /**
      * return the registry of fluid. See {@link kasuga.lib.registrations.common.FluidReg}
      * @return the registry of fluid.
      */
+    public DeferredRegister<FluidAttributes> fluid_type() {return FLUID_TYPE;}
     public DeferredRegister<Fluid> fluid() {return FLUID;}
 
     /**

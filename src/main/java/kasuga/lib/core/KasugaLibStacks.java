@@ -14,12 +14,12 @@ import kasuga.lib.core.util.Envs;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.registry.FontRegistry;
 import kasuga.lib.registrations.registry.TextureRegistry;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 import java.util.HashMap;
+import java.util.Random;
 
 public class KasugaLibStacks {
     private final HashMap<String, SimpleRegistry> registries;
@@ -27,7 +27,7 @@ public class KasugaLibStacks {
     private boolean hasTextureRegistryFired = false;
     private final TextureRegistry TEXTURES;
     private final FontRegistry FONTS;
-    private final RandomSource random = RandomSource.create();
+    private final Random random = new Random();
     private final HashMap<Block, CustomBlockRenderer> BLOCK_RENDERERS;
     public KasugaLibStacks(IEventBus bus) {
         this.bus = bus;
@@ -84,7 +84,7 @@ public class KasugaLibStacks {
         return FONTS;
     }
 
-    public RandomSource random() {
+    public Random random() {
         return random;
     }
 }
