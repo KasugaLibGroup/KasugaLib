@@ -1,6 +1,9 @@
 package kasuga.lib.core.client.frontend.gui.styles;
 
+import kasuga.lib.core.client.frontend.common.style.StyleTarget;
 import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaEdge;
+import kasuga.lib.core.client.frontend.gui.styles.layout.DisplayType;
+import kasuga.lib.core.client.frontend.gui.styles.layout.EnumStyle;
 import kasuga.lib.core.client.frontend.gui.styles.layout.PositionStyle;
 import kasuga.lib.core.client.frontend.gui.styles.layout.SizeStyle;
 
@@ -22,5 +25,14 @@ public class AllGuiStyles {
                 case PERCENTAGE -> n.setHeightPercent(v.getFirst());
             }
         }));
+
+        styleRegistry.register("displayType", EnumStyle.EnumStyleType.of(
+                DisplayType::fromString,
+                (v,i)->v != DisplayType.INVALID,
+                (v)->StyleTarget.LAYOUT_NODE.create((node)->{
+                    node.setDisplay(v.getValue());
+                }),
+                DisplayType.UNSET
+        ));
     }
 }
