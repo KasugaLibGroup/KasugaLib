@@ -1,6 +1,7 @@
 package kasuga.lib.example_env;
 
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.base.commands.CommandHandler;
 import kasuga.lib.core.config.SimpleConfig;
 import kasuga.lib.example_env.block.GreenAppleBlock;
 import kasuga.lib.example_env.item.GreenAppleItem;
@@ -11,12 +12,15 @@ import kasuga.lib.example_env.entity.WuLingEntity;
 import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
 import kasuga.lib.registrations.client.AnimReg;
-import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.client.ModelReg;
 import kasuga.lib.registrations.common.*;
+import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
+
+import java.io.File;
+import java.net.URL;
 
 public class AllExampleElements {
 
@@ -90,6 +94,21 @@ public class AllExampleElements {
             .loadPacket(ExampleS2CPacket.class, ExampleS2CPacket::new)
             .submit(testRegistry);
 
+    public static final ArgumentTypeReg type = ArgumentTypeReg.INSTANCE.registerType(File.class, File::new)
+            .submit(testRegistry);
+
+    public static final CommandReg command = new CommandReg("nihao")
+            .addLiteral("wiorjh", false)
+            .addInteger("int", false)
+            .addURL("dou", true)
+            .setHandler(new CommandHandler(){
+                @Override
+                public void run() {
+                    System.out.println(getParameter("int", int.class));
+                    System.out.println(getParameter("dou", URL.class));
+                }
+            }).submit(testRegistry);
+  
     public static void invoke() {
         testRegistry.submit();
     }
