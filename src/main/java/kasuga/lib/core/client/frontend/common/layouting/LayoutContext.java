@@ -1,77 +1,116 @@
 package kasuga.lib.core.client.frontend.common.layouting;
 
-import kasuga.lib.core.client.frontend.gui.nodes.GuiDomNode;
+import kasuga.lib.core.client.frontend.dom.nodes.DomNode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LayoutContext {
+public class LayoutContext<T extends LayoutNode,N extends DomNode> {
+    protected final LayoutEngine<T,N> engine;
+    protected final HashMap<Object,LayoutNode> sources;
+    protected final ArrayList<LayoutContext<?,N>> children;
 
-    protected final Object source;
+    protected final N node;
 
-    protected LayoutEngine<?> lastEngine;
-
-    protected final LayoutCache cache;
-
-    protected final GuiDomNode target;
-
-    protected EngineLayoutContext engineLayoutContext;
-    protected LayoutContext parent;
-
-    public LayoutContext(Object source,GuiDomNode node) {
-        this.target = node;
-        this.source = source;
-        this.cache = new LayoutCache();
+    public LayoutContext(N node, LayoutEngine<T, N> engine){
+        this.node = node;
+        this.engine = engine;
+        this.sources = new HashMap<>();
+        this.children = new ArrayList<>();
     }
 
-    public void apply(LayoutEngine<?> engine){
-        if(lastEngine != engine){
-            this.close();
-            lastEngine = engine;
-            engineLayoutContext = engine.createContext(this);
+    public T addSource(Object source){
+        T currNode = engine.createNode(node,source);
+        this.sources.put(source, currNode);
+        for (LayoutContext<?,N> child : children) {
+            child.addSource(source);
         }
-        engine.apply(this);
+        return currNode;
     }
 
-    public boolean layout(){
-        if(!engineLayoutContext.hasNewLayout())
-            return false;
-        lastEngine.layout(this);
-        return true;
+    public void removeSource(Object source){
+        LayoutNode node = this.sources.remove(source);
+        for (LayoutContext<?,N> child : children) {
+            child.removeSource(source);
+        }
+        node.close();
     }
 
-    public void trigger(){
-        lastEngine.trigger(this);
+    public void addChild(int index, LayoutContext<?,N> child){
+        for (Map.Entry<Object, LayoutNode> entry : this.sources.entrySet()) {
+            entry.getValue().addChild(index,child.addSource(entry.getKey()));
+        }
+        this.children.add(index,child);
     }
 
-    public void close() {
-        if(engineLayoutContext != null){
-            engineLayoutContext.close();
-            engineLayoutContext = null;
+    public void removeChild(LayoutContext<?,N> child){
+        int index = children.indexOf(child);
+        if(index == -1)
+            return;
+        removeChild(index);
+    }
+
+    public void removeChild(int index){
+        LayoutContext<?,N> child = this.children.remove(index);
+        for (Map.Entry<Object,LayoutNode> entry: this.sources.entrySet()) {
+            entry.getValue().removeChild(child.sources.get(entry.getKey()));
+            entry.getValue().removeChild(index);
+            child.removeSource(entry.getKey());
         }
     }
 
-    public GuiDomNode getTarget() {
-        return target;
+    public void dispatchApply(){
+        for (LayoutNode node : this.sources.values()) {
+            node.applyChanges();
+        }
+
+        for (LayoutContext<?,N> child : this.children) {
+            child.dispatchApply();
+        }
     }
 
-    public LayoutContext getParent(){
-        return parent;
+    public void dispatchUpdate(){
+        boolean updated = false;
+        for (LayoutNode node : this.sources.values()) {
+            updated |= node.update();
+        }
+
+        if(!updated)
+            return;
+
+        for (LayoutContext<?,N> child : this.children) {
+            child.dispatchUpdate();
+        }
     }
 
-    public void setParent(LayoutContext parent) {
-        this.parent = parent;
+    public void runCalculate(){
+        for (LayoutNode node : this.sources.values()) {
+            node.calculate();
+        }
     }
 
-    public LayoutCache getCache() {
-        return cache;
+    public void close(){
+        for (LayoutNode node : this.sources.values()) {
+            node.close();
+        }
     }
 
-    public EngineLayoutContext getEngineLayoutContext() {
-        return engineLayoutContext;
+    public void markDirty(){
+        for (LayoutNode node : this.sources.values()) {
+            node.markDirty();
+        }
     }
 
-    public Object getSource() {
-        return source;
+    public void tick() {
+        this.dispatchApply();
+        this.runCalculate();
+        this.dispatchUpdate();
+    }
+
+    public LayoutNode getSourceNode(Object source) {
+        if(!this.sources.containsKey(source))
+            throw new IllegalStateException("Source not found");
+        return this.sources.get(source);
     }
 }

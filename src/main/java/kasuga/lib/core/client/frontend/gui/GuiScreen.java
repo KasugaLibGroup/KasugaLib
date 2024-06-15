@@ -18,7 +18,7 @@ public class GuiScreen extends Screen {
     protected void init() {
         GuiScreen that = this;
         instance.getContext().ifPresent((context)->{
-            context.getRootNode().setSourceInfo(that, new SourceInfo(new LayoutBox(0,0,width,height)));
+            context.setSourceInfo(that, new SourceInfo(new LayoutBox(0,0,width,height)));
         });
     }
 
@@ -26,7 +26,7 @@ public class GuiScreen extends Screen {
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
         instance.getContext().ifPresent((context)->{
-            context.getRootNode().render(RenderContext.fromScreen(this,pPoseStack,pMouseX,pMouseY,pPartialTick));
+            context.getRootNode().render(this,RenderContext.fromScreen(this,pPoseStack,pMouseX,pMouseY,pPartialTick));
         });
     }
 }

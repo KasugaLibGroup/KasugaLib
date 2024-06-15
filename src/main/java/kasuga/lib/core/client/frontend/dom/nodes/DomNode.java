@@ -1,7 +1,10 @@
 package kasuga.lib.core.client.frontend.dom.nodes;
 
+import kasuga.lib.core.client.frontend.common.layouting.LayoutBox;
+import kasuga.lib.core.client.frontend.dom.DomContext;
 import kasuga.lib.core.client.frontend.dom.attribute.AttributeMap;
 import kasuga.lib.core.client.frontend.dom.event.EventEmitter;
+import kasuga.lib.core.client.frontend.gui.GuiContext;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
 import kasuga.lib.core.javascript.JavascriptContext;
 import org.graalvm.polyglot.HostAccess;
@@ -12,16 +15,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class DomNode {
+public class DomNode<T extends DomContext<?,?>> {
 
+    protected final T domContext;
     JavascriptContext context;
 
-    public DomNode parent;
-    public List<DomNode> children = new ArrayList<>();
+    public DomNode<T> parent;
+    public List<DomNode<T>> children = new ArrayList<>();
 
     protected AttributeMap attributes = new AttributeMap();
 
-    public boolean addChildAt(int i, DomNode child){
+    public DomNode(T context) {
+        this.domContext = context;
+    }
+
+    public boolean addChildAt(int i, DomNode<T> child){
         if(child.parent != null)
             return false;
         if(children.contains(child))
@@ -31,11 +39,13 @@ public class DomNode {
         return true;
     }
 
-    public boolean addChild(DomNode child){
+    @HostAccess.Export
+    public boolean addChild(DomNode<T> child){
         return addChildAt(children.size(),child);
     }
 
-    public boolean removeChild(DomNode child){
+    @HostAccess.Export
+    public boolean removeChild(DomNode<T> child){
         boolean resp = children.remove(child);
         if(resp)
             child.parent = null;
@@ -43,7 +53,7 @@ public class DomNode {
     }
 
     public void clear(){
-        for (DomNode child : children) {
+        for (DomNode<T> child : children) {
             child.parent = null;
         }
         children.clear();
@@ -74,6 +84,7 @@ public class DomNode {
         parent.dispatchEvent(eventName, event);
     }
 
+    @HostAccess.Export
     public String getAttribute(String attributeName){
         return this.attributes.get(attributeName);
     }
@@ -82,9 +93,22 @@ public class DomNode {
         this.attributes.set(attributeName, value);
     }
 
-    public void render(RenderContext context){
-        for (DomNode child : this.children) {
-            child.render(context);
+    @HostAccess.Export
+    public void setAttribute(String attributeName, Value value){
+        setAttribute(attributeName,value.asString());
+    }
+
+    public void render(Object source,RenderContext context){
+        for (DomNode<T> child : this.children) {
+            child.render(source,context);
         }
+    }
+
+    public T getDomContext() {
+        return domContext;
+    }
+
+    public void close(){
+
     }
 }

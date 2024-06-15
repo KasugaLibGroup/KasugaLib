@@ -17,14 +17,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 
 public class GreenAppleTile extends BlockEntity {
-    @OnlyIn(Dist.CLIENT)
-    GuiInstance guiInstance;
 
     public GreenAppleTile(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()->()->{
-            guiInstance = new GuiInstance(new ResourceLocation("kasuga_lib","test_screen"));
-        });
     }
 
     public GreenAppleTile(BlockPos pos, BlockState state) {
@@ -36,17 +31,6 @@ public class GreenAppleTile extends BlockEntity {
         return AABB.ofSize(RendererUtil.blockPos2Vec3(getBlockPos()), 5, 5, 5);
     }
 
-    public void openScreen(){
-        Minecraft.getInstance().setScreen(this.guiInstance.createScreen());
-    }
-
     @Override
-    public void onChunkUnloaded() {
-        super.onChunkUnloaded();
-        this.guiInstance.close(this);
-    }
-
-    public GuiInstance getGui() {
-        return guiInstance;
-    }
+    public void onChunkUnloaded() {}
 }

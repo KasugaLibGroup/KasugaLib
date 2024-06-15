@@ -2,6 +2,8 @@ package kasuga.lib.core.client.frontend.common.layouting;
 
 import kasuga.lib.core.util.LazyRecomputable;
 
+import java.util.Objects;
+
 public class LayoutCache {
     public LayoutCache tracking = null;
 
@@ -38,7 +40,7 @@ public class LayoutCache {
     }
 
     public void setEngineCoordinate(LayoutBox engineCoordinate) {
-        if(engineCoordinate == this.engineCoordinate)
+        if(Objects.equals(engineCoordinate,this.engineCoordinate))
             return;
         this.engineCoordinate = engineCoordinate;
         this.screenCoordinate.clear();

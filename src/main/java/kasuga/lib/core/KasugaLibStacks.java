@@ -31,7 +31,7 @@ public class KasugaLibStacks {
     private final HashMap<Block, CustomBlockRenderer> BLOCK_RENDERERS;
     public final JavascriptApi JAVASCRIPT = new JavascriptApi();
 
-    public GuiEngine GUI;
+    public final GuiEngine GUI = new GuiEngine();
 
     public KasugaLibStacks(IEventBus bus) {
         this.bus = bus;
@@ -44,10 +44,7 @@ public class KasugaLibStacks {
         MinecraftForge.EVENT_BUS.addListener(PacketEvent::onServerPayloadHandleEvent);
         bus.addListener(BothSetupEvent::onFMLCommonSetup);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
-        JAVASCRIPT.init();
         if(Envs.isClient()) {
-            GUI = new GuiEngine();
-            GUI.init();
             MinecraftForge.EVENT_BUS.addListener(PacketEvent::onClientPayloadHandleEvent);
             MinecraftForge.EVENT_BUS.addListener(Constants::onClientTick);
             MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStart);
@@ -95,5 +92,10 @@ public class KasugaLibStacks {
 
     public RandomSource random() {
         return random;
+    }
+
+    public void initJavascript(){
+        JAVASCRIPT.init();
+        GUI.init();
     }
 }

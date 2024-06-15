@@ -104,7 +104,7 @@ public class StyleList<R> {
                     if(partState == StyleStates.PartState.VALUE){
                         StyleType<?,R> styleType = styleRegistry.getStyle(key);
                         if(styleType != null){
-                            this.addStyle(styleType.create(styleType.toString()));
+                            this.addStyle(styleType.create(current.toString()));
                         }
                         key = "";
                         current = new StringBuilder();

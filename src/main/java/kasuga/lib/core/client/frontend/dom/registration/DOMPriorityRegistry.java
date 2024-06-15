@@ -8,8 +8,9 @@ public class DOMPriorityRegistry extends JavascriptPriorityRegistry<DOMRegistryI
     @Override
     public DOMRegistryItem fromValue(Value value) {
         value.pin();
-        if(!value.canExecute())
-            throw new IllegalArgumentException("Illegal Argument: registry item DOMRenderer cannot execute");
-        return value::execute;
+        if(value.canExecute()){
+           return DOMRegistryItem.fromExecutable(value);
+        }
+        return DOMRegistryItem.fromConfigurableObject(value);
     }
 }

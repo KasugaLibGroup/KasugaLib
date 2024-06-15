@@ -36,4 +36,12 @@ public class LayoutBox {
     public LayoutBox addCoordinateFrom(LayoutBox target){
         return new LayoutBox(target.x + x, target.y + y, width + target.width, height + target.height);
     }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
 }

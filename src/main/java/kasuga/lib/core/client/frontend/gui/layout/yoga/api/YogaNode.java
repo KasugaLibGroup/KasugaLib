@@ -73,9 +73,19 @@ public class YogaNode implements AutoCloseable {
 
     public void removeChildAt(int i){
         final YogaNode node = children.remove(i);
+        if(node == null)
+            return;
         node.owner = null;
         YGNodeRemoveChild(pointer,node.pointer);
     }
+
+    public void removeChild(YogaNode node){
+        node.owner = null;
+        if(!children.contains(node))
+            return;
+        removeChildAt(children.indexOf(node));
+    }
+
 
     public YogaNode getOwner(){
         return owner;
@@ -272,6 +282,11 @@ public class YogaNode implements AutoCloseable {
         this.hasMeasureFunc = true;
     }
 
+    public void removeMeasureFunction(){
+        YGNodeSetMeasureFunc(pointer,null);
+        this.hasMeasureFunc = false;
+    }
+
     public void setPosition(YogaEdge edge,float value){
         YGNodeStyleSetPosition(pointer,edge.getValue(),value);
     }
@@ -324,5 +339,21 @@ public class YogaNode implements AutoCloseable {
     @Override
     public void close() {
         free();
+    }
+
+    public void addChild(YogaNode node) {
+        this.addChildAt(children.size(),node);
+    }
+
+    public float getLayoutMargin(YogaEdge edge){
+        return YGNodeLayoutGetMargin(pointer,edge.getValue());
+    }
+
+    public float getLayoutPadding(YogaEdge edge){
+        return YGNodeLayoutGetPadding(pointer,edge.getValue());
+    }
+
+    public float getLayoutBorder(YogaEdge edge){
+        return YGNodeLayoutGetBorder(pointer,edge.getValue());
     }
 }

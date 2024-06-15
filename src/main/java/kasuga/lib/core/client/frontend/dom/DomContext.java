@@ -20,11 +20,16 @@ public abstract class DomContext<P extends DomNode,T extends P> {
 
     protected abstract T createRoot();
 
-    public abstract DomNode createNodeInternal(String name);
+    public abstract P createNodeInternal(String name);
 
     @HostAccess.Export
     public T getRootNode() {
         return rootNode;
+    }
+
+    @HostAccess.Export
+    public P createNode(String name){
+        return createNodeInternal(name);
     }
 
     public void start(){

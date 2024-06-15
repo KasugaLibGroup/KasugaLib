@@ -40,9 +40,6 @@ public class GreenAppleBlock extends BaseEntityBlock {
         }
         if(pLevel.isClientSide){
             BlockEntity be = pLevel.getBlockEntity(pPos);
-            if(be instanceof GreenAppleTile tile){
-                tile.openScreen();
-            }
         }
         return super.use(pState, pLevel, pPos, pPlayer, pHand, pHit);
     }

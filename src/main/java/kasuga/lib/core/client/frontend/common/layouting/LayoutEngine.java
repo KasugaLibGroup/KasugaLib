@@ -1,8 +1,7 @@
 package kasuga.lib.core.client.frontend.common.layouting;
 
-public interface LayoutEngine<T extends EngineLayoutContext> {
-    public void apply(LayoutContext context);
-    public void trigger(LayoutContext context);
-    public void layout(LayoutContext context);
-    public T createContext(LayoutContext context);
+import kasuga.lib.core.client.frontend.dom.nodes.DomNode;
+
+public interface LayoutEngine<T extends LayoutNode,N extends DomNode> {
+    public T createNode(N node,Object source);
 }

@@ -10,19 +10,25 @@ import java.util.HashMap;
 
 public abstract class JavascriptPriorityRegistry<T> {
 
-    HashMap<ResourceLocation,RegistrySet<Pair<T,JavascriptContext>,Integer>> registry = new HashMap<>();
+    final HashMap<ResourceLocation,RegistrySet<Pair<T,JavascriptContext>,Integer>> registry = new HashMap<>();
 
+    public RegistrySet<Pair<T, JavascriptContext>, Integer> getWritableRegistry(ResourceLocation location){
+        synchronized(registry){
+            return registry.computeIfAbsent(location,(l)->new RegistrySet<>());
+        }
+    }
     public void register(JavascriptContext self, ResourceLocation location, T item){
         int priority = self.getLoaderContext().getLoadPriority();
-        registry.computeIfAbsent(location,(l)->new RegistrySet<>())
-                .register(Pair.of(item,self),priority);
+        RegistrySet<Pair<T,JavascriptContext>,Integer> registrySet;
+
+        getWritableRegistry(location).register(Pair.of(item,self),priority);
     }
 
     public void unregister(JavascriptContext self, ResourceLocation location, T item){
         int priority = self.getLoaderContext().getLoadPriority();
         if(!registry.containsKey(location))
             return;
-        RegistrySet<Pair<T,JavascriptContext>,Integer> rs = registry.get(location);
+        RegistrySet<Pair<T,JavascriptContext>,Integer> rs = getWritableRegistry(location);
         rs.remove(Pair.of(item,self),priority);
         if(rs.empty()){
             registry.remove(location);

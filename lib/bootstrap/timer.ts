@@ -12,7 +12,7 @@ globalThis.setTimeout = function(handler:TimerHandler, timeout?:number | undefin
     }
     id = timer.requestTimeout(()=>{
         if(typeof handler == 'string'){
-            throw new Error("Dynamic interpolating is not supported yet.")
+            eval(handler);
         }else{
             handler(...memory[id]);
         }
@@ -33,7 +33,7 @@ globalThis.setInterval = function(handler:TimerHandler, interval?:number | undef
     }
     id = timer.requestInterval(()=>{
         if(typeof handler == 'string'){
-            throw new Error("Dynamic interpolating is not supported yet.")
+            eval(handler);
         }else{
             handler(...memory[id]);
         }
