@@ -22,7 +22,7 @@ public abstract class DOMRegistryItem {
 
     public static DOMRegistryItem fromConfigurableObject(Value object){
 
-        if(!object.hasMember("render") || !object.getMember("render").canExecute(){
+        if(!object.hasMember("render") || !object.getMember("render").canExecute()){
             throw new IllegalArgumentException("Object must have a render method");
         }
 
