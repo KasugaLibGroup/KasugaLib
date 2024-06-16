@@ -211,16 +211,17 @@ public class CommandReg extends Reg {
 
     @Inner
     private static void register(final CommandReg commandReg) {
-        System.out.println(commandReg.tree.leaves.size());
-        for (CommandNode leaf : commandReg.tree.leaves) {
-            while (true) {
-                System.out.println(leaf.name);
-                if (leaf.isRoot())
-                    break;
-                leaf = leaf.father;
-            }
-            System.out.println();
-        }
+        //debug
+//        System.out.println(commandReg.tree.leaves.size());
+//        for (CommandNode leaf : commandReg.tree.leaves) {
+//            while (true) {
+//                System.out.println(leaf.name);
+//                if (leaf.isRoot())
+//                    break;
+//                leaf = leaf.father;
+//            }
+//            System.out.println();
+//        }
 
         if (commandReg.handler == null) {
             throw new NullPointerException();

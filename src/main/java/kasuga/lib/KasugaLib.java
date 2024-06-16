@@ -3,6 +3,7 @@ package kasuga.lib;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import kasuga.lib.core.KasugaLibStacks;
+import kasuga.lib.core.base.CommonStuff;
 import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaFileLocator;
 import kasuga.lib.core.packets.AllPackets;
 import kasuga.lib.core.util.Envs;
@@ -25,6 +26,7 @@ public class KasugaLib {
         AllPackets.init();
         YogaFileLocator.configureLWJGLPath();
         // YogaExample.example();
+        CommonStuff.invoke();
         if (Envs.isDevEnvironment())
             AllExampleElements.invoke();
     }
