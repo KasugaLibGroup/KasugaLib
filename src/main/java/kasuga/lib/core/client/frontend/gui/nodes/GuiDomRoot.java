@@ -12,6 +12,6 @@ import java.util.HashMap;
 public class GuiDomRoot extends GuiDomNode {
     public GuiDomRoot(GuiContext context) {
         super(context);
-        this.styleList.decode("height:100%;width:100%");
+        this.styles.decode("height:100%;width:100%");
     }
 }
