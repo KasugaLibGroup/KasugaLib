@@ -111,4 +111,9 @@ public class DomNode<T extends DomContext<?,?>> {
     public void close(){
 
     }
+
+    @HostAccess.Export
+    public boolean hasFeature(String feature){
+        return false;
+    }
 }
