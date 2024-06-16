@@ -1,5 +1,7 @@
 package kasuga.lib.core.client.frontend.common.style;
 
+import org.graalvm.polyglot.HostAccess;
+
 import java.util.*;
 
 public class StyleList<R> {
@@ -144,5 +146,26 @@ public class StyleList<R> {
 
     private void setHasNewStyle() {
         styleUpdate.replaceAll((s, v) -> true);
+    }
+
+    @HostAccess.Export
+    public void setStyle(String name, String value){
+        removeStyle(name);
+        StyleType<?,R> type = styleRegistry.getStyle(name);
+        if(type == null)
+            return;
+        this.addStyle(type.create(value));
+    }
+
+    @HostAccess.Export
+    public void removeStyle(String name){
+        StyleType<?,R> type = styleRegistry.getStyle(name);
+        if(type == null)
+            return;
+        Style<?,R> current = cache.get(type);
+        while(current != null){
+            removeStyle(current);
+            current = cache.get(type);
+        }
     }
 }
