@@ -80,4 +80,12 @@ public class GuiDomNode extends DomNode<GuiContext> {
         super.close();
         getLayoutManager().close();
     }
+
+    @Override
+    @HostAccess.Export
+    public boolean hasFeature(String feature) {
+        if(Objects.equals(feature, "style"))
+            return true;
+        return super.hasFeature(feature);
+    }
 }
