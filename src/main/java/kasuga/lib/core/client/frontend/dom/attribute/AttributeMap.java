@@ -29,7 +29,10 @@ public class AttributeMap {
     }
 
     public void setValue(String attributeName, String attributeValue){
-        attributes.put(attributeName, attributeValue);
+        if(attributeValue == null)
+            attributes.remove(attributeName);
+        else
+            attributes.put(attributeName, attributeValue);
         if(this.callbacks.containsKey(attributeName))
             for (Callback callback : this.callbacks.get(attributeName)) {
                 callback.execute();

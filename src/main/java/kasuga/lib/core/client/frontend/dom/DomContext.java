@@ -9,7 +9,7 @@ import kasuga.lib.core.javascript.JavascriptContext;
 import net.minecraft.resources.ResourceLocation;
 import org.graalvm.polyglot.HostAccess;
 
-public abstract class DomContext<P extends DomNode,T extends P> {
+public abstract class DomContext<P extends DomNode<?>,T extends P> {
     T rootNode;
     DOMRegistryItemDynamicProxy renderer;
 

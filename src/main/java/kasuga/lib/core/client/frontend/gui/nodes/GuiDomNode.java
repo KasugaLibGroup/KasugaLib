@@ -10,25 +10,27 @@ import kasuga.lib.core.client.frontend.common.style.StyleTarget;
 import kasuga.lib.core.client.frontend.dom.nodes.DomNode;
 import kasuga.lib.core.client.frontend.gui.GuiContext;
 import kasuga.lib.core.client.frontend.gui.layout.EdgeSize2D;
-import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaMeasureFunction;
 import kasuga.lib.core.client.frontend.rendering.BackgroundRenderer;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
+import org.graalvm.polyglot.HostAccess;
 
-import java.util.Optional;
+import java.util.Objects;
 
 public class GuiDomNode extends DomNode<GuiContext> {
-    StyleList<StyleTarget> styleList = new StyleList<>(KasugaLib.STACKS.GUI.styleRegistry);
+
+    @HostAccess.Export
+    public StyleList<StyleTarget> styles = new StyleList<>(KasugaLib.STACKS.GUI.styleRegistry);
 
     GuiDomNode(GuiContext context){
         super(context);
-        attributes.registerProxy("style",new StyleAttributeProxy(styleList));
+        attributes.registerProxy("style",new StyleAttributeProxy(styles));
     }
 
     public StyleList<StyleTarget> getStyle() {
-        return styleList;
+        return styles;
     }
 
     Lazy<LayoutContext<?,GuiDomNode>> layoutManager = Lazy.concurrentOf(()->new LayoutContext<>(this,this.domContext.getLayoutEngine()));
@@ -39,6 +41,7 @@ public class GuiDomNode extends DomNode<GuiContext> {
 
     protected LazyOptional<BackgroundRenderer> background = LazyOptional.empty();
 
+    @HostAccess.Export
     @Override
     public boolean addChildAt(int i, DomNode<GuiContext> child) {
         if(child instanceof GuiDomNode domNode)
@@ -46,6 +49,7 @@ public class GuiDomNode extends DomNode<GuiContext> {
         return super.addChildAt(i,child);
     }
 
+    @HostAccess.Export
     @Override
     public boolean removeChild(DomNode<GuiContext> child) {
         boolean result = super.removeChild(child);
@@ -75,5 +79,13 @@ public class GuiDomNode extends DomNode<GuiContext> {
     public void close() {
         super.close();
         getLayoutManager().close();
+    }
+
+    @Override
+    @HostAccess.Export
+    public boolean hasFeature(String feature) {
+        if(Objects.equals(feature, "style"))
+            return true;
+        return super.hasFeature(feature);
     }
 }
