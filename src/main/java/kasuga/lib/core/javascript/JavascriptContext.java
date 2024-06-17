@@ -61,6 +61,8 @@ public class JavascriptContext {
     Value requireFn = Value.asValue((RequireFunction)this::require);
 
     Map<String,Object> nativeModules = new HashMap<>();
+
+    Set<Callback> sideEffects = new HashSet<>();
     Set<Tickable> tickableModules = new HashSet<>();
 
     public Value createNativeModule(String name, Function<JavascriptContext,Object> constructor){
@@ -132,9 +134,17 @@ public class JavascriptContext {
             if(module instanceof Closeable){
                 try {
                     ((Closeable) module).close();
-                } catch (IOException e) {
-                    
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+            }
+        }
+
+        for (Callback sideEffect : sideEffects) {
+            try {
+                sideEffect.execute();
+            }catch (Exception e){
+                e.printStackTrace();
             }
         }
     }
@@ -145,5 +155,16 @@ public class JavascriptContext {
 
     public void runTask(Callback callback) {
         this.thread.recordCall(callback::execute);
+    }
+
+    public Callback collectEffect(Callback dispose){
+        Callback[] wrappedList = new Callback[1];
+        Callback wrapped = ()->{
+            sideEffects.remove(wrappedList[0]);
+            dispose.execute();
+        };
+        wrappedList[0] = wrapped;
+        this.sideEffects.add(wrapped);
+        return wrapped;
     }
 }
