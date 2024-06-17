@@ -105,6 +105,7 @@ public class YogaLayoutNode implements LayoutNode {
     public void addChild(int index, LayoutNode node) {
         if(node instanceof YogaLayoutNode yogaNode) {
             this.node.addChildAt(index,yogaNode.node);
+            yogaNode.cache.setTracking(this.cache);
         }
     }
 
@@ -117,6 +118,7 @@ public class YogaLayoutNode implements LayoutNode {
     public void removeChild(LayoutNode node) {
         if(node instanceof YogaLayoutNode yogaNode) {
             this.node.removeChild(yogaNode.node);
+            yogaNode.cache.setTracking(null);
         }
     }
 
