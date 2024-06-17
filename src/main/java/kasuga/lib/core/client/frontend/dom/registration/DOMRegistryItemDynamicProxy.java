@@ -69,4 +69,10 @@ public class DOMRegistryItemDynamicProxy {
     public void disable() {
 
     }
+
+    public void notifyUpdate(ResourceLocation location) {
+        if(this.id == location){
+            this.reload();
+        }
+    }
 }

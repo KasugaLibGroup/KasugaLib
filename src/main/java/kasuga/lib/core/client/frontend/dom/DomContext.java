@@ -41,4 +41,8 @@ public abstract class DomContext<P extends DomNode<?>,T extends P> {
         renderer.disable();
         renderer.unload();
     }
+
+    public DOMRegistryItemDynamicProxy getRenderer() {
+        return renderer;
+    }
 }
