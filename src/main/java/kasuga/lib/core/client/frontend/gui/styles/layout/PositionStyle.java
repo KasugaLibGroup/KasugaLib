@@ -12,15 +12,16 @@ import java.util.Map;
 public abstract class PositionStyle extends Style<Pair<Float, PixelUnit>, StyleTarget> {
     public final String original;
     public final Pair<Float,PixelUnit> value;
+    public final StyleTarget target;
 
     public PositionStyle(float value,PixelUnit unit){
         this.value = Pair.of(value,unit);
         this.original = unit.toString(value);
-        createTarget();
+        target = createTarget();
     }
 
-    private void createTarget() {
-        target = StyleTarget.LAYOUT_NODE.create((node)->{
+    private StyleTarget createTarget() {
+        return StyleTarget.LAYOUT_NODE.create((node)->{
             if(!this.isValid(null))
                 return;
             switch (value.getSecond()){
@@ -39,7 +40,7 @@ public abstract class PositionStyle extends Style<Pair<Float, PixelUnit>, StyleT
     public PositionStyle(String source){
         this.original = source;
         this.value = PixelUnit.parse(source);
-        createTarget();
+        target = createTarget();
     }
 
     @Override
@@ -62,7 +63,6 @@ public abstract class PositionStyle extends Style<Pair<Float, PixelUnit>, StyleT
         return new PositionStyleType(edge);
     }
 
-    static StyleTarget target;
 
     @Override
     public StyleTarget getTarget() {
