@@ -6,10 +6,11 @@ import kasuga.lib.core.client.frontend.dom.registration.DOMRegistryItemDynamicPr
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomNode;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomRoot;
 import kasuga.lib.core.javascript.JavascriptContext;
+import kasuga.lib.core.javascript.module.Tickable;
 import net.minecraft.resources.ResourceLocation;
 import org.graalvm.polyglot.HostAccess;
 
-public abstract class DomContext<P extends DomNode<?>,T extends P> {
+public abstract class DomContext<P extends DomNode<?>,T extends P> implements Tickable {
     T rootNode;
     DOMRegistryItemDynamicProxy renderer;
 
@@ -44,5 +45,9 @@ public abstract class DomContext<P extends DomNode<?>,T extends P> {
 
     public DOMRegistryItemDynamicProxy getRenderer() {
         return renderer;
+    }
+
+    public void tick(){
+
     }
 }

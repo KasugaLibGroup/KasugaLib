@@ -14,6 +14,7 @@ public class DOMRegistryItemDynamicProxy {
     private final ResourceLocation id;
     Callback unloadHooks;
     private boolean closed = true;
+    private JavascriptContext registryContext;
 
     public DOMRegistryItemDynamicProxy(DOMPriorityRegistry registry, ResourceLocation resourceLocation, DomContext context){
         this.context = context;
@@ -42,6 +43,9 @@ public class DOMRegistryItemDynamicProxy {
                 registryContext.runTask(unload::executeVoid);
             });
         });
+        this.registryContext = registryContext;
+
+        registryContext.addTickable(context);
     }
 
     private void updateUnloadHooks(Callback unloadHook) {
@@ -52,6 +56,10 @@ public class DOMRegistryItemDynamicProxy {
 
     public void unload(){
         this.closed = true;
+        if(registryContext != null){
+            registryContext.removeTickable(context);
+            registryContext = null;
+        }
         if(this.unloadHooks != null){
             try{
                 unloadHooks.execute();
