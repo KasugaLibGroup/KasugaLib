@@ -23,18 +23,19 @@ public class LayoutContext<T extends LayoutNode,N extends DomNode> {
     public T addSource(Object source){
         T currNode = engine.createNode(node,source);
         this.sources.put(source, currNode);
-        for (LayoutContext<?,N> child : children) {
-            child.addSource(source);
+        for (int i = 0; i < children.size(); i++) {
+            currNode.addChild(i,children.get(i).addSource(source));
         }
         return currNode;
     }
 
-    public void removeSource(Object source){
+    public LayoutNode removeSource(Object source){
         LayoutNode node = this.sources.remove(source);
         for (LayoutContext<?,N> child : children) {
-            child.removeSource(source);
+            node.removeChild(child.removeSource(source));
         }
         node.close();
+        return node;
     }
 
     public void addChild(int index, LayoutContext<?,N> child){
