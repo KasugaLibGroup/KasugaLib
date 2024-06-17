@@ -43,7 +43,7 @@ public class FrontendCommands {
                             boolean isSecureConnection = uri.getScheme() != null && uri.getScheme().equals("https");
                             if(serverName == null)
                                 serverName = "localhost:8081";
-
+                            thread.closeContext("debuuger::"+bundle);
                             JavascriptContext context = thread.createOrGetContext("debuuger::"+bundle,"Debugging thread "+bundle);
                             HttpGet bundleAccessor = new HttpGet(
                                     (isSecureConnection ? "https://" : "http://") +
