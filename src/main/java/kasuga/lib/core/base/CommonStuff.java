@@ -2,6 +2,8 @@ package kasuga.lib.core.base;
 
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.commands.CommandHandler;
+import kasuga.lib.core.util.Envs;
+import kasuga.lib.example_env.AllExampleElements;
 import kasuga.lib.registrations.common.ArgumentTypeReg;
 import kasuga.lib.registrations.common.CommandReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
@@ -13,10 +15,10 @@ import java.net.URL;
 
 @SuppressWarnings("Unused")
 public class CommonStuff {
-    public static final SimpleRegistry testRegistry = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
+    public static final SimpleRegistry defaultRegistry = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
 
     public static final ArgumentTypeReg type = ArgumentTypeReg.INSTANCE.registerType(File.class, File::new)
-            .submit(testRegistry);
+            .submit(defaultRegistry);
 
     public static final CommandReg command00 = new CommandReg("kasugalib")
             .addLiteral("gui", false)
@@ -29,7 +31,7 @@ public class CommonStuff {
                     String bundle = getParameter("Bundle", String.class);
                     //TODO Handle me!
                 }
-            }).submit(testRegistry);
+            }).submit(defaultRegistry);
 
     public static final CommandReg command10 = new CommandReg("kasugalib")
             .addLiteral("js", false)
@@ -49,7 +51,7 @@ public class CommonStuff {
                     }
                     //TODO Handle me!
                 }
-            }).submit(testRegistry);
+            }).submit(defaultRegistry);
 
     public static final CommandReg command11 = new CommandReg("kasugalib")
             .addLiteral("js", false)
@@ -62,7 +64,7 @@ public class CommonStuff {
                     String contextID = getParameter("ContextID", String.class);
                     //TODO Handle me!
                 }
-            }).submit(testRegistry);
+            }).submit(defaultRegistry);
 
     public static final CommandReg command12 = new CommandReg("kasugalib")
             .addLiteral("js", false)
@@ -77,7 +79,7 @@ public class CommonStuff {
                     String moduleID = getParameter("ModuleID", String.class);
                     //TODO Handle me!
                 }
-            }).submit(testRegistry);
+            }).submit(defaultRegistry);
 
     public static final CommandReg command20 = new CommandReg("kasugalib")
             .addLiteral("js", false)
@@ -99,7 +101,7 @@ public class CommonStuff {
                     }
                     //TODO Handle me!
                 }
-            }).submit(testRegistry);
+            }).submit(defaultRegistry);
 
     public static final CommandReg command21 = new CommandReg("kasugalib")
             .addLiteral("js", false)
@@ -114,7 +116,7 @@ public class CommonStuff {
                     String contextID = getParameter("ContextID", String.class);
                     //TODO Handle me!
                 }
-            }).submit(testRegistry);
+            }).submit(defaultRegistry);
 
     public static final CommandReg command22 = new CommandReg("kasugalib")
             .addLiteral("js", false)
@@ -131,7 +133,7 @@ public class CommonStuff {
                     String moduleID = getParameter("ModuleID", String.class);
                     //TODO Handle me!
                 }
-            }).submit(testRegistry);
+            }).submit(defaultRegistry);
 
     public static final CommandReg command30 = new CommandReg("kasugalib")
             .addLiteral("js", false)
@@ -150,7 +152,7 @@ public class CommonStuff {
                     }
                     //TODO Handle me!
                 }
-            }).submit(testRegistry);
+            }).submit(defaultRegistry);
 
     public static final CommandReg command31 = new CommandReg("kasugalib")
             .addLiteral("js", false)
@@ -165,7 +167,7 @@ public class CommonStuff {
                     String channelID = getParameter("ChannelID", String.class);
                     //TODO Handle me!
                 }
-            }).submit(testRegistry);
+            }).submit(defaultRegistry);
 
     public static final CommandReg command32 = new CommandReg("kasugalib")
             .addLiteral("js", false)
@@ -180,7 +182,7 @@ public class CommonStuff {
                     String channelID = getParameter("ChannelID", String.class);
                     //TODO Handle me!
                 }
-            }).submit(testRegistry);
+            }).submit(defaultRegistry);
 
     public static final CommandReg command33 = new CommandReg("kasugalib")
             .addLiteral("js", false)
@@ -193,7 +195,7 @@ public class CommonStuff {
                     //kasugalib js channel mock start
                     //TODO Handle me!
                 }
-            }).submit(testRegistry);
+            }).submit(defaultRegistry);
 
     public static final CommandReg command34 = new CommandReg("kasugalib")
             .addLiteral("js", false)
@@ -208,7 +210,7 @@ public class CommonStuff {
                     String channelID = getParameter("ChannelID", String.class);
                     //TODO Handle me!
                 }
-            }).submit(testRegistry);
+            }).submit(defaultRegistry);
 
     public static final CommandReg command35 = new CommandReg("kasugalib")
             .addLiteral("js", false)
@@ -223,7 +225,7 @@ public class CommonStuff {
                     String channelID = getParameter("ChannelID", String.class);
                     //TODO Handle me!
                 }
-            }).submit(testRegistry);
+            }).submit(defaultRegistry);
 
     public static final CommandReg command36 = new CommandReg("kasugalib")
             .addLiteral("js", false)
@@ -238,7 +240,7 @@ public class CommonStuff {
                     String channelID = getParameter("ChannelID", String.class);
                     //TODO Handle me!
                 }
-            }).submit(testRegistry);
+            }).submit(defaultRegistry);
 
     public static final CommandReg command37 = new CommandReg("kasugalib")
             .addLiteral("js", false)
@@ -253,7 +255,7 @@ public class CommonStuff {
                     String content = getParameter("Content", String.class);
                     //TODO Handle me!
                 }
-            }).submit(testRegistry);
+            }).submit(defaultRegistry);
 
     public static final CommandReg command38 = new CommandReg("kasugalib")
             .addLiteral("js", false)
@@ -266,7 +268,7 @@ public class CommonStuff {
                     //kasugalib js channel mock stop
                     //TODO Handle me!
                 }
-            }).submit(testRegistry);
+            }).submit(defaultRegistry);
 
     public static final CommandReg command40 = new CommandReg("kasuga")
             .addLiteral("gui-debug", false)
@@ -286,7 +288,7 @@ public class CommonStuff {
                     }
                     //TODO Handle me!
                 }
-            }).submit(testRegistry);
+            }).submit(defaultRegistry);
 
     public static final CommandReg command41 = new CommandReg("kasuga")
             .addLiteral("open", false)
@@ -298,7 +300,7 @@ public class CommonStuff {
                     ResourceLocation bundle = getParameter("loc", ResourceLocation.class);
                     //TODO Handle me!
                 }
-            }).submit(testRegistry);
+            }).submit(defaultRegistry);
 
     public static final CommandReg command42 = new CommandReg("kasuga")
             .addLiteral("list", false)
@@ -308,7 +310,10 @@ public class CommonStuff {
                     //kasuga list
                     //TODO Handle me!
                 }
-            }).submit(testRegistry);
+            }).submit(defaultRegistry);
 
-    public static void invoke(){}
+    public static void invoke(){
+        if (Envs.isDevEnvironment())
+            AllExampleElements.invoke();
+    }
 }

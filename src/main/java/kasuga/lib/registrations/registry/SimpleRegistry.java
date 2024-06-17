@@ -70,7 +70,6 @@ public class SimpleRegistry {
     private final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS;
     private final DeferredRegister<FluidType> FLUID_TYPE;
     private final DeferredRegister<Fluid> FLUID;
-    private final DeferredRegister<ArgumentTypeInfo<?, ?>> ARGUMENT_TYPES;
     private final ModelRegistry MODELS;
     private final HashMap<String, BlockEntityReg<?>> CACHE_OF_BLOCK_ENTITIES;
     private final HashMap<String, MenuReg<?, ?, ?>> CACHE_OF_MENUS;
@@ -107,7 +106,6 @@ public class SimpleRegistry {
         ATTRIBUTES = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, namespace);
         FLUID_TYPE = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, namespace);
         FLUID = DeferredRegister.create(ForgeRegistries.Keys.FLUIDS, namespace);
-        ARGUMENT_TYPES = DeferredRegister.create(ForgeRegistries.Keys.COMMAND_ARGUMENT_TYPES, namespace);
         MODELS = new ModelRegistry(namespace, this);
         CACHE_OF_BLOCK_ENTITIES = new HashMap<>();
         CUSTOM_RENDERED_ITEMS = new HashSet<>();
@@ -217,13 +215,6 @@ public class SimpleRegistry {
     public DeferredRegister<Fluid> fluid() {return FLUID;}
 
     /**
-     * return the registry of Command Argument Type. See {@link kasuga.lib.registrations.common.ArgumentTypeReg}
-     * @return the registry of argument types.
-     */
-    @Deprecated
-    public DeferredRegister<ArgumentTypeInfo<?, ?>> argumentTypes() {return ARGUMENT_TYPES;}
-
-    /**
      * retrun the registry of kasuga lib style models. See {@link kasuga.lib.registrations.client.ModelReg}
      * @return the registry of kasuga lib style models.
      */
@@ -263,14 +254,13 @@ public class SimpleRegistry {
         ITEMS.register(eventBus);
         FLUID_TYPE.register(eventBus);
         FLUID.register(eventBus);
-        ARGUMENT_TYPES.register("base", ()-> ArgumentTypeInfos.registerByClass(BaseArgument.class, new BaseArgumentInfo()));
-        ARGUMENT_TYPES.register(eventBus);
-        for(String key : CACHE_OF_BLOCK_ENTITIES.keySet()) {
+        for (String key : CACHE_OF_BLOCK_ENTITIES.keySet()) {
             try {
                 BlockEntityReg<?> reg = CACHE_OF_BLOCK_ENTITIES.get(key);
                 reg.getType();
                 reg.submit(this);
-            } catch (Exception ignore) {}
+            } catch (Exception ignore) {
+            }
         }
         for(String key : CACHE_OF_MENUS.keySet()) {CACHE_OF_MENUS.get(key).submit(this);}
         BLOCK_ENTITIES.register(eventBus);

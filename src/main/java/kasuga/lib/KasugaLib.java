@@ -6,8 +6,6 @@ import kasuga.lib.core.KasugaLibStacks;
 import kasuga.lib.core.base.CommonStuff;
 import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaFileLocator;
 import kasuga.lib.core.packets.AllPackets;
-import kasuga.lib.core.util.Envs;
-import kasuga.lib.example_env.AllExampleElements;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -27,8 +25,6 @@ public class KasugaLib {
         YogaFileLocator.configureLWJGLPath();
         // YogaExample.example();
         CommonStuff.invoke();
-        if (Envs.isDevEnvironment())
-            AllExampleElements.invoke();
     }
 
     public static Logger createLogger(String name) {

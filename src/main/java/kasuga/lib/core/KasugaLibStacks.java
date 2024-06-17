@@ -2,6 +2,8 @@ package kasuga.lib.core;
 
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.CustomBlockRenderer;
+import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
+import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgumentInfo;
 import kasuga.lib.core.client.animation.Constants;
 import kasuga.lib.core.client.frontend.gui.GuiEngine;
 import kasuga.lib.core.events.both.BothSetupEvent;
@@ -14,16 +16,23 @@ import kasuga.lib.core.util.Envs;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.registry.FontRegistry;
 import kasuga.lib.registrations.registry.TextureRegistry;
+import net.minecraft.commands.synchronization.ArgumentTypeInfo;
+import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
+
+import static kasuga.lib.KasugaLib.MOD_ID;
 
 public class KasugaLibStacks {
     private final HashMap<String, SimpleRegistry> registries;
     public final IEventBus bus;
+    private final DeferredRegister<ArgumentTypeInfo<?, ?>> ARGUMENT_TYPES;
     private boolean hasTextureRegistryFired = false;
     private final TextureRegistry TEXTURES;
     private final FontRegistry FONTS;
@@ -36,8 +45,11 @@ public class KasugaLibStacks {
     public KasugaLibStacks(IEventBus bus) {
         this.bus = bus;
         this.registries = new HashMap<>();
-        TEXTURES = new TextureRegistry(KasugaLib.MOD_ID);
-        FONTS = new FontRegistry(KasugaLib.MOD_ID);
+        ARGUMENT_TYPES = DeferredRegister.create(ForgeRegistries.Keys.COMMAND_ARGUMENT_TYPES, MOD_ID);
+        ARGUMENT_TYPES.register("base", () -> ArgumentTypeInfos.registerByClass(BaseArgument.class, new BaseArgumentInfo()));
+        ARGUMENT_TYPES.register(bus);
+        TEXTURES = new TextureRegistry(MOD_ID);
+        FONTS = new FontRegistry(MOD_ID);
         BLOCK_RENDERERS = new HashMap<>();
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverAboutToStart);
