@@ -1,7 +1,5 @@
 package kasuga.lib.core.util;
 
-import net.minecraftforge.common.util.Lazy;
-
 import java.util.function.Supplier;
 
 public class LazyRecomputable<T> {
@@ -28,5 +26,25 @@ public class LazyRecomputable<T> {
             this.isCached = true;
         }
         return this.cachedValue;
+    }
+
+    public static <T> PredictableLazyRecomputable<T> predictable(Supplier<T> supplier, Supplier<Boolean> predict){
+        return new PredictableLazyRecomputable<>(supplier,predict);
+    }
+
+    public static class PredictableLazyRecomputable<T> extends LazyRecomputable<T>{
+        private final Supplier<Boolean> predict;
+
+        public PredictableLazyRecomputable(Supplier<T> supplier, Supplier<Boolean> predict) {
+            super(supplier);
+            this.predict = predict;
+        }
+
+        @Override
+        public T get() {
+            if(!predict.get())
+                this.clear();
+            return super.get();
+        }
     }
 }
