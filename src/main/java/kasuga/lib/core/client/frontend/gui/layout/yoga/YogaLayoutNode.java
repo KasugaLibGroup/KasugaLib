@@ -39,9 +39,11 @@ public class YogaLayoutNode implements LayoutNode {
         if(!styles.hasNewStyle(this))
             return;
 
-        for (Style<?, StyleTarget> style : styles.getCachedStyles()) {
+        styles.forEachCacheStyle((style)->{
             style.getTarget().attemptApply(this.node);
-        }
+        });
+
+        styles.resetNewStyle(this);
     }
 
     @Override

@@ -7,11 +7,12 @@ import kasuga.lib.core.client.frontend.dom.registration.DOMPriorityRegistry;
 import kasuga.lib.core.client.frontend.gui.layout.LayoutEngines;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomNode;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomRoot;
+import kasuga.lib.core.javascript.module.Tickable;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 
-public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> {
+public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tickable {
 
     LayoutEngine<?,GuiDomNode> layoutEngine;
 
@@ -45,10 +46,6 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> {
         this.getRootNode().getLayoutManager().removeSource(source);
     }
 
-    public void renderTick(){
-        this.getRootNode().getLayoutManager().tick();
-    }
-
     public LayoutEngine<?,GuiDomNode> getLayoutEngine(){
         return layoutEngine;
     }
@@ -65,5 +62,14 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> {
 
     public void removeSourceInfo(Object source) {
         this.info.remove(source);
+    }
+
+    @Override
+    public void tick() {
+        this.getRootNode().getLayoutManager().tick();
+    }
+
+    public void renderTick() {
+
     }
 }

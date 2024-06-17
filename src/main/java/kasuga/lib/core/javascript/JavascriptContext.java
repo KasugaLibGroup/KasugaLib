@@ -70,7 +70,7 @@ public class JavascriptContext {
             return Value.asValue(nativeModules.get(name));
         Object nativeModule = constructor.apply(this);
         nativeModules.put(name, nativeModule);
-        if(nativeModules instanceof Tickable tickable){
+        if(nativeModule instanceof Tickable tickable){
             tickableModules.add(tickable);
         }
         return Value.asValue(nativeModule);
@@ -166,5 +166,13 @@ public class JavascriptContext {
         wrappedList[0] = wrapped;
         this.sideEffects.add(wrapped);
         return wrapped;
+    }
+
+    public void addTickable(Tickable t) {
+        this.tickableModules.add(t);
+    }
+
+    public void removeTickable(Tickable t) {
+        this.tickableModules.remove(t);
     }
 }

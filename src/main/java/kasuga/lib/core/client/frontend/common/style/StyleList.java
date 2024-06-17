@@ -3,10 +3,14 @@ package kasuga.lib.core.client.frontend.common.style;
 import org.graalvm.polyglot.HostAccess;
 
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Consumer;
 
 public class StyleList<R> {
 
     private final StyleRegistry<R> styleRegistry;
+    public final ReentrantReadWriteLock cacheLock = new ReentrantReadWriteLock();
 
     public StyleList(StyleRegistry<R> registry){
         this.styleRegistry = registry;
@@ -23,6 +27,8 @@ public class StyleList<R> {
         setHasNewStyle();
     }
     public int freshCache(StyleType<?,R> type){
+        Lock cacheWriteLock = cacheLock.writeLock();
+        cacheWriteLock.lock();
         int i = 0;
         for (Style<?,R> style : styles) {
             if(style.getType() != type)
@@ -33,6 +39,7 @@ public class StyleList<R> {
                 i++;
             }
         }
+        cacheWriteLock.unlock();
         return i;
     }
 
@@ -42,11 +49,15 @@ public class StyleList<R> {
         if(cache.get(type) == style){
             return;
         }
+        Lock cacheWriteLock = cacheLock.writeLock();
+
         if(style.isValid(cache)){
+            cacheWriteLock.lock();
             cache.put(style.getType(),style);
-            // waiting.put(style.getType(),style);
+            cacheWriteLock.unlock();
         }
     }
+
 
     public void removeStyle(Style<?,R> style){
         StyleType<?,R> type = style.getType();
@@ -54,11 +65,14 @@ public class StyleList<R> {
             styles.remove(style);
         }
         styles.remove(style);
-        this.cache.remove(type);
+        Lock cacheWriteLock = cacheLock.writeLock();
+        cacheWriteLock.lock();
         int i = freshCache(type);
         if(i == 0){
             cache.put(type, type.getDefault());
         }
+        this.cache.remove(type);
+        cacheWriteLock.unlock();
         setHasNewStyle();
     }
 
@@ -71,6 +85,7 @@ public class StyleList<R> {
     } */
 
     public String toString(){
+        cacheLock.readLock().lock();
         StringBuilder sb = new StringBuilder();
         for (Style<?,R> style : this.styles) {
             if(!sb.isEmpty()){
@@ -78,10 +93,12 @@ public class StyleList<R> {
             }
             sb.append(style.toString());
         }
+        cacheLock.readLock().unlock();
         return sb.toString();
     }
 
     public void decode(String style) {
+        cacheLock.writeLock().lock();
         Stack<StyleStates.ReadState> readStateStack = new Stack<>();
         StyleStates.PartState partState = StyleStates.PartState.ATTRIBUTE;
         StringBuilder current = new StringBuilder();
@@ -116,6 +133,7 @@ public class StyleList<R> {
                     current.append(chr);
             }
         }
+        cacheLock.writeLock().unlock();
     }
 
     @SuppressWarnings("unchecked")
@@ -142,6 +160,14 @@ public class StyleList<R> {
 
     public Collection<Style<?, R>> getCachedStyles() {
         return cache.values();
+    }
+
+    public void forEachCacheStyle(Consumer<Style<?,R>> consumer){
+        cacheLock.readLock().lock();
+        for (Style<?, R> value : cache.values()) {
+            consumer.accept(value);
+        }
+        cacheLock.readLock().unlock();
     }
 
     private void setHasNewStyle() {

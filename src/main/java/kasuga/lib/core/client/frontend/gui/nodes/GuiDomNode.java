@@ -60,7 +60,7 @@ public class GuiDomNode extends DomNode<GuiContext> {
 
     @Override
     public void render(Object source, RenderContext context) {
-        super.render(source, context);
+        this.updateStyles();
 
         LayoutNode layout = this.getLayoutManager()
                 .getSourceNode(source);
@@ -72,7 +72,18 @@ public class GuiDomNode extends DomNode<GuiContext> {
         MultiBufferSource bufferSource = context.getBufferSource();
         // @todo render border
 
+        super.render(source, context);
+    }
 
+    private void updateStyles() {
+        if(!styles.hasNewStyle(this))
+            return;
+
+        styles.forEachCacheStyle((style)->{
+            style.getTarget().attemptApply(this);
+        });
+
+        styles.resetNewStyle(this);
     }
 
     @Override
