@@ -202,9 +202,9 @@ public class CommandReg extends Reg {
             }
             switch (pair.getSecond()) {
                 case CLIENT ->
-                        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> () -> dispatcher.register(pair.getFirst()));
+                        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> dispatcher.register(pair.getFirst()));
                 case DEDICATED_SERVER ->
-                        DistExecutor.safeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> dispatcher.register(pair.getFirst()));
+                        DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> dispatcher.register(pair.getFirst()));
             }
         });
     }
