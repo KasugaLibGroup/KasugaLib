@@ -1,14 +1,13 @@
 package kasuga.lib.core.client.frontend.gui;
 
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.client.frontend.common.layouting.LayoutBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class GuiInstance {
@@ -17,6 +16,8 @@ public class GuiInstance {
     GuiContext context;
 
     public Set<Object> targets = new HashSet<>();
+
+    public Map<Object, SourceInfo> sourceInfos = new HashMap<>();
 
     public GuiInstance(ResourceLocation location){
         this.location = location;
@@ -64,13 +65,18 @@ public class GuiInstance {
     public void openInternal(Object target){
         if(this.context == null){
             this.context = new GuiContext(KasugaLib.STACKS.GUI.domRegistry, location);
+            this.sourceInfos.forEach((source, info)->{
+                this.context.setSourceInfo(source, info);
+            });
             this.context.start();
         }
+        updateSourceInfo(target,new SourceInfo(LayoutBox.ZERO));
         targets.add(target);
     }
 
     public void closeInternal(Object target){
         targets.remove(target);
+        this.removeSourceInfo(target);
         if(this.targets.isEmpty()){
             this.stop();
         }
@@ -87,5 +93,19 @@ public class GuiInstance {
 
     public Optional<GuiContext> getContext() {
         return Optional.ofNullable(context);
+    }
+
+    public void updateSourceInfo(Object source, SourceInfo sourceInfo){
+        this.sourceInfos.put(source, sourceInfo);
+        getContext().ifPresent((c)->{
+            c.setSourceInfo(source, sourceInfo);
+        });
+    }
+
+    public void removeSourceInfo(Object source){
+        this.sourceInfos.remove(source);
+        getContext().ifPresent((c)->{
+            c.removeSourceInfo(source);
+        });
     }
 }

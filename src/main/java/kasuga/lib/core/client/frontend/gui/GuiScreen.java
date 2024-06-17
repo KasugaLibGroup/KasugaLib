@@ -16,10 +16,7 @@ public class GuiScreen extends Screen {
 
     @Override
     protected void init() {
-        GuiScreen that = this;
-        instance.getContext().ifPresent((context)->{
-            context.setSourceInfo(that, new SourceInfo(new LayoutBox(0,0,width,height)));
-        });
+        instance.updateSourceInfo(this, new SourceInfo(new LayoutBox(0,0,width,height)));
     }
 
     @Override

@@ -62,4 +62,8 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> {
     public void setSourceInfo(Object source,SourceInfo sourceInfo) {
         this.info.put(source, sourceInfo);
     }
+
+    public void removeSourceInfo(Object source) {
+        this.info.remove(source);
+    }
 }
