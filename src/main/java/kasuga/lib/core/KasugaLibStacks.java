@@ -42,6 +42,8 @@ public class KasugaLibStacks {
 
     public final GuiEngine GUI = new GuiEngine();
 
+    public final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
+
     public KasugaLibStacks(IEventBus bus) {
         this.bus = bus;
         this.registries = new HashMap<>();

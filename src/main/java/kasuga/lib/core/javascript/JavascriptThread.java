@@ -105,6 +105,12 @@ public class JavascriptThread extends Thread{
         return contexts.computeIfAbsent(target,(t)->new JavascriptContext(name,this));
     }
 
+    public void closeContext(Object target){
+        JavascriptContext context = contexts.remove(target);
+        if(context != null)
+            context.close();
+    }
+
     public LoaderContext getLoaderContext() {
         return loaderContext;
     }
