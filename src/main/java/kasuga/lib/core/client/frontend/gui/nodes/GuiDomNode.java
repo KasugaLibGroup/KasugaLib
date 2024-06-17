@@ -4,6 +4,7 @@ import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutBox;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutContext;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutNode;
+import kasuga.lib.core.client.frontend.common.style.Style;
 import kasuga.lib.core.client.frontend.common.style.StyleAttributeProxy;
 import kasuga.lib.core.client.frontend.common.style.StyleList;
 import kasuga.lib.core.client.frontend.common.style.StyleTarget;
@@ -14,7 +15,6 @@ import kasuga.lib.core.client.frontend.rendering.BackgroundRenderer;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.common.util.LazyOptional;
 import org.graalvm.polyglot.HostAccess;
 
 import java.util.Objects;
@@ -39,7 +39,7 @@ public class GuiDomNode extends DomNode<GuiContext> {
         return layoutManager.get();
     }
 
-    protected LazyOptional<BackgroundRenderer> background = LazyOptional.empty();
+    protected BackgroundRenderer background = new BackgroundRenderer();
 
     @HostAccess.Export
     @Override
@@ -66,7 +66,7 @@ public class GuiDomNode extends DomNode<GuiContext> {
                 .getSourceNode(source);
 
         LayoutBox coordinate = layout.getPosition();
-        background.ifPresent((bg)->bg.render(context,(int)coordinate.x,(int)coordinate.y,(int)coordinate.width,(int)coordinate.height));
+        background.render(context,(int)coordinate.x,(int)coordinate.y,(int)coordinate.width,(int)coordinate.height);
 
         EdgeSize2D border = layout.getBorder();
         MultiBufferSource bufferSource = context.getBufferSource();
@@ -98,5 +98,9 @@ public class GuiDomNode extends DomNode<GuiContext> {
         if(Objects.equals(feature, "style"))
             return true;
         return super.hasFeature(feature);
+    }
+
+    public BackgroundRenderer getBackgroundRenderer() {
+        return background;
     }
 }

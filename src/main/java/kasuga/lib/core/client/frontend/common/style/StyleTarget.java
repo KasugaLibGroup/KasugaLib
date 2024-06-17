@@ -1,6 +1,7 @@
 package kasuga.lib.core.client.frontend.common.style;
 
 import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaNode;
+import kasuga.lib.core.client.frontend.gui.nodes.GuiDomNode;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -42,5 +43,10 @@ public interface StyleTarget {
     public static StyleTargetType<YogaNode> LAYOUT_NODE = new StyleTargetType<>(
             (n)->n instanceof YogaNode,
             (n)->(YogaNode) n
+    );
+
+    public static StyleTargetType<GuiDomNode> GUI_DOM_NODE = new StyleTargetType<>(
+            (n)->n instanceof GuiDomNode,
+            (n)->(GuiDomNode) n
     );
 }
