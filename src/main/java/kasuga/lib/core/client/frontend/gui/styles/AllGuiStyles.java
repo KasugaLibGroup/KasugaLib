@@ -102,38 +102,32 @@ public class AllGuiStyles {
         styleRegistry.register("borderBottom", BorderStyle.createType(YogaEdge.BOTTOM));
 
         // Margin
-        styleRegistry.register("marginTop", styleRegistry.register("width", SizeStyle.createType((n,v)->{
+        styleRegistry.register("marginTop", SizeStyle.createType((n,v)->{
             switch (v.getSecond()){
                 case NATIVE -> n.setMargin(YogaEdge.TOP,v.getFirst());
                 case PERCENTAGE -> n.setMarginPercent(YogaEdge.TOP,v.getFirst());
             }
-        })));
-        styleRegistry.register("marginLeft", styleRegistry.register("width", SizeStyle.createType((n,v)->{
+        }));
+
+        styleRegistry.register("marginLeft", SizeStyle.createType((n,v)->{
             switch (v.getSecond()){
                 case NATIVE -> n.setMargin(YogaEdge.LEFT,v.getFirst());
                 case PERCENTAGE -> n.setMarginPercent(YogaEdge.LEFT,v.getFirst());
             }
-        })));
-        styleRegistry.register("marginRight", styleRegistry.register("width", SizeStyle.createType((n,v)->{
+        }));
+
+        styleRegistry.register("marginRight", SizeStyle.createType((n,v)->{
             switch (v.getSecond()){
                 case NATIVE -> n.setMargin(YogaEdge.RIGHT,v.getFirst());
                 case PERCENTAGE -> n.setMarginPercent(YogaEdge.RIGHT,v.getFirst());
             }
-        })));
-        styleRegistry.register("marginBottom", styleRegistry.register("width", SizeStyle.createType((n,v)->{
+        }));
+
+        styleRegistry.register("marginBottom", SizeStyle.createType((n,v)->{
             switch (v.getSecond()){
                 case NATIVE -> n.setMargin(YogaEdge.BOTTOM,v.getFirst());
                 case PERCENTAGE -> n.setMarginPercent(YogaEdge.BOTTOM,v.getFirst());
             }
-        })));
-
-
-
-
-
-
-
-
-
+        }));
     }
 }

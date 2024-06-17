@@ -17,6 +17,8 @@ public class StyleRegistry<R> {
     }
 
     public <T extends StyleType<?,R>> T register(String name, T styleType){
+        if(registry.containsKey(name))
+            throw new IllegalArgumentException("Style already registered");
         registry.put(name,styleType);
         reversal.put(styleType,name);
         return styleType;
