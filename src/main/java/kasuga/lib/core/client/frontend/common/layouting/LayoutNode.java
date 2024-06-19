@@ -3,7 +3,7 @@ package kasuga.lib.core.client.frontend.common.layouting;
 import kasuga.lib.core.client.frontend.gui.layout.EdgeSize2D;
 
 public interface LayoutNode {
-    public void applyChanges();
+    public boolean applyChanges();
     public boolean update();
     public void calculate();
     public LayoutBox getPosition();

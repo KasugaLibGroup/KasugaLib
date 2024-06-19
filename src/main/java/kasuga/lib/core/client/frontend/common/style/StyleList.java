@@ -1,5 +1,6 @@
 package kasuga.lib.core.client.frontend.common.style;
 
+import kasuga.lib.core.util.Callback;
 import org.graalvm.polyglot.HostAccess;
 
 import java.util.*;
@@ -56,6 +57,7 @@ public class StyleList<R> {
             cache.put(style.getType(),style);
             cacheWriteLock.unlock();
         }
+        setHasNewStyle();
     }
 
 
@@ -142,9 +144,12 @@ public class StyleList<R> {
     }
 
     public void clear(){
+        cacheLock.writeLock().lock();
         this.styles.clear();
         this.cache.clear();
         styleUpdate.clear();
+        cacheLock.writeLock().unlock();
+        setHasNewStyle();
     }
 
 
@@ -152,6 +157,16 @@ public class StyleList<R> {
 
     public boolean hasNewStyle(Object target){
         return styleUpdate.getOrDefault(target,true);
+    }
+
+    public Callback callback = null;
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
+
+    public void notifyUpdate(){
+        setHasNewStyle();
     }
 
     public void resetNewStyle(Object target){
@@ -171,7 +186,10 @@ public class StyleList<R> {
     }
 
     private void setHasNewStyle() {
-        styleUpdate.replaceAll((s, v) -> true);
+        styleUpdate.clear();
+
+        if(this.callback != null)
+            this.callback.execute();
     }
 
     @HostAccess.Export

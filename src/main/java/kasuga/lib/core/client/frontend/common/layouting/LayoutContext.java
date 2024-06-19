@@ -62,9 +62,13 @@ public class LayoutContext<T extends LayoutNode,N extends DomNode> {
     }
 
     public void dispatchApply(){
+        boolean flag = false;
         for (LayoutNode node : this.sources.values()) {
-            node.applyChanges();
+            flag |= node.applyChanges();
         }
+
+        if(!flag)
+            return;
 
         for (LayoutContext<?,N> child : this.children) {
             child.dispatchApply();

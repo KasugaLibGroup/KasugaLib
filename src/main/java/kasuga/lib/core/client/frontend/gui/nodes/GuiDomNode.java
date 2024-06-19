@@ -27,6 +27,13 @@ public class GuiDomNode extends DomNode<GuiContext> {
     GuiDomNode(GuiContext context){
         super(context);
         attributes.registerProxy("style",new StyleAttributeProxy(styles));
+        styles.setCallback(this::onStyleUpdate);
+    }
+
+    private void onStyleUpdate() {
+        if(parent != null && parent instanceof GuiDomNode parentNode){
+            parentNode.styles.notifyUpdate();
+        }
     }
 
     public StyleList<StyleTarget> getStyle() {
@@ -46,6 +53,7 @@ public class GuiDomNode extends DomNode<GuiContext> {
     public boolean addChildAt(int i, DomNode<GuiContext> child) {
         if(child instanceof GuiDomNode domNode)
             getLayoutManager().addChild(i,domNode.getLayoutManager());
+        styles.notifyUpdate();
         return super.addChildAt(i,child);
     }
 
@@ -55,6 +63,7 @@ public class GuiDomNode extends DomNode<GuiContext> {
         boolean result = super.removeChild(child);
         if(child instanceof GuiDomNode domNode)
             getLayoutManager().removeChild(domNode.getLayoutManager());
+        styles.notifyUpdate();
         return result;
     }
 

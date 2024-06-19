@@ -3,7 +3,6 @@ package kasuga.lib.core.client.frontend.gui.layout.yoga;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutBox;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutCache;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutNode;
-import kasuga.lib.core.client.frontend.common.style.Style;
 import kasuga.lib.core.client.frontend.common.style.StyleList;
 import kasuga.lib.core.client.frontend.common.style.StyleTarget;
 import kasuga.lib.core.client.frontend.gui.layout.EdgeSize2D;
@@ -33,17 +32,18 @@ public class YogaLayoutNode implements LayoutNode {
     }
 
     @Override
-    public void applyChanges() {
+    public boolean applyChanges() {
         StyleList<StyleTarget> styles = domNode.getStyle();
 
         if(!styles.hasNewStyle(this))
-            return;
+            return false;
 
         styles.forEachCacheStyle((style)->{
             style.getTarget().attemptApply(this.node);
         });
 
         styles.resetNewStyle(this);
+        return true;
     }
 
     @Override
