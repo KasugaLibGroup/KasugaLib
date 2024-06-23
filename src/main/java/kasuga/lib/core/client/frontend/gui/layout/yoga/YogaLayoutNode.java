@@ -11,6 +11,7 @@ import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaNode;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomNode;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomRoot;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class YogaLayoutNode implements LayoutNode {
@@ -18,6 +19,8 @@ public class YogaLayoutNode implements LayoutNode {
     private final YogaNode node;
     private final Object source;
     private final LayoutCache cache;
+    protected YogaLayoutNode parent;
+    protected ArrayList<YogaLayoutNode> children = new ArrayList<>();
 
     private EdgeSize2D padding = EdgeSize2D.ZERO;
     private EdgeSize2D margin = EdgeSize2D.ZERO;
@@ -106,14 +109,21 @@ public class YogaLayoutNode implements LayoutNode {
     @Override
     public void addChild(int index, LayoutNode node) {
         if(node instanceof YogaLayoutNode yogaNode) {
+            if(yogaNode.parent != null)
+                return;
             this.node.addChildAt(index,yogaNode.node);
+            this.children.add(index,yogaNode);
             yogaNode.cache.setTracking(this.cache);
+            yogaNode.parent = this;
+        }else{
+            throw new IllegalStateException();
         }
     }
 
     @Override
     public void removeChild(int index) {
         this.node.removeChildAt(index);
+        this.children.remove(index);
     }
 
     @Override
@@ -121,11 +131,20 @@ public class YogaLayoutNode implements LayoutNode {
         if(node instanceof YogaLayoutNode yogaNode) {
             this.node.removeChild(yogaNode.node);
             yogaNode.cache.setTracking(null);
+            yogaNode.parent = null;
+        }else{
+            throw new IllegalStateException();
         }
     }
 
     @Override
     public void close() {
+        for (YogaLayoutNode child : children) {
+            child.close();
+        }
+        if(this.parent != null){
+            this.parent.removeChild(this);
+        }
         node.close();
     }
 }
