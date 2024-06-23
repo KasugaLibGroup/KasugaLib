@@ -38,10 +38,14 @@ public class GuiInstance {
 
     public Screen createScreen(){
         GuiScreen screen = new GuiScreen(this);
+        this.open(screen);
+        return screen;
+    }
+
+    protected void open(GuiScreen screen){
         this.openInternal(screen);
         this.context.createSource(screen);
         this.context.getAttachedTargets().attach(screen);
-        return screen;
     }
 
     public void close(Screen screen){

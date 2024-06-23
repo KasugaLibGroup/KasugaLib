@@ -147,4 +147,9 @@ public class YogaLayoutNode implements LayoutNode {
         }
         node.close();
     }
+
+    @Override
+    public LayoutBox getRelative() {
+        return this.cache.engineCoordinate;
+    }
 }

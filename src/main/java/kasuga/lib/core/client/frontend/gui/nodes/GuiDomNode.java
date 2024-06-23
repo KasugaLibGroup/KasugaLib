@@ -9,13 +9,17 @@ import kasuga.lib.core.client.frontend.common.style.StyleAttributeProxy;
 import kasuga.lib.core.client.frontend.common.style.StyleList;
 import kasuga.lib.core.client.frontend.common.style.StyleTarget;
 import kasuga.lib.core.client.frontend.dom.nodes.DomNode;
+import kasuga.lib.core.client.frontend.font.ExtendableProperty;
 import kasuga.lib.core.client.frontend.gui.GuiContext;
+import kasuga.lib.core.client.frontend.gui.events.MouseEvent;
 import kasuga.lib.core.client.frontend.gui.layout.EdgeSize2D;
 import kasuga.lib.core.client.frontend.rendering.BackgroundRenderer;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraftforge.common.util.Lazy;
 import org.graalvm.polyglot.HostAccess;
+import org.graalvm.polyglot.Value;
 
 import java.util.Objects;
 
@@ -23,6 +27,22 @@ public class GuiDomNode extends DomNode<GuiContext> {
 
     @HostAccess.Export
     public StyleList<StyleTarget> styles = new StyleList<>(KasugaLib.STACKS.GUI.styleRegistry);
+
+
+    public ExtendableProperty<Integer> fontSize = new ExtendableProperty<>(
+            ()->parent instanceof GuiDomNode node ? node.fontSize.get() : Minecraft.getInstance().font.lineHeight,
+            ()->{
+                children.forEach((c)->{
+                    if(c instanceof GuiDomNode child)
+                        child.fontSize.notifyUpdate();
+                });
+                this.fontSizeUpdated();
+            }
+    );
+
+    protected void fontSizeUpdated() {
+
+    }
 
     GuiDomNode(GuiContext context){
         super(context);
@@ -111,5 +131,48 @@ public class GuiDomNode extends DomNode<GuiContext> {
 
     public BackgroundRenderer getBackgroundRenderer() {
         return background;
+    }
+
+    public boolean onMouseEvent(Object source,MouseEvent event){
+        // 1. Find the target children
+        // 2. Dispatch the event to the children
+        // 3. If the event is not stopped, dispatch the event to the parent
+
+        LayoutContext<?,GuiDomNode> layout = getLayoutManager();
+        LayoutNode sourceNode = layout.getSourceNode(source);
+        if(sourceNode == null)
+            return false;
+        LayoutBox box = sourceNode.getRelative();
+        if(!box.contains(event.getOffsetPosition().x,event.getOffsetPosition().y))
+            return false;
+
+        LayoutBox screen = sourceNode.getPosition();
+
+        MouseEvent translated = event.forkChild(
+                this,
+                event.getScreenPosition().x - (int)screen.x,
+                event.getScreenPosition().y - (int)screen.y
+        );
+
+        GuiDomNode target = this;
+
+        for (DomNode<GuiContext> child : children) {
+            if (child instanceof GuiDomNode domNode) {
+                if (domNode.onMouseEvent(source, translated)) {
+                    target = domNode;
+                    break;
+                }
+            }
+        }
+
+        MouseEvent finalEvent = event.withTarget(target);
+
+        if(!translated.isPropagationStopped()){
+            this.dispatchEvent(event.getType(), Value.asValue(finalEvent));
+        }else{
+            event.stopPropagation();
+        }
+
+        return true;
     }
 }
