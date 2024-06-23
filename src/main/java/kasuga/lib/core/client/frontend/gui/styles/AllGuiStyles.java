@@ -5,6 +5,7 @@ import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaEdge;
 import kasuga.lib.core.client.frontend.gui.styles.layout.*;
 import kasuga.lib.core.client.frontend.gui.styles.node.BackgroundImageStyle;
 import kasuga.lib.core.client.frontend.gui.styles.node.BackgroundUVStyle;
+import kasuga.lib.core.client.frontend.gui.styles.node.FontSizeStyle;
 
 public class AllGuiStyles {
     public static void register(GuiStyleRegistry styleRegistry) {
@@ -135,5 +136,6 @@ public class AllGuiStyles {
         styleRegistry.register("backgroundUV", BackgroundUVStyle.TYPE);
         styleRegistry.register("backgroundImage", BackgroundImageStyle.TYPE);
 
+        styleRegistry.register("fontSize", FontSizeStyle.TYPE);
     }
 }
