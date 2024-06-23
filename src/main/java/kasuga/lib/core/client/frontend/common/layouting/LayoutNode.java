@@ -16,4 +16,6 @@ public interface LayoutNode {
     public void close();
 
     EdgeSize2D getBorder();
+
+    LayoutBox getRelative();
 }

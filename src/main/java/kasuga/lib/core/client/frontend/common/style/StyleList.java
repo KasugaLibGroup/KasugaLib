@@ -23,7 +23,6 @@ public class StyleList<R> {
 
     public void freshCache(){
         this.cache.clear();
-        // this.waiting.clear();
         freshCache(null);
         setHasNewStyle();
     }
