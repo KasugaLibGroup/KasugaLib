@@ -3,6 +3,7 @@ package kasuga.lib.core.client.frontend.gui.nodes;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutBox;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutNode;
 import kasuga.lib.core.client.frontend.dom.attribute.AttributeProxy;
+import kasuga.lib.core.client.frontend.font.FontHelper;
 import kasuga.lib.core.client.frontend.gui.GuiContext;
 import kasuga.lib.core.client.frontend.gui.layout.yoga.MayMeasurable;
 import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaMeasureFunction;
@@ -14,6 +15,7 @@ import kasuga.lib.core.util.LazyRecomputable;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.world.phys.Vec2;
 
 import java.util.Optional;
 
@@ -24,7 +26,8 @@ public class GuiTextNode extends GuiDomNode implements MayMeasurable {
     String content = "";
 
     LazyRecomputable<Pair<Integer,Integer>> measureResult = LazyRecomputable.of(()->{
-        return Pair.of(font.width(content),font.lineHeight);
+        Vec2 measureResult = FontHelper.measure(Minecraft.getInstance().font, fontSize.get(), content, 1);
+        return Pair.of((int)measureResult.x,(int)measureResult.y);
     });
 
     GuiTextNode(GuiContext context) {
@@ -49,7 +52,7 @@ public class GuiTextNode extends GuiDomNode implements MayMeasurable {
         super.render(source, context);
         LayoutNode layout = getLayoutManager().getSourceNode(source);
         LayoutBox box = layout.getPosition();
-        font.draw(context.pose(),content,box.x,box.y,0xff000000);
+        FontHelper.draw(Minecraft.getInstance().font, context.pose(), new Vec2(box.x,box.y), fontSize.get(),content,0xff000000);
     }
 
     @Override
@@ -73,5 +76,11 @@ public class GuiTextNode extends GuiDomNode implements MayMeasurable {
 
             return YogaMeasureOutput.make(finalWidth, finalHeight);
         });
+    }
+
+    @Override
+    protected void fontSizeUpdated() {
+        measureResult.clear();
+        this.layoutManager.get().markDirty();
     }
 }
