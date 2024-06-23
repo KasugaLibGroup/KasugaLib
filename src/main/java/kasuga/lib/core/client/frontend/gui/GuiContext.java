@@ -1,5 +1,6 @@
 package kasuga.lib.core.client.frontend.gui;
 
+import com.sk89q.worldedit.util.formatting.text.ScopedComponent;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutEngine;
 import kasuga.lib.core.client.frontend.dom.DomContext;
@@ -7,9 +8,12 @@ import kasuga.lib.core.client.frontend.dom.registration.DOMPriorityRegistry;
 import kasuga.lib.core.client.frontend.gui.layout.LayoutEngines;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomNode;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomRoot;
+import kasuga.lib.core.client.frontend.rendering.RenderContext;
 import kasuga.lib.core.javascript.module.Tickable;
+import kasuga.lib.core.util.Callback;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayDeque;
 import java.util.HashMap;
 
 public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tickable {
@@ -17,6 +21,7 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
     LayoutEngine<?,GuiDomNode> layoutEngine;
 
     GuiAttachTarget attachedTargets = new GuiAttachTarget();
+    private ArrayDeque<Callback> queue = new ArrayDeque<>();
 
     public GuiContext(DOMPriorityRegistry registry, ResourceLocation location) {
         super(registry, location);
@@ -66,10 +71,24 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
 
     @Override
     public void tick() {
+        while(!queue.isEmpty()){
+            queue.poll().execute();
+        }
         this.getRootNode().getLayoutManager().tick();
     }
 
     public void renderTick() {
 
+    }
+
+    public void render(Object source, RenderContext context){
+        if(!ready){
+            return;
+        }
+        getRootNode().render(source, context);
+    }
+
+    public void appendTask(Callback callback) {
+        this.queue.add(callback);
     }
 }
