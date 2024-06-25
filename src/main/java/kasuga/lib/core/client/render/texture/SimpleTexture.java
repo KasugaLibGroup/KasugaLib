@@ -294,6 +294,42 @@ public class SimpleTexture {
         render(centerX - width/2, centerY - height/2, width, height);
     }
 
+    public void renderUV(int x, int y, int width, int height, float baseU, float baseV, float additionU, float additionV){
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, location);
+        RenderSystem.setShaderColor(
+                color.getfR(), color.getfG(), color.getfB(), color.getA());
+        RenderSystem.enableBlend();
+        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        buffer.vertex(x, y, 0.0).uv(baseU, baseV).endVertex();
+        buffer.vertex(x, y + height, 0.0).uv(baseU, baseV + additionV).endVertex();
+        buffer.vertex(x + width, y + height, 0.0).uv(baseU + additionU,baseV + additionV).endVertex();
+        buffer.vertex(x + width, y, 0.0).uv(baseU + additionU, baseV).endVertex();
+        BufferUploader.drawWithShader(buffer.end());
+        RenderSystem.disableBlend();
+    }
+
+    public void renderNineSliceScaled(float r, int x, int y, int w, int h, int scale){
+        //Horizontal pixels of boarder
+        int uR = (int) (w * r);
+        //Vertical pixels of boarder
+        int vR = (int) (h * r);
+        w *= scale;
+        h *= scale;
+        float uCenter = fuWidth - 2 * r;
+        float vCenter = fvHeight - 2 * r;
+        renderUV(x,          y,          uR,         vR,         fuOffset,           fvOffset,           r,       r);
+        renderUV(x + uR,     y,          w - 2 * uR, vR,         fuOffset + r,       fvOffset,           uCenter, r);
+        renderUV(x + w - uR, y,          uR,         vR,         fuOffset + uCenter, fvOffset,           r,       r);
+        renderUV(x,          y + vR,     uR,         h - 2 * vR, fuOffset,           fvOffset + r,       r,       vCenter);
+        renderUV(x + uR,     y + vR,     w - 2 * uR, h - 2 * vR, fuOffset + r,       fvOffset + r,       uCenter, vCenter);
+        renderUV(x + w - uR, y + vR,     uR,         h - 2 * vR, fuOffset + uCenter, fvOffset + r,       r,       vCenter);
+        renderUV(x,          y + h - vR, uR,         vR,         fuOffset,           fvOffset + vCenter, r,       r);
+        renderUV(x + uR,     y + h - vR, w - 2 * uR, vR,         fuOffset + r,       fvOffset + vCenter, uCenter, r);
+        renderUV(x + w - uR, y + h - vR, uR,         vR,         fuOffset + uCenter, fvOffset + vCenter, r,       r);
+    }
+
     public void renderCenteredScaled(int centerX, int centerY, int axis, boolean isWidth) {
         if(isWidth)
             renderCentered(centerX, centerY, axis, getFixedHeight(axis));
