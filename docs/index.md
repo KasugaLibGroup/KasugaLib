@@ -5,7 +5,9 @@ layout: home
 hero:
   name: "KasugaLib"
   tagline: Base mod aiming at expediate modding
-  image:  
+  image:
+    src: /logo.png
+    alt: KasugaLib Logo
   actions:
     - theme: brand
       text: "🚀即刻开始"
