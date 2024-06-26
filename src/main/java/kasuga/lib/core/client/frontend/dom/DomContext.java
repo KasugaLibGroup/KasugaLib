@@ -11,6 +11,9 @@ import net.minecraft.resources.ResourceLocation;
 import org.graalvm.polyglot.HostAccess;
 
 public abstract class DomContext<P extends DomNode<?>,T extends P> implements Tickable {
+
+    protected boolean ready = false;
+
     T rootNode;
     DOMRegistryItemDynamicProxy renderer;
 
@@ -49,5 +52,13 @@ public abstract class DomContext<P extends DomNode<?>,T extends P> implements Ti
 
     public void tick(){
 
+    }
+
+    public void setReady() {
+        ready = true;
+    }
+
+    public void setNotReady() {
+        ready = false;
     }
 }

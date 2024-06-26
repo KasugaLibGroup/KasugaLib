@@ -46,6 +46,8 @@ public class DOMRegistryItemDynamicProxy {
         this.registryContext = registryContext;
 
         registryContext.addTickable(context);
+
+        context.setReady();
     }
 
     private void updateUnloadHooks(Callback unloadHook) {
@@ -68,6 +70,7 @@ public class DOMRegistryItemDynamicProxy {
             }
             this.unloadHooks = null;
         }
+        context.setNotReady();
     }
 
     public void enable() {
