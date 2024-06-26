@@ -45,6 +45,7 @@ public class FrontendCommands {
                                 serverName = "localhost:8081";
                             thread.closeContext("debuuger::"+bundle);
                             JavascriptContext context = thread.createOrGetContext("debuuger::"+bundle,"Debugging thread "+bundle);
+                            context.getEnvironment().put("DEBUG","true");
                             HttpGet bundleAccessor = new HttpGet(
                                     (isSecureConnection ? "https://" : "http://") +
                                             serverName + "/" + bundle + ".bundle?"+
