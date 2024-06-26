@@ -2,13 +2,13 @@ package kasuga.lib.core.javascript.prebuilt;
 
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.module.ModuleLoader;
+import kasuga.lib.core.javascript.prebuilt.process.ProcessModule;
 import kasuga.lib.core.javascript.prebuilt.timer.TimerPrebuiltModule;
 import kasuga.lib.core.javascript.prebuilt.websocket.WebSocketPrebuiltModule;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
 
 import java.util.Optional;
-import java.util.WeakHashMap;
 
 public class PrebuiltModuleLoader implements ModuleLoader {
 
@@ -29,6 +29,9 @@ public class PrebuiltModuleLoader implements ModuleLoader {
             );
             case "websocket" -> Optional.of(
                     javascriptContext.createNativeModule(module, (e) -> new WebSocketPrebuiltModule(javascriptContext))
+            );
+            case "process" -> Optional.of(
+                    javascriptContext.createNativeModule(module, (e) -> new ProcessModule(javascriptContext))
             );
             default -> Optional.empty();
         };

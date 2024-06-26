@@ -6,7 +6,6 @@ import kasuga.lib.core.javascript.module.ModuleLoaderRegistry;
 import kasuga.lib.core.javascript.module.RequireFunction;
 import kasuga.lib.core.javascript.module.Tickable;
 import kasuga.lib.core.util.Callback;
-import net.minecraft.server.packs.resources.Resource;
 import org.graalvm.polyglot.*;
 
 import java.io.Closeable;
@@ -28,6 +27,8 @@ public class JavascriptContext {
 
     String name;
 
+    HashMap<String,Object> environment = new HashMap<>();
+
     JavascriptContext(String name, JavascriptThread thread){
         this.thread = thread;
         this.name = name;
@@ -46,7 +47,8 @@ public class JavascriptContext {
 
         internalRegistry.register(thread.innerLoaderRegistry);
         internalRegistry.register(moduleLoaderRegistry);
-        context.getBindings("js").putMember("__KASUGA_REQUIRE__", requireFn);
+        Value value = context.getBindings("js");
+        value.putMember("__KASUGA_REQUIRE__", requireFn);
         this.run(BootstrapSources.BOOTSTRAP);
     }
 
@@ -174,5 +176,9 @@ public class JavascriptContext {
 
     public void removeTickable(Tickable t) {
         this.tickableModules.remove(t);
+    }
+
+    public HashMap<String, Object> getEnvironment() {
+        return environment;
     }
 }
