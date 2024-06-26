@@ -7,8 +7,6 @@ import kasuga.lib.core.client.render.texture.SimpleTexture;
 import net.minecraft.resources.ResourceLocation;
 
 public class GuiViewNode extends GuiDomNode{
-    SimpleTexture texture = new SimpleTexture(new ResourceLocation("kasuga_lib","textures/gui/editor.png"),32,32);
-
     GuiViewNode(GuiContext context) {
         super(context);
     }
