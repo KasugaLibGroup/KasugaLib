@@ -64,24 +64,20 @@ public class DomNode<T extends DomContext<?,?>> {
 
     HashMap<Value, Consumer<Value>> callbacks = new HashMap<>();
 
-    private Consumer<Value> wrapCallback(Value callback) {
-        return callbacks.computeIfAbsent(callback, (c)-> (e) -> context.runTask(()->callback.executeVoid(e)));
-    }
-
     @HostAccess.Export
     public void addEventListener(String eventName, Value callback){
-        emitter.subscribe(eventName, wrapCallback(callback));
+        callback.pin();
+        emitter.subscribe(eventName, callback);
     }
 
     @HostAccess.Export
     public void removeEventListener(String eventName, Value callback){
-        emitter.unsubscribe(eventName, wrapCallback(callback));
+        emitter.unsubscribe(eventName, callback);
     }
 
     @HostAccess.Export
     public void dispatchEvent(String eventName,Value event){
         emitter.dispatchEvent(eventName,event);
-        parent.dispatchEvent(eventName, event);
     }
 
     @HostAccess.Export
