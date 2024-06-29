@@ -231,11 +231,9 @@ public class WorldTexture extends SimpleTexture {
     public void renderNineSliceScaled(PoseStack pose, MultiBufferSource buffer, int light, boolean reverse,
                                       float r, int x, int y, int w, int h, int scale){
         //Horizontal pixels of boarder
-        int uR = (int) (w * r);
+        int uR = (int) (w * r * scale);
         //Vertical pixels of boarder
-        int vR = (int) (h * r);
-        w *= scale;
-        h *= scale;
+        int vR = (int) (h * r * scale);
         float uCenter = fuWidth - 2 * r;
         float vCenter = fvHeight - 2 * r;
         renderUV(pose, buffer, x,          y,          uR,         vR,         fuOffset,           fvOffset,           r,       r, light, reverse);
