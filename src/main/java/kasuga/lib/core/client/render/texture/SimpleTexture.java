@@ -312,11 +312,9 @@ public class SimpleTexture {
 
     public void renderNineSliceScaled(float r, int x, int y, int w, int h, int scale){
         //Horizontal pixels of boarder
-        int uR = (int) (w * r);
+        int uR = (int) (w * r * scale);
         //Vertical pixels of boarder
-        int vR = (int) (h * r);
-        w *= scale;
-        h *= scale;
+        int vR = (int) (h * r * scale);
         float uCenter = fuWidth - 2 * r;
         float vCenter = fvHeight - 2 * r;
         renderUV(x,          y,          uR,         vR,         fuOffset,           fvOffset,           r,       r);
