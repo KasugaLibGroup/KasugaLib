@@ -4,7 +4,8 @@
   "package": "kasuga.lib.mixins.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-
+    "resources.DelegatingPackResourcesMixin",
+    "resources.FilePackResourceMixin"
   ],
   "client": [
     "client.MixinBlockModelBinding"
