@@ -35,7 +35,7 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
 
     @Override
     public GuiDomNode createNodeInternal(String name) {
-        return KasugaLib.STACKS.GUI.nodeTypeRegistry.create(name, this);
+        return KasugaLib.STACKS.GUI.orElseThrow(IllegalStateException::new).nodeTypeRegistry.create(name, this);
     }
 
 

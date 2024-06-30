@@ -1,6 +1,9 @@
 package kasuga.lib.core;
 
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.addons.AddonFolderLoader;
+import kasuga.lib.core.addons.AddonManager;
+import kasuga.lib.core.addons.ResourceAddonLoader;
 import kasuga.lib.core.base.CustomBlockRenderer;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgumentInfo;
@@ -9,6 +12,7 @@ import kasuga.lib.core.client.frontend.gui.GuiEngine;
 import kasuga.lib.core.events.both.BothSetupEvent;
 import kasuga.lib.core.events.both.EntityAttributeEvent;
 import kasuga.lib.core.events.client.*;
+import kasuga.lib.core.events.server.ServerResourceListener;
 import kasuga.lib.core.events.server.ServerStartingEvents;
 import kasuga.lib.core.client.render.texture.SimpleTexture;
 import kasuga.lib.core.javascript.JavascriptApi;
@@ -22,10 +26,12 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 import static kasuga.lib.KasugaLib.MOD_ID;
 
@@ -40,8 +46,7 @@ public class KasugaLibStacks {
     private final HashMap<Block, CustomBlockRenderer> BLOCK_RENDERERS;
     public final JavascriptApi JAVASCRIPT = new JavascriptApi();
 
-    public final GuiEngine GUI = new GuiEngine();
-
+    public Optional<GuiEngine> GUI = Optional.empty();
     public final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
     public final AddonFolderLoader SCRIPT_FOLDER_LOADER;
     public final ResourceAddonLoader SERVER_SCRIPT_PACK_LOADER;
@@ -128,6 +133,6 @@ public class KasugaLibStacks {
 
     public void initJavascript(){
         JAVASCRIPT.init();
-        GUI.init();
+        GUI.ifPresent(GuiEngine::init);
     }
 }

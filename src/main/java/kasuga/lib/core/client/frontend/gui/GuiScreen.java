@@ -23,7 +23,7 @@ public class GuiScreen extends Screen {
 
     public GuiScreen(ResourceLocation screenId){
         super(Component.literal(""));
-        this.instance = KasugaLib.STACKS.GUI.create(screenId);
+        this.instance = KasugaLib.STACKS.GUI.orElseThrow(IllegalStateException::new).create(screenId);
         this.instance.open(this);
         this.autoClose = true;
     }
@@ -46,7 +46,7 @@ public class GuiScreen extends Screen {
         super.onClose();
         this.instance.close(this);
         if(autoClose){
-            KasugaLib.STACKS.GUI.closeInstance(this.instance);
+            KasugaLib.STACKS.GUI.orElseThrow(IllegalStateException::new).closeInstance(this.instance);
         }
     }
 

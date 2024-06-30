@@ -68,7 +68,7 @@ public class GuiInstance {
 
     public void openInternal(Object target){
         if(this.context == null){
-            this.context = new GuiContext(KasugaLib.STACKS.GUI.domRegistry, location);
+            this.context = new GuiContext(KasugaLib.STACKS.GUI.orElseThrow(IllegalStateException::new).domRegistry, location);
             this.sourceInfos.forEach((source, info)->{
                 this.context.setSourceInfo(source, info);
             });

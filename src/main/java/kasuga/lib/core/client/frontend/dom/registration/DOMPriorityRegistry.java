@@ -20,7 +20,7 @@ public class DOMPriorityRegistry extends JavascriptPriorityRegistry<DOMRegistryI
     }
 
     public void notifyUpdate(ResourceLocation location){
-        for (GuiInstance instance : KasugaLib.STACKS.GUI.instances) {
+        for (GuiInstance instance : KasugaLib.STACKS.GUI.orElseThrow(IllegalStateException::new).instances) {
             instance.getContext().ifPresent((context)->{
                 context.getRenderer().notifyUpdate(location);
             });

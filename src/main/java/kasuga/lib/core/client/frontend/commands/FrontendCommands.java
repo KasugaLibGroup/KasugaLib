@@ -79,9 +79,12 @@ public class FrontendCommands {
                 @Override
                 public void run() {
                     //kasuga open <loc>
+                    if(KasugaLib.STACKS.GUI.isPresent()){
+                        return;
+                    }
                     ResourceLocation id = getParameter("id", ResourceLocation.class);
                     RenderSystem.recordRenderCall(()->{
-                        Minecraft.getInstance().setScreen(KasugaLib.STACKS.GUI.create(id).createScreen());
+                        Minecraft.getInstance().setScreen(KasugaLib.STACKS.GUI.get().create(id).createScreen());
                     });
                 }
             }).submit(REGISTRY);
