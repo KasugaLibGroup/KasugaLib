@@ -79,7 +79,7 @@ public class GlobalMatcher {
                     } else if(i == path.size()-1){
                         //Path ends but matcher not
                         unmatchCount++;
-                    }else if(i != path.size() -1 && path.get(i+1).equals(matcher.get(j))){
+                    }else if(j != matcher.size() -1 && path.get(i).equals(matcher.get(j+1))){
                         //Matcher skipped
                         j++;
                     } else {
