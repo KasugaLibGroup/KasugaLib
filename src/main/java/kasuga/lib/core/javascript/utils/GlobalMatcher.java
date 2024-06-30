@@ -18,9 +18,9 @@ public class GlobalMatcher {
         this.matchers = expressions;
     }
 
-//    public Stream<List<String>> match(Stream<List<String>> input) {
-//
-//    }
+    public Stream<List<String>> match(Stream<List<String>> input) {
+        return input.map(GlobalMatcher::join).filter(this::validate).map(s ->  List.of(s.split("/")));
+    }
 
     /**
      * Get all matched files from the root directory
@@ -96,5 +96,16 @@ public class GlobalMatcher {
         }
         //If everything were unmatched then return false
         return unmatchCount < matchers.size();
+    }
+
+    private static String join(List<String> components){
+        if(components.size() != 0){
+            StringBuilder builder = new StringBuilder();
+            for (String str : components) {
+                builder.append(str).append("/");
+            }
+            builder.deleteCharAt(builder.length() - 1);
+        }
+        return "/";
     }
 }
