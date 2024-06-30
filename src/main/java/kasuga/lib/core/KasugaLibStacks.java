@@ -43,6 +43,13 @@ public class KasugaLibStacks {
     public final GuiEngine GUI = new GuiEngine();
 
     public final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
+    public final AddonFolderLoader SCRIPT_FOLDER_LOADER;
+    public final ResourceAddonLoader SERVER_SCRIPT_PACK_LOADER;
+    public final ResourceAddonLoader CLIENT_SCRIPT_PACK_LOADER;
+
+    public final AddonManager SERVER_ADDON_MANAGER;
+    public final AddonManager CLIENT_ADDON_MANAGER;
+
 
     public KasugaLibStacks(IEventBus bus) {
         this.bus = bus;
@@ -58,6 +65,13 @@ public class KasugaLibStacks {
         MinecraftForge.EVENT_BUS.addListener(PacketEvent::onServerPayloadHandleEvent);
         bus.addListener(BothSetupEvent::onFMLCommonSetup);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
+
+        SCRIPT_FOLDER_LOADER = new AddonFolderLoader(FMLPaths.GAMEDIR.get().resolve("scripts").normalize());
+        SERVER_SCRIPT_PACK_LOADER = new ResourceAddonLoader();
+        CLIENT_SCRIPT_PACK_LOADER = new ResourceAddonLoader();
+        SERVER_ADDON_MANAGER = new AddonManager();
+        CLIENT_ADDON_MANAGER = new AddonManager();
+
         if(Envs.isClient()) {
             MinecraftForge.EVENT_BUS.addListener(PacketEvent::onClientPayloadHandleEvent);
             MinecraftForge.EVENT_BUS.addListener(Constants::onClientTick);
@@ -68,7 +82,11 @@ public class KasugaLibStacks {
             bus.addListener(TextureRegistryEvent::onModelRegistry);
             bus.addListener(ClientSetupEvent::onClientSetup);
             MinecraftForge.EVENT_BUS.addListener(RenderTickEvent::onRenderTick);
+            GUI = Optional.of(new GuiEngine());
         }
+
+        MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStarting);
+        MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStopping);
     }
 
     public void stackIn(SimpleRegistry registry) {

@@ -1,6 +1,7 @@
 package kasuga.lib.core.events.client;
 
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.client.frontend.gui.GuiEngine;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
