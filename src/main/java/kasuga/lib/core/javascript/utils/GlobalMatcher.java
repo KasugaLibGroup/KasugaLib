@@ -28,20 +28,20 @@ public class GlobalMatcher {
      * @param shouldScanChildren A validator for whether the children folders of the folder should be scanned
      * @return All matched files
      */
-    public List<List<String>> match(Function<List<String>, List<String>> input, Predicate<List<String>> shouldScanChildren) {
+    public List<List<String>> match(Function<List<String>, List<String>> input, Predicate<List<String>> shouldScanChildren, Predicate<List<String>> onMatch) {
         List<List<String>> result = new LinkedList<>();
         List<String> dir = input.apply(List.of("/"));
         if (dir != null) {
             for (String file : dir) {
                 List<String> path = new LinkedList<>();
                 path.add(file);
-                result.addAll(dfs(path, input, shouldScanChildren));
+                result.addAll(dfs(path, input, shouldScanChildren, onMatch));
             }
         }
         return result;
     }
 
-    private List<List<String>> dfs(List<String> file, Function<List<String>, List<String>> input, Predicate<List<String>> shouldScanChildren) {
+    private List<List<String>> dfs(List<String> file, Function<List<String>, List<String>> input, Predicate<List<String>> shouldScanChildren, Predicate<List<String>> onMatch) {
         List<List<String>> result = new LinkedList<>();
         List<String> children = input.apply(file);
         if (children != null) {
@@ -51,7 +51,7 @@ public class GlobalMatcher {
                     result.add(file);
                 }
                 if (input.apply(file) != null && shouldScanChildren.test(file) && validate(file)) {
-                    result.addAll(dfs(file, input, shouldScanChildren));
+                    result.addAll(dfs(file, input, shouldScanChildren, onMatch));
                 }
                 file.remove(file.size()-1);
             }
@@ -79,6 +79,7 @@ public class GlobalMatcher {
                     } else if(i == path.size()-1){
                         //Path ends but matcher not
                         unmatchCount++;
+                        break;
                     }else if(j != matcher.size() -1 && path.get(i).equals(matcher.get(j+1))){
                         //Matcher skipped
                         j++;
@@ -104,6 +105,7 @@ public class GlobalMatcher {
                 } else {
                     //Something unmatched
                     unmatchCount++;
+                    break;
                 }
             }
         }
