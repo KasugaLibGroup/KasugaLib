@@ -12,6 +12,7 @@ public class GlobalMatcher {
 
     /**
      * Standard constructor
+     *
      * @param expressions the matchers
      */
     public GlobalMatcher(List<List<String>> expressions) {
@@ -24,7 +25,8 @@ public class GlobalMatcher {
 
     /**
      * Get all matched files from the root directory
-     * @param input Get children of a folder, return null if it's a file
+     *
+     * @param input              Get children of a folder, return null if it's a file
      * @param shouldScanChildren A validator for whether the children folders of the folder should be scanned
      * @return All matched files
      */
@@ -65,7 +67,7 @@ public class GlobalMatcher {
         }
         int unmatchCount = 0;//Count unmatched cases
 
-        for(List<String> matcher : matchers){
+        for (List<String> matcher : matchers) {
             int i = 0, j = 0;
             while (i < path.size() && j < matcher.size()) {
                 if (Objects.equals(path.get(i), matcher.get(j))) {
@@ -73,25 +75,30 @@ public class GlobalMatcher {
                     i++;
                     j++;
                 } else if (matcher.get(j).equals("*")) {
-                    if(j == path.size()-1){
+                    if (j == matcher.size() - 1) {
+                        if (i != path.size() - 1) {
+                            //Matcher ends but path not
+                            unmatchCount++;
+                            break;
+                        }
                         //Have reached the end
                         return true;
-                    } else if(i == path.size()-1){
+                    } else if (j != matcher.size() - 1 && path.get(i).equals(matcher.get(j + 1))) {
+                        //Matcher skipped
+                        j++;
+                    } else if (i == path.size() - 1) {
                         //Path ends but matcher not
                         unmatchCount++;
                         break;
-                    }else if(j != matcher.size() -1 && path.get(i).equals(matcher.get(j+1))){
-                        //Matcher skipped
-                        j++;
                     } else {
                         i++;
                         j++;
                     }
                 } else if (matcher.get(j).equals("**")) {
-                    if (j + 1 < matcher.size() && path.get(i).equals(matcher.get(j+1))) {
+                    if (j + 1 < matcher.size() && path.get(i).equals(matcher.get(j + 1))) {
                         //"**" matches nothing
                         j++;
-                    } else if (i + 1 < path.size() && j + 1 < matcher.size() && path.get(i+1).equals(matcher.get(j+1))) {
+                    } else if (i + 1 < path.size() && j + 1 < matcher.size() && path.get(i + 1).equals(matcher.get(j + 1))) {
                         //The next param matches, "**" ends
                         i++;
                         j++;
@@ -113,15 +120,15 @@ public class GlobalMatcher {
         return unmatchCount < matchers.size();
     }
 
-    private static String join(List<String> components){
-        if(components.size() != 0){
+    private static String join(List<String> components) {
+        if (components.size() != 0) {
             StringBuilder builder = new StringBuilder();
             for (String str : components) {
                 builder.append(str).append("/");
             }
             builder.deleteCharAt(builder.length() - 1);
             return builder.toString();
-        }else{
+        } else {
             return "/";
         }
     }
