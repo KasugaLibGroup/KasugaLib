@@ -73,11 +73,24 @@ public class GlobalMatcher {
                     i++;
                     j++;
                 } else if (matcher.get(j).equals("*")) {
-                    //Matched, pass
-                    i++;
-                    j++;
+                    if(j == path.size()-1){
+                        //Have reached the end
+                        return true;
+                    } else if(i == path.size()-1){
+                        //Path ends but matcher not
+                        unmatchCount++;
+                    }else if(i != path.size() -1 && path.get(i+1).equals(matcher.get(j))){
+                        //Matcher skipped
+                        j++;
+                    } else {
+                        i++;
+                        j++;
+                    }
                 } else if (matcher.get(j).equals("**")) {
-                    if (i + 1 < path.size() && j + 1 < matcher.size() && path.get(i+1).equals(matcher.get(j+1))) {
+                    if (j + 1 < matcher.size() && path.get(i).equals(matcher.get(j+1))) {
+                        //"**" matches nothing
+                        j++;
+                    } else if (i + 1 < path.size() && j + 1 < matcher.size() && path.get(i+1).equals(matcher.get(j+1))) {
                         //The next param matches, "**" ends
                         i++;
                         j++;
