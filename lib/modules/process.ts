@@ -1,6 +1,6 @@
 import {} from './interface'
 
-const native_process = require('kasuga_lib:native/process');
+const native_process = require('kasuga:native/process');
 
 const process = {}
 
