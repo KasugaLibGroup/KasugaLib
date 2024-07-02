@@ -1,6 +1,8 @@
 package kasuga.lib.core.javascript;
 
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.addons.node.EntryType;
+import kasuga.lib.core.addons.node.NodePackageLoader;
 import kasuga.lib.core.client.frontend.dom.registration.DOMPriorityRegistry;
 import kasuga.lib.core.javascript.loader.JavascriptResourceEntryLoader;
 import kasuga.lib.core.javascript.module.KasugaModuleLoader;
@@ -15,6 +17,8 @@ public class JavascriptApi {
     public JavascriptThreadGroup GROUP_GUI;
     // public final JavascriptResourceEntryLoader GUI_LOADER = new JavascriptResourceEntryLoader(GROUP_GUI,"guis.json");
 
+    public final NodePackageLoader CLIENT_LOADER = new NodePackageLoader();
+
     public final RegistrationRegistry registry = new RegistrationRegistry();
 
     public void init() {
@@ -26,6 +30,7 @@ public class JavascriptApi {
             GROUP_GUI = GROUP_CLIENT.createChild("gui");
             GROUP_GUI.getLoaderRegistry().register(new RegistryLoader());
             registry.register(new ResourceLocation("kasuga_lib:gui"), KasugaLib.STACKS.GUI.get().domRegistry);
+            CLIENT_LOADER.bindRuntime(GROUP_GUI, EntryType.CLIENT);
         }
     }
 

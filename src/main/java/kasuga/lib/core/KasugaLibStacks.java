@@ -1,9 +1,9 @@
 package kasuga.lib.core;
 
 import kasuga.lib.KasugaLib;
-import kasuga.lib.core.addons.AddonFolderLoader;
-import kasuga.lib.core.addons.AddonManager;
-import kasuga.lib.core.addons.ResourceAddonLoader;
+import kasuga.lib.core.addons.node.PackageScanner;
+import kasuga.lib.core.addons.resource.ResourceAdapter;
+import kasuga.lib.core.addons.resource.ResourceProvider;
 import kasuga.lib.core.base.CustomBlockRenderer;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgumentInfo;
@@ -20,6 +20,7 @@ import kasuga.lib.core.util.Envs;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.registry.FontRegistry;
 import kasuga.lib.registrations.registry.TextureRegistry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.util.RandomSource;
@@ -31,6 +32,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 import static kasuga.lib.KasugaLib.MOD_ID;
@@ -48,12 +50,6 @@ public class KasugaLibStacks {
 
     public Optional<GuiEngine> GUI = Optional.empty();
     public final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
-    public final AddonFolderLoader SCRIPT_FOLDER_LOADER;
-    public final ResourceAddonLoader SERVER_SCRIPT_PACK_LOADER;
-    public final ResourceAddonLoader CLIENT_SCRIPT_PACK_LOADER;
-
-    public final AddonManager SERVER_ADDON_MANAGER;
-    public final AddonManager CLIENT_ADDON_MANAGER;
 
 
     public KasugaLibStacks(IEventBus bus) {
@@ -70,12 +66,6 @@ public class KasugaLibStacks {
         MinecraftForge.EVENT_BUS.addListener(PacketEvent::onServerPayloadHandleEvent);
         bus.addListener(BothSetupEvent::onFMLCommonSetup);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
-
-        SCRIPT_FOLDER_LOADER = new AddonFolderLoader(FMLPaths.GAMEDIR.get().resolve("scripts").normalize());
-        SERVER_SCRIPT_PACK_LOADER = new ResourceAddonLoader();
-        CLIENT_SCRIPT_PACK_LOADER = new ResourceAddonLoader();
-        SERVER_ADDON_MANAGER = new AddonManager();
-        CLIENT_ADDON_MANAGER = new AddonManager();
 
         if(Envs.isClient()) {
             MinecraftForge.EVENT_BUS.addListener(PacketEvent::onClientPayloadHandleEvent);

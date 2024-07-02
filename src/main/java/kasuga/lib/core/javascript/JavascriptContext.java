@@ -1,5 +1,6 @@
 package kasuga.lib.core.javascript;
 
+import kasuga.lib.core.addons.node.NodePackage;
 import kasuga.lib.core.javascript.loader.LoaderContext;
 import kasuga.lib.core.javascript.module.ModuleLoadException;
 import kasuga.lib.core.javascript.module.ModuleLoaderRegistry;
@@ -28,6 +29,7 @@ public class JavascriptContext {
     String name;
 
     HashMap<String,Object> environment = new HashMap<>();
+    NodePackage pPackage;
 
     JavascriptContext(String name, JavascriptThread thread){
         this.thread = thread;
@@ -180,5 +182,13 @@ public class JavascriptContext {
 
     public HashMap<String, Object> getEnvironment() {
         return environment;
+    }
+
+    public void setPackage(NodePackage nodePackage) {
+        this.pPackage = nodePackage;
+    }
+
+    public Optional<NodePackage> getPackage() {
+        return Optional.ofNullable(pPackage);
     }
 }

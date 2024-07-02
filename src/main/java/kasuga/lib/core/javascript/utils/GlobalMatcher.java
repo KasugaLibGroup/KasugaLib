@@ -73,8 +73,12 @@ public class GlobalMatcher {
                     i++;
                     j++;
                 } else if (matcher.get(j).equals("*")) {
-                    if(j == path.size()-1){
-                        //Have reached the end
+                    if(i == matcher.size() - 1){
+                        if(i !=path.size()-2||i !=path.size()-1) {
+                             //Pattern ends but path not
+                            unmatchCount++;
+                            break;
+                        }
                         return true;
                     } else if(i == path.size()-1){
                         //Path ends but matcher not
