@@ -7,9 +7,16 @@ import kasuga.lib.core.util.LazyRecomputable;
 import net.minecraft.resources.ResourceLocation;
 
 public class BackgroundRenderer {
+
+    public static enum RenderMode{
+        COMMON,
+        NINE_SLICED
+    }
     public ResourceLocation location;
     public int color = 0xffffff;
     public float opacity = 1.0f;
+    public RenderMode renderMode = RenderMode.COMMON;
+    public int borderSize;
     private ImageProvider image;
     int left = 0;
     int top = 0;
@@ -28,6 +35,10 @@ public class BackgroundRenderer {
     });
 
     public void render(RenderContext context,int x,int y,int width,int height){
+        
+    }
+
+    public void renderCommon(RenderContext context,int x,int y,int width,int height){
         if(context.getContextType() == RenderContext.RenderContextType.SCREEN){
             if(this.simple.get() == null)
                 return;
