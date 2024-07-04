@@ -35,7 +35,7 @@ public class FrontendCommands {
                 @Override
                 public void run() {
                     final String bundle = getParameter("Bundle", String.class);
-                    JavascriptThread thread = KasugaLib.STACKS.JAVASCRIPT.GROUP_GUI.getOrCreate("DEBUG","Debugger thread");
+                    JavascriptThread thread = KasugaLib.STACKS.JAVASCRIPT.GROUP_CLIENT.getOrCreate("DEBUG","Debugger thread");
                     thread.recordCall(()->{
                         try{
                             URI uri = new URI(bundle);
@@ -44,7 +44,7 @@ public class FrontendCommands {
                             if(serverName == null)
                                 serverName = "localhost:8081";
                             thread.closeContext("debuuger::"+bundle);
-                            JavascriptContext context = thread.createOrGetContext("debuuger::"+bundle,"Debugging thread "+bundle);
+                            JavascriptContext context = thread.createContext("debuuger::"+bundle,"Debugging thread "+bundle);
                             context.getEnvironment().put("DEBUG","true");
                             HttpGet bundleAccessor = new HttpGet(
                                     (isSecureConnection ? "https://" : "http://") +
@@ -60,7 +60,7 @@ public class FrontendCommands {
                             reader = new InputStreamReader(stream);
 
                             Source source = Source.newBuilder("js",reader,uri.toString()).build();
-                            context.run(source);
+                            context.execute(source);
                         }catch (RuntimeException | URISyntaxException | IOException e){
                             System.out.println("Error during debugging: "+e.getMessage());
                             thread.closeContext("debuuger::"+bundle);

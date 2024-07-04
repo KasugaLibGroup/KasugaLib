@@ -6,7 +6,6 @@ import kasuga.lib.KasugaLib;
 import kasuga.lib.core.addons.resource.FlatFilesystem;
 import kasuga.lib.core.addons.resource.HierarchicalFilesystem;
 import kasuga.lib.core.addons.resource.ResourceProvider;
-import kasuga.lib.core.javascript.utils.GlobalMatcher;
 import kasuga.lib.core.util.data_type.Pair;
 import kasuga.lib.core.util.glob.GlobMatcher;
 

@@ -5,7 +5,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class BothSetupEvent {
     public static void onFMLCommonSetup(FMLCommonSetupEvent event){
-        KasugaLib.STACKS.initJavascript();
-        KasugaLib.STACKS.JAVASCRIPT.setup();
+
     }
 }

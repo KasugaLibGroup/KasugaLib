@@ -22,8 +22,8 @@ public class PackageReader implements ResourceProvider {
     }
 
     @Override
-    public boolean exists(String path) {
-        return provider.exists(path + "/" + ResourceProvider.firstSplash(path));
+    public boolean exists(String file) {
+        return provider.exists(path + "/" + ResourceProvider.firstSplash(file));
     }
 
     public boolean isHierarchical(){

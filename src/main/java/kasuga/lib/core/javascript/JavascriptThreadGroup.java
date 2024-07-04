@@ -1,10 +1,5 @@
 package kasuga.lib.core.javascript;
 
-import kasuga.lib.core.javascript.module.CommonJSModuleLoader;
-import kasuga.lib.core.javascript.module.ModuleLoader;
-import kasuga.lib.core.javascript.module.ModuleLoaderRegistry;
-import kasuga.lib.core.javascript.prebuilt.PrebuiltModuleLoader;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -13,35 +8,30 @@ import java.util.Set;
 public class JavascriptThreadGroup {
 
     private final String name;
-    Map<Object,JavascriptThread> threads = new HashMap<>();
+    Map<Object, JavascriptThread> threads = new HashMap<>();
+
+    Set<JavascriptThread> terminating = new HashSet<>();
+
     JavascriptThreadGroup parent;
 
     ThreadGroup threadGroup;
 
     Set<JavascriptThreadGroup> children = new HashSet<>();
 
-    ModuleLoaderRegistry loaderRegistry = new ModuleLoaderRegistry();
-    ModuleLoaderRegistry innerLoaderRegistry = new ModuleLoaderRegistry();
-
-    protected final CommonJSModuleLoader moduleLoader;
+    ContextModuleLoader moduleLoader;
 
     public JavascriptThreadGroup(String name){
         this.threadGroup = new ThreadGroup(name);
-        this.innerLoaderRegistry.register(new PrebuiltModuleLoader());
-        this.innerLoaderRegistry.register(loaderRegistry);
-        moduleLoader = new CommonJSModuleLoader();
-        this.innerLoaderRegistry.register(moduleLoader);
         parent = null;
         this.name = name;
+        moduleLoader = new ContextModuleLoader();
     }
 
-    public JavascriptThreadGroup(JavascriptThreadGroup javascriptThreadGroup, String name){
-        this.threadGroup = new ThreadGroup(javascriptThreadGroup.threadGroup, name);
-        this.parent = javascriptThreadGroup;
-        this.innerLoaderRegistry.register(loaderRegistry);
-        this.innerLoaderRegistry.register(parent.innerLoaderRegistry);
+    public JavascriptThreadGroup(JavascriptThreadGroup parent, String name){
+        this.threadGroup = new ThreadGroup(parent.threadGroup, name);
+        this.parent = parent;
         this.name = name;
-        moduleLoader = null;
+        moduleLoader = new ContextModuleLoader(parent.moduleLoader);
     }
 
     public JavascriptThread getOrCreate(Object target, String description){
@@ -54,13 +44,23 @@ public class JavascriptThreadGroup {
     }
 
     public void terminate(){
+        for (JavascriptThread thread : threads.values()) {
+            thread.shouldShutdown.set(true);
+        }
+        terminating.addAll(threads.values());
+        threads.clear();
         threadGroup.interrupt();
     }
 
     public void terminate(Object target){
         JavascriptThread thread = this.threads.get(target);
-        if(thread != null)
+
+        if(thread != null) {
+            thread.shouldShutdown.set(true);
+            this.threads.remove(thread);
+            terminating.add(thread);
             thread.interrupt();
+        }
 
         for (JavascriptThreadGroup child : this.children) {
             child.terminate(target);
@@ -68,7 +68,7 @@ public class JavascriptThreadGroup {
     }
 
     protected void onTerminate(JavascriptThread thread){
-        this.threads.remove(thread);
+        terminating.remove(thread);
     }
 
     public void dispatchTick(){
@@ -86,13 +86,7 @@ public class JavascriptThreadGroup {
         return threadGroup;
     }
 
-    public CommonJSModuleLoader getCommonJSModuleLoader(){
-        if(moduleLoader != null)
-            return moduleLoader;
-        return parent.moduleLoader;
-    }
-
-    public ModuleLoaderRegistry getLoaderRegistry() {
-        return loaderRegistry;
+    public ContextModuleLoader getModuleLoader() {
+        return moduleLoader;
     }
 }

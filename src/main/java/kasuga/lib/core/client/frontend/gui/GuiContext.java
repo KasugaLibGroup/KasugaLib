@@ -1,6 +1,5 @@
 package kasuga.lib.core.client.frontend.gui;
 
-import com.sk89q.worldedit.util.formatting.text.ScopedComponent;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutEngine;
 import kasuga.lib.core.client.frontend.dom.DomContext;
@@ -9,7 +8,7 @@ import kasuga.lib.core.client.frontend.gui.layout.LayoutEngines;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomNode;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomRoot;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
-import kasuga.lib.core.javascript.module.Tickable;
+import kasuga.lib.core.javascript.Tickable;
 import kasuga.lib.core.util.Callback;
 import net.minecraft.resources.ResourceLocation;
 

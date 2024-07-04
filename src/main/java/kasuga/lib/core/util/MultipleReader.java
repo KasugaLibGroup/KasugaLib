@@ -1,4 +1,4 @@
-package kasuga.lib.core.javascript.utils;
+package kasuga.lib.core.util;
 
 import org.jetbrains.annotations.NotNull;
 

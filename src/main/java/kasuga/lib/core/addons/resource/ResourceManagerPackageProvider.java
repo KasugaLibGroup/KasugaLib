@@ -28,7 +28,6 @@ public class ResourceManagerPackageProvider {
             loader.addPackage(aPackage.getFirst());
             List<NodePackage> workspacePackages = aPackage.getSecond();
             if(workspacePackages != null){
-                workspacePackages.forEach(loader::addPackage);
                 nodePackages.addAll(workspacePackages);
             }
         }

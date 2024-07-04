@@ -27,6 +27,7 @@ public class ClientSetupEvent {
             registry.getCahcedMenus().forEach((a, b) -> b.hookMenuAndScreen());
             registry.getCahcedMenus().clear();
         }
+        KasugaLib.STACKS.JAVASCRIPT.setupClient();
         ClientAddon.init();
     }
 }

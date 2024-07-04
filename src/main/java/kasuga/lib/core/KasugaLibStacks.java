@@ -1,9 +1,6 @@
 package kasuga.lib.core;
 
 import kasuga.lib.KasugaLib;
-import kasuga.lib.core.addons.node.PackageScanner;
-import kasuga.lib.core.addons.resource.ResourceAdapter;
-import kasuga.lib.core.addons.resource.ResourceProvider;
 import kasuga.lib.core.base.CustomBlockRenderer;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgumentInfo;
@@ -20,19 +17,16 @@ import kasuga.lib.core.util.Envs;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.registry.FontRegistry;
 import kasuga.lib.registrations.registry.TextureRegistry;
-import net.minecraft.client.Minecraft;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 
 import static kasuga.lib.KasugaLib.MOD_ID;
@@ -72,6 +66,7 @@ public class KasugaLibStacks {
             MinecraftForge.EVENT_BUS.addListener(Constants::onClientTick);
             MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStart);
             MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStop);
+            MinecraftForge.EVENT_BUS.addListener(ClientTickEvent::onClientTick);
             bus.addListener(ModelRegistryEvent::registerAdditionalModels);
             bus.addListener(ModelRegistryEvent::bakingCompleted);
             bus.addListener(TextureRegistryEvent::onModelRegistry);
@@ -122,7 +117,6 @@ public class KasugaLibStacks {
     }
 
     public void initJavascript(){
-        JAVASCRIPT.init();
         GUI.ifPresent(GuiEngine::init);
     }
 }

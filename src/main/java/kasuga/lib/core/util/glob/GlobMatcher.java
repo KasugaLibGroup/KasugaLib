@@ -1,8 +1,5 @@
 package kasuga.lib.core.util.glob;
 
-import kasuga.lib.core.javascript.utils.GlobalMatcher;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;

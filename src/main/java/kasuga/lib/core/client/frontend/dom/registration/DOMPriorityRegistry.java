@@ -4,7 +4,6 @@ import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.gui.GuiInstance;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.registration.JavascriptPriorityRegistry;
-import kasuga.lib.core.util.Callback;
 import net.minecraft.resources.ResourceLocation;
 import org.graalvm.polyglot.Value;
 

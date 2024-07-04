@@ -1,10 +1,8 @@
 package kasuga.lib.core.client.frontend.dom.nodes;
 
-import kasuga.lib.core.client.frontend.common.layouting.LayoutBox;
 import kasuga.lib.core.client.frontend.dom.DomContext;
 import kasuga.lib.core.client.frontend.dom.attribute.AttributeMap;
 import kasuga.lib.core.client.frontend.dom.event.EventEmitter;
-import kasuga.lib.core.client.frontend.gui.GuiContext;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
 import kasuga.lib.core.javascript.JavascriptContext;
 import org.graalvm.polyglot.HostAccess;

@@ -4,11 +4,10 @@ import kasuga.lib.core.addons.resource.HierarchicalFilesystem;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.JavascriptThread;
 import kasuga.lib.core.javascript.JavascriptThreadGroup;
+import kasuga.lib.core.javascript.module.JavascriptModule;
 import kasuga.lib.core.util.glob.GlobMatcher;
-import org.w3c.dom.Node;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 public class NodePackageLoader {
@@ -16,18 +15,18 @@ public class NodePackageLoader {
     private JavascriptThreadGroup group;
     private EntryType entryType;
 
-    public NodePackageLoader(){
-
-    }
+    public NodePackageLoader(){}
 
     public void addPackage(NodePackage nodePackage){
         packages.put(nodePackage.packageName, nodePackage);
+        group.getModuleLoader().registerPackage(nodePackage);
         createRuntime(nodePackage);
     }
 
     public void addPackages(List<NodePackage> nodePackages){
         for (NodePackage nodePackage : nodePackages) {
             packages.put(nodePackage.packageName, nodePackage);
+            group.getModuleLoader().registerPackage(nodePackage);
         }
         for (NodePackage nodePackage : nodePackages) {
             createRuntime(nodePackage);
@@ -36,6 +35,7 @@ public class NodePackageLoader {
 
     public void removePackage(NodePackage nodePackage){
         packages.remove(nodePackage.packageName, nodePackage);
+        group.getModuleLoader().unregisterPackage(nodePackage);
     }
 
     public void bindRuntime(JavascriptThreadGroup group, EntryType type) {
@@ -48,6 +48,7 @@ public class NodePackageLoader {
             return;
         switch (entryType){
             case CLIENT:
+                createRuntimeForEntryType(nodePackage, nodePackage.minecraft.commonEntries());
                 createRuntimeForEntryType(nodePackage, nodePackage.minecraft.clientEntries());
         }
     }
@@ -85,9 +86,10 @@ public class NodePackageLoader {
             );
         }
         for (String entry : entriesList) {
-            JavascriptContext context = thread.createOrGetContext(entriesList, "Package " + nodePackage.packageName + " Entry " + entry);
-            context.setPackage(nodePackage);
-            context.requireExternal(entry);
+            JavascriptContext context = thread.createContext(entriesList, "Package " + nodePackage.packageName + " Entry " + entry);
+            context.runTask(()->{
+                context.requireModule(nodePackage.packageName + "/" + entry).ifPresent(JavascriptModule::get);
+            });
         }
     }
 }

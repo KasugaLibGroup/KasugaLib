@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import java.util.List;
 import java.util.zip.ZipFile;
 
-@Mixin(DelegatingPackResources.class)
+@Mixin(value = DelegatingPackResources.class, remap = false)
 public interface DelegatingPackResourcesMixin {
     @Accessor
     public List<PackResources> getDelegates();
