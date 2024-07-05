@@ -69,11 +69,11 @@ public class JavascriptContext {
                                     ).get()
     );
 
-    public Function<String,Value> getRequireFunction(JavascriptModule source) {
-        return requireFunction.apply(source);
+    public RequireFunction getRequireFunction(JavascriptModule source) {
+        return requireFunction.apply(source)::apply;
     }
 
-    public Function<String,Value> getRequireFunction(){
+    public RequireFunction getRequireFunction(){
         return getRequireFunction(rootModule);
     }
 

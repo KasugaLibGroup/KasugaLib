@@ -15,13 +15,15 @@ public class JavascriptNodeModule extends JavascriptModule {
     protected Value sourceFn;
     protected Lazy<Value> module = Lazy.concurrentOf(()->{
         Value module = getContext().eval("({exports:{}})");
-        return sourceFn.execute(
+        sourceFn.execute(
                 module.getMember("exports"),
                 Value.asValue(getContext().getRequireFunction(this)),
                 module,
                 dirname,
                 path
         );
+
+        return module.getMember("exports");
     });
 
     public JavascriptNodeModule(
