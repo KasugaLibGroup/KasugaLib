@@ -1,6 +1,5 @@
 package kasuga.lib.core.javascript.registration;
 
-import cpw.mods.util.Lazy;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.resources.ResourceLocation;
