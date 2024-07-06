@@ -4,6 +4,7 @@ import cpw.mods.util.Lazy;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.util.Lazy;
 import org.graalvm.polyglot.Value;
 
 import java.util.HashMap;
