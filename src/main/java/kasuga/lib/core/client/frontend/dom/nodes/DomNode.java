@@ -1,10 +1,8 @@
 package kasuga.lib.core.client.frontend.dom.nodes;
 
-import kasuga.lib.core.client.frontend.common.layouting.LayoutBox;
 import kasuga.lib.core.client.frontend.dom.DomContext;
 import kasuga.lib.core.client.frontend.dom.attribute.AttributeMap;
 import kasuga.lib.core.client.frontend.dom.event.EventEmitter;
-import kasuga.lib.core.client.frontend.gui.GuiContext;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
 import kasuga.lib.core.javascript.JavascriptContext;
 import org.graalvm.polyglot.HostAccess;
@@ -64,24 +62,20 @@ public class DomNode<T extends DomContext<?,?>> {
 
     HashMap<Value, Consumer<Value>> callbacks = new HashMap<>();
 
-    private Consumer<Value> wrapCallback(Value callback) {
-        return callbacks.computeIfAbsent(callback, (c)-> (e) -> context.runTask(()->callback.executeVoid(e)));
-    }
-
     @HostAccess.Export
     public void addEventListener(String eventName, Value callback){
-        emitter.subscribe(eventName, wrapCallback(callback));
+        callback.pin();
+        emitter.subscribe(eventName, callback);
     }
 
     @HostAccess.Export
     public void removeEventListener(String eventName, Value callback){
-        emitter.unsubscribe(eventName, wrapCallback(callback));
+        emitter.unsubscribe(eventName, callback);
     }
 
     @HostAccess.Export
     public void dispatchEvent(String eventName,Value event){
         emitter.dispatchEvent(eventName,event);
-        parent.dispatchEvent(eventName, event);
     }
 
     @HostAccess.Export

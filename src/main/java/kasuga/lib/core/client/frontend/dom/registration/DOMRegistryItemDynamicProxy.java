@@ -2,6 +2,7 @@ package kasuga.lib.core.client.frontend.dom.registration;
 
 import kasuga.lib.core.client.frontend.dom.DomContext;
 import kasuga.lib.core.javascript.JavascriptContext;
+import kasuga.lib.core.javascript.SideEffectContext;
 import kasuga.lib.core.util.Callback;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.resources.ResourceLocation;
@@ -12,14 +13,15 @@ public class DOMRegistryItemDynamicProxy {
     private final DomContext<?,?> context;
     private final DOMPriorityRegistry registry;
     private final ResourceLocation id;
-    Callback unloadHooks;
     private boolean closed = true;
     private JavascriptContext registryContext;
+    private SideEffectContext sideEffectContext;
 
     public DOMRegistryItemDynamicProxy(DOMPriorityRegistry registry, ResourceLocation resourceLocation, DomContext context){
         this.context = context;
         this.registry = registry;
         this.id = resourceLocation;
+        this.sideEffectContext = new SideEffectContext();
     }
 
     public void reload(){
@@ -29,45 +31,31 @@ public class DOMRegistryItemDynamicProxy {
 
     public void load(){
         this.closed = false;
-        Pair<DOMRegistryItem,JavascriptContext> registryItemPair = registry.get(id);
-        DOMRegistryItem item = registryItemPair.getFirst();
-        JavascriptContext registryContext = registryItemPair.getSecond();
-        if(item == null){
+        Pair<DOMRegistryItem, JavascriptContext> registryItemPair = registry.get(id);
+        if(registryItemPair == null){
             // @todo: print log
             return;
         }
-        DOMRegistryItemDynamicProxy that = this;
+        DOMRegistryItem item = registryItemPair.getFirst();
+        JavascriptContext registryContext = registryItemPair.getSecond();
         registryContext.runTask(()->{
             Value unload = item.render(context);
-            that.updateUnloadHooks(()->{
-                registryContext.runTask(unload::executeVoid);
-            });
+            if(unload.canExecute())
+                sideEffectContext.collect(unload::executeVoid);
         });
         this.registryContext = registryContext;
 
-        registryContext.addTickable(context);
-    }
+        registryContext.registerTickable(context);
 
-    private void updateUnloadHooks(Callback unloadHook) {
-        if(closed)
-            unloadHook.execute();
-        else this.unloadHooks = unloadHook;
+
+        context.setReady();
+
     }
 
     public void unload(){
         this.closed = true;
-        if(registryContext != null){
-            registryContext.removeTickable(context);
-            registryContext = null;
-        }
-        if(this.unloadHooks != null){
-            try{
-                unloadHooks.execute();
-            }catch (PolyglotException e){
-                // @todo: print log
-            }
-            this.unloadHooks = null;
-        }
+        sideEffectContext.close();
+        context.setNotReady();
     }
 
     public void enable() {

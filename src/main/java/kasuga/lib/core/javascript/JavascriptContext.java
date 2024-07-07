@@ -1,32 +1,29 @@
 package kasuga.lib.core.javascript;
 
-import kasuga.lib.core.javascript.loader.LoaderContext;
+import kasuga.lib.core.javascript.module.JavascriptModule;
+import kasuga.lib.core.javascript.module.JavascriptModuleScope;
 import kasuga.lib.core.javascript.module.ModuleLoadException;
-import kasuga.lib.core.javascript.module.ModuleLoaderRegistry;
-import kasuga.lib.core.javascript.module.RequireFunction;
-import kasuga.lib.core.javascript.module.Tickable;
+import kasuga.lib.core.javascript.module.node.JavascriptNodeModule;
 import kasuga.lib.core.util.Callback;
-import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.Util;
 import org.graalvm.polyglot.*;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.util.*;
-import java.util.function.Consumer;
+import java.util.concurrent.FutureTask;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class JavascriptContext {
     Context context;
     Engine engine;
-    ModuleLoaderRegistry internalRegistry = new ModuleLoaderRegistry();
-    ModuleLoaderRegistry moduleLoaderRegistry = new ModuleLoaderRegistry();
-
     JavascriptThread thread;
-
-    LoaderContext loaderContext = new LoaderContext();
-
     String name;
+    ContextModuleLoader moduleLoader;
+
+    public JavascriptModule rootModule = new JavascriptModule(this);
+    SideEffectContext effect = new SideEffectContext();
+
+    HashMap<String,Object> environment = new HashMap<>();
 
     JavascriptContext(String name, JavascriptThread thread){
         this.thread = thread;
@@ -44,135 +41,90 @@ public class JavascriptContext {
                 .engine(engine)
                 .build();
 
-        internalRegistry.register(thread.innerLoaderRegistry);
-        internalRegistry.register(moduleLoaderRegistry);
-        context.getBindings("js").putMember("__KASUGA_REQUIRE__", requireFn);
-        this.run(BootstrapSources.BOOTSTRAP);
+        Value globalThis = context.getBindings("js");
+
+        globalThis.putMember("require",getRequireFunction());
+
+        moduleLoader = new ContextModuleLoader(thread.getModuleLoader());
+
+        this.requireModule("@kasugalib/core").ifPresent(JavascriptModule::get);
     }
 
-    protected Value require(String moduleId){
-        Optional<Value> requireResult = internalRegistry.load(context, moduleId, requireFn, this);
-        if(requireResult.isEmpty()){
-            throw new ModuleLoadException(moduleId, "failed to locate module.");
-        }
-        return requireResult.get();
+    public FutureTask<Value> execute(Supplier<Source> sourceSupplier){
+        FutureTask<Value> task = new FutureTask<>(()->{
+            return context.eval(sourceSupplier.get());
+        });
+        this.thread.recordCall(task);
+        return task;
     }
 
-    Value requireFn = Value.asValue((RequireFunction)this::require);
-
-    Map<String,Object> nativeModules = new HashMap<>();
-
-    Set<Callback> sideEffects = new HashSet<>();
-    Set<Tickable> tickableModules = new HashSet<>();
-
-    public Value createNativeModule(String name, Function<JavascriptContext,Object> constructor){
-        if(nativeModules.containsKey(name))
-            return Value.asValue(nativeModules.get(name));
-        Object nativeModule = constructor.apply(this);
-        nativeModules.put(name, nativeModule);
-        if(nativeModule instanceof Tickable tickable){
-            tickableModules.add(tickable);
-        }
-        return Value.asValue(nativeModule);
+    public Value execute(Source source){
+        return context.eval(source);
     }
 
-    public void run(String source) throws IOException {
-        run(Source.newBuilder("js",source,"<eval code>").build());
+    public Value eval(String code){
+        return context.eval("js", code);
     }
 
-    public void run(Source source){
-        if(Thread.currentThread() != thread){
-            thread.recordCall(()->run(source));
-            return;
-        }
-        this.context.eval(source);
+    public Function<JavascriptModule, RequireFunction> requireFunction = Util.memoize(
+            (source) ->
+                    (target) ->
+                            this.moduleLoader.load(source, target)
+                                    .orElseThrow(()->
+                                            new ModuleLoadException(target, "failed to locate module.")
+                                    ).get()
+    );
+
+    public RequireFunction getRequireFunction(JavascriptModule source) {
+        return requireFunction.apply(source);
     }
 
-    public void run(Supplier<Source> sourceSupplier){
-        if(Thread.currentThread() != thread){
-            thread.recordCall(()->run(sourceSupplier.get()));
-            return;
-        }
-        this.context.eval(sourceSupplier.get());
+    public RequireFunction getRequireFunction(){
+        return getRequireFunction(rootModule);
     }
 
-    public void require(String moduleId, Consumer<Value> callback){
-        if(Thread.currentThread() != thread){
-            thread.recordCall(()-> callback.accept(require(moduleId)));
-            return;
-        }
-        callback.accept(require(moduleId));
-    }
-
-    public void requireExternal(String moduleId){
-        this.require(moduleId,(r)->{});
-    }
-
-    public JavascriptContext createWorker(){
-        JavascriptThread thread = this.thread.createWorker();
-        JavascriptContext workerContext = thread.createOrGetContext(thread,"Worker #");
-        workerContext.run(BootstrapSources.WORKER.get());
-        return workerContext;
-    }
-
-    public void createWorker(Source source){
-       createWorker().run(source);
-    }
-
-    public void createWorker(String moduleId){
-        createWorker().requireExternal(moduleId);
-    }
-
-    public void tick() {
-        for (Tickable tickableModule : this.tickableModules) {
-            tickableModule.tick();
-        }
+    public JavascriptModuleScope getScope() {
+        return moduleLoader.scope;
     }
 
     public void close(){
-        for (Object module : nativeModules.values()) {
-            if(module instanceof Closeable){
-                try {
-                    ((Closeable) module).close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        for (Callback sideEffect : sideEffects) {
-            try {
-                sideEffect.execute();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
+        effect.close();
     }
 
-    public LoaderContext getLoaderContext() {
-        return loaderContext;
+    Set<Tickable> tickables = new HashSet<>();
+
+    public void tick(){
+        tickables.forEach(Tickable::tick);
     }
 
-    public void runTask(Callback callback) {
-        this.thread.recordCall(callback::execute);
+    public Callback registerTickable(Tickable tickable){
+        if(tickables.contains(tickable))
+            return Callback.nop();
+        return effect.effect(()->{
+            tickables.add(tickable);
+            return ()->tickables.remove(tickable);
+        });
     }
 
-    public Callback collectEffect(Callback dispose){
-        Callback[] wrappedList = new Callback[1];
-        Callback wrapped = ()->{
-            sideEffects.remove(wrappedList[0]);
-            dispose.execute();
-        };
-        wrappedList[0] = wrapped;
-        this.sideEffects.add(wrapped);
-        return wrapped;
+    public Callback collectEffect(Callback callback){
+        return effect.collect(callback);
     }
 
-    public void addTickable(Tickable t) {
-        this.tickableModules.add(t);
+    public HashMap<String, Object> getEnvironment() {
+        return environment;
     }
 
-    public void removeTickable(Tickable t) {
-        this.tickableModules.remove(t);
+    public Callback runTask(Callback task) {
+        return effect.effect(()->{
+            Runnable finalTask = task::execute;
+            thread.recordCall(finalTask);
+            return ()->{
+                thread.revokeCall(finalTask);
+            };
+        });
+    }
+
+    public Optional<JavascriptModule> requireModule(String name){
+        return moduleLoader.load(rootModule, name);
     }
 }

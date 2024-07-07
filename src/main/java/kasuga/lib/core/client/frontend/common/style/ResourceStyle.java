@@ -8,7 +8,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 
 public class ResourceStyle {
-    public static Pair<ResourceLocation,ResourceLocation> parse(String string){
+    public static Pair<ResourceLocation,String> parse(String string){
         int state = 0; // 0 = resource type, 1 = resource Name
         int escapeState = 0;
         int stringState = 0;
@@ -77,7 +77,7 @@ public class ResourceStyle {
             locations.set(0,"kasuga_lib:"+locations.get(0));
         }
         ResourceLocation loader = new ResourceLocation(locations.get(0));
-        ResourceLocation param = new ResourceLocation(locations.get(1));
+        String param = locations.get(1);
         return Pair.of(loader,param);
     }
 }

@@ -7,17 +7,20 @@
   "author": "TimeBather <open-source@timebather.cn>",
   "license": "MIT",
   "private": true,
-  "dependencies": {
-    "esbuild": "^0.21.3"
-  },
   "scripts": {
     "build:bootstrap": "esbuild ./lib/bootstrap/bootstrap.ts --bundle --outfile=./src/generated/resources/assets/kasuga_lib/js/bootstrap.js",
     "build:registry": "esbuild ./lib/modules/registry.ts --bundle --outfile=./src/generated/resources/assets/kasuga_lib/js/modules/registry.js --external:kasuga:internal/registry --platform=node",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "build": "tsx ./lib/build.ts"
   },
   "devDependencies": {
     "vitepress": "^1.2.3"
+  },
+  "devDependencies": {
+    "tsx": "^4.15.7",
+    "@types/node": "^20.14.9",
+    "esbuild": "^0.21.3"
   }
 }

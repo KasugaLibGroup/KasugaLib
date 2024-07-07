@@ -3,9 +3,9 @@ package kasuga.lib.core.client.render.texture;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
-import kasuga.lib.core.client.render.SimpleColor;
 import kasuga.lib.core.client.render.PoseContext;
 import kasuga.lib.core.client.render.RendererUtil;
+import kasuga.lib.core.client.render.SimpleColor;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -14,12 +14,17 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.image.BufferedImage;
 import java.io.InputStream;
 
 public class WorldTexture extends SimpleTexture {
     RenderTypeBuilder builder = null;
     RenderType cachedType = null;
     PoseContext context = PoseContext.of();
+
+    public WorldTexture(@NotNull ResourceLocation location, int uOffset, int vOffset, int uWidth, int vHeight, SimpleColor color, BufferedImage image, byte[] bytesOfImage) {
+        super(location, uOffset, vOffset, uWidth, vHeight, color, image, bytesOfImage);
+    }
 
     public WorldTexture(@NotNull ResourceLocation location, int uOffset, int vOffset, int uWidth, int vHeight, int color, float alpha) {
         super(location, uOffset, vOffset, uWidth, vHeight, color, alpha);
@@ -70,7 +75,7 @@ public class WorldTexture extends SimpleTexture {
     }
 
     public WorldTexture cutSize(int left,int up,int width,int height){
-        return new WorldTexture(location, uOffset + left, vOffset+up, width,height,color.getRGB(),color.getA());
+        return new WorldTexture(location,uOffset + left,vOffset + up,width,height,color,image,bytesOfImage);
     }
 
     public WorldTexture flipY() {
@@ -135,7 +140,7 @@ public class WorldTexture extends SimpleTexture {
 
     @Override
     public WorldTexture withColor(int color,float alpha){
-        return new WorldTexture(location,uOffset,vOffset,uWidth,vHeight,color,alpha);
+        return new WorldTexture(location,uOffset,vOffset,uWidth,vHeight,SimpleColor.fromRGBA(color,alpha),image,bytesOfImage);
     }
 
 
@@ -189,6 +194,62 @@ public class WorldTexture extends SimpleTexture {
             pose.pushPose();
             pose.mulPoseMatrix(lastMatrix);
         }
+    }
+
+    private void renderUV(PoseStack pose, MultiBufferSource buffer, int x, int y, int width, int height,
+                          float baseU, float baseV, float additionU, float additionV, int light, boolean reverse){
+        if(builder == null) return;
+        if(cachedType == null)
+            cachedType = builder.build(location);
+        boolean shouldPush = !pose.clear();
+        Matrix4f lastMatrix = null;
+        if(shouldPush) {
+            pose.pushPose();
+        } else {
+            lastMatrix = pose.last().pose();
+            pose.popPose();
+            pose.pushPose();
+        }
+        pose.scale(1.0f, -1.0f, 1.0f);
+        pose.translate(0.5f, 0, 0.5f);
+        context.apply(pose);
+        Matrix4f matrix = pose.last().pose();
+        VertexConsumer consumer = buffer.getBuffer(cachedType);
+        if(!reverse){
+            buildVertex(consumer, matrix, x, y, 0, baseU, baseV, color, light);
+            buildVertex(consumer, matrix, x + width, y, 0, baseU + additionU, baseV, color, light);
+            buildVertex(consumer, matrix, x + width, y + height, 0, baseU + additionU, baseV + additionV, color, light);
+            buildVertex(consumer, matrix, x, y + height, 0, baseU, baseV + additionV, color, light);
+        }else{
+            buildVertex(consumer, matrix, x, y + height, 0, baseU, baseV + additionV, color, light);
+            buildVertex(consumer, matrix, x + width, y + height, 0, baseU + additionU, baseV + additionV, color, light);
+            buildVertex(consumer, matrix, x + width, y, 0, baseU + additionU, baseV, color, light);
+            buildVertex(consumer, matrix, x, y, 0, baseU, baseV, color, light);
+        }
+        pose.popPose();
+        if(!shouldPush) {
+            pose.pushPose();
+            pose.mulPoseMatrix(lastMatrix);
+        }
+    }
+
+    public void renderNineSliceScaled(PoseStack pose, MultiBufferSource buffer, int light, boolean reverse,
+                                      float r, int x, int y, int w, int h, int scale){
+        //Horizontal pixels of boarder
+        int uR = (int) (w * r * scale);
+        //Vertical pixels of boarder
+        int vR = (int) (h * r * scale);
+        float uCenter = fuWidth - 2 * r;
+        float vCenter = fvHeight - 2 * r;
+        renderUV(pose, buffer, x,          y,          uR,         vR,         fuOffset,           fvOffset,           r,       r, light, reverse);
+        renderUV(pose, buffer, x + uR,     y,          w - 2 * uR, vR,         fuOffset + r,       fvOffset,           uCenter, r, light, reverse);
+        renderUV(pose, buffer, x + w - uR, y,          uR,         vR,         fuOffset + uCenter, fvOffset,           r,       r, light, reverse);
+        renderUV(pose, buffer, x,          y + vR,     uR,         h - 2 * vR, fuOffset,           fvOffset + r,       r,       vCenter, light, reverse);
+        renderUV(pose, buffer, x + uR,     y + vR,     w - 2 * uR, h - 2 * vR, fuOffset + r,       fvOffset + r,       uCenter, vCenter, light, reverse);
+        renderUV(pose, buffer, x + w - uR, y + vR,     uR,         h - 2 * vR, fuOffset + uCenter, fvOffset + r,       r,       vCenter, light, reverse);
+        renderUV(pose, buffer, x,          y + h - vR, uR,         vR,         fuOffset,           fvOffset + vCenter, r,       r, light, reverse);
+        renderUV(pose, buffer, x + uR,     y + h - vR, w - 2 * uR, vR,         fuOffset + r,       fvOffset + vCenter, uCenter, r, light, reverse);
+        renderUV(pose, buffer, x + w - uR, y + h - vR, uR,         vR,         fuOffset + uCenter, fvOffset + vCenter, r,       r, light, reverse);
     }
 
     public void renderScaled(PoseStack pose, MultiBufferSource buffer, int light, float axis, boolean isWidth) {

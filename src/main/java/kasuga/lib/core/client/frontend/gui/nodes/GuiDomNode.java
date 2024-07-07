@@ -26,7 +26,7 @@ import java.util.Objects;
 public class GuiDomNode extends DomNode<GuiContext> {
 
     @HostAccess.Export
-    public StyleList<StyleTarget> styles = new StyleList<>(KasugaLib.STACKS.GUI.styleRegistry);
+    public StyleList<StyleTarget> styles = new StyleList<>(KasugaLib.STACKS.GUI.orElseThrow(IllegalStateException::new).styleRegistry);
 
 
     public ExtendableProperty<Integer> fontSize = new ExtendableProperty<>(

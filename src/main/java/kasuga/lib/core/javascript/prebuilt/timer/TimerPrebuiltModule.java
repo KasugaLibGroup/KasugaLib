@@ -1,18 +1,22 @@
 package kasuga.lib.core.javascript.prebuilt.timer;
 
 import kasuga.lib.core.javascript.JavascriptContext;
-import kasuga.lib.core.javascript.module.Tickable;
+import kasuga.lib.core.javascript.prebuilt.PrebuiltModule;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.Value;
 
 import java.io.Closeable;
 import java.io.IOException;
 
-public class TimerPrebuiltModule implements Tickable, Closeable {
-
+public class TimerPrebuiltModule extends PrebuiltModule {
     KasugaTimer timer = new KasugaTimer();
-    public TimerPrebuiltModule(JavascriptContext javascriptContext) {
+    public TimerPrebuiltModule(JavascriptContext runtime) {
+        super(runtime);
+    }
 
+    @Override
+    protected boolean isTickable() {
+        return true;
     }
 
     @Override
@@ -49,9 +53,8 @@ public class TimerPrebuiltModule implements Tickable, Closeable {
         timer.unregister(x);
     }
 
-
     @Override
-    public void close() throws IOException {
+    public void close(){
         timer.close();
     }
 }

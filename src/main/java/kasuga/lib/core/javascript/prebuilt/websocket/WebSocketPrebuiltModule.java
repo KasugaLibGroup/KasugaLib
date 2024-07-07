@@ -1,7 +1,8 @@
 package kasuga.lib.core.javascript.prebuilt.websocket;
 
 import kasuga.lib.core.javascript.JavascriptContext;
-import kasuga.lib.core.javascript.module.Tickable;
+import kasuga.lib.core.javascript.prebuilt.PrebuiltModule;
+import kasuga.lib.core.javascript.Tickable;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.Value;
 
@@ -11,12 +12,10 @@ import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
 
-public class WebSocketPrebuiltModule implements Tickable, Closeable {
-    public WebSocketPrebuiltModule(JavascriptContext javascriptContext) {
-
+public class WebSocketPrebuiltModule extends PrebuiltModule {
+    public WebSocketPrebuiltModule(JavascriptContext runtime) {
+        super(runtime);
     }
-
-
 
     protected Set<WeakReference<WebsocketInterface>> wsReferences = new HashSet<>();
 
@@ -43,11 +42,16 @@ public class WebSocketPrebuiltModule implements Tickable, Closeable {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         for (WeakReference<WebsocketInterface> wsReference : wsReferences) {
             WebsocketInterface wsi = wsReference.get();
             if(wsi != null)
                 wsi.close();
         }
+    }
+
+    @Override
+    protected boolean isTickable() {
+        return true;
     }
 }

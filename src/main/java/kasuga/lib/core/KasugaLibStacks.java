@@ -9,6 +9,7 @@ import kasuga.lib.core.client.frontend.gui.GuiEngine;
 import kasuga.lib.core.events.both.BothSetupEvent;
 import kasuga.lib.core.events.both.EntityAttributeEvent;
 import kasuga.lib.core.events.client.*;
+import kasuga.lib.core.events.server.ServerResourceListener;
 import kasuga.lib.core.events.server.ServerStartingEvents;
 import kasuga.lib.core.client.render.texture.SimpleTexture;
 import kasuga.lib.core.javascript.JavascriptApi;
@@ -26,6 +27,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 import static kasuga.lib.KasugaLib.MOD_ID;
 
@@ -40,9 +42,9 @@ public class KasugaLibStacks {
     private final HashMap<Block, CustomBlockRenderer> BLOCK_RENDERERS;
     public final JavascriptApi JAVASCRIPT = new JavascriptApi();
 
-    public final GuiEngine GUI = new GuiEngine();
-
+    public Optional<GuiEngine> GUI = Optional.empty();
     public final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
+
 
     public KasugaLibStacks(IEventBus bus) {
         this.bus = bus;
@@ -58,17 +60,23 @@ public class KasugaLibStacks {
         MinecraftForge.EVENT_BUS.addListener(PacketEvent::onServerPayloadHandleEvent);
         bus.addListener(BothSetupEvent::onFMLCommonSetup);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
+
         if(Envs.isClient()) {
             MinecraftForge.EVENT_BUS.addListener(PacketEvent::onClientPayloadHandleEvent);
             MinecraftForge.EVENT_BUS.addListener(Constants::onClientTick);
             MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStart);
             MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStop);
+            MinecraftForge.EVENT_BUS.addListener(ClientTickEvent::onClientTick);
             bus.addListener(ModelRegistryEvent::registerAdditionalModels);
             bus.addListener(ModelRegistryEvent::bakingCompleted);
             bus.addListener(TextureRegistryEvent::onModelRegistry);
             bus.addListener(ClientSetupEvent::onClientSetup);
             MinecraftForge.EVENT_BUS.addListener(RenderTickEvent::onRenderTick);
+            GUI = Optional.of(new GuiEngine());
         }
+
+        MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStarting);
+        MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStopping);
     }
 
     public void stackIn(SimpleRegistry registry) {
@@ -106,10 +114,5 @@ public class KasugaLibStacks {
 
     public RandomSource random() {
         return random;
-    }
-
-    public void initJavascript(){
-        JAVASCRIPT.init();
-        GUI.init();
     }
 }

@@ -1,7 +1,9 @@
 package kasuga.lib.core.client.frontend.commands;
 
+import com.google.gson.JsonObject;
 import com.mojang.blaze3d.systems.RenderSystem;
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.addons.node.NodePackage;
 import kasuga.lib.core.base.commands.CommandHandler;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.JavascriptThread;
@@ -21,51 +23,43 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.UUID;
 
 public class FrontendCommands {
     public static final SimpleRegistry REGISTRY = KasugaLib.STACKS.REGISTRY;
 
     protected static final CloseableHttpClient client = HttpClients.createDefault();
+
     public static final CommandReg GUI_DEBUG_COMMAND = new CommandReg("kasugalib")
             .addLiteral("gui", false)
             .addLiteral("debug", false)
-            .addString("Bundle", false)
             .onlyIn(Dist.CLIENT)
             .setHandler(new CommandHandler(){
                 @Override
                 public void run() {
-                    final String bundle = getParameter("Bundle", String.class);
-                    JavascriptThread thread = KasugaLib.STACKS.JAVASCRIPT.GROUP_GUI.getOrCreate("DEBUG","Debugger thread");
+                    MetroServerResourceProvider resourceProvider = new MetroServerResourceProvider();
+                    UUID contextId = UUID.randomUUID();
+                    JavascriptThread thread = MetroModuleLoader.getThread();
                     thread.recordCall(()->{
-                        try{
-                            URI uri = new URI(bundle);
-                            String serverName = uri.getHost();
-                            boolean isSecureConnection = uri.getScheme() != null && uri.getScheme().equals("https");
-                            if(serverName == null)
-                                serverName = "localhost:8081";
-                            thread.closeContext("debuuger::"+bundle);
-                            JavascriptContext context = thread.createOrGetContext("debuuger::"+bundle,"Debugging thread "+bundle);
-                            HttpGet bundleAccessor = new HttpGet(
-                                    (isSecureConnection ? "https://" : "http://") +
-                                            serverName + "/" + bundle + ".bundle?"+
-                                            "platform=minecraft&dev=true&inlineSourceMap=false"+
-                                            "&modulesOnly=false&runModule=true&hot=true"
-                            );
-                            CloseableHttpResponse response;
-                            InputStream stream;
-                            InputStreamReader reader;
-                            response = client.execute(bundleAccessor);
-                            stream = response.getEntity().getContent();
-                            reader = new InputStreamReader(stream);
-
-                            Source source = Source.newBuilder("js",reader,uri.toString()).build();
-                            context.run(source);
-                        }catch (RuntimeException | URISyntaxException | IOException e){
-                            System.out.println("Error during debugging: "+e.getMessage());
-                            thread.closeContext("debuuger::"+bundle);
-                        }finally {
+                        NodePackage nodePackage = null;
+                        try(InputStream inputStream = resourceProvider.open("/package.json")){
+                            InputStreamReader reader = new InputStreamReader(inputStream);
+                            JsonObject json = KasugaLib.GSON.fromJson(reader, JsonObject.class);
+                            nodePackage = NodePackage.parse(json, null);
+                        }catch (IOException e){
+                            return;
                         }
+
+                        nodePackage.minecraft.clientDebuggerEntries().forEach((entry)->{
+                            JavascriptContext context = thread.createContext(entry,"Debugger Context - "+entry);
+
+                            MetroLoaderModule loaderModule = new MetroLoaderModule(context, resourceProvider);
+
+                            context.getRequireFunction(loaderModule).apply(entry);
+                        });
+
                     });
+
                 }
             }).submit(REGISTRY);
 
@@ -78,9 +72,12 @@ public class FrontendCommands {
                 @Override
                 public void run() {
                     //kasuga open <loc>
+                    if(KasugaLib.STACKS.GUI.isEmpty()){
+                        return;
+                    }
                     ResourceLocation id = getParameter("id", ResourceLocation.class);
                     RenderSystem.recordRenderCall(()->{
-                        Minecraft.getInstance().setScreen(KasugaLib.STACKS.GUI.create(id).createScreen());
+                        Minecraft.getInstance().setScreen(KasugaLib.STACKS.GUI.get().create(id).createScreen());
                     });
                 }
             }).submit(REGISTRY);

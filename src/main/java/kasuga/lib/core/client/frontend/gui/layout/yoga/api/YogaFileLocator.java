@@ -1,6 +1,7 @@
 package kasuga.lib.core.client.frontend.gui.layout.yoga.api;
 
-import net.minecraft.client.main.Main;
+import kasuga.lib.KasugaLib;
+import kasuga.lib.core.util.Envs;
 import org.lwjgl.system.Configuration;
 
 import java.io.File;
@@ -14,21 +15,23 @@ public class YogaFileLocator {
     }
 
     public static String getYogaAssemblyDirectory(){
+        if(Envs.isDevEnvironment()){
+            return getDevYogaAssemblyDirectory();
+        }
         URI path;
         try{
-            path = Main.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+            path = KasugaLib.class.getProtectionDomain().getCodeSource().getLocation().toURI();
         }catch (URISyntaxException uriSyntaxException){
             return null;
         }
         if (!path.getPath().contains(".jar") || path.getPath().contains(".gradle")){
-            return getDevYogaWebAssemblyDirectory();
+            return null;
         }
         String jarPath = path.getPath();
-
-        return jarPath.substring(1, jarPath.length() - 4)+"!/yoga/";
+        return jarPath.substring(1, path.getPath().indexOf(".jar") + 4);
     }
 
-    public static String getDevYogaWebAssemblyDirectory(){
+    public static String getDevYogaAssemblyDirectory(){
         return "../src/generated/resources/yoga/";
     }
 }

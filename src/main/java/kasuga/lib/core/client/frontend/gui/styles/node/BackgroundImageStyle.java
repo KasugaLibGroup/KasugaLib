@@ -4,6 +4,8 @@ import kasuga.lib.core.client.frontend.common.style.ResourceStyle;
 import kasuga.lib.core.client.frontend.common.style.Style;
 import kasuga.lib.core.client.frontend.common.style.StyleTarget;
 import kasuga.lib.core.client.frontend.common.style.StyleType;
+import kasuga.lib.core.client.frontend.rendering.ImageProvider;
+import kasuga.lib.core.client.frontend.rendering.ImageProviders;
 import kasuga.lib.core.client.frontend.rendering.ResourceImageProvider;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.resources.ResourceLocation;
@@ -16,7 +18,8 @@ public class BackgroundImageStyle extends Style<String, StyleTarget>{
 
     public static final BackgroundImageStyle EMPTY = new BackgroundImageStyle();
     protected final String value;
-    private Pair<ResourceLocation, ResourceLocation> location;
+    private Pair<ResourceLocation, String> location;
+    ImageProvider provider;
 
     private BackgroundImageStyle(){
         value = "";
@@ -26,12 +29,13 @@ public class BackgroundImageStyle extends Style<String, StyleTarget>{
         this.value = value;
         try{
             this.location = ResourceStyle.parse(value);
-        }catch (IllegalStateException e){}
+            this.provider = ImageProviders.get(location);
+        }catch (RuntimeException e){}
     }
 
     @Override
     public boolean isValid(Map<StyleType<?, StyleTarget>, Style<?, StyleTarget>> origin) {
-        return this.location != null;
+        return this.location != null && provider != null;
     }
 
     @Override
@@ -42,7 +46,7 @@ public class BackgroundImageStyle extends Style<String, StyleTarget>{
     @Override
     public StyleTarget getTarget() {
         return StyleTarget.GUI_DOM_NODE.create((node)-> {
-            node.getBackgroundRenderer().setImage(new ResourceImageProvider(location.getSecond()));
+            node.getBackgroundRenderer().setImage(provider);
         });
     }
 
