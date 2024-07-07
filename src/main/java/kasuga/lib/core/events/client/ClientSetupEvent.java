@@ -5,6 +5,8 @@ import kasuga.lib.core.addons.minecraft.ClientAddon;
 import kasuga.lib.core.addons.node.PackageScanner;
 import kasuga.lib.core.addons.resource.ResourceAdapter;
 import kasuga.lib.core.addons.resource.ResourceProvider;
+import kasuga.lib.core.client.frontend.commands.MetroModuleLoader;
+import kasuga.lib.core.client.frontend.gui.GuiEngine;
 import kasuga.lib.core.util.Start;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.client.Minecraft;
@@ -29,5 +31,6 @@ public class ClientSetupEvent {
         }
         KasugaLib.STACKS.JAVASCRIPT.setupClient();
         ClientAddon.init();
+        MetroModuleLoader.init();
     }
 }
