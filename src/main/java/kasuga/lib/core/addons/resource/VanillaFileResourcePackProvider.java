@@ -28,4 +28,14 @@ public class VanillaFileResourcePackProvider implements ResourceProvider, FlatFi
                 .filter(entry -> entry.getName().startsWith("script/"))
                 .map(entry -> entry.getName().substring("script/".length()));
     }
+
+    @Override
+    public boolean isRegularFile(String path) {
+        return !zipFile.getEntry("script/" + ResourceProvider.firstSplash(path)).isDirectory();
+    }
+
+    @Override
+    public boolean isDirectory(String path) {
+        return zipFile.getEntry("script/" + ResourceProvider.firstSplash(path)).isDirectory();
+    }
 }

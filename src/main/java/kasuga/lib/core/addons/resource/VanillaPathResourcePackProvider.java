@@ -15,7 +15,8 @@ public class VanillaPathResourcePackProvider implements ResourceProvider,Hierarc
 
     @Override
     public InputStream open(String path) throws IOException {
-        return Files.newInputStream(ResourceProvider.safeResolve(source, "script", ResourceProvider.firstSplash(path)));
+        Path filePath = ResourceProvider.safeResolve(source, "script", ResourceProvider.firstSplash(path));
+        return Files.newInputStream(filePath);
     }
 
     @Override
@@ -27,5 +28,15 @@ public class VanillaPathResourcePackProvider implements ResourceProvider,Hierarc
         try(var stream = Files.list(ResourceProvider.safeResolve(source, "script", ResourceProvider.firstSplash(path)))){
             return stream.map(p -> p.getFileName().toString()).toList();
         }
+    }
+
+    @Override
+    public boolean isRegularFile(String path) {
+        return Files.isRegularFile(ResourceProvider.safeResolve(source, "script", ResourceProvider.firstSplash(path)));
+    }
+
+    @Override
+    public boolean isDirectory(String path) {
+        return Files.isDirectory(ResourceProvider.safeResolve(source, "script", ResourceProvider.firstSplash(path)));
     }
 }

@@ -53,6 +53,11 @@ public class CommonJSModuleLoader extends CachedModuleLoader implements ModuleLo
                     reader::exists,
                     (path)->{
                         try{
+
+                            if(!reader.isRegularFile(path) || reader.isDirectory(path))
+                                return null;
+
+                            List<String> splitedPath = PackageScanner.splitPath(path);
                             String dirName = PackageScanner.joinPath(
                                     PackageScanner.splitPath(path)
                                             .subList(0, PackageScanner.splitPath(path).size() - 1)

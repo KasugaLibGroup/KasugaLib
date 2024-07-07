@@ -26,6 +26,16 @@ public class PackageReader implements ResourceProvider {
         return provider.exists(path + "/" + ResourceProvider.firstSplash(file));
     }
 
+    @Override
+    public boolean isRegularFile(String file) {
+        return provider.exists(path + "/" + ResourceProvider.firstSplash(file));
+    }
+
+    @Override
+    public boolean isDirectory(String file) {
+        return provider.isDirectory(path + "/" + ResourceProvider.firstSplash(file));
+    }
+
     public boolean isHierarchical(){
         return provider instanceof HierarchicalFilesystem;
     }

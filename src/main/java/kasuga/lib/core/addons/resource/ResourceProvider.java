@@ -24,4 +24,7 @@ public interface ResourceProvider {
     }
     public InputStream open(String path) throws IOException;
     public boolean exists(String path);
+    public boolean isRegularFile(String path);
+
+    public boolean isDirectory(String path);
 }

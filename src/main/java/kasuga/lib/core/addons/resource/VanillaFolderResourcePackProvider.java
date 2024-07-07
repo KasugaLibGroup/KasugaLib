@@ -37,4 +37,14 @@ public class VanillaFolderResourcePackProvider implements ResourceProvider,Hiera
         }
         return List.of();
     }
+
+    @Override
+    public boolean isRegularFile(String path) {
+        return getChildren(path).isFile();
+    }
+
+    @Override
+    public boolean isDirectory(String path) {
+        return getChildren(path).isDirectory();
+    }
 }
