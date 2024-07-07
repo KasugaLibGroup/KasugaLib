@@ -208,7 +208,7 @@ dependencies {
     minecraftLibrary ('org.lwjgl:lwjgl-yoga:3.3.1') {
         exclude group: 'org.lwjgl',module: 'lwjgl'
     };
-    jarJar(group: "org.lwjgl", name: "lwjgl-yoga", version: "[3.3.1, 4.0.0)"){
+    shadedLib(group: "org.lwjgl", name: "lwjgl-yoga", version: "[3.3.1, 4.0.0)"){
         exclude group: 'org.lwjgl',module: 'lwjgl'
     };
 
@@ -235,7 +235,7 @@ dependencies {
     }
 
     minecraftLibrary "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.0"
-    jarJar(group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)")
+    shadedLib(group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)")
 
     // shadedLib("org.graalvm.polyglot:js-community:23.1.0");
     // implementation("org.graalvm.sdk:graal-sdk:22.0.2");
@@ -284,7 +284,7 @@ jar {
 // Example configuration to allow publishing using the maven-publish plugin
 // This is the preferred method to reobfuscate your jar file
 if (!isSdk) {
-    jar.finalizedBy('reobfJar')
+    jar.finalizedBy('reobfShadowJar')
 }
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 // publish.dependsOn('reobfJar')
@@ -296,8 +296,11 @@ shadowJar{
     relocate 'org.graalvm', 'kasuga.lib.vendor_modules.org.graalvm'
     relocate 'com.oracle', 'kasuga.lib.vendor_modules.com.oracle'
     relocate 'com.ibm', 'kasuga.lib.vendor_modules.com.ibm'
-    relocate 'io.netty', 'kasuga.lib.vendor_modules.io.netty'
-    relocate 'org.lwjgl', 'kasuga.lib.vendor_modules.org.lwjgl'
+    relocate ('io.netty.handler.codec.http', 'kasuga.lib.vendor_modules.io.netty.handler.codec.http');
+    relocate ('io.netty.handler.codec.rtsp', 'kasuga.lib.vendor_modules.io.netty.handler.codec.rtsp');
+    relocate ('io.netty.handler.codec.spdy', 'kasuga.lib.vendor_modules.io.netty.handler.codec.spdy');
+    relocate ('org.lwjgl.util.yoga', 'kasuga.lib.vendor_modules.org.lwjgl.util.yoga')
+    relocate('interpreter','kasuga.lib.vendor_modules.interpreter');
     finalizedBy 'reobfShadowJar'
 }
 
