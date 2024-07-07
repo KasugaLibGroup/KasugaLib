@@ -9,7 +9,9 @@ public record PackageMinecraftField(
         List<String> clientEntries,
         List<String> serverEntries,
         List<String> commonEntries,
-        List<String> initializationEntries, String assetsFolder
+        List<String> initializationEntries,
+        List<String> clientDebuggerEntries,
+        String assetsFolder
 ) {
 
     public static PackageMinecraftField parse(JsonObject sourceObject) {
@@ -18,6 +20,7 @@ public record PackageMinecraftField(
                 NodePackage.optionalRead(sourceObject, "server", NodePackage::parseStringList),
                 NodePackage.optionalRead(sourceObject, "common", NodePackage::parseStringList),
                 NodePackage.optionalRead(sourceObject, "init", NodePackage::parseStringList),
+                NodePackage.optionalRead(sourceObject, "debug-client", NodePackage::parseStringList),
                 NodePackage.optionalRead(sourceObject, "assets", JsonElement::getAsString)
         );
     }

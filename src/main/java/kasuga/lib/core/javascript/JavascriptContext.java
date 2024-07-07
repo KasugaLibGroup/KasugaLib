@@ -41,7 +41,13 @@ public class JavascriptContext {
                 .engine(engine)
                 .build();
 
+        Value globalThis = context.getBindings("js");
+
+        globalThis.putMember("require",getRequireFunction());
+
         moduleLoader = new ContextModuleLoader(thread.getModuleLoader());
+
+        this.requireModule("@kasugalib/core").ifPresent(JavascriptModule::get);
     }
 
     public FutureTask<Value> execute(Supplier<Source> sourceSupplier){
@@ -60,7 +66,7 @@ public class JavascriptContext {
         return context.eval("js", code);
     }
 
-    public Function<JavascriptModule, Function<String,Value>> requireFunction = Util.memoize(
+    public Function<JavascriptModule, RequireFunction> requireFunction = Util.memoize(
             (source) ->
                     (target) ->
                             this.moduleLoader.load(source, target)
@@ -70,7 +76,7 @@ public class JavascriptContext {
     );
 
     public RequireFunction getRequireFunction(JavascriptModule source) {
-        return requireFunction.apply(source)::apply;
+        return requireFunction.apply(source);
     }
 
     public RequireFunction getRequireFunction(){

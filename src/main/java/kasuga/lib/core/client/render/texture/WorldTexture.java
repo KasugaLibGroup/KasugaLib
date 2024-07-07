@@ -14,12 +14,17 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.image.BufferedImage;
 import java.io.InputStream;
 
 public class WorldTexture extends SimpleTexture {
     RenderTypeBuilder builder = null;
     RenderType cachedType = null;
     PoseContext context = PoseContext.of();
+
+    public WorldTexture(@NotNull ResourceLocation location, int uOffset, int vOffset, int uWidth, int vHeight, SimpleColor color, BufferedImage image, byte[] bytesOfImage) {
+        super(location, uOffset, vOffset, uWidth, vHeight, color, image, bytesOfImage);
+    }
 
     public WorldTexture(@NotNull ResourceLocation location, int uOffset, int vOffset, int uWidth, int vHeight, int color, float alpha) {
         super(location, uOffset, vOffset, uWidth, vHeight, color, alpha);
@@ -70,7 +75,7 @@ public class WorldTexture extends SimpleTexture {
     }
 
     public WorldTexture cutSize(int left,int up,int width,int height){
-        return new WorldTexture(location, uOffset + left, vOffset+up, width,height,color.getRGB(),color.getA());
+        return new WorldTexture(location,uOffset + left,vOffset + up,width,height,color,image,bytesOfImage);
     }
 
     public WorldTexture flipY() {
@@ -135,7 +140,7 @@ public class WorldTexture extends SimpleTexture {
 
     @Override
     public WorldTexture withColor(int color,float alpha){
-        return new WorldTexture(location,uOffset,vOffset,uWidth,vHeight,color,alpha);
+        return new WorldTexture(location,uOffset,vOffset,uWidth,vHeight,SimpleColor.fromRGBA(color,alpha),image,bytesOfImage);
     }
 
 

@@ -32,12 +32,12 @@ public class DOMRegistryItemDynamicProxy {
     public void load(){
         this.closed = false;
         Pair<DOMRegistryItem, JavascriptContext> registryItemPair = registry.get(id);
-        DOMRegistryItem item = registryItemPair.getFirst();
-        JavascriptContext registryContext = registryItemPair.getSecond();
-        if(item == null){
+        if(registryItemPair == null){
             // @todo: print log
             return;
         }
+        DOMRegistryItem item = registryItemPair.getFirst();
+        JavascriptContext registryContext = registryItemPair.getSecond();
         registryContext.runTask(()->{
             Value unload = item.render(context);
             if(unload.canExecute())
@@ -47,7 +47,9 @@ public class DOMRegistryItemDynamicProxy {
 
         registryContext.registerTickable(context);
 
+
         context.setReady();
+
     }
 
     public void unload(){

@@ -107,4 +107,20 @@ public class PackageScanner {
     public static String joinPath(Collection<String> path){
         return String.join("/", path);
     }
+
+    @SafeVarargs
+    public static List<String> resolve(List<String> ...paths){
+        ArrayList<String> result = new ArrayList<>();
+        for (List<String> path : paths) {
+            for (String pathItem : path) {
+                if (Objects.equals(pathItem, "."))
+                    continue;
+                if(Objects.equals(pathItem, "..") && !result.isEmpty())
+                    result.remove(result.size() - 1);
+                else
+                    result.add(pathItem);
+            }
+        }
+        return result;
+    }
 }

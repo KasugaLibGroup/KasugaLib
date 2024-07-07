@@ -30,6 +30,7 @@ public class ClientSetupEvent {
             registry.getCahcedMenus().clear();
         }
         KasugaLib.STACKS.JAVASCRIPT.setupClient();
+        KasugaLib.STACKS.GUI.ifPresent(GuiEngine::init);
         ClientAddon.init();
         MetroModuleLoader.init();
     }

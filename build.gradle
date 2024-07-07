@@ -212,7 +212,9 @@ dependencies {
         exclude group: 'org.lwjgl',module: 'lwjgl'
     };
 
-    minecraftLibrary ('io.netty:netty-codec-http:[4.1,4.2)'){
+    implementation('io.netty:netty-codec-http:4.1.77.Final');
+
+    minecraftLibrary ('io.netty:netty-codec-http:4.1.77.Final'){
         exclude group: 'io.netty', module:'netty-handler';
         exclude group: 'io.netty', module:'netty-handler-proxy';
         exclude group: 'io.netty', module:'netty-codec';
@@ -222,7 +224,7 @@ dependencies {
         exclude group: 'io.netty', module:'netty-common';
     }
 
-    shadedLib ('io.netty:netty-codec-http:[4.1,4.2)'){
+    shadedLib ('io.netty:netty-codec-http:4.1.77.Final'){
         exclude group: 'io.netty', module:'netty-handler';
         exclude group: 'io.netty', module:'netty-handler-proxy';
         exclude group: 'io.netty', module:'netty-codec';

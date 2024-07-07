@@ -115,8 +115,4 @@ public class KasugaLibStacks {
     public RandomSource random() {
         return random;
     }
-
-    public void initJavascript(){
-        GUI.ifPresent(GuiEngine::init);
-    }
 }

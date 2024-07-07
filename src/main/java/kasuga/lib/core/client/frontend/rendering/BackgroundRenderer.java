@@ -15,8 +15,8 @@ public class BackgroundRenderer {
     public ResourceLocation location;
     public int color = 0xffffff;
     public float opacity = 1.0f;
-    public RenderMode renderMode = RenderMode.COMMON;
-    public int borderSize;
+    public int borderSize = 0;
+    public int borderScale = 0;
     private ImageProvider image;
     int left = 0;
     int top = 0;
@@ -25,24 +25,50 @@ public class BackgroundRenderer {
     public LazyRecomputable<SimpleTexture> simple = LazyRecomputable.of(()->{
         if(this.image == null)
             return null;
-        return this.image.getSimpleTexture().cutSize(left,top,width,height).withColor(color,opacity);
+        SimpleTexture texture = this.image.getSimpleTexture();
+        if(texture == null)
+            return null;
+        return texture.cutSize(left,top,width == 0 ? texture.width() : width,width == 0 ? texture.height() : height).withColor(color,opacity);
     });
 
     public LazyRecomputable<WorldTexture> world = LazyRecomputable.of(()->{
         if(this.image == null)
             return null;
-        return this.image.getWorldTexture().cutSize(left,top,width,height).withColor(color,opacity);
+        WorldTexture texture = this.image.getWorldTexture();
+        if(texture == null)
+            return null;
+        return texture.cutSize(left,top,width == 0 ? texture.width() : width,width == 0 ? texture.height() : height).withColor(color,opacity);
     });
 
     public void render(RenderContext context,int x,int y,int width,int height){
-        
+        if(borderSize == 0 || borderScale == 0)
+            this.renderCommon(context,x,y,width,height);
+        else
+            this.renderNineSliced(context,x,y,width,height);
+    }
+
+    private void renderNineSliced(RenderContext context, int x, int y, int width, int height) {
+        if(context.getContextType() == RenderContext.RenderContextType.SCREEN){
+            if(this.simple.get() == null)
+                return;
+            this.simple.get().render(x,y,width,height);
+        }else{
+            if(this.world.get() == null)
+                return;
+            context.pose().pushPose();
+            context.pose().mulPose(Quaternion.fromXYZ(0f,3.14159267f,0f));
+            context.pose().translate(x,-y,0f);
+            this.world.get().renderType(context.getRenderType());
+            this.world.get().render(context.pose(),context.getBufferSource(),width,height,context.getLight(),true);
+            context.pose().popPose();
+        }
     }
 
     public void renderCommon(RenderContext context,int x,int y,int width,int height){
         if(context.getContextType() == RenderContext.RenderContextType.SCREEN){
             if(this.simple.get() == null)
                 return;
-            this.simple.get().render(x,y,width,height);
+            this.simple.get().renderNineSliceScaled(borderSize,x,y,width,height,borderScale);
         }else{
             if(this.world.get() == null)
                 return;

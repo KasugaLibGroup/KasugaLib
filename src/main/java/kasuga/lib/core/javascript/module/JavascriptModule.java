@@ -1,10 +1,7 @@
 package kasuga.lib.core.javascript.module;
 
-import kasuga.lib.core.addons.node.PackageReader;
 import kasuga.lib.core.javascript.JavascriptContext;
 import org.graalvm.polyglot.Value;
-
-import java.util.concurrent.FutureTask;
 
 public class JavascriptModule {
     private final JavascriptContext context;

@@ -31,6 +31,20 @@ public class SimpleTexture {
     BufferedImage image;
     byte[] bytesOfImage;
 
+    public SimpleTexture(@Nonnull ResourceLocation location, int uOffset, int vOffset, int uWidth, int vHeight, SimpleColor color, BufferedImage image, byte[] bytesOfImage){
+        this.location = location;
+        this.uOffset = uOffset;
+        this.vOffset = vOffset;
+        this.uWidth = uWidth;
+        this.vHeight = vHeight;
+        this.color = color;
+        this.image = image;
+        this.bytesOfImage = bytesOfImage;
+        this.imgWidth = image.getWidth();
+        this.imgHeight = image.getHeight();
+        refreshImage();
+    }
+
     public SimpleTexture(@Nonnull ResourceLocation location, int uOffset, int vOffset, int uWidth, int vHeight, int color, float alpha) {
         this.location = location;
         this.uOffset = uOffset;
@@ -52,8 +66,11 @@ public class SimpleTexture {
         this.vHeight = vHeight;
         this.color = SimpleColor.fromRGBA(color, alpha);
         try {
-            Minecraft.getInstance().textureManager.register(location, new DynamicTexture(NativeImage.read(stream)));
-            image = ImageIO.read(stream);
+            byte[] bytes = stream.readAllBytes();
+            ByteArrayInputStream readStream = new ByteArrayInputStream(bytes);
+            Minecraft.getInstance().textureManager.register(location, new DynamicTexture(NativeImage.read(readStream)));
+            readStream = new ByteArrayInputStream(bytes);
+            image = ImageIO.read(readStream);
             bytesOfImage = stream.readAllBytes();
             this.imgWidth = image.getWidth();
             this.imgHeight = image.getHeight();
@@ -123,7 +140,7 @@ public class SimpleTexture {
     }
 
     public SimpleTexture cutSize(int left,int up,int width,int height){
-        return new SimpleTexture(location, uOffset + left, vOffset+up, width,height,color.getRGB(),color.getA());
+        return new SimpleTexture(location, uOffset + left, vOffset + up, width, height, color, image, bytesOfImage);
     }
 
     public SimpleTexture flipY() {
@@ -333,5 +350,13 @@ public class SimpleTexture {
             renderCentered(centerX, centerY, axis, getFixedHeight(axis));
         else
             renderCentered(centerX, centerY, getFixedWidth(axis), axis);
+    }
+
+    public int getImgWidth() {
+        return imgWidth;
+    }
+
+    public int getImgHeight() {
+        return imgHeight;
     }
 }

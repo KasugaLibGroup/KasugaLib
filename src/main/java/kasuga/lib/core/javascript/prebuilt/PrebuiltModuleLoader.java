@@ -5,6 +5,7 @@ import kasuga.lib.core.javascript.module.JavascriptModule;
 import kasuga.lib.core.javascript.module.ModuleLoader;
 import kasuga.lib.core.javascript.module.node.JavascriptNodeModule;
 import kasuga.lib.core.javascript.prebuilt.process.ProcessModule;
+import kasuga.lib.core.javascript.prebuilt.registry.RegistryPrebuiltModule;
 import kasuga.lib.core.javascript.prebuilt.timer.TimerPrebuiltModule;
 import kasuga.lib.core.javascript.prebuilt.websocket.WebSocketPrebuiltModule;
 
@@ -21,6 +22,8 @@ public class PrebuiltModuleLoader extends CachedModuleLoader implements ModuleLo
                 return Optional.of(new WebSocketPrebuiltModule(source.getContext()));
             case "kasuga:process":
                 return Optional.of(new ProcessModule(source.getContext()));
+            case "kasuga:registry":
+                return Optional.of(new RegistryPrebuiltModule(source.getContext()));
         }
 
         return Optional.empty();
