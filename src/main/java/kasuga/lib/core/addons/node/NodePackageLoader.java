@@ -18,6 +18,7 @@ public class NodePackageLoader {
     public NodePackageLoader(){}
 
     public void addPackage(NodePackage nodePackage){
+        System.out.printf("Package discovered: %s\n",nodePackage.packageName);
         packages.put(nodePackage.packageName, nodePackage);
         group.getModuleLoader().registerPackage(nodePackage);
         createRuntime(nodePackage);
@@ -25,6 +26,7 @@ public class NodePackageLoader {
 
     public void addPackages(List<NodePackage> nodePackages){
         for (NodePackage nodePackage : nodePackages) {
+            System.out.printf("Package discovered: %s\n",nodePackage.packageName);
             packages.put(nodePackage.packageName, nodePackage);
             group.getModuleLoader().registerPackage(nodePackage);
         }
@@ -86,6 +88,7 @@ public class NodePackageLoader {
             );
         }
         for (String entry : entriesList) {
+            System.out.printf("Create entry \"%s\" for module %s\n",entry,nodePackage.packageName);
             JavascriptContext context = thread.createContext(entriesList, "Package " + nodePackage.packageName + " Entry " + entry);
             context.runTask(()->{
                 context.requireModule(nodePackage.packageName + "/" + entry).ifPresent(JavascriptModule::get);
