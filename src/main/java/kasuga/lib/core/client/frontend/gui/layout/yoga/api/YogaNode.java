@@ -6,6 +6,7 @@ import java.util.List;
 import static org.lwjgl.util.yoga.Yoga.*;
 
 public class YogaNode implements AutoCloseable {
+    public static int MEMORY_LEAK_CHECK = 0; // Count for checking memory leak
     private long pointer;
 
     private final List<YogaNode> children = new ArrayList<>(4);
@@ -17,6 +18,7 @@ public class YogaNode implements AutoCloseable {
         this.pointer = pointer;
     }
     public static YogaNode create(){
+        MEMORY_LEAK_CHECK++;
         long pointer = YGNodeNew();
         return new YogaNode(pointer);
     }
@@ -330,6 +332,7 @@ public class YogaNode implements AutoCloseable {
     public void free() {
         System.out.println("[GC] Yoga Node Free");
         if (pointer != 0) {
+            MEMORY_LEAK_CHECK--;
             long nativePointer = pointer;
             pointer = 0;
             YGNodeFree(nativePointer);

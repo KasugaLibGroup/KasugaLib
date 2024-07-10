@@ -11,6 +11,7 @@ import org.graalvm.polyglot.Value;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 public class DomNode<T extends DomContext<?,?>> {
@@ -19,7 +20,7 @@ public class DomNode<T extends DomContext<?,?>> {
     JavascriptContext context;
 
     public DomNode<T> parent;
-    public List<DomNode<T>> children = new ArrayList<>();
+    public List<DomNode<T>> children = new CopyOnWriteArrayList<>();
 
     protected AttributeMap attributes = new AttributeMap();
 

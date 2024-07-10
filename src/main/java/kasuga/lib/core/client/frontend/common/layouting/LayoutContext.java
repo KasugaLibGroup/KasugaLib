@@ -56,7 +56,6 @@ public class LayoutContext<T extends LayoutNode,N extends DomNode> {
         LayoutContext<?,N> child = this.children.remove(index);
         for (Map.Entry<Object,LayoutNode> entry: this.sources.entrySet()) {
             entry.getValue().removeChild(child.sources.get(entry.getKey()));
-            entry.getValue().removeChild(index);
             child.removeSource(entry.getKey());
         }
     }
