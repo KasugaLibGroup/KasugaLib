@@ -327,7 +327,7 @@ public class SimpleTexture {
         RenderSystem.disableBlend();
     }
 
-    public void renderNineSliceScaled(int r, int x, int y, int w, int h, float scale){
+    public void renderNineSliceScaled(float r, int x, int y, int w, int h, float scale){
         //Pixels of boarder
         int border = (int) (r * scale);
         //Border size of UV
