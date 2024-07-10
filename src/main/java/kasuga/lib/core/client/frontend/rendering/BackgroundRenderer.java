@@ -15,8 +15,8 @@ public class BackgroundRenderer {
     public ResourceLocation location;
     public int color = 0xffffff;
     public float opacity = 1.0f;
-    public int borderSize = 0;
-    public int borderScale = 0;
+    public float borderSize = 0;
+    public float borderScale = 0;
     private ImageProvider image;
     int left = 0;
     int top = 0;
@@ -40,18 +40,29 @@ public class BackgroundRenderer {
         return texture.cutSize(left,top,width == 0 ? texture.width() : width,width == 0 ? texture.height() : height).withColor(color,opacity);
     });
 
+    RenderMode mode = RenderMode.COMMON;
+
+    public void setRenderMode(RenderMode mode) {
+        this.mode = mode;
+    }
+
     public void render(RenderContext context,int x,int y,int width,int height){
-        if(borderSize == 0 || borderScale == 0)
+        if( mode == RenderMode.COMMON )
             this.renderCommon(context,x,y,width,height);
         else
             this.renderNineSliced(context,x,y,width,height);
+    }
+
+    public void setNineSlicedParam(float borderSize,float borderScale){
+        this.borderSize = borderSize;
+        this.borderScale = borderScale;
     }
 
     private void renderNineSliced(RenderContext context, int x, int y, int width, int height) {
         if(context.getContextType() == RenderContext.RenderContextType.SCREEN){
             if(this.simple.get() == null)
                 return;
-            this.simple.get().render(x,y,width,height);
+            this.simple.get().renderNineSliceScaled(borderSize,x,y,width,height,borderScale);
         }else{
             if(this.world.get() == null)
                 return;
@@ -68,7 +79,7 @@ public class BackgroundRenderer {
         if(context.getContextType() == RenderContext.RenderContextType.SCREEN){
             if(this.simple.get() == null)
                 return;
-            this.simple.get().renderNineSliceScaled(borderSize,x,y,width,height,borderScale);
+            this.simple.get().render(x,y,width,height);
         }else{
             if(this.world.get() == null)
                 return;
