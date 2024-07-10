@@ -235,21 +235,23 @@ public class WorldTexture extends SimpleTexture {
 
     public void renderNineSliceScaled(PoseStack pose, MultiBufferSource buffer, int light, boolean reverse,
                                       float r, int x, int y, int w, int h, int scale){
-        //Horizontal pixels of boarder
-        int uR = (int) (w * r * scale);
-        //Vertical pixels of boarder
-        int vR = (int) (h * r * scale);
-        float uCenter = fuWidth - 2 * r;
-        float vCenter = fvHeight - 2 * r;
-        renderUV(pose, buffer, x,          y,          uR,         vR,         fuOffset,           fvOffset,           r,       r, light, reverse);
-        renderUV(pose, buffer, x + uR,     y,          w - 2 * uR, vR,         fuOffset + r,       fvOffset,           uCenter, r, light, reverse);
-        renderUV(pose, buffer, x + w - uR, y,          uR,         vR,         fuOffset + uCenter, fvOffset,           r,       r, light, reverse);
-        renderUV(pose, buffer, x,          y + vR,     uR,         h - 2 * vR, fuOffset,           fvOffset + r,       r,       vCenter, light, reverse);
-        renderUV(pose, buffer, x + uR,     y + vR,     w - 2 * uR, h - 2 * vR, fuOffset + r,       fvOffset + r,       uCenter, vCenter, light, reverse);
-        renderUV(pose, buffer, x + w - uR, y + vR,     uR,         h - 2 * vR, fuOffset + uCenter, fvOffset + r,       r,       vCenter, light, reverse);
-        renderUV(pose, buffer, x,          y + h - vR, uR,         vR,         fuOffset,           fvOffset + vCenter, r,       r, light, reverse);
-        renderUV(pose, buffer, x + uR,     y + h - vR, w - 2 * uR, vR,         fuOffset + r,       fvOffset + vCenter, uCenter, r, light, reverse);
-        renderUV(pose, buffer, x + w - uR, y + h - vR, uR,         vR,         fuOffset + uCenter, fvOffset + vCenter, r,       r, light, reverse);
+        //Pixels of boarder
+        int border = (int) (r * scale);
+        //Border size of UV
+        float borderU = (float) border / w;
+        float borderV = (float) border / h;
+        //Center slice size of UV
+        float centerU = fuWidth - 2 * borderU;
+        float centerV = fvHeight - 2 * borderV;
+        renderUV(pose, buffer, x,              y,              border,         border,         fuOffset,                     fvOffset,                      borderU, borderV, light, reverse);
+        renderUV(pose, buffer, x + border,     y,              w - 2 * border, border,         fuOffset + borderU,           fvOffset,                      centerU, borderV, light, reverse);
+        renderUV(pose, buffer, x + w - border, y,              border,         border,         fuOffset + fuWidth - borderU, fvOffset,                      borderU, borderV, light, reverse);
+        renderUV(pose, buffer, x,              y + border,     border,         h - 2 * border, fuOffset,                     fvOffset + borderV,            borderU, centerV, light, reverse);
+        renderUV(pose, buffer, x + border,     y + border,     w - 2 * border, h - 2 * border, fuOffset + borderU,           fvOffset + borderV,            centerU, centerV, light, reverse);
+        renderUV(pose, buffer, x + w - border, y + border,     border,         h - 2 * border, fuOffset + fuWidth - borderU, fvOffset + borderV,            borderU, centerV, light, reverse);
+        renderUV(pose, buffer, x,              y + h - border, border,         border,         fuOffset,                     fvOffset + fvHeight - borderV, borderU, borderV, light, reverse);
+        renderUV(pose, buffer, x + border,     y + h - border, w - 2 * border, border,         fuOffset + borderU,           fvOffset + fvHeight - borderV, centerU, borderV, light, reverse);
+        renderUV(pose, buffer, x + w - border, y + h - border, border,         border,         fuOffset + fuWidth - borderU, fvOffset + fvHeight - borderV, borderU, borderV, light, reverse);
     }
 
     public void renderScaled(PoseStack pose, MultiBufferSource buffer, int light, float axis, boolean isWidth) {

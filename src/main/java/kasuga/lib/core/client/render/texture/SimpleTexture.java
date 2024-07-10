@@ -327,22 +327,24 @@ public class SimpleTexture {
         RenderSystem.disableBlend();
     }
 
-    public void renderNineSliceScaled(float r, int x, int y, int w, int h, int scale){
-        //Horizontal pixels of boarder
-        int uR = (int) (w * r * scale);
-        //Vertical pixels of boarder
-        int vR = (int) (h * r * scale);
-        float uCenter = fuWidth - 2 * r;
-        float vCenter = fvHeight - 2 * r;
-        renderUV(x,          y,          uR,         vR,         fuOffset,           fvOffset,           r,       r);
-        renderUV(x + uR,     y,          w - 2 * uR, vR,         fuOffset + r,       fvOffset,           uCenter, r);
-        renderUV(x + w - uR, y,          uR,         vR,         fuOffset + uCenter, fvOffset,           r,       r);
-        renderUV(x,          y + vR,     uR,         h - 2 * vR, fuOffset,           fvOffset + r,       r,       vCenter);
-        renderUV(x + uR,     y + vR,     w - 2 * uR, h - 2 * vR, fuOffset + r,       fvOffset + r,       uCenter, vCenter);
-        renderUV(x + w - uR, y + vR,     uR,         h - 2 * vR, fuOffset + uCenter, fvOffset + r,       r,       vCenter);
-        renderUV(x,          y + h - vR, uR,         vR,         fuOffset,           fvOffset + vCenter, r,       r);
-        renderUV(x + uR,     y + h - vR, w - 2 * uR, vR,         fuOffset + r,       fvOffset + vCenter, uCenter, r);
-        renderUV(x + w - uR, y + h - vR, uR,         vR,         fuOffset + uCenter, fvOffset + vCenter, r,       r);
+    public void renderNineSliceScaled(int r, int x, int y, int w, int h, float scale){
+        //Pixels of boarder
+        int border = (int) (r * scale);
+        //Border size of UV
+        float borderU = (float) border / w;
+        float borderV = (float) border / h;
+        //Center slice size of UV
+        float centerU = fuWidth - 2 * borderU;
+        float centerV = fvHeight - 2 * borderV;
+        renderUV(x,              y,              border,         border,         fuOffset,                     fvOffset,                      borderU, borderV);
+        renderUV(x + border,     y,              w - 2 * border, border,         fuOffset + borderU,           fvOffset,                      centerU, borderV);
+        renderUV(x + w - border, y,              border,         border,         fuOffset + fuWidth - borderU, fvOffset,                      borderU, borderV);
+        renderUV(x,              y + border,     border,         h - 2 * border, fuOffset,                     fvOffset + borderV,            borderU, centerV);
+        renderUV(x + border,     y + border,     w - 2 * border, h - 2 * border, fuOffset + borderU,           fvOffset + borderV,            centerU, centerV);
+        renderUV(x + w - border, y + border,     border,         h - 2 * border, fuOffset + fuWidth - borderU, fvOffset + borderV,            borderU, centerV);
+        renderUV(x,              y + h - border, border,         border,         fuOffset,                     fvOffset + fvHeight - borderV, borderU, borderV);
+        renderUV(x + border,     y + h - border, w - 2 * border, border,         fuOffset + borderU,           fvOffset + fvHeight - borderV, centerU, borderV);
+        renderUV(x + w - border, y + h - border, border,         border,         fuOffset + fuWidth - borderU, fvOffset + fvHeight - borderV, borderU, borderV);
     }
 
     public void renderCenteredScaled(int centerX, int centerY, int axis, boolean isWidth) {
