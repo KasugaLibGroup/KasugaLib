@@ -1,15 +1,20 @@
 package kasuga.lib.example_env.client.block_entity.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.client.frontend.rendering.RenderContext;
 import kasuga.lib.core.client.render.component.SimpleComponent;
 import kasuga.lib.core.client.render.model.SimpleModel;
 import kasuga.lib.core.client.render.texture.WorldTexture;
 import kasuga.lib.example_env.AllExampleElements;
 import kasuga.lib.example_env.block_entity.GreenAppleTile;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -19,7 +24,8 @@ public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTil
     SimpleComponent component = new SimpleComponent(Component.literal("QwQ"));
     private static final WorldTexture texture = new WorldTexture(new ResourceLocation(KasugaLib.MOD_ID, "textures/common/test/green_apple_bubble.png"));
     public GreenAppleTileRenderer(BlockEntityRendererProvider.Context context) {
-        // texture.renderType(RenderType::text);
+        texture.renderType(RenderType::text);
+        TEXTURE.renderType(RenderType::text);
         // model.renderType(RenderType::translucent);
         // wuling.renderType(RenderType::solid);
         // wuling.applyParentRenderTypeForAllBones();
@@ -44,12 +50,27 @@ public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTil
         // component.setFont(Minecraft.getInstance().font);
         // component.zoom(component.getZoom() * .2f);
     }
-
+    private WorldTexture TEXTURE = new WorldTexture(new ResourceLocation("kasuga_lib","textures/gui/pixel.png"));
     @Override
     public void render(GreenAppleTile tile, float partial, PoseStack pose, MultiBufferSource buffer, int light, int overlay) {
-        // texture.turnToPlayer(Minecraft.getInstance().player, RendererUtil.blockPos2Vec3(tile.getBlockPos()).add(.5, 0, .5));
-        // texture.translate(0, 1.5f, 0);
-        // texture.renderCentered(pose, buffer , 1.0f, 1.0f, light);
+/*
+        BlockPos pos = tile.getBlockPos();
+        pose.pushPose();
+        TEXTURE.render(pose,buffer,0.25f,0.25f, light);
+        pose.popPose();
+
+        pose.pushPose();
+        pose.scale(0.01F, 0.01F, 0.001F);
+        RenderContext renderContext = new RenderContext(RenderContext.RenderContextType.WORLD);
+        renderContext.setSource(tile);
+        renderContext.setPoseStack(pose);
+        renderContext.setBufferSource(buffer);
+        tile.getGui().getContext().ifPresent((context)->{
+            context(tile,400,200);
+            context.render(renderContext);
+        });
+        pose.popPose();
+*/
         // model.translate(0, -.5, 0);
         // model.render(pose, buffer, 0, -.5f, 0, light, overlay);
         // component.turnToPlayer(Minecraft.getInstance().player, RendererUtil.blockPos2Vec3(tile.getBlockPos()));

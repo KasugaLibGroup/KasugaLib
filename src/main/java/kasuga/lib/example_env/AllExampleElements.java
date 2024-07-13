@@ -1,7 +1,6 @@
 package kasuga.lib.example_env;
 
 import kasuga.lib.KasugaLib;
-import kasuga.lib.core.base.commands.CommandHandler;
 import kasuga.lib.core.config.SimpleConfig;
 import kasuga.lib.example_env.block.GreenAppleBlock;
 import kasuga.lib.example_env.block.GreenAppleItem;
@@ -21,12 +20,9 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 
-import java.io.File;
-import java.net.URL;
+public class AllExampleElements{
 
-public class AllExampleElements {
-
-    public static final SimpleRegistry testRegistry = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
+    public static final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID,KasugaLib.EVENTS);
 
     public static final BlockReg<GreenAppleBlock> greenApple = new BlockReg<GreenAppleBlock>("green_apple")
             .blockType(GreenAppleBlock::new)
@@ -38,21 +34,21 @@ public class AllExampleElements {
             .defaultBlockItem(new ResourceLocation(KasugaLib.MOD_ID, "block/test/green_apple"))
             .stackSize(32)
             .tabTo(CreativeModeTab.TAB_DECORATIONS)
-            .submit(testRegistry);
+            .submit(REGISTRY);
 
     public static final EntityReg<WuLingEntity> wuling = new EntityReg<WuLingEntity>("wuling")
             .entityType(WuLingEntity::new)
             .size(3, 3)
             .attribute(WuLingEntity::createAttributes)
             .withRenderer(() -> (WuLingRenderer::new))
-            .submit(testRegistry);
+            .submit(REGISTRY);
 
     public static final ModelReg greenAppleModel = new ModelReg("green_apple", new ResourceLocation(KasugaLib.MOD_ID, "block/test/green_apple"))
-            .submit(testRegistry);
+            .submit(REGISTRY);
 
     public static final ModelReg wuLingVans = new
             ModelReg("wuling_vans", new ResourceLocation(KasugaLib.MOD_ID, "entity/test/wuling/wuling_base"))
-            .submit(testRegistry);
+            .submit(REGISTRY);
 
     public static final ItemReg<GreenAppleItem> greenAppleItem =
             new ItemReg<GreenAppleItem>("green_apple_item")
@@ -60,13 +56,13 @@ public class AllExampleElements {
             .stackTo(16)
             .shouldCustomRender(true)
             // .tab(tab)
-            .submit(testRegistry);
+            .submit(REGISTRY);
 
     public static final CreativeTabReg tab = new CreativeTabReg("test")
-            .icon(greenAppleItem).submit(testRegistry);
+            .icon(greenAppleItem).submit(REGISTRY);
     public static final AnimReg test_anim =
-            new AnimReg("test_anim", testRegistry.asResource("models/entity/test/wuling/wuling_anim.json"))
-            .submit(testRegistry);
+            new AnimReg("test_anim", REGISTRY.asResource("models/entity/test/wuling/wuling_anim.json"))
+            .submit(REGISTRY);
 
     public static final SimpleConfig config = new SimpleConfig()
             .common("common settings")
@@ -94,24 +90,9 @@ public class AllExampleElements {
             .brand("1.0")
             .loadPacket(ExampleC2SPacket.class, ExampleC2SPacket::new)
             .loadPacket(ExampleS2CPacket.class, ExampleS2CPacket::new)
-            .submit(testRegistry);
-
-    public static final ArgumentTypeReg type = ArgumentTypeReg.INSTANCE.registerType(File.class, File::new)
-            .submit(testRegistry);
-
-    public static final CommandReg command = new CommandReg("nihao")
-            .addLiteral("wiorjh", false)
-            .addInteger("int", false)
-            .addURL("dou", true)
-            .setHandler(new CommandHandler(){
-                @Override
-                public void run() {
-                    System.out.println(getParameter("int", int.class));
-                    System.out.println(getParameter("dou", URL.class));
-                }
-            }).submit(testRegistry);
+            .submit(REGISTRY);
 
     public static void invoke(){
-        testRegistry.submit();
+        REGISTRY.submit();
     }
 }

@@ -202,25 +202,26 @@ public class CommandReg extends Reg {
             }
             switch (pair.getSecond()) {
                 case CLIENT ->
-                        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> () -> dispatcher.register(pair.getFirst()));
+                        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> dispatcher.register(pair.getFirst()));
                 case DEDICATED_SERVER ->
-                        DistExecutor.safeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> dispatcher.register(pair.getFirst()));
+                        DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> dispatcher.register(pair.getFirst()));
             }
         });
     }
 
     @Inner
     private static void register(final CommandReg commandReg) {
-        System.out.println(commandReg.tree.leaves.size());
-        for (CommandNode leaf : commandReg.tree.leaves) {
-            while (true) {
-                System.out.println(leaf.name);
-                if (leaf.isRoot())
-                    break;
-                leaf = leaf.father;
-            }
-            System.out.println();
-        }
+        //debug
+//        System.out.println(commandReg.tree.leaves.size());
+//        for (CommandNode leaf : commandReg.tree.leaves) {
+//            while (true) {
+//                System.out.println(leaf.name);
+//                if (leaf.isRoot())
+//                    break;
+//                leaf = leaf.father;
+//            }
+//            System.out.println();
+//        }
 
         if (commandReg.handler == null) {
             throw new NullPointerException();

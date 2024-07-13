@@ -1,20 +1,20 @@
 package kasuga.lib.core.util;
 
-import kasuga.lib.KasugaLib;
 import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.annos.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Util
 public class Resources {
@@ -57,6 +57,12 @@ public class Resources {
         return rm.getResourceOrThrow(location);
     }
 
+    @Util
+    public static Optional<net.minecraft.server.packs.resources.Resource> attemptGetResource(ResourceLocation location) {
+        ResourceManager rm = Minecraft.getInstance().getResourceManager();
+        return rm.getResource(location);
+    }
+
     /**
      * Get Block from its registration key.
      * @param location the block registration key (we usually use them in data-gen)
@@ -96,5 +102,11 @@ public class Resources {
             }
         }
         return result;
+    }
+
+    @Util
+    public static List<PackResources> listPack(){
+        ResourceManager rm = Minecraft.getInstance().getResourceManager();
+        return rm.listPacks().toList();
     }
 }
