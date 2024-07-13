@@ -2,6 +2,9 @@ package kasuga.lib.core.client.frontend.gui.layout.yoga.api;
 
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.util.Envs;
+import net.minecraft.CrashReport;
+import net.minecraft.client.Minecraft;
+import net.minecraft.server.MinecraftServer;
 import org.lwjgl.system.Configuration;
 
 import java.io.File;
@@ -17,21 +20,17 @@ public class YogaFileLocator {
     public static String getYogaAssemblyDirectory(){
         if(Envs.isDevEnvironment()){
             return getDevYogaAssemblyDirectory();
+        }else if(Envs.isClient()){
+            try{
+                return YogaFileExtractor.extract() + File.separatorChar + "lwjgl-yoga-3.3.1" + File.separatorChar;
+            }catch (Exception e){
+                Minecraft.crash(CrashReport.forThrowable(e, "Failed to load yoga assembly"));
+            }
         }
-        URI path;
-        try{
-            path = KasugaLib.class.getProtectionDomain().getCodeSource().getLocation().toURI();
-        }catch (URISyntaxException uriSyntaxException){
-            return null;
-        }
-        if (!path.getPath().contains(".jar") || path.getPath().contains(".gradle")){
-            return null;
-        }
-        String jarPath = path.getPath();
-        return jarPath.substring(1, path.getPath().indexOf(".jar") + 4);
+        throw new IllegalStateException("Illegal environment");
     }
 
     public static String getDevYogaAssemblyDirectory(){
-        return "../src/generated/resources/yoga/";
+        return "../src/generated/resources/libraries/lwjgl-yoga-3.3.1/";
     }
 }
