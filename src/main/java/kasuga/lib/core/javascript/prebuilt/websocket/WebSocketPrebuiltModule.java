@@ -2,12 +2,9 @@ package kasuga.lib.core.javascript.prebuilt.websocket;
 
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.prebuilt.PrebuiltModule;
-import kasuga.lib.core.javascript.Tickable;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.Value;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;

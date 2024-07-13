@@ -1,15 +1,11 @@
 package kasuga.lib.core.client.frontend.gui.layout.yoga.api;
 
-import kasuga.lib.KasugaLib;
 import kasuga.lib.core.util.Envs;
 import net.minecraft.CrashReport;
 import net.minecraft.client.Minecraft;
-import net.minecraft.server.MinecraftServer;
 import org.lwjgl.system.Configuration;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 public class YogaFileLocator {
 

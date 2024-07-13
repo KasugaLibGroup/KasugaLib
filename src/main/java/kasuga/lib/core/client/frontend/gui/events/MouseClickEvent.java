@@ -1,7 +1,6 @@
 package kasuga.lib.core.client.frontend.gui.events;
 
 import kasuga.lib.core.client.frontend.dom.nodes.DomNode;
-import kasuga.lib.core.client.frontend.gui.events.MouseEvent;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomNode;
 import kasuga.lib.core.util.data_type.Vec2i;
 

@@ -1,8 +1,5 @@
 package kasuga.lib.core.client.frontend.gui.layout.yoga.api;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.main.Main;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.loading.FMLLoader;
 
 import java.io.File;

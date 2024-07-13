@@ -1,10 +1,8 @@
 package kasuga.lib.core.addons.minecraft;
 
 import kasuga.lib.KasugaLib;
-import kasuga.lib.core.addons.node.NodePackageLoader;
 import kasuga.lib.core.addons.resource.ResourceManagerPackageProvider;
 import net.minecraft.client.Minecraft;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
 
 public class ClientAddon {
     public static ResourceManagerPackageProvider provider = null;

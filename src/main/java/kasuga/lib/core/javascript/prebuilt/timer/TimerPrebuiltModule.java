@@ -5,9 +5,6 @@ import kasuga.lib.core.javascript.prebuilt.PrebuiltModule;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.Value;
 
-import java.io.Closeable;
-import java.io.IOException;
-
 public class TimerPrebuiltModule extends PrebuiltModule {
     KasugaTimer timer = new KasugaTimer();
     public TimerPrebuiltModule(JavascriptContext runtime) {

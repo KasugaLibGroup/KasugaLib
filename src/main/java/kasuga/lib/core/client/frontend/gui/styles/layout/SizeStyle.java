@@ -9,7 +9,6 @@ import kasuga.lib.core.util.data_type.Pair;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public abstract class SizeStyle extends Style<Pair<Float, PixelUnit>, StyleTarget> {
 

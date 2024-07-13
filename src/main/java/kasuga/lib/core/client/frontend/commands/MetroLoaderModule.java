@@ -1,6 +1,5 @@
 package kasuga.lib.core.client.frontend.commands;
 
-import kasuga.lib.KasugaLib;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.module.JavascriptModule;
 

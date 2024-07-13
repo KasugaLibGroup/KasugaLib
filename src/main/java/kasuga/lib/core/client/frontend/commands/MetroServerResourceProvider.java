@@ -1,7 +1,5 @@
 package kasuga.lib.core.client.frontend.commands;
 
-import io.netty.handler.codec.http.HttpMethod;
-import kasuga.lib.core.addons.node.PackageScanner;
 import kasuga.lib.core.addons.resource.ResourceProvider;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;

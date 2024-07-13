@@ -2,8 +2,6 @@ package kasuga.lib.core.javascript.commands;
 
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.commands.CommandHandler;
-import kasuga.lib.core.util.Envs;
-import kasuga.lib.example_env.AllExampleElements;
 import kasuga.lib.registrations.common.ArgumentTypeReg;
 import kasuga.lib.registrations.common.CommandReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;

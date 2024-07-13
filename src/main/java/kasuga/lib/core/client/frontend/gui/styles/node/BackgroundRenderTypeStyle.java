@@ -1,12 +1,10 @@
 package kasuga.lib.core.client.frontend.gui.styles.node;
 
-import kasuga.lib.core.client.frontend.common.style.ResourceStyle;
 import kasuga.lib.core.client.frontend.common.style.Style;
 import kasuga.lib.core.client.frontend.common.style.StyleTarget;
 import kasuga.lib.core.client.frontend.common.style.StyleType;
 import kasuga.lib.core.client.frontend.rendering.BackgroundRenderer;
 import kasuga.lib.core.client.frontend.rendering.ImageProvider;
-import kasuga.lib.core.client.frontend.rendering.ImageProviders;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.resources.ResourceLocation;
 

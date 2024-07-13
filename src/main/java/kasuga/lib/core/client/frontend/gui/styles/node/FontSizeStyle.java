@@ -3,7 +3,6 @@ package kasuga.lib.core.client.frontend.gui.styles.node;
 import kasuga.lib.core.client.frontend.common.style.Style;
 import kasuga.lib.core.client.frontend.common.style.StyleTarget;
 import kasuga.lib.core.client.frontend.common.style.StyleType;
-import kasuga.lib.core.client.frontend.gui.nodes.GuiTextNode;
 
 import java.util.Map;
 

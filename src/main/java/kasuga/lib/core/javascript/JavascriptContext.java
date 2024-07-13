@@ -3,12 +3,14 @@ package kasuga.lib.core.javascript;
 import kasuga.lib.core.javascript.module.JavascriptModule;
 import kasuga.lib.core.javascript.module.JavascriptModuleScope;
 import kasuga.lib.core.javascript.module.ModuleLoadException;
-import kasuga.lib.core.javascript.module.node.JavascriptNodeModule;
 import kasuga.lib.core.util.Callback;
 import net.minecraft.Util;
 import org.graalvm.polyglot.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.FutureTask;
 import java.util.function.Function;
 import java.util.function.Supplier;

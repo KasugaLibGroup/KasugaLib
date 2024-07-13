@@ -3,7 +3,6 @@ package kasuga.lib.core.client.frontend.font;
 import kasuga.lib.core.util.Callback;
 import kasuga.lib.core.util.LazyRecomputable;
 
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ExtendableProperty<T> {

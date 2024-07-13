@@ -1,6 +1,7 @@
 package kasuga.lib.core.client.frontend.gui.layout.yoga.api;
 
-import static org.lwjgl.util.yoga.Yoga.*;
+import static org.lwjgl.util.yoga.Yoga.YGDisplayFlex;
+import static org.lwjgl.util.yoga.Yoga.YGDisplayNone;
 
 public enum YogaDisplay {
     NONE(YGDisplayNone),

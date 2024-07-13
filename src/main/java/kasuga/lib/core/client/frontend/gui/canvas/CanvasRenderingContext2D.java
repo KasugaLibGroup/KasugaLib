@@ -3,10 +3,6 @@ package kasuga.lib.core.client.frontend.gui.canvas;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import kasuga.lib.core.client.frontend.gui.canvas.glfw.CanvasRenderer;
 import kasuga.lib.core.util.Callback;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-
-import java.util.function.Consumer;
 
 public class CanvasRenderingContext2D {
     CanvasRenderer canvasRenderer;

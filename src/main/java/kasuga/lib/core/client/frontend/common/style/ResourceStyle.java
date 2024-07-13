@@ -1,10 +1,8 @@
 package kasuga.lib.core.client.frontend.common.style;
 
 import kasuga.lib.core.util.data_type.Pair;
-import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.resources.ResourceLocation;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 
 public class ResourceStyle {

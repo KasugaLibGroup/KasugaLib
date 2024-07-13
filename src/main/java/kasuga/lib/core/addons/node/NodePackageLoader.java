@@ -8,7 +8,9 @@ import kasuga.lib.core.javascript.module.JavascriptModule;
 import kasuga.lib.core.util.glob.GlobMatcher;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class NodePackageLoader {
     public HashMap<String, NodePackage> packages = new HashMap<>();

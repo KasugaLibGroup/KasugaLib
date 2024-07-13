@@ -1,8 +1,6 @@
 package kasuga.lib.core.javascript;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class JavascriptThread extends SynchronizedThread{

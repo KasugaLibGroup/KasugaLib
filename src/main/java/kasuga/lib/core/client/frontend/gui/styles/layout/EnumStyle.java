@@ -3,14 +3,10 @@ package kasuga.lib.core.client.frontend.gui.styles.layout;
 import kasuga.lib.core.client.frontend.common.style.Style;
 import kasuga.lib.core.client.frontend.common.style.StyleTarget;
 import kasuga.lib.core.client.frontend.common.style.StyleType;
-import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaNode;
-import kasuga.lib.core.client.frontend.gui.nodes.GuiDomNode;
 
 import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public abstract class EnumStyle<E> extends Style<E, StyleTarget> {
 

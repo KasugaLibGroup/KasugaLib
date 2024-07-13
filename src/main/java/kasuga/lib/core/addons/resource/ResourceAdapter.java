@@ -3,7 +3,6 @@ package kasuga.lib.core.addons.resource;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.mixins.mixin.resources.DelegatingPackResourcesMixin;
 import kasuga.lib.mixins.mixin.resources.FilePackResourceMixin;
-import kasuga.lib.mixins.mixin.resources.PathPackResourceMixin;
 import net.minecraft.client.resources.DefaultClientPackResources;
 import net.minecraft.server.packs.FilePackResources;
 import net.minecraft.server.packs.FolderPackResources;

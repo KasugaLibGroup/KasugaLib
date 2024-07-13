@@ -3,10 +3,8 @@ package kasuga.lib.core.client.frontend.dom.registration;
 import kasuga.lib.core.client.frontend.dom.DomContext;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.SideEffectContext;
-import kasuga.lib.core.util.Callback;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.resources.ResourceLocation;
-import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Value;
 
 public class DOMRegistryItemDynamicProxy {

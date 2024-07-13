@@ -4,7 +4,6 @@ import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutBox;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutContext;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutNode;
-import kasuga.lib.core.client.frontend.common.style.Style;
 import kasuga.lib.core.client.frontend.common.style.StyleAttributeProxy;
 import kasuga.lib.core.client.frontend.common.style.StyleList;
 import kasuga.lib.core.client.frontend.common.style.StyleTarget;

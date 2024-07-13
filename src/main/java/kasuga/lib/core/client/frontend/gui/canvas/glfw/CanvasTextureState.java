@@ -2,11 +2,8 @@ package kasuga.lib.core.client.frontend.gui.canvas.glfw;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.texture.TextureManager;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL30;
 
 public class CanvasTextureState extends RenderStateShard.EmptyTextureStateShard {
     static void bind(int colorTextureId){

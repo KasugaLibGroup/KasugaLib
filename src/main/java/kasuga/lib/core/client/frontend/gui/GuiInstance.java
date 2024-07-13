@@ -8,7 +8,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.*;
-import java.util.function.Supplier;
 
 public class GuiInstance {
 

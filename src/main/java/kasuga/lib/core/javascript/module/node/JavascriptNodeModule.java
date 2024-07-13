@@ -3,14 +3,10 @@ package kasuga.lib.core.javascript.module.node;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.addons.node.AssetReader;
 import kasuga.lib.core.addons.node.NodePackage;
-import kasuga.lib.core.javascript.Asset;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.module.JavascriptModule;
 import net.minecraftforge.common.util.Lazy;
 import org.graalvm.polyglot.Value;
-
-import java.util.HashMap;
-import java.util.UUID;
 
 public class JavascriptNodeModule extends JavascriptModule {
     protected String dirname;

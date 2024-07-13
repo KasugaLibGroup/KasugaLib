@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutBox;
 import kasuga.lib.core.client.frontend.gui.events.MouseClickEvent;
-import kasuga.lib.core.client.frontend.gui.events.MouseEvent;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
 import kasuga.lib.core.util.data_type.Vec2i;
 import net.minecraft.client.gui.screens.Screen;

@@ -9,7 +9,6 @@ import kasuga.lib.core.client.frontend.gui.nodes.GuiDomNode;
 import kasuga.lib.core.client.frontend.gui.styles.AllGuiStyles;
 import kasuga.lib.core.client.frontend.gui.styles.GuiStyleRegistry;
 import kasuga.lib.core.client.frontend.rendering.ImageProviders;
-import kasuga.lib.core.client.frontend.rendering.RenderContext;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashSet;

@@ -7,7 +7,10 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
 import kasuga.lib.core.util.Callback;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderBuffers;
+
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;

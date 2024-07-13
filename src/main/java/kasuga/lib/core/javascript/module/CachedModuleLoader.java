@@ -1,7 +1,6 @@
 package kasuga.lib.core.javascript.module;
 
 import kasuga.lib.core.javascript.JavascriptContext;
-import kasuga.lib.core.javascript.module.node.JavascriptNodeModule;
 import kasuga.lib.core.util.data_type.Pair;
 
 import java.util.HashMap;

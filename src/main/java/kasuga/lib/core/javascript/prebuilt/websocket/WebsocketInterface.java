@@ -6,7 +6,9 @@ import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Value;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Queue;
 import java.util.function.Consumer;
 
 public class WebsocketInterface {

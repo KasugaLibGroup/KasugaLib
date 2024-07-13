@@ -1,17 +1,14 @@
 package kasuga.lib.core.addons.node;
 
 import kasuga.lib.core.addons.resource.ResourceProvider;
-import kasuga.lib.core.javascript.Asset;
 import kasuga.lib.core.javascript.JavascriptContext;
 import org.graalvm.polyglot.HostAccess;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 
 public class AssetReader implements BiFunction<String, String, String> {

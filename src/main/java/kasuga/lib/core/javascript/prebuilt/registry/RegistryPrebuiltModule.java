@@ -10,8 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.Value;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 

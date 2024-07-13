@@ -1,7 +1,6 @@
 package kasuga.lib.core.client.frontend.font;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import kasuga.lib.core.client.frontend.common.layouting.LayoutBox;
 import net.minecraft.client.gui.Font;
 import net.minecraft.world.phys.Vec2;
 

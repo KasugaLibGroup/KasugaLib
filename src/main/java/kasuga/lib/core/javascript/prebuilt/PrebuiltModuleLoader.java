@@ -3,7 +3,6 @@ package kasuga.lib.core.javascript.prebuilt;
 import kasuga.lib.core.javascript.module.CachedModuleLoader;
 import kasuga.lib.core.javascript.module.JavascriptModule;
 import kasuga.lib.core.javascript.module.ModuleLoader;
-import kasuga.lib.core.javascript.module.node.JavascriptNodeModule;
 import kasuga.lib.core.javascript.prebuilt.process.ProcessModule;
 import kasuga.lib.core.javascript.prebuilt.registry.RegistryPrebuiltModule;
 import kasuga.lib.core.javascript.prebuilt.timer.TimerPrebuiltModule;

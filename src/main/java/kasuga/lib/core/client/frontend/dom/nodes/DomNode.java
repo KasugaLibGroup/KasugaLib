@@ -8,7 +8,6 @@ import kasuga.lib.core.javascript.JavascriptContext;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.Value;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
