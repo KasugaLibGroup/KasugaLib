@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-public class Texture extends GraphicsImage<Texture>{
+public class Texture extends GraphicsImage<Texture> {
     @Nullable
     protected ResourceLocation location;
     @Nullable
@@ -44,6 +44,8 @@ public class Texture extends GraphicsImage<Texture>{
             float imageWidth, float imageHeight,
             SimpleColor color) {
         super(uOffset, vOffset, uWidth, vHeight, imageWidth, imageHeight);
+        this.location = location;
+        this.color = color;
         this.image = image;
         updateRawImage(rawImage, false);
         readImageInfo();
@@ -55,7 +57,7 @@ public class Texture extends GraphicsImage<Texture>{
             return;
         }
         if(rawImage != null){
-            this.rawImage = this.rawImage;
+            this.rawImage = rawImage;
             return;
         }
         if(this.location == null || Objects.equals(this.location.getNamespace(), "kasuga_lib_tempory")){

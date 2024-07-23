@@ -5,16 +5,21 @@ import kasuga.lib.core.client.render.PoseContext;
 import java.util.function.Consumer;
 
 public abstract class GraphicsImage<T extends GraphicsImage> {
-    protected float uOffset = 0F, vOffset = 0F, uWidth = 0F, vHeight = 0F, imageHeight = 0F, imageWidth = 0F;
-    protected float uOffsetUVCache = 0F, vOffsetUVCache = 0F, uWidthUVCache = 0F, vHeightUVCache = 0F;
-
+    protected float uOffset = 0F, vOffset = 0F, uWidth = 0F, vHeight = 0F, imageHeight = 0F, imageWidth = 0F; // original
+    protected float uOffsetUVCache = 0F, vOffsetUVCache = 0F, uWidthUVCache = 0F, vHeightUVCache = 0F; // cache
+    protected float pivotX = 0F, pivotY = 0F; // rotate
     PoseContext poseContext = PoseContext.of();
 
     protected GraphicsImage(
             float uOffset, float vOffset, float uWidth, float vHeight,
             float imageWidth, float imageHeight
     ) {
-
+        this.uOffset = uOffset;
+        this.vOffset = vOffset;
+        this.uWidth = uWidth;
+        this.vHeight = vHeight;
+        this.imageHeight = imageHeight;
+        this.imageWidth = imageWidth;
     }
 
     public void setUV(float uOffset, float vOffset, float uWidth, float vHeight) {
@@ -33,8 +38,8 @@ public abstract class GraphicsImage<T extends GraphicsImage> {
         }
 
         if (!Float.isNaN(vOffset)) {
-            this.vOffset = vOffset;
-            this.vHeightUVCache = vOffset / imageHeight;
+            this.vOffset = vHeight;
+            this.vHeightUVCache = vHeightUVCache / imageHeight;
         }
     }
 

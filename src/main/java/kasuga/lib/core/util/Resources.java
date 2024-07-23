@@ -109,4 +109,45 @@ public class Resources {
         ResourceManager rm = Minecraft.getInstance().getResourceManager();
         return rm.listPacks().toList();
     }
+
+    @Util
+    public static class CheatResourceLocation extends ResourceLocation {
+
+        private boolean isOutside = true;
+
+        protected CheatResourceLocation(String[] pDecomposedLocation) {
+            super(pDecomposedLocation);
+        }
+
+        public CheatResourceLocation(String pLocation) {
+            super(pLocation);
+        }
+
+        public CheatResourceLocation(String pNamespace, String pPath) {
+            super(pNamespace, pPath);
+        }
+
+        public CheatResourceLocation(String namespace, String path, boolean isOutside) {
+            super(namespace, path);
+            this.isOutside = isOutside;
+        }
+
+        public static CheatResourceLocation copy(ResourceLocation location) {
+            if (location instanceof CheatResourceLocation cheatResourceLocation)
+                return cheatResourceLocation.clone();
+            return new CheatResourceLocation(location.getNamespace(), location.getPath(), true);
+        }
+
+        public CheatResourceLocation clone() {
+            return new CheatResourceLocation(namespace, path, isOutside);
+        }
+
+        public void setOutside(boolean outside) {
+            isOutside = outside;
+        }
+
+        public boolean isOutside() {
+            return isOutside;
+        }
+    }
 }

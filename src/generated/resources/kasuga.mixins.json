@@ -9,7 +9,8 @@
     "resources.PathPackResourceMixin"
   ],
   "client": [
-    "client.MixinBlockModelBinding"
+    "client.MixinBlockModelBinding",
+    "client.MixinTextureManager"
   ],
   "minVersion": "0.8"
 }

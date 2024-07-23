@@ -12,6 +12,10 @@ public class SimpleColor {
         this.color = color;
     }
 
+    public SimpleColor copy() {
+        return fromRGBA(this.getR(), this.getG(), this.getB(), this.getA());
+    }
+
     public static SimpleColor fromRGBA(int r, int g, int b, float a) {
         return new SimpleColor(new Color(r, g, b, (int)(a * 256)));
     }
