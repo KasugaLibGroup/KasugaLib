@@ -1,11 +1,13 @@
 package kasuga.lib.core.client.render.texture;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import kasuga.lib.core.annos.Util;
 import kasuga.lib.core.client.render.SimpleColor;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
@@ -82,6 +84,14 @@ public class ImageMask {
         nbt.put(name, tag);
     }
 
+    public void renderToGui() {
+        image.renderToGui(this);
+    }
+
+    public void renderToWorld(PoseStack pose, MultiBufferSource buffer, RenderType type, boolean revert, int light) {
+        image.renderToWorld(pose, buffer, type, this, revert, light);
+    }
+
     public StaticImage getImage() {
         return image;
     }
@@ -92,6 +102,54 @@ public class ImageMask {
 
     public void setColor(SimpleColor color) {
         this.color = color;
+    }
+
+    public ImageMask setPosition(float xLeftTop, float yLeftTop, float zLeftTop,
+                                 float xRightTop, float yRightTop, float zRightTop,
+                                 float xLeftDown, float yLeftDown, float zLeftDown,
+                                 float xRightDown, float yRightDown, float zRightDown) {
+        return setPosition(new Vector3f(xLeftTop, yLeftTop, zLeftTop), new Vector3f(xRightTop, yRightTop, zRightTop),
+                new Vector3f(xLeftDown, yLeftDown, zLeftDown), new Vector3f(xRightDown, yRightDown, zRightDown));
+    }
+
+    public ImageMask setPosition(Vector3f leftTop, Vector3f rightTop, Vector3f leftDown, Vector3f rightDown) {
+        this.leftTop = leftTop;
+        this.rightTop = rightTop;
+        this.leftDown = leftDown;
+        this.rightDown = rightDown;
+        return this;
+    }
+
+    public ImageMask quadrilateral(Vector3f leftTop, Vector3f xDirection, Vector3f yDirection, float width, float height) {
+        this.leftTop = leftTop;
+        this.rightTop = leftTop.copy();
+        Vector3f w = xDirection.copy();
+        w.normalize();
+        w.mul(width);
+        Vector3f h = yDirection.copy();
+        h.normalize();
+        h.mul(height);
+        rightTop.add(w);
+        leftDown = leftTop.copy();
+        leftDown.add(h);
+        rightDown = leftDown.copy();
+        rightDown.add(rightTop);
+        return this;
+    }
+
+    public ImageMask rectangle(Vector3f leftTop, Axis xAxis, Axis yAxis, boolean xPositive, boolean yPositive, float width, float height) {
+        if (xAxis.equals(yAxis)) return this;
+        Vector3f xDirection = getDirectionVector(xAxis, xPositive);
+        Vector3f yDirection = getDirectionVector(yAxis, yPositive);
+        return quadrilateral(leftTop, xDirection, yDirection, width, height);
+    }
+
+    private Vector3f getDirectionVector(Axis axis, boolean positive) {
+        return switch (axis) {
+            case X -> positive ? new Vector3f(1, 0, 0) : new Vector3f(-1, 0, 0);
+            case Y -> positive ? new Vector3f(0, 1, 0) : new Vector3f(0, -1, 0);
+            case Z -> positive ? new Vector3f(0, 0, 1) : new Vector3f(0, 0, -1);
+        };
     }
 
     public ImageMask offset(float x, float y, float z) {

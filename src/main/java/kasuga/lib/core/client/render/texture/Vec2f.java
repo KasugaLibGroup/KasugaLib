@@ -3,6 +3,7 @@ package kasuga.lib.core.client.render.texture;
 import kasuga.lib.core.annos.Util;
 import kasuga.lib.core.util.data_type.Vec2i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 
 public class Vec2f {
     private float x, y;
@@ -97,12 +98,12 @@ public class Vec2f {
         return x * vec2f.x + y * vec2f.y;
     }
 
-    public float cross(Vec2i vec2i) {
-        return x * vec2i.y - vec2i.x * y;
+    public float cross(Vec2f vec2f) {
+        return x * vec2f.y - vec2f.x * y;
     }
 
     public Vec2f normal() {
-        return scale(1 / length());
+        return scale(fastInvSqrt(lengthSqr()));
     }
 
     public boolean isPerpendicular(Vec2f vec2f) {
@@ -169,5 +170,42 @@ public class Vec2f {
         Vec2f vec = Vec2f.ZERO;
         for (Vec2f v : vectors) vec = vec.add(v);
         return vec.scale(1 / (float) vectors.length);
+    }
+
+    @Util
+    public static Vec2f sampling(Vec2f head, Vec2f tail, float percentage) {
+        return head.add(tail.subtract(head).scale(percentage));
+    }
+
+    @Util
+    public static float fastInvSqrt(float number) {
+        return Mth.fastInvSqrt(number);
+    }
+
+    /**
+     * From <a href="https://www.cnblogs.com/zhb2000/p/vector-cross-product-solve-intersection.html">get intersections from crossing</a>
+     * @param vec1Begin began point of vector 1
+     * @param vec1End end point of vector 1
+     * @param vec2Begin began point of vector 2
+     * @param vec2End end point of vector 2
+     * @return intersection point
+     */
+    @Util
+    public static Vec2f intersection(Vec2f vec1Begin, Vec2f vec1End, Vec2f vec2Begin, Vec2f vec2End) {
+        Vec2f direction1 = vec1End.subtract(vec1Begin).normal(),
+                direction2 = vec2End.subtract(vec2Begin).normal();
+        float t = vec2Begin.subtract(vec1Begin).cross(direction2) / direction1.cross(direction2);
+        return vec1Begin.add(direction1.scale(t));
+    }
+
+    @Override
+    public String toString() {
+        return "(" + x + ", " + y + ")";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Vec2f vec2f)) return false;
+        return vec2f.x == x && vec2f.y == y;
     }
 }

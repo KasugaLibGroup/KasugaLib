@@ -65,7 +65,6 @@ public class StaticImage {
     @Inner
     public static Supplier<StaticImage> createImage(FriendlyByteBuf buf) throws IOException {
         ResourceLocation location = buf.readResourceLocation();
-        UUID uuid = buf.readUUID();
         byte[] bytes = buf.readByteArray();
         return createImage(location, new ByteArrayInputStream(bytes));
     }
@@ -206,6 +205,8 @@ public class StaticImage {
     public ImageMask getMask() {
         return new ImageMask(this);
     }
+
+    public NineSlicedImageMask getNineSlicedMask() {return new NineSlicedImageMask(this);}
 
     public int width() {
         return image.getWidth();
