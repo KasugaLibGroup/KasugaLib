@@ -41,7 +41,7 @@ public class AssetImageProvider implements ImageProvider {
         UUID uuid = null;
         try{
              uuid = UUID.fromString(name);
-        }catch (IllegalArgumentException e){
+        }catch (IllegalArgumentException e) {
             return null;
         }
         if(!KasugaLib.STACKS.JAVASCRIPT.ASSETS.get().containsKey(uuid))

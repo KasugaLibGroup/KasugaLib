@@ -47,8 +47,7 @@ public class BackgroundRenderer {
         StaticImage sim = this.image.getImage();
         if (sim == null) return null;
         ImageMask mask = sim.getMask();
-        return mask.rectangle(new Vector3f(left, top, 0), ImageMask.Axis.X, ImageMask.Axis.Y,
-                true, true, width == 0 ? sim.width() : width, height == 0 ? sim.height() : height);
+        return mask.rectangleUV(left, top, width == 0 ? sim.width() : width, height == 0 ? sim.height() : height);
     });
 
     public LazyRecomputable<NineSlicedImageMask> nineSlicedMask = LazyRecomputable.of(() ->{
@@ -56,8 +55,7 @@ public class BackgroundRenderer {
         StaticImage sim = this.image.getImage();
         if (sim == null) return null;
         NineSlicedImageMask mask = sim.getNineSlicedMask();
-        mask.rectangle(new Vector3f(left, top, 0), ImageMask.Axis.X, ImageMask.Axis.Y,
-                true, true, width == 0 ? sim.width() : width, height == 0 ? sim.height() : height);
+        mask.rectangleUV(left, top, width == 0 ? sim.width() : width, height == 0 ? sim.height() : height);
         mask.setBorders(borderSize, borderSize, borderSize, borderSize);
         mask.setScalingFactor(borderScale);
         return mask;
@@ -72,10 +70,10 @@ public class BackgroundRenderer {
     public void render(RenderContext context,int x,int y,int width,int height){
         if( mode == RenderMode.COMMON ) {
             // this.renderCommon(context, x, y, width, height);
-            neoRenderCommon(context);
+            neoRenderCommon(context, x, y, width, height);
         } else {
             // this.renderNineSliced(context, x, y, width, height);
-            neoRenderNineSliced(context);
+            neoRenderNineSliced(context, x, y, width, height);
         }
     }
 
@@ -99,12 +97,14 @@ public class BackgroundRenderer {
         }
     }
 
-    private void neoRenderNineSliced(RenderContext context) {
+    private void neoRenderNineSliced(RenderContext context, float x, float y, float width, float height) {
         if (mask == null) return;
         ImageMask imageMask = nineSlicedMask.get();
+        imageMask.rectangle(new Vector3f(x, y, 0), ImageMask.Axis.X, ImageMask.Axis.Y, true, true, width, height);
         if (context.getContextType() == RenderContext.RenderContextType.SCREEN)
             imageMask.renderToGui();
-        imageMask.renderToWorld(context.pose(), context.getBufferSource(),
+        else
+            imageMask.renderToWorld(context.pose(), context.getBufferSource(),
                 context.getRenderType().build(imageMask.image.id), true, context.packedLight);
     }
 
@@ -113,9 +113,8 @@ public class BackgroundRenderer {
             if(this.simple.get() == null)
                 return;
             this.simple.get().render(x,y,width,height);
-        }else{
-            if(this.world.get() == null)
-                return;
+        } else {
+            if(this.world.get() == null) return;
             context.pose().pushPose();
             context.pose().mulPose(Quaternion.fromXYZ(0f,3.14159267f,0f));
             context.pose().translate(x,-y,0f);
@@ -125,10 +124,11 @@ public class BackgroundRenderer {
         }
     }
 
-    public void neoRenderCommon(RenderContext context) {
+    public void neoRenderCommon(RenderContext context, float x, float y, float width, float height) {
         if (mask == null) return;
         ImageMask imageMask = mask.get();
         if (imageMask == null) return;
+        imageMask.rectangle(new Vector3f(x, y, 0), ImageMask.Axis.X, ImageMask.Axis.Y, true, true, width, height);
         if (context.getContextType() == RenderContext.RenderContextType.SCREEN)
             imageMask.renderToGui();
         imageMask.renderToWorld(context.pose(), context.getBufferSource(),
@@ -138,6 +138,8 @@ public class BackgroundRenderer {
     public void markDirty(){
         this.simple.clear();
         this.world.clear();
+        this.mask.clear();
+        this.nineSlicedMask.clear();
     }
 
     public void setImage(ImageProvider provider){
