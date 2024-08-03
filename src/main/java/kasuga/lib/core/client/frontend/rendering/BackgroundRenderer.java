@@ -47,7 +47,8 @@ public class BackgroundRenderer {
         StaticImage sim = this.image.getImage();
         if (sim == null) return null;
         ImageMask mask = sim.getMask();
-        return mask.rectangleUV(left, top, width == 0 ? sim.width() : width, height == 0 ? sim.height() : height);
+        float w = sim.image.getWidth(), h = sim.image.getHeight();
+        return mask.rectangleUV(left / w, top / h, width == 0 ? 1f : (width + left) / w, height == 0 ? 1f : (height + top) / h);
     });
 
     public LazyRecomputable<NineSlicedImageMask> nineSlicedMask = LazyRecomputable.of(() ->{
@@ -55,8 +56,9 @@ public class BackgroundRenderer {
         StaticImage sim = this.image.getImage();
         if (sim == null) return null;
         NineSlicedImageMask mask = sim.getNineSlicedMask();
-        mask.rectangleUV(left, top, width == 0 ? sim.width() : width, height == 0 ? sim.height() : height);
-        mask.setBorders(borderSize, borderSize, borderSize, borderSize);
+        float w = sim.image.getWidth(), h = sim.image.getHeight();
+        mask.rectangleUV(left / w, top / h, width == 0 ? 1f : (width + left) / w, height == 0 ? 1f : (height + top) / h);
+        mask.setBordersDirectly(borderSize / width, 1 - borderSize / width, borderSize / height, 1 - borderSize / height);
         mask.setScalingFactor(borderScale);
         return mask;
     });

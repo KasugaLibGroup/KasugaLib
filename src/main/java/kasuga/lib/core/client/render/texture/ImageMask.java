@@ -117,6 +117,7 @@ public class ImageMask {
         this.rightTop = rightTop;
         this.leftDown = leftDown;
         this.rightDown = rightDown;
+        updateMapping();
         return this;
     }
 
@@ -133,7 +134,8 @@ public class ImageMask {
         leftDown = leftTop.copy();
         leftDown.add(h);
         rightDown = leftDown.copy();
-        rightDown.add(rightTop);
+        rightDown.add(w);
+        updateMapping();
         return this;
     }
 
@@ -157,6 +159,7 @@ public class ImageMask {
         this.rightDown.add(x, y, z);
         this.leftTop.add(x, y, z);
         this.rightTop.add(x, y, z);
+        updateMapping();
         return this;
     }
 
@@ -165,6 +168,7 @@ public class ImageMask {
         this.rightDown.add(offset);
         this.leftTop.add(offset);
         this.rightTop.add(offset);
+        updateMapping();
         return this;
     }
 
@@ -216,6 +220,7 @@ public class ImageMask {
         rightTop = rotatePoint(rightTop, pivot, quaternion);
         leftDown = rotatePoint(leftDown, pivot, quaternion);
         rightDown = rotatePoint(rightDown, pivot, quaternion);
+        updateMapping();
         return this;
     }
 
@@ -254,6 +259,7 @@ public class ImageMask {
         this.leftDown = flipPoint(this.leftDown, pivot, axis);
         this.rightTop = flipPoint(this.rightTop, pivot, axis);
         this.rightDown = flipPoint(this.rightDown, pivot, axis);
+        updateMapping();
         return this;
     }
 
@@ -277,6 +283,7 @@ public class ImageMask {
         this.leftDown = scalePoint(this.leftDown, pivot, factor);
         this.rightDown = scalePoint(this.rightDown, pivot, factor);
         this.rightTop = scalePoint(this.rightTop, pivot, factor);
+        updateMapping();
         return this;
     }
 
@@ -349,6 +356,7 @@ public class ImageMask {
         this.uvRightTop = rightTop;
         this.uvLeftDown = leftDown;
         this.uvRightDown = rightDown;
+        updateMapping();
         return this;
     }
 
@@ -363,6 +371,7 @@ public class ImageMask {
         this.uvRightDown = rightDown;
         this.uvLeftDown = new Vec2f(leftTop.x(), rightDown.y());
         this.uvRightTop = new Vec2f(rightDown.x(), leftTop.y());
+        updateMapping();
         return this;
     }
 
@@ -376,6 +385,7 @@ public class ImageMask {
         this.uvLeftDown.add(normalOffset);
         this.uvRightTop.add(normalOffset);
         this.uvRightDown.add(normalOffset);
+        updateMapping();
         return this;
     }
 
@@ -384,6 +394,7 @@ public class ImageMask {
         this.uvLeftDown = scaleUVPoint(this.uvLeftDown, pivot, factor);
         this.uvRightTop = scaleUVPoint(this.uvRightTop, pivot, factor);
         this.uvRightDown = scaleUVPoint(this.uvRightDown, pivot, factor);
+        updateMapping();
         return this;
     }
 
@@ -392,6 +403,7 @@ public class ImageMask {
         this.uvRightTop = scaleUVPoint(this.uvRightTop, this.getUvGeometricCenter(), factor);
         this.uvLeftDown = scaleUVPoint(this.uvLeftDown, this.getUvGeometricCenter(), factor);
         this.uvRightDown = scaleUVPoint(this.uvRightDown, this.getUvGeometricCenter(), factor);
+        updateMapping();
         return this;
     }
 
@@ -400,6 +412,7 @@ public class ImageMask {
         this.uvLeftDown = scaleUVPoint(this.uvLeftDown, Vec2f.ZERO, factor);
         this.uvRightDown = scaleUVPoint(this.uvRightDown, Vec2f.ZERO, factor);
         this.uvRightTop = scaleUVPoint(this.uvRightTop, Vec2f.ZERO, factor);
+        updateMapping();
         return this;
     }
 
@@ -411,9 +424,7 @@ public class ImageMask {
         return rotateUVDeg(getUvGeometricCenter(), deg);
     }
 
-    public ImageMask rotateUVByZero(float rad) {
-        return rotateUV(Vec2f.ZERO, rad);
-    }
+    public ImageMask rotateUVByZero(float rad) {return rotateUV(Vec2f.ZERO, rad);}
 
     public ImageMask rotateUVByZeroDeg(float deg) {
         return rotateUVDeg(Vec2f.ZERO, deg);
@@ -432,6 +443,7 @@ public class ImageMask {
         uvLeftDown = this.uvLeftDown.rotate(pivot, rad);
         uvRightDown = this.uvRightDown.rotate(pivot, rad);
         uvRightTop = this.uvRightTop.rotate(pivot, rad);
+        updateMapping();
         return this;
     }
 
@@ -456,6 +468,7 @@ public class ImageMask {
         this.uvRightTop = flipVUPoint(this.uvRightTop, pivot, axis);
         this.uvLeftDown = flipVUPoint(this.uvLeftDown, pivot, axis);
         this.uvRightDown = flipVUPoint(this.uvRightDown, pivot, axis);
+        updateMapping();
         return this;
     }
 
@@ -518,6 +531,7 @@ public class ImageMask {
     }
 
 
+    public void updateMapping(){}
 
     @Util
     public static Vector3f rotatePoint(Vector3f point, Vector3f pivot, Quaternion quaternion) {

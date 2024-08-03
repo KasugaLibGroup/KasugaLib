@@ -134,9 +134,25 @@ public class NineSlicedImageMask extends ImageMask {
         updateMatrix();
     }
 
+    public void setBordersDirectly(float left, float right, float top, float bottom) {
+        this.left = left;
+        this.right = right;
+        this.top = top;
+        this.bottom = bottom;
+        updateMatrix();
+    }
+
     @Override
     public NineSlicedImageMask rectangle(Vector3f leftTop, Axis xAxis, Axis yAxis, boolean xPositive, boolean yPositive, float width, float height) {
         return (NineSlicedImageMask) super.rectangle(leftTop, xAxis, yAxis, xPositive, yPositive, width, height);
+    }
+
+    public void updateMapping() {
+        if (!positionMatrix.get(1, 1).equals(getLeftTop()) ||
+        !positionMatrix.get(1, 4).equals(getRightTop()) ||
+        !positionMatrix.get(4, 1).equals(getLeftDown()) ||
+        !positionMatrix.get(4, 4).equals(getRightDown()))
+            updatePositionMatrix();
     }
 
     @Override
