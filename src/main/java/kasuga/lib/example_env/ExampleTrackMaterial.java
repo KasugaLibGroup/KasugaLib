@@ -1,6 +1,7 @@
 package kasuga.lib.example_env;
 
 import com.jozufozu.flywheel.core.PartialModel;
+import com.simibubi.create.AllPartialModels;
 import kasuga.lib.core.create.SimpleTrackBlock;
 import kasuga.lib.registrations.create.TrackMaterialReg;
 import kasuga.lib.registrations.registry.CreateRegistry;
@@ -21,8 +22,8 @@ public class ExampleTrackMaterial {
             .type(testRegistry.asResource("standard"), builder::build)
             .customModel(
                     () -> new PartialModel(testRegistry.asResource("block/track/standard/tie")),
-                    () -> new PartialModel(testRegistry.asResource("block/track/standard/segment_left")),
-                    () -> new PartialModel(testRegistry.asResource("block/track/standard/segment_right"))
+                    () -> AllPartialModels.TRACK_SEGMENT_LEFT,
+                    () -> AllPartialModels.TRACK_SEGMENT_RIGHT
             )
             .simpleTrackModelOffset(0.755f)
             .sleeper(Blocks.ANDESITE_SLAB)

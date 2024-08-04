@@ -26,7 +26,7 @@ group = 'kasuga.lib' // http://maven.apache.org/guides/mini/guide-naming-convent
 archivesBaseName = 'kasuga_lib'
 
 // 通过这个来设置输出的jar是sdk jar还是实例jar
-boolean isSdk = true
+boolean isSdk = false
 
 println(project.name)
 

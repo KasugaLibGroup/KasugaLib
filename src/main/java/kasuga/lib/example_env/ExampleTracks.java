@@ -2,6 +2,7 @@ package kasuga.lib.example_env;
 
 import com.simibubi.create.AllTags;
 import com.simibubi.create.content.trains.track.TrackBlock;
+import kasuga.lib.core.base.CustomTrackRenderer;
 import kasuga.lib.core.create.TrackStateGenerator;
 import kasuga.lib.core.create.SimpleTrackBlock;
 import kasuga.lib.registrations.create.TrackReg;
@@ -29,6 +30,7 @@ public class ExampleTracks {
                     .material(Material.STONE)
                     .trackMaterial(ExampleTrackMaterial.exampleMaterial::getMaterial)
                     .pickaxeOnly()
+                    .withBlockRenderer(block -> () -> new CustomTrackRenderer<SimpleTrackBlock>(block))
                     .addTags(AllTags.AllBlockTags.TRACKS.tag)
                     .addTags(AllTags.AllBlockTags.GIRDABLE_TRACKS.tag)
                     .addTags(AllTags.AllBlockTags.RELOCATION_NOT_SUPPORTED.tag)
