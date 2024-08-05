@@ -22,6 +22,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 
 import java.util.HashMap;
 import java.util.Random;
+import java.util.function.Supplier;
 
 public class KasugaLibStacks {
     private final HashMap<String, SimpleRegistry> registries;
@@ -37,8 +38,8 @@ public class KasugaLibStacks {
         this.registries = new HashMap<>();
         TEXTURES = new TextureRegistry(KasugaLib.MOD_ID);
         FONTS = new FontRegistry(KasugaLib.MOD_ID);
-        BLOCK_RENDERERS = new HashMap<>();
         TRACK_MATERIALS = new HashMap<>();
+        BLOCK_RENDERERS = new HashMap<>();
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverAboutToStart);
         MinecraftForge.EVENT_BUS.addListener(PacketEvent::onServerPayloadHandleEvent);

@@ -6,13 +6,16 @@ import com.simibubi.create.content.trains.track.TrackMaterial;
 import com.simibubi.create.content.trains.track.TrackModel;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.TagGen;
+import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import kasuga.lib.core.create.BlockStateGenerator;
 import kasuga.lib.core.create.TrackStateGenerator;
 import kasuga.lib.registrations.common.BlockReg;
 import kasuga.lib.registrations.common.CreativeTabReg;
 import kasuga.lib.registrations.registry.CreateRegistry;
 import kasuga.lib.registrations.registry.SimpleRegistry;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
@@ -34,6 +37,7 @@ public class TrackReg<T extends TrackBlock> extends BlockReg<T> {
     private ResourceLocation trackItemModelLocation;
     int transformType = 0;
     private String trackNameSuffix = "";
+    private BlockReg.BlockRendererBuilder<T> rendererBuilder;
 
     /**
      * Use this to create a BlockReg.
@@ -95,6 +99,11 @@ public class TrackReg<T extends TrackBlock> extends BlockReg<T> {
         return this;
     }
 
+    public TrackReg<T> withBlockRenderer(BlockRendererBuilder<T> builder) {
+        this.rendererBuilder = builder;
+        return this;
+    }
+
     @Override
     public TrackReg<T> submit(SimpleRegistry registry) {
         if (!(registry instanceof CreateRegistry createRegistry)) return this;
@@ -120,6 +129,7 @@ public class TrackReg<T extends TrackBlock> extends BlockReg<T> {
                 .item(TrackBlockItem::new)
                 .model((c, p) -> p.generated(c, trackItemModelLocation)).build();
         entry = builder.register();
+        if (rendererBuilder != null) registry.cacheBlockRendererIn(this, rendererBuilder);
         return this;
     }
 
@@ -133,6 +143,11 @@ public class TrackReg<T extends TrackBlock> extends BlockReg<T> {
 
     public Item getTrackItem() {
         return entry.get().asItem();
+    }
+
+    @Override
+    public T getBlock() {
+        return getEntry().get();
     }
 
     @Override

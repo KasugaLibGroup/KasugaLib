@@ -29,6 +29,7 @@ public class ExampleTracks {
                     .material(Material.STONE)
                     .trackMaterial(ExampleTrackMaterial.exampleMaterial::getMaterial)
                     .pickaxeOnly()
+                    .withBlockRenderer(block -> () -> new CustomTrackRenderer<SimpleTrackBlock>(block))
                     .addTags(AllTags.AllBlockTags.TRACKS.tag)
                     .addTags(AllTags.AllBlockTags.GIRDABLE_TRACKS.tag)
                     .addTags(AllTags.AllBlockTags.RELOCATION_NOT_SUPPORTED.tag)

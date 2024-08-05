@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinBezierConnection {
 
     @Shadow(remap = false)
+    protected
     TrackMaterial trackMaterial;
     @Redirect(method = "getBakedGirders", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;scale(D)Lnet/minecraft/world/phys/Vec3;"))
     public Vec3 doScale(Vec3 instance, double factor) {
@@ -29,6 +30,7 @@ public class MixinBezierConnection {
     @Unique
     protected final Vec3 kasugaLib$innerScale(Vec3 instance, double factor) {
         if (factor != .965f) return instance.scale(factor);
+        KasugaLib.MAIN_LOGGER.error("innerScale");
         TrackMaterialReg reg = KasugaLib.STACKS.getCachedTrackMaterial(trackMaterial);
         if (reg == null) return instance.scale(factor);
         return reg.trackOffsets().apply(instance);

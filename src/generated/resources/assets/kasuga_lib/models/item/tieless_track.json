@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "kasuga_lib:item/track/tieless_track"
+  }
+}

@@ -29,6 +29,7 @@ public class KasugaLib {
     public static final String MOD_ID = "kasuga_lib";
     public static final Logger MAIN_LOGGER = createLogger("MAIN");
     public static IEventBus EVENTS = FMLJavaModLoadingContext.get().getModEventBus();
+
     public static final KasugaLibStacks STACKS = new KasugaLibStacks(EVENTS);
     public static final Gson GSON = new GsonBuilder().enableComplexMapKeySerialization().create();
     public KasugaLib() {

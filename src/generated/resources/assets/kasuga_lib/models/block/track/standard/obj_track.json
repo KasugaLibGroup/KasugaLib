@@ -1,0 +1,10 @@
+{
+	"ambientocclusion": false,
+	"render_type": "cutout_mipped",
+	"textures": {
+		"0": "kasuga_lib:block/track/standard_gauge_track/standard_track",
+		"1": "kasuga_lib:block/track/standard_gauge_track/standard_track_mip",
+		"2": "kasuga_lib:block/track/standard_gauge_track/standard_track_crossing",
+		"particle": "kasuga_lib:block/palettes/stone_types/polished/andesite_cut_polished"
+	}
+}

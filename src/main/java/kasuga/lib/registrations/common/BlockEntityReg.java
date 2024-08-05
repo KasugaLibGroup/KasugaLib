@@ -73,6 +73,11 @@ public class BlockEntityReg<T extends BlockEntity> extends Reg {
         return this;
     }
 
+    public BlockEntityReg<T> addBlock(BlockReg<?> reg) {
+        this.blockInvokerList.add(reg::getBlock);
+        return this;
+    }
+
     /**
      * The block entity may have a block entity renderer.
      * Block entity renderer is used for customize block rendering.
@@ -109,7 +114,8 @@ public class BlockEntityReg<T extends BlockEntity> extends Reg {
         }
         registryObject = registry.blockEntity()
                 .register(registrationKey, () -> BlockEntityType.Builder.of(builder, getBlockList()).build(dataType));
-        registry.cacheBeIn(this);
+        if (rendererBuilder != null)
+            registry.cacheBeIn(this);
         return this;
     }
 

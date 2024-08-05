@@ -23,7 +23,7 @@ import net.minecraft.world.level.material.MaterialColor;
 
 public class AllExampleElements {
 
-    public static final CreateRegistry testRegistry = ExampleMain.testRegistry;
+    public static final SimpleRegistry testRegistry = ExampleMain.testRegistry;
 
     public static final BlockReg<GreenAppleBlock> greenApple = new BlockReg<GreenAppleBlock>("green_apple")
             .blockType(GreenAppleBlock::new)
@@ -93,5 +93,5 @@ public class AllExampleElements {
             .loadPacket(ExampleS2CPacket.class, ExampleS2CPacket::new)
             .submit(testRegistry);
 
-    public static void invoke(){}
+    public static void invoke() {}
 }

@@ -9,14 +9,17 @@ public class CreateRegistry extends SimpleRegistry {
      * This constructor is used for create a new KasugaLib registration.
      *
      * @param namespace your mod namespace name
-     * @param bus       your mod namespace eventbus. For more info see
-     *                  {@link FMLJavaModLoadingContext#get()}
-     *                  and
-     *                  {@link FMLJavaModLoadingContext#getModEventBus()}
+     * @param bus       mod bus
      */
     public CreateRegistry(String namespace, IEventBus bus) {
         super(namespace, bus);
         createRegistry = CreateRegistrate.create(namespace);
+        movements = new LinkedList<>();
+        bus.addListener(this::onSetup);
+    }
+
+    public void cacheMovementIn(InteractionMovementReg movementReg) {
+        this.movements.add(movementReg);
     }
 
     public CreateRegistrate createRegistry() {
@@ -27,5 +30,10 @@ public class CreateRegistry extends SimpleRegistry {
     public void submit() {
         super.submit();
         createRegistry.registerEventListeners(eventBus);
+    }
+
+    protected void onSetup(final FMLCommonSetupEvent event) {
+        for (InteractionMovementReg movementReg : movements)
+            movementReg.onSetup();
     }
 }
