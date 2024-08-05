@@ -3,7 +3,7 @@ package kasuga.lib.core.base;
 import com.jozufozu.flywheel.core.PartialModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.simibubi.create.content.trains.track.TrackBlock;
 import com.simibubi.create.content.trains.track.TrackMaterial;
 import com.simibubi.create.content.trains.track.TrackShape;
@@ -54,7 +54,7 @@ public class CustomTrackRenderer<T extends TrackBlock> extends CustomBlockRender
         }
         float f = - direction.getOpposite().toYRot();
         stack.translate(.5, .06, .5);
-        stack.mulPose(Vector3f.YP.rotationDegrees(f));
+        stack.mulPose(Axis.YP.rotationDegrees(f));
         stack.translate(-.5, 0, -.5);
         if (isAscending(shape)) {
             renderAscendingSegment(stack, consumer, leftBuffer, rightBuffer, tieBuffer);
@@ -73,7 +73,7 @@ public class CustomTrackRenderer<T extends TrackBlock> extends CustomBlockRender
 
     private void renderAscendingSegment(PoseStack stack, VertexConsumer consumer, SuperByteBuffer left, SuperByteBuffer right,
                                         SuperByteBuffer tie) {
-        stack.mulPose(Vector3f.XP.rotationDegrees(45f));
+        stack.mulPose(Axis.XP.rotationDegrees(45f));
         stack.translate(0, 0.625, -.9);
         renderTrackSegment(stack, consumer, left, right, tie, offset);
         stack.translate(0, 0, .5);
