@@ -27,6 +27,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
@@ -245,11 +246,11 @@ public class SimpleRegistry {
         FLUID_TYPE.register(eventBus);
         FLUID.register(eventBus);
         for(String key : CACHE_OF_BLOCK_ENTITIES.keySet()) {
+            BlockEntityReg<?> reg = CACHE_OF_BLOCK_ENTITIES.get(key);
             try {
-                BlockEntityReg<?> reg = CACHE_OF_BLOCK_ENTITIES.get(key);
                 reg.getType();
                 reg.submit(this);
-            } catch (Exception ignore) {}
+            } catch (Exception ignored) {}
         }
         for(String key : CACHE_OF_MENUS.keySet()) {CACHE_OF_MENUS.get(key).submit(this);}
         BLOCK_ENTITIES.register(eventBus);

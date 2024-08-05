@@ -2,6 +2,7 @@ package kasuga.lib.mixins.mixin.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.CustomBlockRenderer;
 import net.minecraft.client.renderer.RenderType;
@@ -40,6 +41,7 @@ public class MixinBlockRenderDispatcher {
             shouldRenderOriginModel = true;
             return;
         }
+        if (!renderer.skipOriginalModelRenderering(state, pos, level, renderType)) shouldRenderOriginModel = true;
         if (!renderer.shouldRender(state, pos, level, renderType)) return;
         renderer.render(state, pos, level, stack, consumer, renderType, level.getBrightness(LightLayer.BLOCK, pos));
         shouldRenderOriginModel = false;

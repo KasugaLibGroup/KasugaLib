@@ -88,7 +88,7 @@ public class BlockReg<T extends Block> extends Reg {
         return this;
     }
 
-    
+
     public BlockReg<T> materialColor(MapColor color) {
         this.color = color;
         return this;

@@ -87,7 +87,6 @@ public class Trigger extends AnimationElement implements AnimAssignable {
         return functions;
     }
 
-
     @Override
     public boolean isAssignable() {
         return namespace.hasInstance();

@@ -11,6 +11,8 @@ import kasuga.lib.example_env.item.GreenAppleItem;
 import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
 import kasuga.lib.registrations.client.AnimReg;
+import kasuga.lib.registrations.registry.CreateRegistry;
+import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.client.ModelReg;
 import kasuga.lib.registrations.common.*;
 import kasuga.lib.registrations.registry.CreateRegistry;

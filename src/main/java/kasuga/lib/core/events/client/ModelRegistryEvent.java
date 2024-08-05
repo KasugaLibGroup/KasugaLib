@@ -67,6 +67,7 @@ public class ModelRegistryEvent {
             registry.onBlockRendererReg();
             registry.onEntityRendererReg();
             registry.onAnimationReg();
+            registry.onBlockRendererReg();
         }
     }
 }

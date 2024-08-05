@@ -28,4 +28,9 @@ public class CreateRegistry extends SimpleRegistry {
         super.submit();
         createRegistry.registerEventListeners(eventBus);
     }
+
+    protected void onSetup(final FMLCommonSetupEvent event) {
+        for (InteractionMovementReg movementReg : movements)
+            movementReg.onSetup();
+    }
 }

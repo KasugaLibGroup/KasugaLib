@@ -80,21 +80,20 @@ public class KasugaLibStacks {
         TEXTURES.onRegister();
     }
 
-    public void cacheBlockRendererIn(Block block, CustomBlockRenderer blockRenderer) {
-        BLOCK_RENDERERS.put(block, blockRenderer);
-    }
-
-    public CustomBlockRenderer getBlockRenderer(Block block) {
-        return BLOCK_RENDERERS.getOrDefault(block, null);
-    }
-
-
     public void cacheTrackMaterialIn(TrackMaterialReg reg) {
         TRACK_MATERIALS.put(reg.getMaterial(), reg);
     }
 
     public TrackMaterialReg getCachedTrackMaterial(TrackMaterial material) {
         return TRACK_MATERIALS.getOrDefault(material, null);
+    }
+
+    public void cacheBlockRendererIn(Block block, CustomBlockRenderer blockRenderer) {
+        BLOCK_RENDERERS.put(block, blockRenderer);
+    }
+
+    public CustomBlockRenderer getBlockRenderer(Block block) {
+        return BLOCK_RENDERERS.getOrDefault(block, null);
     }
 
     public HashMap<String, SimpleRegistry> getRegistries() {
