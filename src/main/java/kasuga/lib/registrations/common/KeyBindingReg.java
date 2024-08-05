@@ -16,7 +16,6 @@ import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.network.NetworkEvent;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
@@ -31,34 +30,65 @@ public class KeyBindingReg extends Reg {
     private Consumer<ServerPlayer> serverHandler;
     private static final LinkedList<KeyBindingReg> reference;
 
-    public static ChannelReg keyChannel;
+    private static final ChannelReg keyChannel;
 
     static {
-        keyChannel = new ChannelReg("kasuga_lib")
+        keyChannel = new ChannelReg("kasuga_lib_key_bindings")
                 .brand("1.0")
                 .loadPacket(KeyBindingReg.KeySyncPacket.class, KeyBindingReg.KeySyncPacket::new)
                 .submit(KasugaLibStacks.REGISTRY);
         reference = new LinkedList<>();
     }
 
+    /**
+     * The beginning of your registry
+     * @param translationKey Your key binding's translatable name
+     * @param categoryName Your key binding's category name
+     * @param type Your input type
+     * @param defaultKeyCode Your key's GLFW code
+     * @param modifier Does this binding requires shift, control or alt to be pressed at the same time?
+     * @see KeyMapping
+     */
     public KeyBindingReg(String translationKey, String categoryName, InputConstants.Type type, int defaultKeyCode, KeyModifier modifier) {
         super(translationKey);
         this.keyCode = defaultKeyCode;
         this.category = categoryName;
         this.mapping = new KeyMapping(translationKey, KeyConflictContext.UNIVERSAL, modifier, type, defaultKeyCode, categoryName);
-        reference.add(this);
     }
 
+    /**
+     * Set your input handler on logical client side
+     * @param consumer The handler
+     * @return The Reg itself
+     */
     public KeyBindingReg setClientHandler(Consumer<LocalPlayer> consumer){
         clientHandler = consumer;
         return this;
     }
 
+    /**
+     * Set your input handler on logical server side
+     * @param consumer The handler
+     * @return The Reg itself
+     */
     public KeyBindingReg setServerHandler(Consumer<ServerPlayer> consumer){
         serverHandler = consumer;
         return this;
     }
 
+    /**
+     * Marks your registry is over
+     * @param registry Your mod's SimpleRegistry.
+     * @return The Reg itself
+     */
+    @Override
+    public KeyBindingReg submit(SimpleRegistry registry) {
+        registry.key().put(this.toString(), this);
+        reference.add(this);
+        return this;
+    }
+
+    @Inner
     public static void onClientTick(){
         reference.stream().filter(reg -> reg.mapping.consumeClick())
                 .forEach(reg -> {
@@ -72,11 +102,6 @@ public class KeyBindingReg extends Reg {
     @Inner
     public static void register(RegisterKeyMappingsEvent event) {
         reference.forEach(reg -> event.register(reg.mapping));
-    }
-
-    @Override
-    public KeyBindingReg submit(SimpleRegistry registry) {
-        return this;
     }
 
     @Override
@@ -106,17 +131,7 @@ public class KeyBindingReg extends Reg {
                 .isEquals();
     }
 
-    @Inner
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(keyCode)
-                .append(category)
-                .append(registrationKey)
-                .toHashCode();
-    }
-
-    public static class KeySyncPacket extends C2SPacket{
+    private static class KeySyncPacket extends C2SPacket{
         String key;
 
         public KeySyncPacket() {

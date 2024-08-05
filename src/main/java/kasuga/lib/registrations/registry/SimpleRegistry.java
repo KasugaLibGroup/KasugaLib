@@ -6,19 +6,15 @@ import kasuga.lib.core.annos.Beta;
 import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Util;
-import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
-import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgumentInfo;
+import kasuga.lib.core.base.SimpleCreativeTab;
 import kasuga.lib.core.client.ModelMappings;
 import kasuga.lib.core.client.render.model.CustomRenderedItemModel;
-import kasuga.lib.core.base.SimpleCreativeTab;
 import kasuga.lib.registrations.BlockEntityRendererBuilder;
 import kasuga.lib.registrations.client.AnimReg;
 import kasuga.lib.registrations.common.*;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.commands.synchronization.ArgumentTypeInfo;
-import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
@@ -38,7 +34,6 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,6 +75,7 @@ public class SimpleRegistry {
     private final ModelMappings modelMappings;
     private final HashMap<String, SimpleCreativeTab> TABS;
     private final HashMap<String, CommandReg> COMMANDS;
+    private final HashMap<String, KeyBindingReg> KEY_BINDINGS;
     private final HashMap<String, AnimReg> ANIMS;
 
     /**
@@ -116,6 +112,7 @@ public class SimpleRegistry {
         CACHE_OF_BLOCK_RENDERER = new HashMap<>();
         TABS = new HashMap<>();
         COMMANDS = new HashMap<>();
+        KEY_BINDINGS = new HashMap<>();
         ANIMS = new HashMap<>();
     }
 
@@ -231,6 +228,12 @@ public class SimpleRegistry {
      * @return the regsitry of kasuga lib's commands.
      */
     public HashMap<String, CommandReg> command() {return COMMANDS;}
+
+    /**
+     * return the registry of key bindings. See {@link kasuga.lib.registrations.common.KeyBindingReg}
+     * @return the regsitry of kasuga lib's key bindings.
+     */
+    public HashMap<String, KeyBindingReg> key() {return KEY_BINDINGS;}
 
     public HashMap<String, AnimReg> animation() {return ANIMS;}
 
