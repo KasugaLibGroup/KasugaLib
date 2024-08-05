@@ -1,6 +1,7 @@
 package kasuga.lib.example_env;
 
 import com.jozufozu.flywheel.core.PartialModel;
+import com.simibubi.create.AllPartialModels;
 import kasuga.lib.example_env.block.track.SimpleTrackBlock;
 import kasuga.lib.registrations.create.TrackMaterialReg;
 import kasuga.lib.registrations.registry.CreateRegistry;

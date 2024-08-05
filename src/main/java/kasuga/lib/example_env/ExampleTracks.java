@@ -2,6 +2,7 @@ package kasuga.lib.example_env;
 
 import com.simibubi.create.AllTags;
 import com.simibubi.create.content.trains.track.TrackBlock;
+import kasuga.lib.core.base.CustomTrackRenderer;
 import kasuga.lib.core.create.TrackStateGenerator;
 import kasuga.lib.example_env.block.track.SimpleTrackBlock;
 import kasuga.lib.registrations.create.TrackReg;

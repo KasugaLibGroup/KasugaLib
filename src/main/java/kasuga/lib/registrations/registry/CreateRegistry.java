@@ -1,10 +1,15 @@
 package kasuga.lib.registrations.registry;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import kasuga.lib.registrations.create.InteractionMovementReg;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+
+import java.util.LinkedList;
 
 public class CreateRegistry extends SimpleRegistry {
     private final CreateRegistrate createRegistry;
+    private final LinkedList<InteractionMovementReg> movements;
     /**
      * This constructor is used for create a new KasugaLib registration.
      *

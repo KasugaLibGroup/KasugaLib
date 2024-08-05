@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.CustomBlockRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.resources.model.BakedModel;
@@ -41,7 +42,7 @@ public class MixinBlockRenderDispatcher {
             return;
         }
         if (!renderer.shouldRender(state, pos, level)) return;
-        renderer.render(state, pos, level, pose, consumer, level.getBrightness(LightLayer.BLOCK, pos));
+        renderer.render(state, pos, level, pose, consumer, RenderType.cutout(), level.getBrightness(LightLayer.BLOCK, pos));
         shouldRenderOriginModel = false;
     }
 

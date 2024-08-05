@@ -6,17 +6,11 @@ import com.simibubi.create.content.trains.track.*;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.block.ProperWaterloggedBlock;
 import kasuga.lib.example_env.AllExampleBogey;
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.client.extensions.common.IClientBlockExtensions;
-
-import java.util.function.Consumer;
 
 public class TestTrackBlock extends TrackBlock
         implements IBE<TrackBlockEntity>,
