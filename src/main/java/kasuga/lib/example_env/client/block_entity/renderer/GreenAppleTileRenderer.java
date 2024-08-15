@@ -1,7 +1,6 @@
 package kasuga.lib.example_env.client.block_entity.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
 import kasuga.lib.core.client.render.component.SimpleComponent;

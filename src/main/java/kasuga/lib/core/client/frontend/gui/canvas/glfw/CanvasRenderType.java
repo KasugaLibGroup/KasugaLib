@@ -11,7 +11,8 @@ import net.minecraft.client.renderer.RenderType;
 import java.util.function.Function;
 
 public class CanvasRenderType {
-    protected static final RenderStateShard.ShaderStateShard NEW_ENTITY_SHADER = new RenderStateShard.ShaderStateShard(GameRenderer::getNewEntityShader);
+    // TODO: Needed to be checked.
+    protected static final RenderStateShard.ShaderStateShard NEW_ENTITY_SHADER = new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEntitySolidShader);
     protected static final RenderStateShard.TransparencyStateShard NO_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("no_transparency", () -> {
         RenderSystem.disableBlend();
     }, () -> {

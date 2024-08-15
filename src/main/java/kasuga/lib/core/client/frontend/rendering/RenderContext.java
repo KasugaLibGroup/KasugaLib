@@ -2,26 +2,29 @@ package kasuga.lib.core.client.frontend.rendering;
 
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
 import kasuga.lib.core.client.frontend.common.interaction.MouseContext;
 import kasuga.lib.core.client.frontend.common.interaction.PlaneMouseContext;
+import kasuga.lib.core.client.frontend.gui.GuiScreen;
 import kasuga.lib.core.client.render.texture.WorldTexture;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import org.joml.Matrix4f;
 
 import java.util.Stack;
 
 public class RenderContext {
 
-    public static RenderContext fromScreen(Screen screen,PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick){
+    public static RenderContext fromScreen(Screen screen, GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick){
         RenderContext context = new RenderContext(RenderContextType.SCREEN);
-        context.setPoseStack(pPoseStack);
+        context.setPoseStack(guiGraphics.pose());
         context.setMouseContext(new PlaneMouseContext(pMouseX,pMouseY));
         context.setPartialTicks(pPartialTick);
         context.setSource(screen);
+        context.setGuiGraphics(guiGraphics);
         return context;
     }
 
@@ -34,6 +37,8 @@ public class RenderContext {
     }
 
     protected RenderContextType contextType;
+
+    protected GuiGraphics guiGraphics = null;
 
     protected MultiBufferSource bufferSource;
     protected PoseStack poseStack;
@@ -144,6 +149,14 @@ public class RenderContext {
 
     public void setSource(Object source){
         this.source = source;
+    }
+
+    public void setGuiGraphics(GuiGraphics guiGraphics) {
+        this.guiGraphics = guiGraphics;
+    }
+
+    public GuiGraphics guiGraphics() {
+        return guiGraphics;
     }
 }
 

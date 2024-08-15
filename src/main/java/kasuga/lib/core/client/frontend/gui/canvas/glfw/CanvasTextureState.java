@@ -17,7 +17,7 @@ public class CanvasTextureState extends RenderStateShard.EmptyTextureStateShard 
     }
     public CanvasTextureState(int colorTextureId) {
         super(()->{
-            RenderSystem.enableTexture();
+            RenderSystem.enableBlend();
             bind(colorTextureId);
             GlStateManager._texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
             GlStateManager._texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);

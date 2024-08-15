@@ -52,7 +52,7 @@ public class GuiTextNode extends GuiDomNode implements MayMeasurable {
         super.render(source, context);
         LayoutNode layout = getLayoutManager().getSourceNode(source);
         LayoutBox box = layout.getPosition();
-        FontHelper.draw(Minecraft.getInstance().font, context.pose(), new Vec2(box.x,box.y), fontSize.get(),content,0xff000000);
+        FontHelper.draw(Minecraft.getInstance().font, context, new Vec2(box.x,box.y), fontSize.get(),content,0xff000000);
     }
 
     @Override

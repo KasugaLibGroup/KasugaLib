@@ -1,47 +1,41 @@
 package kasuga.lib.core.client.animation.neo_neo;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import kasuga.lib.core.annos.Util;
-import kasuga.lib.core.client.render.RendererUtil;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 
 @Util
 public class VectorUtil {
 
-    public static Vec3 rot(Vector3f axis, Vec3 org, float rot, boolean degree) {
+    public static Vec3 rot(Axis axis, Vec3 org, float rot, boolean degree) {
         Vector3f org3f = VectorUtil.vec3ToVec3f(org);
-        Quaternion quaternion = degree ? Quaternion.fromXYZDegrees(org3f) : Quaternion.fromXYZ(org3f);
-        quaternion.mul(degree ? axis.rotationDegrees(rot) : axis.rotation(rot));
-        return VectorUtil.vec3fToVec3(degree ? quaternion.toXYZDegrees() : quaternion.toXYZ());
+        Quaternionf quaternionf = degree ? fromXYZDegrees(org3f) : fromXYZ(org3f);
+        quaternionf.mul(degree ? axis.rotationDegrees(rot) : axis.rotation(rot));
+        return VectorUtil.vec3fToVec3(degree ? toXYZDegrees(quaternionf) : toXYZ(quaternionf));
     }
 
-    public static Quaternion rotQuaternion(Quaternion org, Quaternion rot) {
-        Quaternion quaternion = org.copy();
-        quaternion.mul(rot);
-        return quaternion;
+    public static Quaternionf rotQuaternionf(Quaternionf org, Quaternionf rot) {
+        Quaternionf quaternionf = new Quaternionf(org);
+        quaternionf.mul(rot);
+        return quaternionf;
     }
 
     public static Vec3 rot(Vec3 org, Vec3 rot, boolean degree) {
         Vector3f org3f = VectorUtil.vec3ToVec3f(org),
                 rot3f = VectorUtil.vec3ToVec3f(rot);
-        Quaternion orgQ = degree ? Quaternion.fromXYZDegrees(org3f) : Quaternion.fromXYZ(org3f),
-                rotQ = degree ? Quaternion.fromXYZDegrees(rot3f) : Quaternion.fromXYZ(rot3f);
+        Quaternionf orgQ = degree ? fromXYZDegrees(org3f) : fromXYZ(org3f),
+                rotQ = degree ? fromXYZDegrees(rot3f) : fromXYZ(rot3f);
         orgQ.mul(rotQ);
-        return VectorUtil.vec3fToVec3(degree ? orgQ.toXYZDegrees() : orgQ.toXYZ());
+        return VectorUtil.vec3fToVec3(degree ? toXYZDegrees(orgQ) : toXYZ(orgQ));
     }
 
-    public static Quaternion getQuaternion(Vec3 rot, boolean degree) {
+    public static Quaternionf getQuaternionf(Vec3 rot, boolean degree) {
         Vector3f vector3f = VectorUtil.vec3ToVec3f(rot);
-        return degree ? Quaternion.fromXYZDegrees(vector3f) : Quaternion.fromXYZ(vector3f);
+        return degree ? fromXYZDegrees(vector3f) : fromXYZ(vector3f);
     }
 
 
@@ -54,15 +48,15 @@ public class VectorUtil {
     }
 
     public static Vec3 rotX(Vec3 org, float rot, boolean degree) {
-        return rot(Vector3f.XP, org, rot, degree);
+        return rot(Axis.XP, org, rot, degree);
     }
 
     public static Vec3 rotY(Vec3 org, float rot, boolean degree) {
-        return rot(Vector3f.YP, org, rot, degree);
+        return rot(Axis.YP, org, rot, degree);
     }
 
     public static Vec3 rotZ(Vec3 org, float rot, boolean degree) {
-        return rot(Vector3f.ZP, org, rot, degree);
+        return rot(Axis.ZP, org, rot, degree);
     }
 
     public static Vec3 rotXDeg(Vec3 org, float rot) {
@@ -96,7 +90,7 @@ public class VectorUtil {
     }
 
     public static void rot(PoseStack pose, Vec3 rotation, boolean degree) {
-        pose.mulPose(getQuaternion(rotation, degree));
+        pose.mulPose(getQuaternionf(rotation, degree));
     }
 
     public static float translateDegAndRad(float rot, boolean toDeg) {
@@ -141,12 +135,42 @@ public class VectorUtil {
     }
 
     public static Vector3f vec3ToVec3f(Vec3 vec3) {
-        return new Vector3f(vec3);
+        return vec3.toVector3f();
     }
 
     public static Vec3 vec3fToVec3(Vector3f vector3f) {
         return new Vec3(vector3f);
     }
 
+    public static Quaternionf fromXYZ(Vector3f rotations) {
+        Quaternionf quaternionf = new Quaternionf();
+        quaternionf.rotateXYZ(rotations.x(), rotations.y(), rotations.z());
+        return quaternionf;
+    }
 
+    public static Quaternionf fromXYZ(float x, float y, float z) {
+        return fromXYZ(new Vector3f(x, y, z));
+    }
+
+    public static Quaternionf fromXYZDegrees(Vector3f rotations) {
+        Vector3f rad = new Vector3f(rotations);
+        rad.mul((float) Math.PI / 180f);
+        return fromXYZ(rad);
+    }
+
+    public static Vector3f toXYZ(Quaternionf quaternionf) {
+        float f = quaternionf.w() * quaternionf.w();
+        float f1 = quaternionf.x() * quaternionf.x();
+        float f2 = quaternionf.y() * quaternionf.y();
+        float f3 = quaternionf.z() * quaternionf.z();
+        float f4 = f + f1 + f2 + f3;
+        float f5 = 2.0F * quaternionf.w() * quaternionf.x() - 2.0F * quaternionf.y() * quaternionf.z();
+        float f6 = (float)Math.asin((double)(f5 / f4));
+        return Math.abs(f5) > 0.999F * f4 ? new Vector3f(2.0F * (float)Math.atan2((double)quaternionf.x(), (double)quaternionf.w()), f6, 0.0F) : new Vector3f((float)Math.atan2((double)(2.0F * quaternionf.y() * quaternionf.z() + 2.0F * quaternionf.x() * quaternionf.w()), (double)(f - f1 - f2 + f3)), f6, (float)Math.atan2((double)(2.0F * quaternionf.x() * quaternionf.y() + 2.0F * quaternionf.w() * quaternionf.z()), (double)(f + f1 - f2 - f3)));
+    }
+
+    public static Vector3f toXYZDegrees(Quaternionf quaternionf) {
+        Vector3f vector3f = toXYZ(quaternionf);
+        return new Vector3f((float)Math.toDegrees((double)vector3f.x()), (float)Math.toDegrees((double)vector3f.y()), (float)Math.toDegrees((double)vector3f.z()));
+    }
 }

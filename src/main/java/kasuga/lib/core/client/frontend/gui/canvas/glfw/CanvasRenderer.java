@@ -4,12 +4,12 @@ import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix4f;
 import kasuga.lib.core.util.Callback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderBuffers;
+import org.joml.Matrix4f;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -38,12 +38,14 @@ public class CanvasRenderer {
 
         RenderSystem.clear(16640, ON_OSX);
         target.bindWrite(true);
-        RenderSystem.enableTexture();
+        RenderSystem.enableBlend();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        Matrix4f matrix4f = Matrix4f.orthographic(0.0F, 256F, 0.0F, 256F, 1000.0F, 3000.0F);
-        RenderSystem.setProjectionMatrix(matrix4f);
+
+        Matrix4f matrix4f = orthographic(0.0F, 256F, 0.0F, 256F, 1000.0F, 3000.0F);
+        // TODO: Needed to be checked.
+        RenderSystem.setProjectionMatrix(matrix4f, RenderSystem.getVertexSorting());
         PoseStack poseStack = RenderSystem.getModelViewStack();
         poseStack.setIdentity();
         poseStack.translate(0.0, 0.0, (double)(1000.0F - 3000.0F));
@@ -52,7 +54,7 @@ public class CanvasRenderer {
         actualRender();
         target.unbindWrite();
         RenderSystem.disableBlend();
-        RenderSystem.disableTexture();
+        RenderSystem.disableBlend();
         RenderSystem.clear(16640, ON_OSX);
     }
 
@@ -96,5 +98,20 @@ public class CanvasRenderer {
 
     public void pushTask(Callback drawFunction) {
         taskQueue.add(drawFunction);
+    }
+
+    public static Matrix4f orthographic(float pMinX, float pMaxX, float pMinY, float pMaxY, float pMinZ, float pMaxZ) {
+        Matrix4f matrix4f = new Matrix4f();
+        float f = pMaxX - pMinX;
+        float f1 = pMinY - pMaxY;
+        float f2 = pMaxZ - pMinZ;
+        matrix4f.m00(2.0F / f);
+        matrix4f.m11(2.0F / f1);
+        matrix4f.m22(-2.0F / f2);
+        matrix4f.m03(-(pMaxX + pMinX) / f);
+        matrix4f.m13(-(pMinY + pMaxY) / f1);
+        matrix4f.m23(-(pMaxZ + pMinZ) / f2);
+        matrix4f.m33(1.0F);
+        return matrix4f;
     }
 }

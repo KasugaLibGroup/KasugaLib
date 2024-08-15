@@ -17,17 +17,22 @@ buildscript {
 plugins {
     id 'eclipse'
     id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '7.1.+'
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'org.spongepowered.mixin'
+
+configurations {
+    shadedLib
+}
 
 
 version = "${mod_version}"
 group = 'kasuga.lib' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'kasuga_lib'
 
-boolean isSdk = true
+boolean isSdk = false
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -195,6 +200,48 @@ dependencies {
     implementation "org.spongepowered:mixin:${mixin_version}"
     annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
     testAnnotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
+
+    minecraftLibrary ('org.lwjgl:lwjgl-yoga:3.3.1') {
+        exclude group: 'org.lwjgl',module: 'lwjgl'
+    };
+    shadedLib(group: "org.lwjgl", name: "lwjgl-yoga", version: "[3.3.1, 4.0.0)"){
+        exclude group: 'org.lwjgl',module: 'lwjgl'
+    };
+
+    implementation('io.netty:netty-codec-http:4.1.77.Final');
+
+    minecraftLibrary ('io.netty:netty-codec-http:4.1.77.Final'){
+        exclude group: 'io.netty', module:'netty-handler';
+        exclude group: 'io.netty', module:'netty-handler-proxy';
+        exclude group: 'io.netty', module:'netty-codec';
+        exclude group: 'io.netty', module:'netty-transport';
+        exclude group: 'io.netty', module:'netty-buffer';
+        exclude group: 'io.netty', module:'netty-resolver';
+        exclude group: 'io.netty', module:'netty-common';
+    }
+
+    shadedLib ('io.netty:netty-codec-http:4.1.77.Final'){
+        exclude group: 'io.netty', module:'netty-handler';
+        exclude group: 'io.netty', module:'netty-handler-proxy';
+        exclude group: 'io.netty', module:'netty-codec';
+        exclude group: 'io.netty', module:'netty-transport';
+        exclude group: 'io.netty', module:'netty-buffer';
+        exclude group: 'io.netty', module:'netty-resolver';
+        exclude group: 'io.netty', module:'netty-common';
+    }
+
+    minecraftLibrary "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.0"
+    shadedLib(group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)")
+
+    // shadedLib("org.graalvm.polyglot:js-community:23.1.0");
+    // implementation("org.graalvm.sdk:graal-sdk:22.0.2");
+    minecraftLibrary("org.graalvm.sdk:graal-sdk:22.3.2")
+    shadedLib("org.graalvm.sdk:graal-sdk:22.3.2")
+
+    minecraftLibrary("org.graalvm.js:js:22.3.2")
+    minecraftLibrary("org.graalvm.tools:chromeinspector:22.3.2")
+    shadedLib("org.graalvm.tools:chromeinspector:22.3.2")
+    shadedLib("org.graalvm.js:js:22.3.2")
 
     // implementation files('libs/Mixed-Arithmetic-Logic-Interpreter-1.0.0.jar')
 

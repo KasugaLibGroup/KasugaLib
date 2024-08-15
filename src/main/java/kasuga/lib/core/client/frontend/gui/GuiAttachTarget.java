@@ -38,7 +38,7 @@ public class GuiAttachTarget implements Iterable<Object> {
     }
 
     public boolean isEntitySourceClosable(){
-        return entity.stream().allMatch((e)->e.isRemoved() || !e.getLevel().isLoaded(e.blockPosition()));
+        return entity.stream().allMatch((e)->e.isRemoved() || !e.level().isLoaded(e.blockPosition()));
     }
 
     public boolean isScreenSourceClosable(){

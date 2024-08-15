@@ -1,6 +1,6 @@
 package kasuga.lib.core.client.frontend.rendering;
 
-import com.mojang.math.Quaternion;
+import kasuga.lib.core.client.animation.neo_neo.VectorUtil;
 import kasuga.lib.core.client.render.texture.SimpleTexture;
 import kasuga.lib.core.client.render.texture.WorldTexture;
 import kasuga.lib.core.util.LazyRecomputable;
@@ -67,7 +67,7 @@ public class BackgroundRenderer {
             if(this.world.get() == null)
                 return;
             context.pose().pushPose();
-            context.pose().mulPose(Quaternion.fromXYZ(0f,3.14159267f,0f));
+            context.pose().mulPose(VectorUtil.fromXYZ(0f,3.14159267f,0f));
             context.pose().translate(x,-y,0f);
             this.world.get().renderType(context.getRenderType());
             this.world.get().render(context.pose(),context.getBufferSource(),width,height,context.getLight(),true);
@@ -84,7 +84,7 @@ public class BackgroundRenderer {
             if(this.world.get() == null)
                 return;
             context.pose().pushPose();
-            context.pose().mulPose(Quaternion.fromXYZ(0f,3.14159267f,0f));
+            context.pose().mulPose(VectorUtil.fromXYZ(0f,3.14159267f,0f));
             context.pose().translate(x,-y,0f);
             this.world.get().renderType(context.getRenderType());
             this.world.get().render(context.pose(),context.getBufferSource(),width,height,context.getLight(),true);

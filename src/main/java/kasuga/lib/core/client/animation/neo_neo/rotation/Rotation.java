@@ -69,7 +69,7 @@ public abstract class Rotation extends Movement {
     @Override
     public void move(float time, PoseStack pose) {
         pivot.apply(pose);
-        pose.mulPose(VectorUtil.getQuaternion(getPercentage(calculateTime(time)), degree));
+        pose.mulPose(VectorUtil.getQuaternionf(getPercentage(calculateTime(time)), degree));
         pivot.reverseApply(pose);
     }
 

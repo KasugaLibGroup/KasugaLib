@@ -6,9 +6,11 @@ import kasuga.lib.core.client.frontend.common.layouting.LayoutBox;
 import kasuga.lib.core.client.frontend.gui.events.MouseClickEvent;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
 import kasuga.lib.core.util.data_type.Vec2i;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiScreen extends Screen {
     private final GuiInstance instance;
@@ -33,10 +35,10 @@ public class GuiScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+    public void render(@NotNull GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
         instance.getContext().ifPresent((context)->{
-            context.render(this,RenderContext.fromScreen(this,pPoseStack,pMouseX,pMouseY,pPartialTick));
+            context.render(this,RenderContext.fromScreen(this, guiGraphics, pMouseX,pMouseY,pPartialTick));
         });
     }
 

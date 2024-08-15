@@ -1,18 +1,17 @@
 package kasuga.lib.core.client.animation.neo_neo.point;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.base.NbtSerializable;
 import kasuga.lib.core.client.animation.neo_neo.VectorIOUtil;
 import kasuga.lib.core.client.animation.neo_neo.VectorUtil;
-import kasuga.lib.core.client.render.RendererUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 public class PivotPoint implements NbtSerializable {
     private Vec3 position, rotation;
-    private Quaternion cacheQ;
+    private Quaternionf cacheQ;
     boolean degree;
     public PivotPoint(Vec3 position, Vec3 rotation, boolean isDegree) {
         this.position = position;
@@ -56,9 +55,9 @@ public class PivotPoint implements NbtSerializable {
     }
 
     public void translate(Vec3 offset) {
-        Quaternion quaternion = cacheQ;
+        Quaternionf quaternion = cacheQ;
         Vector3f vector3f = VectorUtil.vec3ToVec3f(offset);
-        vector3f.transform(quaternion);
+        vector3f.rotate(quaternion);
         absTranslate(vector3f.x(), vector3f.y(), vector3f.z());
     }
 
@@ -66,8 +65,8 @@ public class PivotPoint implements NbtSerializable {
         translate(new Vec3(x, y, z));
     }
 
-    public Quaternion getQuaternion() {
-        return VectorUtil.getQuaternion(this.rotation, degree);
+    public Quaternionf getQuaternion() {
+        return VectorUtil.getQuaternionf(this.rotation, degree);
     }
 
     public boolean isDegree() {
