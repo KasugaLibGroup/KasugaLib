@@ -31,6 +31,20 @@ public class SimpleTexture {
     BufferedImage image;
     byte[] bytesOfImage;
 
+    public SimpleTexture(@Nonnull ResourceLocation location, int uOffset, int vOffset, int uWidth, int vHeight, SimpleColor color, BufferedImage image, byte[] bytesOfImage){
+        this.location = location;
+        this.uOffset = uOffset;
+        this.vOffset = vOffset;
+        this.uWidth = uWidth;
+        this.vHeight = vHeight;
+        this.color = color;
+        this.image = image;
+        this.bytesOfImage = bytesOfImage;
+        this.imgWidth = image.getWidth();
+        this.imgHeight = image.getHeight();
+        refreshImage();
+    }
+
     public SimpleTexture(@Nonnull ResourceLocation location, int uOffset, int vOffset, int uWidth, int vHeight, int color, float alpha) {
         this.location = location;
         this.uOffset = uOffset;
@@ -52,8 +66,11 @@ public class SimpleTexture {
         this.vHeight = vHeight;
         this.color = SimpleColor.fromRGBA(color, alpha);
         try {
-            Minecraft.getInstance().textureManager.register(location, new DynamicTexture(NativeImage.read(stream)));
-            image = ImageIO.read(stream);
+            byte[] bytes = stream.readAllBytes();
+            ByteArrayInputStream readStream = new ByteArrayInputStream(bytes);
+            Minecraft.getInstance().textureManager.register(location, new DynamicTexture(NativeImage.read(readStream)));
+            readStream = new ByteArrayInputStream(bytes);
+            image = ImageIO.read(readStream);
             bytesOfImage = stream.readAllBytes();
             this.imgWidth = image.getWidth();
             this.imgHeight = image.getHeight();
@@ -120,6 +137,10 @@ public class SimpleTexture {
 
     public SimpleTexture cut(int left, int up, int right, int down) {
         return new SimpleTexture(location, uOffset + left, vOffset + up, uWidth - right - left, vHeight - down - up, color.getRGB(), color.getA());
+    }
+
+    public SimpleTexture cutSize(int left,int up,int width,int height){
+        return new SimpleTexture(location, uOffset + left, vOffset + up, width, height, color, image, bytesOfImage);
     }
 
     public SimpleTexture flipY() {
@@ -242,6 +263,10 @@ public class SimpleTexture {
         this.color = color.setR(r).setG(g).setB(b).setA(a);
     }
 
+    public SimpleTexture withColor(int color,float alpha){
+        return new SimpleTexture(location,uOffset,vOffset,uWidth,vHeight,color,alpha);
+    }
+
     public void refreshImage() {
         fuOffset = ((float) uOffset)/((float) imgWidth);
         fvOffset = ((float) vOffset)/((float) imgHeight);
@@ -286,10 +311,54 @@ public class SimpleTexture {
         render(centerX - width/2, centerY - height/2, width, height);
     }
 
+    public void renderUV(int x, int y, int width, int height, float baseU, float baseV, float additionU, float additionV){
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, location);
+        RenderSystem.setShaderColor(
+                color.getfR(), color.getfG(), color.getfB(), color.getA());
+        RenderSystem.enableBlend();
+        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        buffer.vertex(x, y, 0.0).uv(baseU, baseV).endVertex();
+        buffer.vertex(x, y + height, 0.0).uv(baseU, baseV + additionV).endVertex();
+        buffer.vertex(x + width, y + height, 0.0).uv(baseU + additionU,baseV + additionV).endVertex();
+        buffer.vertex(x + width, y, 0.0).uv(baseU + additionU, baseV).endVertex();
+        BufferUploader.drawWithShader(buffer.end());
+        RenderSystem.disableBlend();
+    }
+
+    public void renderNineSliceScaled(float r, int x, int y, int w, int h, float scale){
+        //Pixels of boarder
+        int border = (int) (r * scale);
+        //Border size of UV
+        float borderU = (float) border / w;
+        float borderV = (float) border / h;
+        //Center slice size of UV
+        float centerU = fuWidth - 2 * borderU;
+        float centerV = fvHeight - 2 * borderV;
+        renderUV(x,              y,              border,         border,         fuOffset,                     fvOffset,                      borderU, borderV);
+        renderUV(x + border,     y,              w - 2 * border, border,         fuOffset + borderU,           fvOffset,                      centerU, borderV);
+        renderUV(x + w - border, y,              border,         border,         fuOffset + fuWidth - borderU, fvOffset,                      borderU, borderV);
+        renderUV(x,              y + border,     border,         h - 2 * border, fuOffset,                     fvOffset + borderV,            borderU, centerV);
+        renderUV(x + border,     y + border,     w - 2 * border, h - 2 * border, fuOffset + borderU,           fvOffset + borderV,            centerU, centerV);
+        renderUV(x + w - border, y + border,     border,         h - 2 * border, fuOffset + fuWidth - borderU, fvOffset + borderV,            borderU, centerV);
+        renderUV(x,              y + h - border, border,         border,         fuOffset,                     fvOffset + fvHeight - borderV, borderU, borderV);
+        renderUV(x + border,     y + h - border, w - 2 * border, border,         fuOffset + borderU,           fvOffset + fvHeight - borderV, centerU, borderV);
+        renderUV(x + w - border, y + h - border, border,         border,         fuOffset + fuWidth - borderU, fvOffset + fvHeight - borderV, borderU, borderV);
+    }
+
     public void renderCenteredScaled(int centerX, int centerY, int axis, boolean isWidth) {
         if(isWidth)
             renderCentered(centerX, centerY, axis, getFixedHeight(axis));
         else
             renderCentered(centerX, centerY, getFixedWidth(axis), axis);
+    }
+
+    public int getImgWidth() {
+        return imgWidth;
+    }
+
+    public int getImgHeight() {
+        return imgHeight;
     }
 }
