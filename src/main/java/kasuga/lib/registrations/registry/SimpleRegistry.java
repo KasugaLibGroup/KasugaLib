@@ -11,6 +11,7 @@ import kasuga.lib.core.client.ModelMappings;
 import kasuga.lib.core.client.render.model.CustomRenderedItemModel;
 import kasuga.lib.registrations.BlockEntityRendererBuilder;
 import kasuga.lib.registrations.client.AnimReg;
+import kasuga.lib.registrations.client.KeyBindingReg;
 import kasuga.lib.registrations.common.*;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.resources.model.BakedModel;
@@ -230,7 +231,7 @@ public class SimpleRegistry {
     public HashMap<String, CommandReg> command() {return COMMANDS;}
 
     /**
-     * return the registry of key bindings. See {@link kasuga.lib.registrations.common.KeyBindingReg}
+     * return the registry of key bindings. See {@link KeyBindingReg}
      * @return the regsitry of kasuga lib's key bindings.
      */
     public HashMap<String, KeyBindingReg> key() {return KEY_BINDINGS;}

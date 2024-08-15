@@ -1,7 +1,7 @@
 package kasuga.lib.core.events.client;
 
 import kasuga.lib.KasugaLib;
-import kasuga.lib.registrations.common.KeyBindingReg;
+import kasuga.lib.registrations.client.KeyBindingReg;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 

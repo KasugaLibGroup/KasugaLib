@@ -1,10 +1,11 @@
-package kasuga.lib.registrations.common;
+package kasuga.lib.registrations.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import kasuga.lib.core.KasugaLibStacks;
 import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.network.C2SPacket;
 import kasuga.lib.registrations.Reg;
+import kasuga.lib.registrations.common.ChannelReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
