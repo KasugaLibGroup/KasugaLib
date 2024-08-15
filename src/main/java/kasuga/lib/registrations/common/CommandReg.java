@@ -171,7 +171,7 @@ public class CommandReg extends Reg {
     /**
      * Marks that your command is over.
      *
-     * @param registry the mod SimpleRegistry.
+     * @param registry Your mod's SimpleRegistry.
      * @return The Reg itself
      */
     @Override
