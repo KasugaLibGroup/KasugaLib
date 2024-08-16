@@ -4,10 +4,7 @@ import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.CustomBlockRenderer;
 import kasuga.lib.core.client.animation.Constants;
 import kasuga.lib.core.events.both.EntityAttributeEvent;
-import kasuga.lib.core.events.client.PacketEvent;
-import kasuga.lib.core.events.client.ClientSetupEvent;
-import kasuga.lib.core.events.client.ModelRegistryEvent;
-import kasuga.lib.core.events.client.TextureRegistryEvent;
+import kasuga.lib.core.events.client.*;
 import kasuga.lib.core.events.server.ServerStartingEvents;
 import kasuga.lib.core.client.render.texture.SimpleTexture;
 import kasuga.lib.core.util.Envs;
@@ -29,6 +26,7 @@ public class KasugaLibStacks {
     private final FontRegistry FONTS;
     private final Random random = new Random();
     private final HashMap<Block, CustomBlockRenderer> BLOCK_RENDERERS;
+    public static final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
     public KasugaLibStacks(IEventBus bus) {
         this.bus = bus;
         this.registries = new HashMap<>();
@@ -44,6 +42,7 @@ public class KasugaLibStacks {
             MinecraftForge.EVENT_BUS.addListener(Constants::onClientTick);
             MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStart);
             MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStop);
+            MinecraftForge.EVENT_BUS.addListener(ClientTickEvent::onClientTick);
             bus.addListener(ModelRegistryEvent::registerAdditionalModels);
             bus.addListener(ModelRegistryEvent::bakingCompleted);
             bus.addListener(TextureRegistryEvent::onModelRegistry);

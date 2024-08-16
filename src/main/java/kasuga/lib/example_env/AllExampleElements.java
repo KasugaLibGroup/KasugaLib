@@ -1,5 +1,6 @@
 package kasuga.lib.example_env;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.commands.CommandHandler;
 import kasuga.lib.core.config.SimpleConfig;
@@ -12,6 +13,7 @@ import kasuga.lib.example_env.entity.WuLingEntity;
 import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
 import kasuga.lib.registrations.client.AnimReg;
+import kasuga.lib.registrations.client.KeyBindingReg;
 import kasuga.lib.registrations.client.ModelReg;
 import kasuga.lib.registrations.common.*;
 import kasuga.lib.registrations.registry.SimpleRegistry;
@@ -20,6 +22,8 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
+import net.minecraftforge.client.settings.KeyModifier;
+import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
 import java.net.URL;
@@ -89,6 +93,11 @@ public class AllExampleElements {
             .submit(testRegistry);
 
      */
+
+    public static final KeyBindingReg key = new KeyBindingReg("oo", "saas", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_E, KeyModifier.NONE)
+            .setClientHandler(System.out::println)
+            .setServerHandler(System.out::println)
+            .submit(testRegistry);
 
     public static final ChannelReg Channel = new ChannelReg("example_channel")
             .brand("1.0")
