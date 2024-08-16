@@ -60,8 +60,6 @@ public class KasugaLibStacks {
         ARGUMENT_TYPES = DeferredRegister.create(ForgeRegistries.Keys.COMMAND_ARGUMENT_TYPES, MOD_ID);
         ARGUMENT_TYPES.register("base", () -> ArgumentTypeInfos.registerByClass(BaseArgument.class, new BaseArgumentInfo()));
         ARGUMENT_TYPES.register(bus);
-        TEXTURES = new TextureRegistry(MOD_ID);
-        FONTS = new FontRegistry(MOD_ID);
         BLOCK_RENDERERS = new HashMap<>();
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverAboutToStart);
