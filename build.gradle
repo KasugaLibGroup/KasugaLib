@@ -281,15 +281,48 @@ jar {
 // Example configuration to allow publishing using the maven-publish plugin
 // This is the preferred method to reobfuscate your jar file
 if (!isSdk) {
-    jar.finalizedBy('reobfJar')
+    jar.finalizedBy('reobfShadowJar')
 }
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 // publish.dependsOn('reobfJar')
 
+shadowJar{
+    mergeServiceFiles() // To fix graal issue: https://github.com/oracle/graaljs/issues/125
+    configurations = [project.configurations.shadedLib]
+    archiveClassifier.set('');
+    relocate 'org.graalvm', 'kasuga.lib.vendor_modules.org.graalvm'
+    relocate 'com.oracle', 'kasuga.lib.vendor_modules.com.oracle'
+    relocate 'com.ibm', 'kasuga.lib.vendor_modules.com.ibm'
+    relocate ('io.netty.handler.codec.http', 'kasuga.lib.vendor_modules.io.netty.handler.codec.http');
+    relocate ('io.netty.handler.codec.rtsp', 'kasuga.lib.vendor_modules.io.netty.handler.codec.rtsp');
+    relocate ('io.netty.handler.codec.spdy', 'kasuga.lib.vendor_modules.io.netty.handler.codec.spdy');
+    relocate('interpreter','kasuga.lib.vendor_modules.interpreter');
+    finalizedBy 'reobfShadowJar'
+}
+
+assemble.dependsOn shadowJar
+
+reobf{
+    shadowJar {}
+}
+
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        register('mavenJava', MavenPublication) {
             artifact jar
+            artifact javadocJar
+            // artifact javadocJar
+            groupId = "kasuga.lib"
+            artifactId = "kasuga_lib"
+            version = "0.13"
+
+            fg.component(it)
         }
     }
     repositories {
