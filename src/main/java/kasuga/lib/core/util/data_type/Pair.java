@@ -2,6 +2,8 @@ package kasuga.lib.core.util.data_type;
 
 import kasuga.lib.core.annos.Util;
 
+import java.util.Objects;
+
 /**
  * A simple data struct that contains two elements.
  * @param <K> Type of first data.
@@ -31,5 +33,18 @@ public class Pair<K, V> {
 
     public Object get(boolean isFirst) {
         return isFirst ? first : second;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Pair<?, ?> pair = (Pair<?, ?>) object;
+        return Objects.equals(first, pair.first) && Objects.equals(second, pair.second);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(first, second);
     }
 }

@@ -1,5 +1,6 @@
 package kasuga.lib.example_env;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.config.SimpleConfig;
 import kasuga.lib.example_env.block.GreenAppleBlock;
@@ -13,6 +14,7 @@ import kasuga.lib.example_env.network.ExampleS2CPacket;
 import kasuga.lib.registrations.client.AnimReg;
 import kasuga.lib.registrations.registry.CreateRegistry;
 import kasuga.lib.registrations.registry.SimpleRegistry;
+import kasuga.lib.registrations.client.KeyBindingReg;
 import kasuga.lib.registrations.client.ModelReg;
 import kasuga.lib.registrations.common.*;
 import net.minecraft.resources.ResourceLocation;
@@ -20,6 +22,8 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
+import net.minecraftforge.client.settings.KeyModifier;
+import org.lwjgl.glfw.GLFW;
 
 public class AllExampleElements {
 
@@ -91,6 +95,11 @@ public class AllExampleElements {
             .brand("1.0")
             .loadPacket(ExampleC2SPacket.class, ExampleC2SPacket::new)
             .loadPacket(ExampleS2CPacket.class, ExampleS2CPacket::new)
+            .submit(testRegistry);
+
+    public static final KeyBindingReg key = new KeyBindingReg("oo", "saas", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_E, KeyModifier.NONE)
+            .setClientHandler(System.out::println)
+            .setServerHandler(System.out::println)
             .submit(testRegistry);
 
     public static void invoke() {}
