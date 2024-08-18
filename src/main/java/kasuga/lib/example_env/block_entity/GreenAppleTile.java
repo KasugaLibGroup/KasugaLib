@@ -23,7 +23,7 @@ public class GreenAppleTile extends BlockEntity {
     }
 
     public GreenAppleTile(BlockPos pos, BlockState state) {
-        this(AllExampleElements.greenApple.getBlockEntityReg().getType(), pos, state);
+        this(AllExampleElements.greenAppleTile.getType(), pos, state);
     }
 
     @Override

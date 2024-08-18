@@ -3,6 +3,7 @@
   "priority": 65535,
   "package": "kasuga.lib.mixins.mixin",
   "compatibilityLevel": "JAVA_17",
+  "refmap": "kasuga.refmap.json",
   "mixins": [
     "resources.DelegatingPackResourcesMixin",
     "resources.FilePackResourceMixin",
