@@ -16,7 +16,9 @@ import kasuga.lib.core.client.render.texture.SimpleTexture;
 import kasuga.lib.core.javascript.JavascriptApi;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.registrations.client.KeyBindingReg;
+import kasuga.lib.registrations.create.TrackMaterialReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
+import kasuga.lib.registrations.registry.FontRegistry;
 import kasuga.lib.registrations.registry.TextureRegistry;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
@@ -59,8 +61,6 @@ public class KasugaLibStacks {
         ARGUMENT_TYPES = DeferredRegister.create(ForgeRegistries.Keys.COMMAND_ARGUMENT_TYPES, MOD_ID);
         ARGUMENT_TYPES.register("base", () -> ArgumentTypeInfos.registerByClass(BaseArgument.class, new BaseArgumentInfo()));
         ARGUMENT_TYPES.register(bus);
-        TEXTURES = new TextureRegistry(MOD_ID);
-        FONTS = new FontRegistry(MOD_ID);
         BLOCK_RENDERERS = new HashMap<>();
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverAboutToStart);
