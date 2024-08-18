@@ -4,15 +4,22 @@ import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Optional;
 import kasuga.lib.registrations.BlockEntityRendererBuilder;
+import kasuga.lib.registrations.BundledReg;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -29,6 +36,7 @@ public class BlockEntityReg<T extends BlockEntity> extends Reg {
     private com.mojang.datafixers.types.Type<?> dataType = null;
     private BlockEntityType.BlockEntitySupplier<T> builder;
     private Supplier<BlockEntityRendererBuilder<T>> rendererBuilder = null;
+    private BiPredicate<ResourceLocation, Block> blockPredicate = null;
 
     /**
      * Use this to create a block entity reg.
@@ -61,6 +69,31 @@ public class BlockEntityReg<T extends BlockEntity> extends Reg {
         blockInvokerList.addAll(List.of(block));
         return this;
     }
+
+
+    /**
+     * Link all blocks that satisfied your predication to this blockEntity.
+     * @param predicate your predication.
+     * @return self.
+     */
+    @Optional
+    public BlockEntityReg<T> blockPredicates(BiPredicate<ResourceLocation, Block> predicate) {
+        this.blockPredicate = predicate;
+        return this;
+    }
+
+    /**
+     * Link a bundle of block to this blockEntity.
+     * @param bundle your block bundle.
+     * @return self.
+     */
+    @Optional
+    public BlockEntityReg<T> blockBundle(BundledReg<? extends BlockReg<?>> bundle) {
+        for (BlockReg<?> blockReg : bundle.getElements().values())
+            blockInvokerList.add(blockReg::getBlock);
+        return this;
+    }
+
 
     /**
      * Aaa a block to block entity's valid block list.
@@ -114,12 +147,26 @@ public class BlockEntityReg<T extends BlockEntity> extends Reg {
     }
 
     public Block[] getBlockList() {
-        Block[] result = new Block[blockInvokerList.size()];
+        LinkedList<Block> castBlockList = new LinkedList<>();
+        if (blockPredicate != null) {
+            for (Map.Entry<ResourceKey<Block>, Block> entries : ForgeRegistries.BLOCKS.getEntries()) {
+                if (blockPredicate.test(entries.getKey().location(), entries.getValue()))
+                    castBlockList.add(entries.getValue());
+            }
+        }
+        Block[] result = new Block[blockInvokerList.size() + castBlockList.size()];
         int counter = 0;
+        if (blockPredicate != null) {
+            for (Block i : castBlockList) {
+                result[counter] = i;
+                counter++;
+            }
+        }
         for(BlockProvider<?> provider : blockInvokerList) {
             result[counter] = provider.provide();
             counter++;
         }
+
         return result;
     }
 
@@ -164,5 +211,9 @@ public class BlockEntityReg<T extends BlockEntity> extends Reg {
      */
     public interface BlockEntityProvider<T extends BlockEntity> {
         BlockEntityType<T> provide();
+    }
+
+    public interface BiPredicate<T, K> {
+        boolean test(T first, K second);
     }
 }

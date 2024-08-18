@@ -6,11 +6,12 @@ import kasuga.lib.core.annos.Beta;
 import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Util;
+import kasuga.lib.core.base.SimpleCreativeTab;
 import kasuga.lib.core.client.ModelMappings;
 import kasuga.lib.core.client.render.model.CustomRenderedItemModel;
-import kasuga.lib.core.base.SimpleCreativeTab;
 import kasuga.lib.registrations.BlockEntityRendererBuilder;
 import kasuga.lib.registrations.client.AnimReg;
+import kasuga.lib.registrations.client.KeyBindingReg;
 import kasuga.lib.registrations.common.*;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.resources.model.BakedModel;
@@ -74,6 +75,8 @@ public class SimpleRegistry {
     private final HashSet<EntityReg<? extends LivingEntity>> CACHE_OF_LIVING_ENTITIES;
     private final ModelMappings modelMappings;
     private final HashMap<String, SimpleCreativeTab> TABS;
+    private final HashMap<String, CommandReg> COMMANDS;
+    private final HashMap<String, KeyBindingReg> KEY_BINDINGS;
     private final HashMap<String, AnimReg> ANIMS;
 
     /**
@@ -109,6 +112,8 @@ public class SimpleRegistry {
         CACHE_OF_ENTITIES = new HashSet<>();
         CACHE_OF_BLOCK_RENDERER = new HashMap<>();
         TABS = new HashMap<>();
+        COMMANDS = new HashMap<>();
+        KEY_BINDINGS = new HashMap<>();
         ANIMS = new HashMap<>();
     }
 
@@ -210,10 +215,21 @@ public class SimpleRegistry {
 
     /**
      * return the registry of Creative Mode Tabs. See {@link kasuga.lib.registrations.common.CreativeTabReg}
-     * @return the regsitry of kasuga lib style models.
+     * @return the regsitry of kasuga lib's tabs.
      */
     public HashMap<String, SimpleCreativeTab> tab() {return TABS;}
 
+    /**
+     * return the registry of Commands. See {@link kasuga.lib.registrations.common.CommandReg}
+     * @return the regsitry of kasuga lib's commands.
+     */
+    public HashMap<String, CommandReg> command() {return COMMANDS;}
+
+    /**
+     * return the registry of key bindings. See {@link KeyBindingReg}
+     * @return the regsitry of kasuga lib's key bindings.
+     */
+    public HashMap<String, KeyBindingReg> key() {return KEY_BINDINGS;}
 
     public HashMap<String, AnimReg> animation() {return ANIMS;}
 
@@ -237,12 +253,13 @@ public class SimpleRegistry {
         ITEMS.register(eventBus);
         FLUID_TYPE.register(eventBus);
         FLUID.register(eventBus);
-        for(String key : CACHE_OF_BLOCK_ENTITIES.keySet()) {
+        for (String key : CACHE_OF_BLOCK_ENTITIES.keySet()) {
             try {
                 BlockEntityReg<?> reg = CACHE_OF_BLOCK_ENTITIES.get(key);
                 reg.getType();
                 reg.submit(this);
-            } catch (Exception ignore) {}
+            } catch (Exception ignore) {
+            }
         }
         for(String key : CACHE_OF_MENUS.keySet()) {CACHE_OF_MENUS.get(key).submit(this);}
         BLOCK_ENTITIES.register(eventBus);
