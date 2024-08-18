@@ -101,11 +101,6 @@ public class KeyBindingReg extends Reg {
                 });
     }
 
-    @Inner
-    public static void register(RegisterKeyMappingsEvent event) {
-        reference.forEach(reg -> event.register(reg.mapping));
-    }
-
     @Override
     public String getIdentifier() {
         return "key_binding";
