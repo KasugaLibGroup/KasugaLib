@@ -29,16 +29,22 @@ public class AllExampleElements {
 
     public static final SimpleRegistry testRegistry = ExampleMain.testRegistry;
 
-    public static final BlockReg<GreenAppleBlock> greenApple = new BlockReg<GreenAppleBlock>("green_apple")
+    public static final BlockReg<GreenAppleBlock> greenApple =
+            new BlockReg<GreenAppleBlock>("green_apple")
             .blockType(GreenAppleBlock::new)
             .material(Material.AIR)
             .materialColor(MaterialColor.COLOR_GREEN)
             .withSound(SoundType.CROP)
-            .withBlockEntity("green_apple_tile", GreenAppleTile::new)
-            .withBlockEntityRenderer(() -> GreenAppleTileRenderer::new)
             .defaultBlockItem(new ResourceLocation(KasugaLib.MOD_ID, "block/test/green_apple"))
             .stackSize(32)
             .tabTo(CreativeModeTab.TAB_DECORATIONS)
+            .submit(testRegistry);
+
+    public static final BlockEntityReg<GreenAppleTile> greenAppleTile =
+            new BlockEntityReg<GreenAppleTile>("green_apple_tile")
+            .blockEntityType(GreenAppleTile::new)
+            .withRenderer(() -> GreenAppleTileRenderer::new)
+            .blockPredicates((location, block) -> block instanceof GreenAppleBlock)
             .submit(testRegistry);
 
     public static final EntityReg<WuLingEntity> wuling = new EntityReg<WuLingEntity>("wuling")
@@ -97,10 +103,12 @@ public class AllExampleElements {
             .loadPacket(ExampleS2CPacket.class, ExampleS2CPacket::new)
             .submit(testRegistry);
 
+    /*
     public static final KeyBindingReg key = new KeyBindingReg("oo", "saas", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_E, KeyModifier.NONE)
             .setClientHandler(System.out::println)
             .setServerHandler(System.out::println)
             .submit(testRegistry);
+     */
 
     public static void invoke() {}
 }
