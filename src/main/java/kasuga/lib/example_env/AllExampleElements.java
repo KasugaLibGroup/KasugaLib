@@ -2,6 +2,7 @@ package kasuga.lib.example_env;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.base.commands.CommandHandler;
 import kasuga.lib.core.config.SimpleConfig;
 import kasuga.lib.example_env.block.GreenAppleBlock;
 import kasuga.lib.example_env.block.GreenAppleItem;
@@ -23,6 +24,9 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.client.settings.KeyModifier;
 import org.lwjgl.glfw.GLFW;
+
+import java.io.File;
+import java.net.URL;
 
 public class AllExampleElements {
 
@@ -107,6 +111,22 @@ public class AllExampleElements {
             .setClientHandler(System.out::println)
             .setServerHandler(System.out::println)
             .submit(REGISTRY);
+
+    public static final ArgumentTypeReg type = ArgumentTypeReg.INSTANCE.registerType(File.class, File::new)
+            .submit(testRegistry);
+
+    public static final CommandReg command = new CommandReg("nihao")
+            .addLiteral("wiorjh", false)
+            .addInteger("int", false)
+            .addURL("dou", true)
+            .setHandler(new CommandHandler(){
+                @Override
+                public void run() {
+                    System.out.println(getParameter("int", int.class));
+                    System.out.println(getParameter("dou", URL.class));
+                }
+            }).submit(testRegistry);
+
      */
 
     public static void invoke(){

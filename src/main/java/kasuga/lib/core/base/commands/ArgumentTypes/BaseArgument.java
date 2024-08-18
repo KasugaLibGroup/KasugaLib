@@ -1,9 +1,13 @@
 package kasuga.lib.core.base.commands.ArgumentTypes;
 
+import com.google.gson.JsonObject;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import kasuga.lib.core.annos.Inner;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.synchronization.ArgumentSerializer;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.function.Function;
 
@@ -30,5 +34,17 @@ public class BaseArgument implements ArgumentType<String> {
                     reader.getString().substring(start, reader.getCursor()));
         }
         return reader.getString().substring(start, reader.getCursor());
+    }
+
+    public static class Serializer implements ArgumentSerializer<BaseArgument> {
+        public void serializeToNetwork(BaseArgument pArgument, FriendlyByteBuf pBuffer) {
+        }
+
+        public BaseArgument deserializeFromNetwork(FriendlyByteBuf pBuffer) {
+            return BaseArgument.STRING;
+        }
+
+        public void serializeToJson(BaseArgument pArgument, JsonObject pJson) {
+        }
     }
 }

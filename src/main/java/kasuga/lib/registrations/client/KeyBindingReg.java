@@ -12,7 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.network.NetworkEvent;
@@ -86,6 +86,7 @@ public class KeyBindingReg extends Reg {
     public KeyBindingReg submit(SimpleRegistry registry) {
         registry.key().put(this.toString(), this);
         reference.add(this);
+        ClientRegistry.registerKeyBinding(this.mapping);
         return this;
     }
 

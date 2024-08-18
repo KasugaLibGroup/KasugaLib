@@ -7,6 +7,7 @@ import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Util;
 import kasuga.lib.core.base.SimpleCreativeTab;
+import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.client.ModelMappings;
 import kasuga.lib.core.client.render.model.CustomRenderedItemModel;
 import kasuga.lib.registrations.BlockEntityRendererBuilder;
@@ -16,6 +17,7 @@ import kasuga.lib.registrations.common.*;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.commands.synchronization.ArgumentTypes;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -258,8 +260,7 @@ public class SimpleRegistry {
                 BlockEntityReg<?> reg = CACHE_OF_BLOCK_ENTITIES.get(key);
                 reg.getType();
                 reg.submit(this);
-            } catch (Exception ignore) {
-            }
+            } catch (Exception ignore) {}
         }
         for(String key : CACHE_OF_MENUS.keySet()) {CACHE_OF_MENUS.get(key).submit(this);}
         BLOCK_ENTITIES.register(eventBus);
