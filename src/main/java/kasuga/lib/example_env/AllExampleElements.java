@@ -1,6 +1,7 @@
 package kasuga.lib.example_env;
 
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.base.commands.CommandHandler;
 import kasuga.lib.core.config.SimpleConfig;
 import kasuga.lib.example_env.block.GreenAppleBlock;
 import kasuga.lib.example_env.block_entity.GreenAppleTile;
@@ -12,7 +13,6 @@ import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
 import kasuga.lib.registrations.client.AnimReg;
 import kasuga.lib.registrations.registry.CreateRegistry;
-import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.client.ModelReg;
 import kasuga.lib.registrations.common.*;
 import kasuga.lib.registrations.registry.CreateRegistry;
@@ -20,21 +20,29 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 
+import java.io.File;
+import java.net.URL;
+
 public class AllExampleElements {
 
     public static final CreateRegistry testRegistry = ExampleMain.testRegistry;
 
-    public static final BlockReg<GreenAppleBlock> greenApple = new BlockReg<GreenAppleBlock>("green_apple")
+    public static final BlockReg<GreenAppleBlock> greenApple =
+            new BlockReg<GreenAppleBlock>("green_apple")
             .blockType(GreenAppleBlock::new)
             .materialColor(MapColor.COLOR_GREEN)
             .withSound(SoundType.CROP)
-            .withBlockEntity("green_apple_tile", GreenAppleTile::new)
-            .withBlockEntityRenderer(() -> GreenAppleTileRenderer::new)
             .defaultBlockItem(new ResourceLocation(KasugaLib.MOD_ID, "block/test/green_apple"))
             .stackSize(32)
             // .tabTo(CreativeModeTab.TAB_DECORATIONS)
             .submit(testRegistry);
 
+    public static final BlockEntityReg<GreenAppleTile> greenAppleTile =
+            new BlockEntityReg<GreenAppleTile>("green_apple_tile")
+            .blockEntityType(GreenAppleTile::new)
+            .withRenderer(() -> GreenAppleTileRenderer::new)
+            .blockPredicates((location, block) -> block instanceof GreenAppleBlock)
+            .submit(testRegistry);
 
     public static final EntityReg<WuLingEntity> wuling = new EntityReg<WuLingEntity>("wuling")
             .entityType(WuLingEntity::new)
@@ -92,5 +100,24 @@ public class AllExampleElements {
             .loadPacket(ExampleS2CPacket.class, ExampleS2CPacket::new)
             .submit(testRegistry);
 
-    public static void invoke(){}
+    /*
+    public static final ArgumentTypeReg type = ArgumentTypeReg.INSTANCE.registerType(File.class, File::new)
+            .submit(testRegistry);
+
+    public static final CommandReg command = new CommandReg("nihao")
+            .addLiteral("wiorjh", false)
+            .addInteger("int", false)
+            .addURL("dou", true)
+            .setHandler(new CommandHandler(){
+                @Override
+                public void run() {
+                    System.out.println(getParameter("int", int.class));
+                    System.out.println(getParameter("dou", URL.class));
+                }
+            }).submit(testRegistry);
+    */
+
+    public static void invoke() {
+        testRegistry.submit();
+    }
 }
