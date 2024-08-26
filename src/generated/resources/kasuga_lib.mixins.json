@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "kasuga_lib.refmap.json",
   "mixins": [
+    "MixinNbtUtils",
     "MixinStationBlockEntity",
     "resources.DelegatingPackResourcesMixin",
     "resources.FilePackResourceMixin",
