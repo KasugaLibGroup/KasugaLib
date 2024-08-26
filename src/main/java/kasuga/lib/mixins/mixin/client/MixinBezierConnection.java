@@ -30,7 +30,6 @@ public class MixinBezierConnection {
     @Unique
     protected final Vec3 kasugaLib$innerScale(Vec3 instance, double factor) {
         if (factor != .965f) return instance.scale(factor);
-        KasugaLib.MAIN_LOGGER.error("innerScale");
         TrackMaterialReg reg = KasugaLib.STACKS.getCachedTrackMaterial(trackMaterial);
         if (reg == null) return instance.scale(factor);
         return reg.trackOffsets().apply(instance);

@@ -12,12 +12,12 @@
     "resources.PathPackResourceMixin"
   ],
   "client": [
-    "client.MixinBlockModelBinding",
     "client.MixinBezierConnection",
-    "client.MixinCarriageContraptionEntityRenderer",
-    "client.MixinStationBlockEntityClient",
+    "client.MixinBlockModelBinding",
+    "client.MixinBlockModelShaper",
     "client.MixinBlockRenderDispatcher",
-    "client.MixinBlockModelShaper"
+    "client.MixinCarriageContraptionEntityRenderer",
+    "client.MixinStationBlockEntityClient"
   ],
   "minVersion": "0.8"
 }
