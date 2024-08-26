@@ -1,8 +1,8 @@
 package kasuga.lib.core.client.frontend.rendering;
 
 import kasuga.lib.KasugaLib;
-import kasuga.lib.core.client.render.texture.SimpleTexture;
-import kasuga.lib.core.client.render.texture.WorldTexture;
+import kasuga.lib.core.client.render.texture.old.SimpleTexture;
+import kasuga.lib.core.client.render.texture.old.WorldTexture;
 
 import java.util.UUID;
 

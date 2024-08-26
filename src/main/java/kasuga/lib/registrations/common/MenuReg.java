@@ -1,6 +1,8 @@
 package kasuga.lib.registrations.common;
 
+import com.tterrag.registrate.builders.MenuBuilder;
 import kasuga.lib.core.annos.Mandatory;
+import kasuga.lib.core.annos.Optional;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -46,6 +48,20 @@ public class MenuReg<T extends AbstractContainerMenu, F extends Screen, U extend
     withMenuAndScreen(IContainerFactory<T> menu, ScreenInvoker<U> screen) {
         this.menuFactory = menu;
         this.screenFactory = (a, b, c) -> screen.invoke(c);
+        return this;
+    }
+
+    /**
+     * load a constructor for your menu and screen.
+     * @param menu Your menu's constructor lambda.
+     * @param screen Your screen's constructor lambda.
+     * @return self.
+     */
+    @Optional
+    public MenuReg<T, F, U>
+    withMenuAndScreen(IContainerFactory<T> menu, MenuScreens.ScreenConstructor<T, U> screen) {
+        this.menuFactory = menu;
+        this.screenFactory = screen;
         return this;
     }
 

@@ -142,4 +142,8 @@ public class SimpleColor {
     public int gethlS() {
         return (int)(color.getComponents(ColorSpace.getInstance(ColorSpace.TYPE_HLS), new float[0])[2] * 100);
     }
+
+    public SimpleColor copy() {
+        return new SimpleColor(this.getColor());
+    }
 }

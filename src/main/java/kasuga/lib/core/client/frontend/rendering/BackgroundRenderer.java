@@ -1,8 +1,8 @@
 package kasuga.lib.core.client.frontend.rendering;
 
 import com.mojang.math.Quaternion;
-import kasuga.lib.core.client.render.texture.SimpleTexture;
-import kasuga.lib.core.client.render.texture.WorldTexture;
+import kasuga.lib.core.client.render.texture.old.SimpleTexture;
+import kasuga.lib.core.client.render.texture.old.WorldTexture;
 import kasuga.lib.core.util.LazyRecomputable;
 import net.minecraft.resources.ResourceLocation;
 
