@@ -23,7 +23,7 @@ import net.minecraftforge.registries.RegistryObject;
  * @param <F> your screen class.
  * @param <U> your screen class.
  */
-public class MenuReg<T extends AbstractContainerMenu, F extends Screen, U extends Screen & MenuAccess<T>> extends Reg {
+public class MenuReg<T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> extends Reg {
     private IContainerFactory<T> menuFactory;
     private MenuScreens.ScreenConstructor<T, U> screenFactory;
     private RegistryObject<MenuType<T>> registryObject = null;
@@ -44,7 +44,7 @@ public class MenuReg<T extends AbstractContainerMenu, F extends Screen, U extend
      * @return self.
      */
     @Mandatory
-    public MenuReg<T, F, U>
+    public MenuReg<T, U>
     withMenuAndScreen(IContainerFactory<T> menu, ScreenInvoker<U> screen) {
         this.menuFactory = menu;
         this.screenFactory = (a, b, c) -> screen.invoke(c);
@@ -58,7 +58,7 @@ public class MenuReg<T extends AbstractContainerMenu, F extends Screen, U extend
      * @return self.
      */
     @Optional
-    public MenuReg<T, F, U>
+    public MenuReg<T, U>
     withMenuAndScreen(IContainerFactory<T> menu, MenuScreens.ScreenConstructor<T, U> screen) {
         this.menuFactory = menu;
         this.screenFactory = screen;
@@ -72,7 +72,7 @@ public class MenuReg<T extends AbstractContainerMenu, F extends Screen, U extend
      */
     @Override
     @Mandatory
-    public MenuReg<T, F, U> submit(SimpleRegistry registry) {
+    public MenuReg<T, U> submit(SimpleRegistry registry) {
         registry.cacheMenuIn(this);
         if (menuFactory == null) {
             crashOnNotPresent(IContainerFactory.class, "withMenuAndScreen", "submit");
