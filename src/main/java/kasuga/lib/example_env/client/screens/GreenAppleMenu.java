@@ -15,7 +15,8 @@ public class GreenAppleMenu extends AbstractContainerMenu {
     }
 
     public GreenAppleMenu(int containerId, Inventory inventory) {
-        this(AllExampleElements.apple.getMenuType(), containerId);
+        // this(AllExampleElements.apple.getMenuType(), containerId);
+        this(null, containerId);
     }
 
     public GreenAppleMenu(int i, Inventory inventory, FriendlyByteBuf buf) {
