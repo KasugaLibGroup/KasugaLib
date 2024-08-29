@@ -20,7 +20,6 @@ import net.minecraftforge.registries.RegistryObject;
  * For more info, see {@link AbstractContainerMenu} and {@link Screen},
  * In order to create a menu, your game element should be a subClass of {@link net.minecraft.world.MenuProvider}
  * @param <T> your menu class.
- * @param <F> your screen class.
  * @param <U> your screen class.
  */
 public class MenuReg<T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> extends Reg {
@@ -80,6 +79,7 @@ public class MenuReg<T extends AbstractContainerMenu, U extends Screen & MenuAcc
         if (screenFactory == null) {
             crashOnNotPresent(Screen.class, "withMenuAndScreen", "submit");
         }
+        if (registryObject != null) return this;
         this.registryObject = registry.menus().register(registrationKey, () -> IForgeMenuType.create(menuFactory));
         return this;
     }
