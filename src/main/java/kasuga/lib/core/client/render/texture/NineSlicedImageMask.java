@@ -103,15 +103,15 @@ public class NineSlicedImageMask extends ImageMask {
         positionMatrix.set(4, 1, getLeftDown());
         positionMatrix.set(4, 4, getRightDown());
 
-        positionMatrix.set(1, 2, cutVector3f(getLeftTop(), getRightTop(), matrix.get(1, 1).distance(matrix.get(1, 2)) * scalingFactor));
-        positionMatrix.set(1, 3, cutVector3f(getRightTop(), getLeftTop(), matrix.get(1, 3).distance(matrix.get(1, 4)) * scalingFactor));
-        positionMatrix.set(2, 1, cutVector3f(getLeftTop(), getLeftDown(), matrix.get(1, 1).distance(matrix.get(2, 1)) * scalingFactor));
-        positionMatrix.set(3, 1, cutVector3f(getLeftDown(), getLeftTop(), matrix.get(3, 1).distance(matrix.get(4, 1)) * scalingFactor));
+        positionMatrix.set(1, 2, samplingVector3f(getLeftTop(), getRightTop(), matrix.get(1, 1).distance(matrix.get(1, 2)) * scalingFactor));
+        positionMatrix.set(1, 3, samplingVector3f(getRightTop(), getLeftTop(), matrix.get(1, 3).distance(matrix.get(1, 4)) * scalingFactor));
+        positionMatrix.set(2, 1, samplingVector3f(getLeftTop(), getLeftDown(), matrix.get(1, 1).distance(matrix.get(2, 1)) * scalingFactor));
+        positionMatrix.set(3, 1, samplingVector3f(getLeftDown(), getLeftTop(), matrix.get(3, 1).distance(matrix.get(4, 1)) * scalingFactor));
 
-        positionMatrix.set(4, 2, cutVector3f(getLeftDown(), getRightDown(), matrix.get(4, 1).distance(matrix.get(4, 2)) * scalingFactor));
-        positionMatrix.set(4, 3, cutVector3f(getRightDown(), getLeftDown(), matrix.get(4, 3).distance(matrix.get(4, 4)) * scalingFactor));
-        positionMatrix.set(2, 4, cutVector3f(getRightTop(), getRightDown(), matrix.get(1, 4).distance(matrix.get(2, 4)) * scalingFactor));
-        positionMatrix.set(3, 4, cutVector3f(getRightDown(), getRightTop(), matrix.get(3, 4).distance(matrix.get(4, 4)) * scalingFactor));
+        positionMatrix.set(4, 2, samplingVector3f(getLeftDown(), getRightDown(), matrix.get(4, 1).distance(matrix.get(4, 2)) * scalingFactor));
+        positionMatrix.set(4, 3, samplingVector3f(getRightDown(), getLeftDown(), matrix.get(4, 3).distance(matrix.get(4, 4)) * scalingFactor));
+        positionMatrix.set(2, 4, samplingVector3f(getRightTop(), getRightDown(), matrix.get(1, 4).distance(matrix.get(2, 4)) * scalingFactor));
+        positionMatrix.set(3, 4, samplingVector3f(getRightDown(), getRightTop(), matrix.get(3, 4).distance(matrix.get(4, 4)) * scalingFactor));
 
         positionMatrix.set(2, 2, intersectionVector3f(positionMatrix.get(2, 1), positionMatrix.get(2, 4),
                 positionMatrix.get(1, 2), positionMatrix.get(4, 2),
