@@ -13,7 +13,7 @@ public class SimpleColor {
     }
 
     public static SimpleColor fromRGBA(int r, int g, int b, float a) {
-        return new SimpleColor(new Color(r, g, b, (int)(a * 256)));
+        return new SimpleColor(new Color(r, g, b, (int)(a * 255)));
     }
 
     public static SimpleColor fromRGBA(int r, int g, int b, int a) {
@@ -21,7 +21,11 @@ public class SimpleColor {
     }
 
     public static SimpleColor fromRGBA(int rgb, float a) {
-        return fromRGBAInt((rgb * 256 + (int)(a * 255f)));
+        return fromRGBAInt((rgb + (int)(a * 255) * 256 * 256 * 256));
+    }
+
+    public static SimpleColor fromRGB(float r, float g, float b) {
+        return fromRGBA((int)(r * 255), (int)(g * 255), (int)(b * 255), 1);
     }
 
     public static SimpleColor fromRGBInt(int rgb) {
