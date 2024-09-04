@@ -21,7 +21,7 @@ public class SimpleColor {
     }
 
     public static SimpleColor fromRGBA(int rgb, float a) {
-        return fromRGBAInt((rgb + (int)(a * 255) * 256 * 256 * 256));
+        return fromRGBAInt((int)(a * 255) * 256 * 256 * 256 + rgb);
     }
 
     public static SimpleColor fromRGB(float r, float g, float b) {
@@ -36,20 +36,22 @@ public class SimpleColor {
         return new SimpleColor(new Color(rgba, rgba > 0xffffff));
     }
 
-    public static SimpleColor fromHSVA(int h, int s, int v, float a) {
-        return new SimpleColor(new Color(ColorSpace.getInstance(ColorSpace.TYPE_HSV),
-                new float[]{((float) h)/360, ((float) s)/100, ((float) v)/100},
-                a));
+    public static SimpleColor fromHSV(float h, float s, float v) {
+        return fromHSVA(h, s, v, 1);
     }
 
-    public static SimpleColor fromHSV(int h, int s, int v) {
-        return fromHSVA(h, s, v, 1.0f);
+    public static SimpleColor fromHSVA(float h, float s, float v, float a) {
+        float[] rgb = hsvToRgb(h, s, v);
+        return new SimpleColor(new Color((int) rgb[0], (int) rgb[1], (int) rgb[2], (int)(a * 255)));
     }
 
-    public static SimpleColor fromHLSA(int h, int l, int s, float a) {
-        return new SimpleColor(new Color(ColorSpace.getInstance(ColorSpace.TYPE_HLS),
-                new float[]{((float) h)/360, ((float) l)/100, ((float) s)/100},
-                a));
+    public static SimpleColor fromHSI(float h, float s, float i) {
+        return fromHSIA(h, s, i, 1);
+    }
+
+    public static SimpleColor fromHSIA(float h, float s, float i, float a) {
+        float[] rgb = hsiToRgb(h, s, i);
+        return new SimpleColor(new Color((int) rgb[0], (int) rgb[1], (int) rgb[2], (int)(a * 255)));
     }
 
     public SimpleColor setR(int red) {
@@ -66,10 +68,6 @@ public class SimpleColor {
 
     public SimpleColor setA(float alpha) {
         return SimpleColor.fromRGBA(getR(), getG(), getB(), alpha);
-    }
-
-    public static SimpleColor fromHLS(int h, int l, int s) {
-        return fromHLSA(h, l, s, 1.0f);
     }
     
     public static SimpleColor fromNbt(CompoundTag tag) {
@@ -123,31 +121,130 @@ public class SimpleColor {
         return color.getRGB() * 256 + color.getAlpha();
     }
 
-    public int getHsv() {
-        return (int)(color.getComponents(ColorSpace.getInstance(ColorSpace.TYPE_HSV), new float[0])[0] * 360);
+    public float[] getHSI() {
+        return rgbToHsi(this.getR(), this.getG(), this.getB());
     }
 
-    public int gethSv() {
-        return (int)(color.getComponents(ColorSpace.getInstance(ColorSpace.TYPE_HSV), new float[0])[1] * 100);
-    }
-
-    public int gethsV() {
-        return (int)(color.getComponents(ColorSpace.getInstance(ColorSpace.TYPE_HSV), new float[0])[2] * 100);
-    }
-
-    public int getHls() {
-        return (int)(color.getComponents(ColorSpace.getInstance(ColorSpace.TYPE_HLS), new float[0])[0] * 360);
-    }
-
-    public int gethLs() {
-        return (int)(color.getComponents(ColorSpace.getInstance(ColorSpace.TYPE_HLS), new float[0])[1] * 100);
-    }
-
-    public int gethlS() {
-        return (int)(color.getComponents(ColorSpace.getInstance(ColorSpace.TYPE_HLS), new float[0])[2] * 100);
+    public float[] getHSV() {
+        return rgbToHsv(this.getR(), this.getG(), this.getB());
     }
 
     public SimpleColor copy() {
         return new SimpleColor(this.getColor());
+    }
+
+    /**
+     * convert color space from HSI to RGB
+     * @param h hue, [0, 360)
+     * @param s Saturation , [0, 1]
+     * @param i [0, 255]
+     * @return rgb values, all ranged [0, 255]
+     */
+    public static float[] hsiToRgb(float h, float s, float i) {
+        while (h < 0) h += 360;
+        h %= 360;
+        float r, g, b;
+        if (h >= 0 && h < 120) {
+            b = i * (1 - s);
+            r = i * (float) (1 + (s * Math.cos(h)) / Math.cos(Math.PI / 3 - h));
+            g = 3 * i - (r + b);
+        } else if (h >= 120 && h < 240) {
+            h -= 120f;
+            r = i * (1 - s);
+            g = i * (float) (1 + (s * Math.cos(h)) / Math.cos(Math.PI / 3 - h));
+            b = 3 * i - (r + g);
+        } else {
+            h -= 240f;
+            g = i * (1 - s);
+            b = i * (float) (1 + (s * Math.cos(h)) / Math.cos(Math.PI / 3 - h));
+            r = 3 * i - (g + b);
+        }
+        return new float[]{r, g, b};
+    }
+
+    /**
+     * convert color space HSV to RGB
+     * @param h Hue, [0, 360)
+     * @param s Saturation, [0, 1]
+     * @param v Value, [0, 1]
+     * @return rgb values, all ranged [0, 255]
+     */
+    public static float[] hsvToRgb(float h, float s, float v) {
+        while (h < 0) h += 360;
+        h %= 360;
+        float c = v * s;
+        float x = c * (1 - Math.abs((h / 60f) % 2 - 1));
+        float m = v - c;
+        float r1 = 0, g1 = 0, b1 = 0;
+        if (h >= 0 && h < 60) {
+            r1 = c;
+            g1 = x;
+            b1 = 0;
+        } else if (h >= 60 && h < 120) {
+            r1 = x;
+            g1 = c;
+            b1 = 0;
+        } else if (h >= 120 && h < 180) {
+            r1 = 0;
+            g1 = c;
+            b1 = x;
+        } else if (h >= 180 && h < 240) {
+            r1 = 0;
+            g1 = x;
+            b1 = c;
+        } else if (h >= 240 && h < 300) {
+            r1 = x;
+            g1 = 0;
+            b1 = c;
+        } else if (h >= 300 && h < 360) {
+            r1 = c;
+            g1 = 0;
+            b1 = x;
+        }
+        return new float[]{(r1 + m) * 255, (g1 + m) * 255, (b1 + m) * 255};
+    }
+
+    /**
+     * convert color space RGB to HSV.
+     * @param r red, [0, 255]
+     * @param g green, [0, 255]
+     * @param b blue, [0, 255]
+     * @return h, [0, 360); s, [0, 1]; v, [0, 1]
+     */
+    public static float[] rgbToHsv(float r, float g, float b) {
+        r /= 255;
+        g /= 255;
+        b /= 255;
+        float h = 0, s = 0, v = 0;
+        float cMax = Math.max(Math.max(r, g), b);
+        float cMin = Math.min(Math.min(r, g), b);
+        float delta = cMax - cMin;
+
+        if (delta == 0) h = 0;
+        else if (cMax == r) h = 60 * (((g - b) / delta) % 6);
+        else if (cMax == g) h = 60 * ((b - r) / delta + 2);
+        else h = 60 * ((r - g) / delta + 4);
+
+        if (cMax == 0) s = 0;
+        else s = delta / cMax;
+
+        v = cMax;
+        return new float[]{h, s, v};
+    }
+
+    /**
+     * convert color space RGB to HSI
+     * @param r red, [0, 255]
+     * @param g green, [0, 255]
+     * @param b blue, [0, 255]
+     * @return h, [0, 360); s, [0, 1]; i, [0, 255]
+     */
+    public static float[] rgbToHsi(float r, float g, float b) {
+        float theta = (float) Math.acos((.5 * (2 * r - g - b)) /
+                Math.sqrt(Math.pow(r - g, 2) + (r - b) * (g - b)));
+        float i = (r + g + b) / 3;
+        float s = 1 - Math.min(r, Math.min(g, b)) / i;
+        float h = b <= g ? theta : 360 - theta;
+        return new float[]{h, s, i};
     }
 }
