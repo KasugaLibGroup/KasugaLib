@@ -138,7 +138,7 @@ public class SimpleColor {
      * @param h hue, [0, 360)
      * @param s Saturation , [0, 1]
      * @param i [0, 255]
-     * @return
+     * @return rgb values, all ranged [0, 255]
      */
     public static float[] hsiToRgb(float h, float s, float i) {
         while (h < 0) h += 360;
