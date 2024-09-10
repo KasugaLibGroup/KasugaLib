@@ -12,6 +12,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * ImageMask holds all operations (UV or size) of your image.
+ * Use {@link NineSlicedImageMask} for nine sliced operations.
+ * See {@link StaticImage} for the image itself.
+ */
 public class ImageMask {
     private Vector3f leftTop, rightTop, leftDown, rightDown, pivot;
     private Vec2f uvLeftTop, uvRightTop, uvLeftDown, uvRightDown;

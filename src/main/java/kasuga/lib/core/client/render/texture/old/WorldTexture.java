@@ -1,4 +1,4 @@
-package kasuga.lib.core.client.render.texture;
+package kasuga.lib.core.client.render.texture.old;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

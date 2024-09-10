@@ -1,10 +1,8 @@
 package kasuga.lib.core.client.frontend.assets;
 
 import kasuga.lib.core.addons.node.AssetReader;
-import kasuga.lib.core.client.render.texture.ImageMask;
 import kasuga.lib.core.client.render.texture.StaticImage;
-import kasuga.lib.core.client.render.texture.StaticImageHolder;
-import kasuga.lib.core.client.render.texture.WorldTexture;
+import kasuga.lib.core.client.render.texture.old.WorldTexture;
 import net.minecraft.resources.ResourceLocation;
 
 import java.io.ByteArrayInputStream;

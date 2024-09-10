@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 import kasuga.lib.core.client.frontend.common.interaction.MouseContext;
 import kasuga.lib.core.client.frontend.common.interaction.PlaneMouseContext;
-import kasuga.lib.core.client.render.texture.WorldTexture;
+import kasuga.lib.core.client.render.texture.old.WorldTexture;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;

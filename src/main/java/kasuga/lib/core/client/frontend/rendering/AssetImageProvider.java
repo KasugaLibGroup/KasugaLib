@@ -2,12 +2,11 @@ package kasuga.lib.core.client.frontend.rendering;
 
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.assets.TextureAssetProvider;
-import kasuga.lib.core.client.render.texture.SimpleTexture;
+import kasuga.lib.core.client.render.texture.old.SimpleTexture;
 import kasuga.lib.core.client.render.texture.StaticImage;
-import kasuga.lib.core.client.render.texture.WorldTexture;
+import kasuga.lib.core.client.render.texture.old.WorldTexture;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class AssetImageProvider implements ImageProvider {
     private final String name;

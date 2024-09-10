@@ -3,6 +3,8 @@ package kasuga.lib.core.client.frontend.rendering;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.render.texture.*;
+import kasuga.lib.core.client.render.texture.old.SimpleTexture;
+import kasuga.lib.core.client.render.texture.old.WorldTexture;
 import kasuga.lib.core.util.LazyRecomputable;
 import net.minecraft.resources.ResourceLocation;
 
@@ -18,7 +20,7 @@ public class BackgroundRenderer {
     public int color = 0xffffff;
     public float opacity = 1.0f;
     public float borderSize = 0;
-    public float borderScale = 0;
+    public float borderScale = 1;
     private ImageProvider image;
     int left = 0;
     int top = 0;

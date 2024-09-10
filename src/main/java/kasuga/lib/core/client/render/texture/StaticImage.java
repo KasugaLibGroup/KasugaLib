@@ -20,7 +20,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -28,9 +27,15 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.UUID;
 import java.util.function.Supplier;
 
+
+/**
+ * Image file, use this to control, render your image on ui or in your world.
+ * See {@link StaticImageHolder} for registration.
+ * Use {@link StaticImage#createImage(CompoundTag)}, {@link StaticImage#createImage(FriendlyByteBuf)}
+ * or other createImage method to register this.
+ */
 public class StaticImage {
 
     public static final HashMap<ResourceLocation, Supplier<StaticImage>> STACK = new HashMap<>();

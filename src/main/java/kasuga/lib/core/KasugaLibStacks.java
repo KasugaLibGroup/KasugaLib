@@ -11,7 +11,7 @@ import kasuga.lib.core.events.both.EntityAttributeEvent;
 import kasuga.lib.core.events.client.*;
 import kasuga.lib.core.events.server.ServerResourceListener;
 import kasuga.lib.core.events.server.ServerStartingEvents;
-import kasuga.lib.core.client.render.texture.SimpleTexture;
+import kasuga.lib.core.client.render.texture.old.SimpleTexture;
 import kasuga.lib.core.javascript.JavascriptApi;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.registrations.registry.SimpleRegistry;

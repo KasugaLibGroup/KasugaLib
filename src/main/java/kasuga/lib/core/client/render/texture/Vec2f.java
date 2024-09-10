@@ -5,6 +5,7 @@ import kasuga.lib.core.util.data_type.Vec2i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 
+@Util
 public class Vec2f {
     private float x, y;
 
