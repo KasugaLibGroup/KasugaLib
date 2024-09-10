@@ -114,17 +114,13 @@ public class NineSlicedImageMask extends ImageMask {
         positionMatrix.set(3, 4, cutVector3f(getRightDown(), getRightTop(), matrix.get(3, 4).distance(matrix.get(4, 4)) * scalingFactor * (float) getImage().height()));
 
         positionMatrix.set(2, 2, intersectionVector3f(positionMatrix.get(2, 1), positionMatrix.get(2, 4),
-                positionMatrix.get(1, 2), positionMatrix.get(4, 2),
-                matrix.get(2, 1).distance(matrix.get(2, 2)) * scalingFactor, matrix.get(1, 2).distance(matrix.get(2, 2)) * scalingFactor));
+                positionMatrix.get(1, 2), positionMatrix.get(4, 2)));
         positionMatrix.set(2, 3, intersectionVector3f(positionMatrix.get(2, 4), positionMatrix.get(2, 1),
-                positionMatrix.get(1, 3), positionMatrix.get(4, 3),
-                matrix.get(2, 4).distance(matrix.get(2, 3)) * scalingFactor, matrix.get(1, 3).distance(matrix.get(2, 3)) * scalingFactor));
+                positionMatrix.get(1, 3), positionMatrix.get(4, 3)));
         positionMatrix.set(3, 2, intersectionVector3f(positionMatrix.get(3, 1), positionMatrix.get(3, 4),
-                positionMatrix.get(4, 2), positionMatrix.get(1, 2),
-                matrix.get(3, 1).distance(matrix.get(3, 2)) * scalingFactor, matrix.get(4, 2).distance(matrix.get(3, 2)) * scalingFactor));
+                positionMatrix.get(4, 2), positionMatrix.get(1, 2)));
         positionMatrix.set(3, 3, intersectionVector3f(positionMatrix.get(3, 4), positionMatrix.get(3, 1),
-                positionMatrix.get(4, 3), positionMatrix.get(4, 1),
-                matrix.get(3, 4).distance(matrix.get(3, 3)) * scalingFactor, matrix.get(4, 3).distance(matrix.get(3, 3)) * scalingFactor));
+                positionMatrix.get(4, 3), positionMatrix.get(4, 1)));
     }
 
     public void setBorders(float left, float right, float top, float bottom) {
@@ -201,13 +197,51 @@ public class NineSlicedImageMask extends ImageMask {
         return offset;
     }
 
+    /**
+     * Algorithm from <a href="https://zhuanlan.zhihu.com/p/690258055">here</a>
+     * @param begin1 begin of line 1
+     * @param end1 end of line 1
+     * @param begin2 begin of line 2
+     * @param end2 end of line 2
+     * @return intersection point
+     */
     @Util
-    public static Vector3f intersectionVector3f(Vector3f begin1, Vector3f end1, Vector3f begin2, Vector3f end2, float length1, float length2) {
-       Vector3f vec1 = Vector3f.ZERO.copy();
-       vec1.add(cutVector3f(begin1, end1, length1));
-       Vector3f vec2 = Vector3f.ZERO.copy();
-       vec2.add(cutVector3f(begin2, end2, length2));
-       return average(vec1, vec2);
+    public static Vector3f intersectionVector3f(Vector3f begin1, Vector3f end1, Vector3f begin2, Vector3f end2) {
+        Vector3f a = end1.copy();
+        a.sub(begin1);
+        Vector3f b = end2.copy();
+        b.sub(begin2);
+        Vector3f t = begin2.copy();
+        t.sub(begin1);
+
+        float aSqr = a.dot(a);
+        float bSqr = b.dot(b);
+        float a_dot_b = a.dot(b);
+        float a_dot_t = a.dot(t);
+        float b_dot_t = b.dot(t);
+
+        float denom = aSqr * bSqr - a_dot_b * a_dot_b;
+
+        float u = (a_dot_t * bSqr - b_dot_t * a_dot_b) / denom;
+        float v = (u * a_dot_b - b_dot_t) / bSqr;
+
+        Vector3f px = a.copy();
+        px.mul(u);
+        Vector3f p_u = begin1.copy();
+        p_u.add(px);
+        Vector3f qx = b.copy();
+        qx.mul(v);
+        Vector3f q_v = begin2.copy();
+        q_v.add(qx);
+        Vector3f vec  = q_v.copy();
+        vec.sub(p_u);
+
+        float len = vec.dot(vec);
+        if (len == 0) {
+            return p_u;
+        } else {
+            return average(p_u, q_v);
+        }
     }
 
     @Util
