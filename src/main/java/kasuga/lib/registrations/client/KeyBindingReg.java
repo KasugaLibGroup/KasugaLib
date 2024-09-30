@@ -23,38 +23,38 @@ import java.util.LinkedList;
 import java.util.function.Consumer;
 
 public class KeyBindingReg extends Reg {
-    public final int keyCode;
+    public final String translationKey;
     public final String category;
-    public final KeyMapping mapping;
 
+    private int keyCode = -1;
+    private KeyMapping mapping;
+    private Environment env = Environment.ALL;
     private Consumer<LocalPlayer> clientHandler;
     private Consumer<ServerPlayer> serverHandler;
-    private static final LinkedList<KeyBindingReg> reference;
+    private KeyModifier modifier = KeyModifier.NONE;
+    private InputConstants.Type type = InputConstants.Type.KEYSYM;
 
     private static final ChannelReg keyChannel;
+    private static final LinkedList<KeyBindingReg> registered;
 
     static {
         keyChannel = new ChannelReg("kasuga_lib_key_bindings")
                 .brand("1.0")
                 .loadPacket(KeyBindingReg.KeySyncPacket.class, KeyBindingReg.KeySyncPacket::new)
                 .submit(KasugaLibStacks.REGISTRY);
-        reference = new LinkedList<>();
+        registered = new LinkedList<>();
     }
 
     /**
      * The beginning of your registry
      * @param translationKey Your key binding's translatable name
      * @param categoryName Your key binding's category name
-     * @param type Your input type
-     * @param defaultKeyCode Your key's GLFW code
-     * @param modifier Does this binding requires shift, control or alt to be pressed at the same time?
      * @see KeyMapping
      */
-    public KeyBindingReg(String translationKey, String categoryName, InputConstants.Type type, int defaultKeyCode, KeyModifier modifier) {
+    public KeyBindingReg(String translationKey, String categoryName) {
         super(translationKey);
-        this.keyCode = defaultKeyCode;
+        this.translationKey = translationKey;
         this.category = categoryName;
-        this.mapping = new KeyMapping(translationKey, KeyConflictContext.UNIVERSAL, modifier, type, defaultKeyCode, categoryName);
     }
 
     /**
@@ -78,20 +78,62 @@ public class KeyBindingReg extends Reg {
     }
 
     /**
+     * Set your key binding's default modifier, which means user should hold them down at once.
+     * Can hold one modifier at most.
+     * @param modifier Your key's modifier, can be control, shift or alt.
+     * @return The reg itself.
+     */
+    public KeyBindingReg setModifier(KeyModifier modifier){
+        this.modifier = modifier;
+        return this;
+    }
+
+    /**
+     * Set your key binding's input type. Can be a keyboard (KEYSYM) or mouse (MOUSE). It is highly recommended not to use scannode (SCANNODE) as it is platform-specific.
+     * @param defaultKeyCode Your key's default GLFW code.
+     * @param type Your key's input type.
+     * @return The reg itself.
+     */
+    public KeyBindingReg setKeycode(int defaultKeyCode, InputConstants.Type type){
+        this.keyCode = defaultKeyCode;
+        this.type = type;
+        return this;
+    }
+
+    /**
+     * Set your key binding's environment, means it can be called at which moment.
+     * @param env Your key's environment. Can be IN_GUI(Only call when any Screen is open), IN_GAME(Only call when none Screen is open) or ALL(With no restriction).
+     * @return The reg itself.
+     */
+    public KeyBindingReg setEnvironment(Environment env){
+        this.env = env;
+        return this;
+    }
+
+    /**
      * Marks your registry is over
      * @param registry Your mod's SimpleRegistry.
      * @return The Reg itself
      */
     @Override
     public KeyBindingReg submit(SimpleRegistry registry) {
+        if(keyCode <= -1){
+            throw new IllegalArgumentException("Invalid keycode");
+        }
+        this.mapping = new KeyMapping(registrationKey, env.context, modifier, type, keyCode, category);
         registry.key().put(this.toString(), this);
-        reference.add(this);
+        registered.add(this);
+        ClientRegistry.registerKeyBinding(this.mapping);
         return this;
+    }
+
+    public KeyMapping getMapping() {
+        return mapping;
     }
 
     @Inner
     public static void onClientTick(){
-        reference.stream().filter(reg -> reg.mapping.consumeClick())
+        registered.stream().filter(reg -> reg.mapping.consumeClick())
                 .forEach(reg -> {
                     if(reg.clientHandler != null){
                         reg.clientHandler.accept(Minecraft.getInstance().player);
@@ -132,6 +174,18 @@ public class KeyBindingReg extends Reg {
                 .isEquals();
     }
 
+    public enum Environment{
+        ALL(KeyConflictContext.UNIVERSAL),
+        IN_GUI(KeyConflictContext.GUI),
+        IN_GAME(KeyConflictContext.IN_GAME);
+
+        private final KeyConflictContext context;
+
+        Environment(KeyConflictContext context) {
+            this.context = context;
+        }
+    }
+
     private static class KeySyncPacket extends C2SPacket{
         String key;
 
@@ -152,7 +206,7 @@ public class KeyBindingReg extends Reg {
 
         @Override
         public void handle(NetworkEvent.Context context) {
-            KeyBindingReg keyBinding = KeyBindingReg.reference.stream().filter(reg -> reg.toString().equals(key)).toList().get(0);
+            KeyBindingReg keyBinding = KeyBindingReg.registered.stream().filter(reg -> reg.toString().equals(key)).toList().get(0);
             if(keyBinding.serverHandler != null){
                 keyBinding.serverHandler.accept(context.getSender());
             }
