@@ -1,7 +1,8 @@
 package kasuga.lib.registrations.registry;
 
 import kasuga.lib.core.annos.Inner;
-import kasuga.lib.core.client.render.texture.SimpleTexture;
+import kasuga.lib.core.client.render.texture.old.SimpleTexture;
+import kasuga.lib.core.client.render.texture.old.WorldTexture;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
@@ -9,7 +10,7 @@ import java.util.HashSet;
 
 /**
  * TextureRegistry is registry for KasugaLib style textures. We provide {@link SimpleTexture}
- * and {@link kasuga.lib.core.client.render.texture.WorldTexture} for quick Texture usage.
+ * and {@link WorldTexture} for quick Texture usage.
  */
 @Inner
 public class TextureRegistry {

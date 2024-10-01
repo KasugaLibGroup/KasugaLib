@@ -35,7 +35,7 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     public BlockBehaviour.Properties properties = BlockBehaviour.Properties.of();
     private FluidBlockBuilder<T> builder;
     private BlockEntityReg<? extends BlockEntity> blockEntityReg = null;
-    private MenuReg<?, ?, ?> menuReg = null;
+    private MenuReg<?, ?> menuReg = null;
     private BlockReg.PropertyIdentifier identifier;
     private Supplier<? extends ForgeFlowingFluid> fluid;
     private RegistryObject<T> registryObject;
@@ -150,13 +150,12 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
      * @param screen the screen instance supplier.
      * @return self.
      * @param <F> the class of your menu.
-     * @param <R> the class of your screen.
      * @param <U> the class of your screen.
      */
     @Optional
-    public <F extends AbstractContainerMenu, R extends Screen, U extends Screen & MenuAccess<F>> FluidBlockReg<T>
+    public <F extends AbstractContainerMenu, U extends Screen & MenuAccess<F>> FluidBlockReg<T>
     withMenu(String registrationKey, IContainerFactory<?> menu, MenuReg.ScreenInvoker<U> screen) {
-        menuReg = new MenuReg<F, R, U>(registrationKey)
+        menuReg = new MenuReg<F, U>(registrationKey)
                 .withMenuAndScreen((IContainerFactory<F>) menu, screen);
         registerMenu = true;
         return this;
@@ -168,7 +167,7 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
      * @return self.
      */
     @Optional
-    public FluidBlockReg<T> withMenu(MenuReg<?, ?, ?> menuReg) {
+    public FluidBlockReg<T> withMenu(MenuReg<?, ?> menuReg) {
         this.menuReg = menuReg;
         registerMenu = false;
         return this;
@@ -213,7 +212,7 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
         return this;
     }
 
-    public MenuReg<?, ?, ?> getMenuReg() {
+    public MenuReg<?, ?> getMenuReg() {
         return menuReg;
     }
 
