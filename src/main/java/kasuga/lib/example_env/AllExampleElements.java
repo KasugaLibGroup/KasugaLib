@@ -9,6 +9,8 @@ import kasuga.lib.example_env.block.GreenAppleItem;
 import kasuga.lib.example_env.block_entity.GreenAppleTile;
 import kasuga.lib.example_env.client.block_entity.renderer.GreenAppleTileRenderer;
 import kasuga.lib.example_env.client.entity.renderer.WuLingRenderer;
+import kasuga.lib.example_env.client.screens.GreenAppleMenu;
+import kasuga.lib.example_env.client.screens.GreenAppleScreen;
 import kasuga.lib.example_env.entity.WuLingEntity;
 import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
@@ -97,6 +99,14 @@ public class AllExampleElements {
             .bucketItem(BucketItem::new)
             .blockType(ExampleFluidBlock::new)
             .submit(testRegistry);
+
+     */
+
+    /*
+    public static final MenuReg<GreenAppleMenu, GreenAppleScreen> apple =
+            new MenuReg<GreenAppleMenu, GreenAppleScreen>("green_apple")
+                    .withMenuAndScreen(GreenAppleMenu::new, GreenAppleScreen::new)
+                    .submit(REGISTRY);
 
      */
 

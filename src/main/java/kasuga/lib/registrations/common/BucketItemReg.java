@@ -35,7 +35,7 @@ public class BucketItemReg<T extends BucketItem> extends ItemReg<T> {
 
     public final Item.Properties properties = new Item.Properties();
     private RegistryObject<T> registryObject = null;
-    private MenuReg<?, ?, ?> menuReg = null;
+    private MenuReg<?, ?> menuReg = null;
     private Supplier<? extends ForgeFlowingFluid> fluid = null;
     private final List<TagKey<?>> tags;
 

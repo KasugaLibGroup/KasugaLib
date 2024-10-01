@@ -1,4 +1,4 @@
-package kasuga.lib.core.client.render.texture;
+package kasuga.lib.core.client.render.texture.old;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
