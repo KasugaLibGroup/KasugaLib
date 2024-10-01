@@ -47,8 +47,8 @@ public class BlockReg<T extends Block> extends Reg {
     private BlockBuilder<T> builder;
     private ItemReg<?> itemReg = null;
     private BlockEntityReg<? extends BlockEntity> blockEntityReg = null;
-    private MenuReg<?, ?, ?> menuReg = null;
-    private PropertyIdentifier identifier;
+    private MenuReg<?, ?> menuReg = null;
+    private final ArrayList<PropertyIdentifier> identifier;
     private RegistryObject<T> registryObject;
     private final List<TagKey<?>> tags;
     boolean registerItem = false, registerBe = false, registerMenu = false;
@@ -61,6 +61,7 @@ public class BlockReg<T extends Block> extends Reg {
     public BlockReg(String registrationKey) {
         super(registrationKey);
         this.tags = new ArrayList<>();
+        identifier = new ArrayList<>();
     }
 
     public BlockReg<T> blockType(BlockBuilder<T> builder) {
@@ -94,7 +95,7 @@ public class BlockReg<T extends Block> extends Reg {
         return this;
     }
 
-    
+
     public BlockReg<T> materialColor(MapColor color) {
         this.color = color;
         return this;
@@ -108,7 +109,7 @@ public class BlockReg<T extends Block> extends Reg {
      */
     @Optional
     public BlockReg<T> addProperty(PropertyIdentifier identifier) {
-        this.identifier = identifier;
+        this.identifier.add(identifier);
         return this;
     }
 
@@ -181,13 +182,12 @@ public class BlockReg<T extends Block> extends Reg {
      * @param screen the constructor function of your screen.
      * @return self.
      * @param <F> your menu class.
-     * @param <R> your screen class.
      * @param <U> your screen class.
      */
     @Optional
-    public <F extends AbstractContainerMenu, R extends Screen, U extends Screen & MenuAccess<F>> BlockReg<T>
+    public <F extends AbstractContainerMenu, U extends Screen & MenuAccess<F>> BlockReg<T>
     withMenu(String registrationKey, IContainerFactory<?> menu, MenuReg.ScreenInvoker<U> screen) {
-        menuReg = new MenuReg<F, R, U>(registrationKey)
+        menuReg = new MenuReg<F, U>(registrationKey)
                 .withMenuAndScreen((IContainerFactory<F>) menu, screen);
         registerMenu = true;
         return this;
@@ -200,7 +200,7 @@ public class BlockReg<T extends Block> extends Reg {
      * @return self.
      */
     @Optional
-    public BlockReg<T> withMenu(MenuReg<?, ?, ?> menuReg) {
+    public BlockReg<T> withMenu(MenuReg<?, ?> menuReg) {
         this.menuReg = menuReg;
         registerMenu = false;
         return this;
@@ -214,11 +214,10 @@ public class BlockReg<T extends Block> extends Reg {
      * @param screen your screen initializer.
      * @return self.
      * @param <F> Your menu class.
-     * @param <R> Your screen class.
      * @param <U> Your screen class.
      */
     @Optional
-    public <F extends AbstractContainerMenu, R extends Screen, U extends Screen & MenuAccess<F>> BlockReg<T>
+    public <F extends AbstractContainerMenu, U extends Screen & MenuAccess<F>> BlockReg<T>
     withItemMenu(String registrationKey, IContainerFactory<?> menu, MenuReg.ScreenInvoker<U> screen) {
         if (itemReg == null) {
             crashOnNotPresent(ItemReg.class, "itemReg", "withItemMenu");
@@ -235,7 +234,7 @@ public class BlockReg<T extends Block> extends Reg {
      * @return self.
      */
     @Optional
-    public BlockReg<T> withItemMenu(MenuReg<?, ?, ?> menuReg) {
+    public BlockReg<T> withItemMenu(MenuReg<?, ?> menuReg) {
         if (itemReg == null){
             crashOnNotPresent(ItemReg.class, "itemReg", "withItemMenu");
             return this;
@@ -367,7 +366,7 @@ public class BlockReg<T extends Block> extends Reg {
         return itemReg;
     }
 
-    public MenuReg<?, ?, ?> getMenuReg() {
+    public MenuReg<?, ?> getMenuReg() {
         return menuReg;
     }
 
@@ -397,7 +396,7 @@ public class BlockReg<T extends Block> extends Reg {
     @Inner
     public void initProperties() {
         properties = BlockBehaviour.Properties.of().mapColor(color);
-        if(identifier != null) identifier.apply(properties);
+        identifier.forEach(i -> i.apply(properties));
     }
 
     public interface PropertyIdentifier {

@@ -75,7 +75,7 @@ public class SimpleRegistry {
     private final DeferredRegister<ArgumentTypeInfo<?, ?>> ARGUMENT_TYPES;
     private final ModelRegistry MODELS;
     private final HashMap<String, BlockEntityReg<?>> CACHE_OF_BLOCK_ENTITIES;
-    private final HashMap<String, MenuReg<?, ?, ?>> CACHE_OF_MENUS;
+    private final HashMap<String, MenuReg<?, ?>> CACHE_OF_MENUS;
     private final HashMap<Supplier<Block>, BlockReg.BlockRendererBuilder<Block>> CACHE_OF_BLOCK_RENDERER;
     private final HashSet<EntityReg<?>> CACHE_OF_ENTITIES;
     private final HashSet<String> CUSTOM_RENDERED_ITEMS;
@@ -342,7 +342,7 @@ public class SimpleRegistry {
      * @param menuReg the reg would be cached in.
      */
     @Inner
-    public void cacheMenuIn(MenuReg<?, ?, ?> menuReg) {
+    public void cacheMenuIn(MenuReg<?, ?> menuReg) {
         CACHE_OF_MENUS.put(menuReg.registrationKey, menuReg);
     }
 
@@ -362,11 +362,11 @@ public class SimpleRegistry {
      * @return the reg cached.
      */
     @Inner
-    public MenuReg<?, ?, ?> getMenuCached(String registrationKey) {
+    public MenuReg<?, ?> getMenuCached(String registrationKey) {
         return CACHE_OF_MENUS.getOrDefault(registrationKey, null);
     }
 
-    public HashMap<String, MenuReg<?, ?, ?>> getCahcedMenus() {
+    public HashMap<String, MenuReg<?, ?>> getCahcedMenus() {
         return CACHE_OF_MENUS;
     }
 

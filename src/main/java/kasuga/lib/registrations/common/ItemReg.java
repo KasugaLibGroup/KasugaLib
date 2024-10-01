@@ -32,7 +32,7 @@ public class ItemReg<T extends Item> extends Reg {
 
     public final Item.Properties properties = new Item.Properties();
     private RegistryObject<T> registryObject = null;
-    private MenuReg<?, ?, ?> menuReg = null;
+    private MenuReg<?, ?> menuReg = null;
     private final List<TagKey<?>> tags;
     boolean registerMenu = false;
 
@@ -148,13 +148,12 @@ public class ItemReg<T extends Item> extends Reg {
      * @param screen the constructor function of your screen.
      * @return self.
      * @param <F> your menu class.
-     * @param <R> your screen class.
      * @param <U> your screen class.
      */
     @Optional
-    public <F extends AbstractContainerMenu, R extends Screen, U extends Screen & MenuAccess<F>> ItemReg<T>
+    public <F extends AbstractContainerMenu, U extends Screen & MenuAccess<F>> ItemReg<T>
     withMenu(String registrationKey, IContainerFactory<?> menu, MenuReg.ScreenInvoker<U> screen) {
-        menuReg = new MenuReg<F, R, U>(registrationKey)
+        menuReg = new MenuReg<F, U>(registrationKey)
                 .withMenuAndScreen((IContainerFactory<F>) menu, screen);
         registerMenu = true;
         return this;
@@ -167,7 +166,7 @@ public class ItemReg<T extends Item> extends Reg {
      * @return self.
      */
     @Optional
-    public ItemReg<T> withMenu(MenuReg<?, ?, ?> menuReg) {
+    public ItemReg<T> withMenu(MenuReg<?, ?> menuReg) {
         this.menuReg = menuReg;
         registerMenu = false;
         return this;
