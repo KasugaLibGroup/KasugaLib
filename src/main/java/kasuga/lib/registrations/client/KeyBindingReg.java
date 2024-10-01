@@ -25,7 +25,6 @@ import java.util.function.Consumer;
 public class KeyBindingReg extends Reg {
     public final String translationKey;
     public final String category;
-
     private int keyCode = -1;
     private KeyMapping mapping;
     private Environment env = Environment.ALL;
@@ -33,7 +32,6 @@ public class KeyBindingReg extends Reg {
     private Consumer<ServerPlayer> serverHandler;
     private KeyModifier modifier = KeyModifier.NONE;
     private InputConstants.Type type = InputConstants.Type.KEYSYM;
-
     private static final ChannelReg keyChannel;
     private static final LinkedList<KeyBindingReg> registered;
 
@@ -123,7 +121,6 @@ public class KeyBindingReg extends Reg {
         this.mapping = new KeyMapping(registrationKey, env.context, modifier, type, keyCode, category);
         registry.key().put(this.toString(), this);
         registered.add(this);
-        ClientRegistry.registerKeyBinding(this.mapping);
         return this;
     }
 
@@ -140,11 +137,6 @@ public class KeyBindingReg extends Reg {
                     }
                     keyChannel.sendToServer(new KeySyncPacket().setProperties(reg.toString()));
                 });
-    }
-
-    @Inner
-    public static void register(RegisterKeyMappingsEvent event) {
-        reference.forEach(reg -> event.register(reg.mapping));
     }
 
     @Override
