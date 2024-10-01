@@ -50,7 +50,7 @@ public class BlockReg<T extends Block> extends Reg {
     private ItemReg<?> itemReg = null;
     private BlockEntityReg<? extends BlockEntity> blockEntityReg = null;
     private MenuReg<?, ?> menuReg = null;
-    private PropertyIdentifier identifier;
+    private final ArrayList<PropertyIdentifier> identifier;
     private RegistryObject<T> registryObject;
     private final List<TagKey<?>> tags;
     boolean registerItem = false, registerBe = false, registerMenu = false;
@@ -63,6 +63,7 @@ public class BlockReg<T extends Block> extends Reg {
     public BlockReg(String registrationKey) {
         super(registrationKey);
         this.tags = new ArrayList<>();
+        identifier = new ArrayList<>();
     }
 
     /**
@@ -133,7 +134,7 @@ public class BlockReg<T extends Block> extends Reg {
      */
     @Optional
     public BlockReg<T> addProperty(PropertyIdentifier identifier) {
-        this.identifier = identifier;
+        this.identifier.add(identifier);
         return this;
     }
 
@@ -435,7 +436,7 @@ public class BlockReg<T extends Block> extends Reg {
     @Inner
     private void initProperties() {
         properties = BlockBehaviour.Properties.of(material, color);
-        if(identifier != null) identifier.apply(properties);
+        identifier.forEach(i -> i.apply(properties));
     }
 
     public interface PropertyIdentifier {
