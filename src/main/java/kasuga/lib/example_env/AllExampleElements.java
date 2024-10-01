@@ -113,8 +113,13 @@ public class AllExampleElements {
             .loadPacket(ExampleS2CPacket.class, ExampleS2CPacket::new)
             .submit(testRegistry);
 
+
+
     /*
-    public static final KeyBindingReg key = new KeyBindingReg("oo", "saas", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_E, KeyModifier.NONE)
+    public static final KeyBindingReg key = new KeyBindingReg("oo", "saas")
+            .setKeycode(GLFW.GLFW_KEY_0, InputConstants.Type.KEYSYM)
+            .setModifier(KeyModifier.CONTROL)
+            .setEnvironment(KeyBindingReg.Environment.IN_GUI)
             .setClientHandler(System.out::println)
             .setServerHandler(System.out::println)
             .submit(testRegistry);

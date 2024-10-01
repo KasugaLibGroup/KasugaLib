@@ -66,7 +66,7 @@ public class KasugaLibStacks {
         MinecraftForge.EVENT_BUS.addListener(PacketEvent::onServerPayloadHandleEvent);
         bus.addListener(BothSetupEvent::onFMLCommonSetup);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
-        bus.addListener(KeyBindingReg::register);
+        bus.addListener(BothSetupEvent::RegisterKeyEvent);
 
         if(Envs.isClient()) {
             MinecraftForge.EVENT_BUS.addListener(PacketEvent::onClientPayloadHandleEvent);
