@@ -4,13 +4,14 @@ import com.simibubi.create.content.trains.track.TrackMaterial;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.CustomBlockRenderer;
 import kasuga.lib.core.client.animation.Constants;
+import kasuga.lib.core.client.frontend.gui.GuiEngine;
+import kasuga.lib.core.events.both.BothSetupEvent;
 import kasuga.lib.core.events.both.EntityAttributeEvent;
-import kasuga.lib.core.events.client.PacketEvent;
-import kasuga.lib.core.events.client.ClientSetupEvent;
-import kasuga.lib.core.events.client.ModelRegistryEvent;
-import kasuga.lib.core.events.client.TextureRegistryEvent;
+import kasuga.lib.core.events.client.*;
+import kasuga.lib.core.events.server.ServerResourceListener;
 import kasuga.lib.core.events.server.ServerStartingEvents;
-import kasuga.lib.core.client.render.texture.SimpleTexture;
+import kasuga.lib.core.client.render.texture.old.SimpleTexture;
+import kasuga.lib.core.javascript.JavascriptApi;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.registrations.create.TrackMaterialReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
@@ -22,6 +23,9 @@ import net.minecraftforge.eventbus.api.IEventBus;
 
 import java.util.HashMap;
 import java.util.Random;
+import java.util.Optional;
+
+import static kasuga.lib.KasugaLib.MOD_ID;
 import java.util.function.Supplier;
 
 public class KasugaLibStacks {
@@ -32,28 +36,42 @@ public class KasugaLibStacks {
     private final FontRegistry FONTS;
     private final Random random = new Random();
     private final HashMap<Block, CustomBlockRenderer> BLOCK_RENDERERS;
+    public final JavascriptApi JAVASCRIPT = new JavascriptApi();
+
+    public Optional<GuiEngine> GUI = Optional.empty();
+    public static final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
+
+
     private final HashMap<TrackMaterial, TrackMaterialReg> TRACK_MATERIALS;
     public KasugaLibStacks(IEventBus bus) {
         this.bus = bus;
         this.registries = new HashMap<>();
-        TEXTURES = new TextureRegistry(KasugaLib.MOD_ID);
-        FONTS = new FontRegistry(KasugaLib.MOD_ID);
+        TEXTURES = new TextureRegistry(MOD_ID);
+        FONTS = new FontRegistry(MOD_ID);
         TRACK_MATERIALS = new HashMap<>();
         BLOCK_RENDERERS = new HashMap<>();
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverAboutToStart);
         MinecraftForge.EVENT_BUS.addListener(PacketEvent::onServerPayloadHandleEvent);
+        bus.addListener(BothSetupEvent::onFMLCommonSetup);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
+
         if(Envs.isClient()) {
             MinecraftForge.EVENT_BUS.addListener(PacketEvent::onClientPayloadHandleEvent);
             MinecraftForge.EVENT_BUS.addListener(Constants::onClientTick);
             MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStart);
             MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStop);
+            MinecraftForge.EVENT_BUS.addListener(ClientTickEvent::onClientTick);
             bus.addListener(ModelRegistryEvent::registerAdditionalModels);
             bus.addListener(ModelRegistryEvent::bakingCompleted);
             bus.addListener(TextureRegistryEvent::onModelRegistry);
             bus.addListener(ClientSetupEvent::onClientSetup);
+            MinecraftForge.EVENT_BUS.addListener(RenderTickEvent::onRenderTick);
+            GUI = Optional.of(new GuiEngine());
         }
+
+        MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStarting);
+        MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStopping);
     }
 
     public void stackIn(SimpleRegistry registry) {

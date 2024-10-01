@@ -1,6 +1,7 @@
 package kasuga.lib.registrations.common;
 
 import kasuga.lib.core.annos.Mandatory;
+import kasuga.lib.core.annos.Optional;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -18,10 +19,9 @@ import net.minecraftforge.registries.RegistryObject;
  * For more info, see {@link AbstractContainerMenu} and {@link Screen},
  * In order to create a menu, your game element should be a subClass of {@link net.minecraft.world.MenuProvider}
  * @param <T> your menu class.
- * @param <F> your screen class.
  * @param <U> your screen class.
  */
-public class MenuReg<T extends AbstractContainerMenu, F extends Screen, U extends Screen & MenuAccess<T>> extends Reg {
+public class MenuReg<T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> extends Reg {
     private IContainerFactory<T> menuFactory;
     private MenuScreens.ScreenConstructor<T, U> screenFactory;
     private RegistryObject<MenuType<T>> registryObject = null;
@@ -42,10 +42,24 @@ public class MenuReg<T extends AbstractContainerMenu, F extends Screen, U extend
      * @return self.
      */
     @Mandatory
-    public MenuReg<T, F, U>
+    public MenuReg<T, U>
     withMenuAndScreen(IContainerFactory<T> menu, ScreenInvoker<U> screen) {
         this.menuFactory = menu;
         this.screenFactory = (a, b, c) -> screen.invoke(c);
+        return this;
+    }
+
+    /**
+     * load a constructor for your menu and screen.
+     * @param menu Your menu's constructor lambda.
+     * @param screen Your screen's constructor lambda.
+     * @return self.
+     */
+    @Optional
+    public MenuReg<T, U>
+    withMenuAndScreen(IContainerFactory<T> menu, MenuScreens.ScreenConstructor<T, U> screen) {
+        this.menuFactory = menu;
+        this.screenFactory = screen;
         return this;
     }
 
@@ -56,7 +70,7 @@ public class MenuReg<T extends AbstractContainerMenu, F extends Screen, U extend
      */
     @Override
     @Mandatory
-    public MenuReg<T, F, U> submit(SimpleRegistry registry) {
+    public MenuReg<T, U> submit(SimpleRegistry registry) {
         registry.cacheMenuIn(this);
         if (menuFactory == null) {
             crashOnNotPresent(IContainerFactory.class, "withMenuAndScreen", "submit");

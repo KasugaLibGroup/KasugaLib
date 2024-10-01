@@ -48,7 +48,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     private String stillTexturePath = null;
     private String flowingTexturePath = null;
     private String overlayTexturePath = null;
-    private MenuReg<?, ?, ?> menuReg = null;
+    private MenuReg<?, ?> menuReg = null;
     private int tintColor = 0xffffff;
     boolean registerItem = false, registerBlock = false, registerMenu = false;
 
@@ -236,13 +236,12 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
      * @param screen Your screen's constructor lambda.
      * @return self.
      * @param <F> the class of your menu.
-     * @param <R> the class of your screen.
      * @param <U> the class of your screen.
      */
     @Optional
-    public <F extends AbstractContainerMenu, R extends Screen, U extends Screen & MenuAccess<F>> FluidReg<E>
+    public <F extends AbstractContainerMenu, U extends Screen & MenuAccess<F>> FluidReg<E>
     withMenu(String registrationKey, IContainerFactory<?> menu, MenuReg.ScreenInvoker<U> screen) {
-        menuReg = new MenuReg<F, R, U>(registrationKey)
+        menuReg = new MenuReg<F, U>(registrationKey)
                 .withMenuAndScreen((IContainerFactory<F>) menu, screen);
         registerMenu = true;
         return this;
@@ -254,7 +253,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
      * @return self.
      */
     @Optional
-    public FluidReg<E> withMenu(MenuReg<?, ?, ?> menuReg) {
+    public FluidReg<E> withMenu(MenuReg<?, ?> menuReg) {
         this.menuReg = menuReg;
         registerMenu = false;
         return this;
