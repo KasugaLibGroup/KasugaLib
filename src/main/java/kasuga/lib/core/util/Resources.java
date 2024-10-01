@@ -104,12 +104,6 @@ public class Resources {
     public static JsonReader openAsJson(Resource resource) {return new JsonReader(new InputStreamReader(resource.getInputStream()));}
 
     @Util
-    public static List<PackResources> listPack(){
-        ResourceManager rm = Minecraft.getInstance().getResourceManager();
-        return rm.listPacks().toList();
-    }
-
-    @Util
     public static class CheatResourceLocation extends ResourceLocation {
 
         private boolean isOutside = true;
