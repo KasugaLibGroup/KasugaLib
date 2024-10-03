@@ -1,11 +1,11 @@
 package kasuga.lib.core.client.render.texture;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.annos.Util;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.CompoundTag;
+import org.joml.Vector3f;
 
 /**
  * Use this to do operations for your image.
@@ -180,7 +180,7 @@ public class NineSlicedImageMask extends ImageMask {
 
     @Util
     public static Vector3f samplingVector3f(Vector3f begin, Vector3f end, float percentage) {
-        Vector3f offset = end.copy();
+        Vector3f offset = new Vector3f(end);
         offset.sub(begin);
         offset.mul(percentage);
         offset.add(begin);
@@ -189,7 +189,7 @@ public class NineSlicedImageMask extends ImageMask {
 
     @Util
     public static Vector3f cutVector3f(Vector3f begin, Vector3f end, float length) {
-        Vector3f offset = end.copy();
+        Vector3f offset = new Vector3f(end);
         offset.sub(begin);
         offset.normalize();
         offset.mul(length);
@@ -207,11 +207,11 @@ public class NineSlicedImageMask extends ImageMask {
      */
     @Util
     public static Vector3f intersectionVector3f(Vector3f begin1, Vector3f end1, Vector3f begin2, Vector3f end2) {
-        Vector3f a = end1.copy();
+        Vector3f a = new Vector3f(end1);
         a.sub(begin1);
-        Vector3f b = end2.copy();
+        Vector3f b = new Vector3f(end2);
         b.sub(begin2);
-        Vector3f t = begin2.copy();
+        Vector3f t = new Vector3f(begin2);
         t.sub(begin1);
 
         float aSqr = a.dot(a);
@@ -225,15 +225,15 @@ public class NineSlicedImageMask extends ImageMask {
         float u = (a_dot_t * bSqr - b_dot_t * a_dot_b) / denom;
         float v = (u * a_dot_b - b_dot_t) / bSqr;
 
-        Vector3f px = a.copy();
+        Vector3f px = new Vector3f(a);
         px.mul(u);
-        Vector3f p_u = begin1.copy();
+        Vector3f p_u = new Vector3f(begin1);
         p_u.add(px);
-        Vector3f qx = b.copy();
+        Vector3f qx = new Vector3f(b);
         qx.mul(v);
-        Vector3f q_v = begin2.copy();
+        Vector3f q_v = new Vector3f(begin2);
         q_v.add(qx);
-        Vector3f vec  = q_v.copy();
+        Vector3f vec  = new Vector3f(q_v);
         vec.sub(p_u);
 
         float len = vec.dot(vec);
@@ -246,7 +246,7 @@ public class NineSlicedImageMask extends ImageMask {
 
     @Util
     public static Vector3f average(Vector3f... vector3fs) {
-        Vector3f vector3f = Vector3f.ZERO.copy();
+        Vector3f vector3f = new Vector3f();
         for (Vector3f v : vector3fs) vector3f.add(v);
         vector3f.mul(1 / (float) vector3fs.length);
         return vector3f;

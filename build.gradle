@@ -231,17 +231,25 @@ dependencies {
     }
 
     minecraftLibrary "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.0"
-    shadedLib(group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)")
+    shadedLib(group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)") {
+        exclude group: 'com.ibm.icu', module: 'icu4j'
+    }
 
     // shadedLib("org.graalvm.polyglot:js-community:23.1.0");
     // implementation("org.graalvm.sdk:graal-sdk:22.0.2");
     minecraftLibrary("org.graalvm.sdk:graal-sdk:22.3.2")
-    shadedLib("org.graalvm.sdk:graal-sdk:22.3.2")
+    shadedLib("org.graalvm.sdk:graal-sdk:22.3.2") {
+        exclude group: 'com.ibm.icu', module: 'icu4j'
+    }
 
     minecraftLibrary("org.graalvm.js:js:22.3.2")
     minecraftLibrary("org.graalvm.tools:chromeinspector:22.3.2")
-    shadedLib("org.graalvm.tools:chromeinspector:22.3.2")
-    shadedLib("org.graalvm.js:js:22.3.2")
+    shadedLib("org.graalvm.tools:chromeinspector:22.3.2") {
+        exclude group: 'com.ibm.icu', module: 'icu4j'
+    }
+    shadedLib("org.graalvm.js:js:22.3.2") {
+        exclude group: 'com.ibm.icu', module: 'icu4j'
+    }
 
     // implementation files('libs/Mixed-Arithmetic-Logic-Interpreter-1.0.0.jar')
 

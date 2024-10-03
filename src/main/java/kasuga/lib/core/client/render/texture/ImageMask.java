@@ -1,9 +1,8 @@
 package kasuga.lib.core.client.render.texture;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.annos.Util;
+import kasuga.lib.core.client.animation.neo_neo.VectorUtil;
 import kasuga.lib.core.client.render.SimpleColor;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -11,6 +10,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 /**
  * ImageMask holds all operations (UV or size) of your image.
@@ -42,15 +43,15 @@ public class ImageMask {
 
     public ImageMask(ImageMask mask) {
         this.image = mask.image;
-        this.leftTop = mask.leftTop.copy();
-        this.rightTop = mask.rightTop.copy();
-        this.leftDown = mask.leftDown.copy();
-        this.rightDown = mask.rightDown.copy();
+        this.leftTop = new Vector3f(mask.leftTop);
+        this.rightTop = new Vector3f(mask.rightTop);
+        this.leftDown = new Vector3f(mask.leftDown);
+        this.rightDown = new Vector3f(mask.rightDown);
         this.uvLeftTop = mask.uvLeftTop.copy();
         this.uvRightTop = mask.uvRightTop.copy();
         this.uvLeftDown = mask.uvLeftDown.copy();
         this.uvRightDown = mask.uvRightDown.copy();
-        this.pivot = mask.pivot.copy();
+        this.pivot = new Vector3f(mask.pivot);
         this.color = mask.color.copy();
     }
 
@@ -128,17 +129,17 @@ public class ImageMask {
 
     public ImageMask quadrilateral(Vector3f leftTop, Vector3f xDirection, Vector3f yDirection, float width, float height) {
         this.leftTop = leftTop;
-        this.rightTop = leftTop.copy();
-        Vector3f w = xDirection.copy();
+        this.rightTop = new Vector3f(leftTop);
+        Vector3f w = new Vector3f(xDirection);
         w.normalize();
         w.mul(width);
-        Vector3f h = yDirection.copy();
+        Vector3f h = new Vector3f(yDirection);
         h.normalize();
         h.mul(height);
         rightTop.add(w);
-        leftDown = leftTop.copy();
+        leftDown = new Vector3f(leftTop);
         leftDown.add(h);
-        rightDown = leftDown.copy();
+        rightDown = new Vector3f(leftDown);
         rightDown.add(w);
         updateMapping();
         return this;
@@ -220,7 +221,7 @@ public class ImageMask {
     }
 
     public ImageMask rotateByPivot(Vector3f pivot, Vector3f rotationRad) {
-        Quaternion quaternion = Quaternion.fromXYZ(rotationRad);
+        Quaternionf quaternion = VectorUtil.fromXYZ(rotationRad);
         leftTop = rotatePoint(leftTop, pivot, quaternion);
         rightTop = rotatePoint(rightTop, pivot, quaternion);
         leftDown = rotatePoint(leftDown, pivot, quaternion);
@@ -254,7 +255,7 @@ public class ImageMask {
     }
 
     public ImageMask rotateByPivotDeg(Vector3f pivot, Vector3f rotationDeg) {
-        Vector3f rad = rotationDeg.copy();
+        Vector3f rad = new Vector3f(rotationDeg);
         rad.mul((float) Math.PI / 180);
         return rotateByPivot(pivot, rad);
     }
@@ -280,7 +281,7 @@ public class ImageMask {
     public ImageMask flipByLeftTop(Axis axis) {return flip(leftTop, axis);}
 
     public ImageMask flipByZero(Axis axis) {
-        return flip(Vector3f.ZERO, axis);
+        return flip(new Vector3f(), axis);
     }
 
     public ImageMask scale(Vector3f pivot, float factor) {
@@ -305,7 +306,7 @@ public class ImageMask {
     }
 
     public ImageMask scaleByZero(float factor) {
-        return scale(Vector3f.ZERO, factor);
+        return scale(new Vector3f(), factor);
     }
 
     public void setLeftTop(float x, float y, float z) {
@@ -518,7 +519,7 @@ public class ImageMask {
     }
 
     public Vector3f getGeometricCenter() {
-        Vector3f result = leftTop.copy();
+        Vector3f result = new Vector3f(leftTop);
         result.add(leftDown);
         result.add(rightTop);
         result.add(rightDown);
@@ -539,23 +540,23 @@ public class ImageMask {
     public void updateMapping(){}
 
     @Util
-    public static Vector3f rotatePoint(Vector3f point, Vector3f pivot, Quaternion quaternion) {
-        Vector3f offset = point.copy();
+    public static Vector3f rotatePoint(Vector3f point, Vector3f pivot, Quaternionf quaternion) {
+        Vector3f offset = new Vector3f(point);
         offset.sub(pivot);
-        offset.transform(quaternion);
-        Vector3f result = pivot.copy();
+        offset = quaternion.transform(offset);
+        Vector3f result = new Vector3f(pivot);
         result.add(offset);
         return result;
     }
 
     @Util
     public static Vector3f flipPoint(Vector3f point, Vector3f pivot, Axis axis) {
-        Vector3f offset = point.copy();
+        Vector3f offset = new Vector3f(point);
         offset.sub(pivot);
         switch (axis) {
-            case X -> offset.setX(- offset.x());
-            case Y -> offset.setY(- offset.y());
-            case Z -> offset.setZ(- offset.z());
+            case X -> offset.x = (- offset.x());
+            case Y -> offset.y = (- offset.y());
+            case Z -> offset.z = (- offset.z());
         }
         offset.add(pivot);
         return offset;
@@ -573,7 +574,7 @@ public class ImageMask {
 
     @Util
     public static Vector3f scalePoint(Vector3f point, Vector3f pivot, float factor) {
-        Vector3f offset = pivot.copy();
+        Vector3f offset = new Vector3f(pivot);
         offset.sub(point);
         offset.mul(factor);
         offset.add(point);
