@@ -2,6 +2,7 @@ package kasuga.lib.core.base.item_helper;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
@@ -31,7 +32,7 @@ public class ExternalRemainderItem extends Item {
     @Override
     public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
         ItemStack remain = super.getCraftingRemainingItem(itemStack);
-        if (remain == ItemStack.EMPTY && craftingRemainder.get() != null) {
+        if ((remain == ItemStack.EMPTY || remain.is(Items.AIR)) && craftingRemainder.get() != null) {
             remain = craftingRemainder.get().getDefaultInstance();
         }
         return remain;
