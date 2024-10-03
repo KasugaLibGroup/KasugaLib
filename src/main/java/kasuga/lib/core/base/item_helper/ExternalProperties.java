@@ -23,6 +23,6 @@ public class ExternalProperties extends Item.Properties {
     @Deprecated
     @Override
     public Item.Properties craftRemainder(Item pCraftingRemainingItem) {
-        return this;
+        return super.craftRemainder(pCraftingRemainingItem);
     }
 }
