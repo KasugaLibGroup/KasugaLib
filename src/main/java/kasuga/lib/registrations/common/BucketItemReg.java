@@ -1,6 +1,7 @@
 package kasuga.lib.registrations.common;
 
 import kasuga.lib.core.annos.Mandatory;
+import kasuga.lib.core.base.item_helper.ExternalProperties;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -33,7 +34,7 @@ public class BucketItemReg<T extends BucketItem> extends ItemReg<T> {
     private boolean customRender = false;
     private BucketBuilder<T> builder;
 
-    public final Item.Properties properties = new Item.Properties();
+    public final Item.Properties properties = new ExternalProperties();
     private RegistryObject<T> registryObject = null;
     private MenuReg<?, ?> menuReg = null;
     private Supplier<? extends ForgeFlowingFluid> fluid = null;
