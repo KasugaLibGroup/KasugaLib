@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Item is an important basic element of minecraft.
@@ -39,6 +40,14 @@ public class ItemReg<T extends Item> extends Reg {
 
     /**
      * Create an item reg.
+     * <p>
+     * Note: If you want to set a Crafting Remainder for your item, please use
+     * <p>
+     * {@link kasuga.lib.core.base.item_helper.ExternalRemainderItem} or
+     * <p>
+     * {@link kasuga.lib.core.base.item_helper.ExternalRemainderBlockItem}
+     * <p>
+     * then use {@link ExternalProperties#craftRemainder(Supplier)}
      * @param registrationKey the registration key of your item.
      * @param model If your item's model doesn't lie under the "namespace:models/item" folder, pass the location here,
      *              Pay attention that your model must be under the "namespace:models" folder. If your item's model just
