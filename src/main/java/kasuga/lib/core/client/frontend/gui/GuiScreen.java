@@ -8,6 +8,8 @@ import kasuga.lib.core.client.frontend.rendering.RenderContext;
 import kasuga.lib.core.util.data_type.Vec2i;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class GuiScreen extends Screen {
@@ -15,13 +17,13 @@ public class GuiScreen extends Screen {
     private final boolean autoClose;
 
     public GuiScreen(GuiInstance guiInstance) {
-        super(Component.literal(""));
+        super(new TextComponent(""));
         this.instance = guiInstance;
         this.autoClose = false;
     }
 
     public GuiScreen(ResourceLocation screenId){
-        super(Component.literal(""));
+        super(new TextComponent(""));
         this.instance = KasugaLib.STACKS.GUI.orElseThrow(IllegalStateException::new).create(screenId);
         this.instance.open(this);
         this.autoClose = true;

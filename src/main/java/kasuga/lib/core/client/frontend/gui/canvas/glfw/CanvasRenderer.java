@@ -77,8 +77,8 @@ public class CanvasRenderer {
         buffer.vertex(x, y + height, 0.0).uv(0, 0).endVertex();
         buffer.vertex(x + width, y + height, 0.0).uv(1,0).endVertex();
         buffer.vertex(x + width, y, 0.0).uv(1,1).endVertex();
-
-        BufferUploader.drawWithShader(buffer.end());
+        buffer.end();
+        BufferUploader.end(buffer);
         RenderSystem.disableBlend();
     }
 

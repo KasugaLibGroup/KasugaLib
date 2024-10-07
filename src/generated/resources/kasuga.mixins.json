@@ -6,9 +6,9 @@
   "refmap": "kasuga.refmap.json",
   "mixins": [
     "MixinNbtUtils",
-    "resources.DelegatingPackResourcesMixin",
     "resources.FilePackResourceMixin",
-    "resources.PathPackResourceMixin"
+    "resources.DelegatingResourcePackMixin",
+    "resources.PathResourcePackMixin"
   ],
   "client": [
     "client.MixinBlockModelBinding",
