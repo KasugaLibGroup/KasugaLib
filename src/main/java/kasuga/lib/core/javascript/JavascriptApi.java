@@ -17,6 +17,7 @@ public class JavascriptApi {
     public JavascriptThreadGroup GROUP_SERVER;
 
     public NodePackageLoader CLIENT_LOADER;
+    public NodePackageLoader SERVER_LOADER;
     public RegistrationRegistry registry;
     public Optional<HashMap<UUID, Object>> ASSETS = Optional.empty();
 
@@ -26,11 +27,20 @@ public class JavascriptApi {
         CLIENT_LOADER.bindRuntime(GROUP_CLIENT, EntryType.CLIENT);
         GROUP_CLIENT.getModuleLoader().getLoader().register(new CommonJSModuleLoader());
         GROUP_CLIENT.getModuleLoader().getLoader().register(new PrebuiltModuleLoader());
+
         registry = new RegistrationRegistry();
         ASSETS = Optional.of(new HashMap<UUID, Object>());
     }
 
     public void setupServer(){
+        GROUP_SERVER = GROUP_MAIN.createChild("server");
+        SERVER_LOADER = new NodePackageLoader();
+        SERVER_LOADER.bindRuntime(GROUP_SERVER, EntryType.SERVER);
+        GROUP_SERVER.getModuleLoader().getLoader().register(new CommonJSModuleLoader());
+        GROUP_SERVER.getModuleLoader().getLoader().register(new PrebuiltModuleLoader());
+    }
 
+    public void destoryServer(){
+        GROUP_SERVER.terminate();
     }
 }
