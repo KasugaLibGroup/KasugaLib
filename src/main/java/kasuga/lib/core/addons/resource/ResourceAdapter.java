@@ -8,6 +8,7 @@ import kasuga.lib.mixins.mixin.resources.DelegatingPackResourcesMixin;
 import kasuga.lib.mixins.mixin.resources.FilePackResourceMixin;
 import net.minecraft.server.packs.FilePackResources;
 import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.VanillaPackResources;
 import net.minecraftforge.resource.DelegatingPackResources;
 import net.minecraftforge.resource.PathPackResources;
 
@@ -34,6 +35,8 @@ public class ResourceAdapter {
                 result.add(new VanillaFileResourcePackProvider(((FilePackResourceMixin) file).invokeGetOrCreateZipFile()));
             }else if(resource instanceof PathPackResources path){
                 result.add(new VanillaPathResourcePackProvider(path.getSource(),path));
+            }else if(resource instanceof VanillaPackResources){
+                continue; // @TODO: Re-check to ensure that there is no user-customizable resource in this pack
             }
             /*  TODO: Needed to be checked.
             else if(resource instanceof FolderPackResources folder){
