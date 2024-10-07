@@ -1,5 +1,7 @@
 package kasuga.lib.core.client.frontend.gui.layout.yoga.api;
 
+import org.lwjgl.util.yoga.YGNode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,10 +64,11 @@ public class YogaNode implements AutoCloseable {
     }
 
     public void swapChildAt(YogaNode newChild,int position){
-        children.remove(position);
+        YogaNode oldChild = children.remove(position);
         children.add(position,newChild);
         newChild.owner = this;
-        YGNodeSwapChild(pointer,newChild.pointer,position);
+        YGNodeRemoveChild(pointer, oldChild.pointer);
+        YGNodeInsertChild(pointer, newChild.pointer, position);
     }
 
     public void clearChildren(){
