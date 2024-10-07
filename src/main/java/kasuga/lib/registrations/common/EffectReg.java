@@ -9,6 +9,9 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * This registration is used for poison effect registration. You could register your custom poison effect with it.
@@ -18,6 +21,7 @@ public class EffectReg<T extends MobEffect> extends Reg {
     private MobEffectCategory category = MobEffectCategory.NEUTRAL;
     private RegistryObject<T> registryObject = null;
     private EffectBuilder<T> builder = null;
+    private ArrayList<Consumer<T>> arrributes;
     private int color = 0xffffff;
 
     /**
@@ -26,6 +30,7 @@ public class EffectReg<T extends MobEffect> extends Reg {
      */
     public EffectReg(String registrationKey) {
         super(registrationKey);
+        this.arrributes = new ArrayList<>();
     }
 
     /**
@@ -76,16 +81,31 @@ public class EffectReg<T extends MobEffect> extends Reg {
     }
 
     /**
+     * Apply and Attributes for your effect.
+     * @param attributeModifier your attribute modifier lambda
+     * @return self.
+     */
+    @Optional
+    public EffectReg<T> attritube(Consumer<T> attributeModifier) {
+        this.arrributes.add(attributeModifier);
+        return this;
+    }
+
+    /**
      * Submit your config to forge and minecraft.
      * @param registry the mod SimpleRegistry.
      * @return self.
      */
     @Override
-    public Reg submit(SimpleRegistry registry) {
+    public EffectReg<T> submit(SimpleRegistry registry) {
         if (builder == null) {
             crashOnNotPresent(EffectBuilder.class, "effectType", "submit");
         }
-        registryObject = registry.mob_effect().register(registrationKey, () -> builder.build(category, color));
+        registryObject = registry.mob_effect().register(registrationKey, () -> {
+            T effect = builder.build(category, color);
+            this.arrributes.forEach(c -> c.accept(effect));
+            return effect;
+        });
         return this;
     }
 

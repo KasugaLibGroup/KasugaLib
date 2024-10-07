@@ -1,6 +1,5 @@
 package kasuga.lib.registrations.common;
 
-import com.tterrag.registrate.builders.MenuBuilder;
 import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Optional;
 import kasuga.lib.registrations.Reg;
@@ -20,7 +19,6 @@ import net.minecraftforge.registries.RegistryObject;
  * For more info, see {@link AbstractContainerMenu} and {@link Screen},
  * In order to create a menu, your game element should be a subClass of {@link net.minecraft.world.MenuProvider}
  * @param <T> your menu class.
- * @param <F> your screen class.
  * @param <U> your screen class.
  */
 public class MenuReg<T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> extends Reg {

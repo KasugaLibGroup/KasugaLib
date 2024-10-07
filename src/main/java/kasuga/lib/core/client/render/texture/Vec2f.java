@@ -180,7 +180,7 @@ public class Vec2f {
 
     @Util
     public static float fastInvSqrt(float number) {
-        return Mth.fastInvSqrt(number);
+        return Mth.invSqrt(number);
     }
 
     /**
