@@ -1,8 +1,8 @@
 package kasuga.lib.core;
 
-import com.simibubi.create.content.trains.track.TrackMaterial;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.CustomBlockRenderer;
+import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.client.animation.Constants;
 import kasuga.lib.core.client.frontend.gui.GuiEngine;
 import kasuga.lib.core.events.both.BothSetupEvent;
@@ -14,9 +14,11 @@ import kasuga.lib.core.client.render.texture.old.SimpleTexture;
 import kasuga.lib.core.javascript.JavascriptApi;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.registrations.create.TrackMaterialReg;
+import kasuga.lib.registrations.client.KeyBindingReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.registry.FontRegistry;
 import kasuga.lib.registrations.registry.TextureRegistry;
+import net.minecraft.commands.synchronization.ArgumentTypes;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -55,6 +57,8 @@ public class KasugaLibStacks {
         MinecraftForge.EVENT_BUS.addListener(PacketEvent::onServerPayloadHandleEvent);
         bus.addListener(BothSetupEvent::onFMLCommonSetup);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
+        ArgumentTypes.register("base", BaseArgument.class, new BaseArgument.Serializer());
+        KeyBindingReg.invoke();
 
         if(Envs.isClient()) {
             MinecraftForge.EVENT_BUS.addListener(PacketEvent::onClientPayloadHandleEvent);
