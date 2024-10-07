@@ -275,8 +275,8 @@ public class SimpleRegistry {
         ITEMS.register(eventBus);
         FLUID_TYPE.register(eventBus);
         FLUID.register(eventBus);
-        ARGUMENT_TYPES.register("base", ()-> ArgumentTypeInfos.registerByClass(BaseArgument.class, new BaseArgumentInfo()));
-        ARGUMENT_TYPES.register(eventBus);
+        // ARGUMENT_TYPES.register("base", ()-> ArgumentTypeInfos.registerByClass(BaseArgument.class, new BaseArgumentInfo()));
+        // ARGUMENT_TYPES.register(eventBus);
         for(String key : CACHE_OF_BLOCK_ENTITIES.keySet()) {
             BlockEntityReg<?> reg = CACHE_OF_BLOCK_ENTITIES.get(key);
             try {
