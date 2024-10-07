@@ -1,6 +1,6 @@
 package kasuga.lib.core;
 
-import kasuga.lib.KasugaLib;
+import com.simibubi.create.content.trains.track.TrackMaterial;
 import kasuga.lib.core.base.CustomBlockRenderer;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.client.animation.Constants;
@@ -17,17 +17,19 @@ import kasuga.lib.registrations.create.TrackMaterialReg;
 import kasuga.lib.registrations.client.KeyBindingReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.registry.FontRegistry;
-import kasuga.lib.registrations.registry.TextureRegistry;
 import net.minecraft.commands.synchronization.ArgumentTypes;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import kasuga.lib.registrations.registry.TextureRegistry;
+import kasuga.lib.KasugaLib;
 
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Optional;
 
 import static kasuga.lib.KasugaLib.MOD_ID;
+
 import java.util.function.Supplier;
 
 public class KasugaLibStacks {
@@ -48,8 +50,8 @@ public class KasugaLibStacks {
     public KasugaLibStacks(IEventBus bus) {
         this.bus = bus;
         this.registries = new HashMap<>();
-        TEXTURES = new TextureRegistry(MOD_ID);
-        FONTS = new FontRegistry(MOD_ID);
+        TEXTURES = new TextureRegistry(KasugaLib.MOD_ID);
+        FONTS = new FontRegistry(KasugaLib.MOD_ID);
         TRACK_MATERIALS = new HashMap<>();
         BLOCK_RENDERERS = new HashMap<>();
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverStarting);
