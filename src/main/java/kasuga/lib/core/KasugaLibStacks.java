@@ -57,6 +57,7 @@ public class KasugaLibStacks {
         TEXTURES = new TextureRegistry(KasugaLib.MOD_ID);
         FONTS = new FontRegistry(KasugaLib.MOD_ID);
         TRACK_MATERIALS = new HashMap<>();
+        KeyBindingReg.invoke();
         ARGUMENT_TYPES = DeferredRegister.create(ForgeRegistries.Keys.COMMAND_ARGUMENT_TYPES, MOD_ID);
         ARGUMENT_TYPES.register("base", () -> ArgumentTypeInfos.registerByClass(BaseArgument.class, new BaseArgumentInfo()));
         ARGUMENT_TYPES.register(bus);

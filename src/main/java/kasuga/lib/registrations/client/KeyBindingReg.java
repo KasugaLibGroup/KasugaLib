@@ -32,16 +32,11 @@ public class KeyBindingReg extends Reg {
     private Consumer<ServerPlayer> serverHandler;
     private KeyModifier modifier = KeyModifier.NONE;
     private InputConstants.Type type = InputConstants.Type.KEYSYM;
-    private static final ChannelReg keyChannel;
-    private static final LinkedList<KeyBindingReg> registered;
-
-    static {
-        keyChannel = new ChannelReg("kasuga_lib_key_bindings")
-                .brand("1.0")
-                .loadPacket(KeyBindingReg.KeySyncPacket.class, KeyBindingReg.KeySyncPacket::new)
-                .submit(KasugaLibStacks.REGISTRY);
-        registered = new LinkedList<>();
-    }
+    private static final ChannelReg keyChannel = new ChannelReg("kasuga_lib_key_bindings")
+            .brand("1.0")
+            .loadPacket(KeyBindingReg.KeySyncPacket.class, KeyBindingReg.KeySyncPacket::new)
+            .submit(KasugaLibStacks.REGISTRY);;
+    private static final LinkedList<KeyBindingReg> registered = new LinkedList<>();
 
     /**
      * The beginning of your registry
@@ -210,4 +205,6 @@ public class KeyBindingReg extends Reg {
             buf.writeCharSequence(key, StandardCharsets.UTF_8);
         }
     }
+
+    public static void invoke(){}
 }
