@@ -3,7 +3,7 @@ package kasuga.lib.example_env.client.block_entity.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.render.component.SimpleComponent;
-import kasuga.lib.core.client.render.texture.WorldTexture;
+import kasuga.lib.core.client.render.texture.old.WorldTexture;
 import kasuga.lib.core.client.render.model.SimpleModel;
 import kasuga.lib.core.client.render.texture.old.WorldTexture;
 import kasuga.lib.example_env.AllExampleElements;

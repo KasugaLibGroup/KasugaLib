@@ -543,7 +543,7 @@ public class ImageMask {
     public static Vector3f rotatePoint(Vector3f point, Vector3f pivot, Quaternionf quaternion) {
         Vector3f offset = new Vector3f(point);
         offset.sub(pivot);
-        offset = quaternion.transform(offset);
+        quaternion.transform(offset);
         Vector3f result = new Vector3f(pivot);
         result.add(offset);
         return result;

@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 public class GreenAppleScreen extends AbstractContainerScreen<GreenAppleMenu> {
     public GreenAppleScreen(GreenAppleMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
@@ -12,7 +13,7 @@ public class GreenAppleScreen extends AbstractContainerScreen<GreenAppleMenu> {
     }
 
     @Override
-    protected void renderBg(GuiGraphics pGuiGraphics, float pPartialTick, int pMouseX, int pMouseY) {
+    protected void renderBg(@NotNull GuiGraphics guiGraphics, float pPartialTick, int pMouseX, int pMouseY) {
 
     }
 }
