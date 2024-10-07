@@ -57,7 +57,8 @@ public class DrawTool {
         vertexProperty.accept(vertexConsumer,3);
         vertexConsumer.endVertex();
 
-        BufferUploader.drawWithShader(vertexConsumer.end());
+        vertexConsumer.end();
+        BufferUploader.end(vertexConsumer);
         RenderSystem.disableBlend();
 
     }

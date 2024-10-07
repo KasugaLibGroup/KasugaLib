@@ -209,10 +209,10 @@ dependencies {
 
     // implementation files('libs/Mixed-Arithmetic-Logic-Interpreter-1.0.0.jar')
 
-    minecraftLibrary ('org.lwjgl:lwjgl-yoga:3.3.1') {
+    minecraftLibrary ('org.lwjgl:lwjgl-yoga:3.2.2') {
         exclude group: 'org.lwjgl',module: 'lwjgl'
     };
-    shadedLib(group: "org.lwjgl", name: "lwjgl-yoga", version: "[3.3.1, 4.0.0)"){
+    shadedLib(group: "org.lwjgl", name: "lwjgl-yoga", version: "[3.2.2, 4.0.0)"){
         exclude group: 'org.lwjgl',module: 'lwjgl'
     };
 

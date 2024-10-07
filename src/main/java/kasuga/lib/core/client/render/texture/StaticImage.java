@@ -47,7 +47,7 @@ public class StaticImage {
     private StaticImage(ResourceLocation id) throws IOException {
         this.id = id;
         Resource resource = Resources.getResource(id);
-        this.rawData = resource.open().readAllBytes();
+        this.rawData = resource.getInputStream().readAllBytes();
         ByteArrayInputStream stream = new ByteArrayInputStream(rawData);
         image = ImageIO.read(stream);
     }
@@ -151,7 +151,8 @@ public class StaticImage {
         buffer.vertex(leftDown.x(), leftDown.y(), leftDown.z()).uv(uvLeftDown.x(), uvLeftDown.y()).endVertex();
         buffer.vertex(rightDown.x(), rightDown.y(), rightDown.z()).uv(uvRightDown.x(),uvRightDown.y()).endVertex();
         buffer.vertex(rightTop.x(), rightTop.y(), rightTop.z()).uv(uvRightTop.x(), uvRightTop.y()).endVertex();
-        BufferUploader.drawWithShader(buffer.end());
+        buffer.end();
+        BufferUploader.end(buffer);
         RenderSystem.disableBlend();
     }
 

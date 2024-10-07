@@ -1,7 +1,7 @@
 package kasuga.lib.core.addons.resource;
 
-import kasuga.lib.mixins.mixin.resources.PathPackResourceMixin;
-import net.minecraftforge.resource.PathPackResources;
+import kasuga.lib.mixins.mixin.resources.PathResourcePackMixin;
+import net.minecraftforge.resource.PathResourcePack;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,9 +11,9 @@ import java.util.List;
 
 public class VanillaPathResourcePackProvider implements ResourceProvider,HierarchicalFilesystem {
     private final Path source;
-    private final PathPackResources pack;
+    private final PathResourcePack pack;
 
-    public VanillaPathResourcePackProvider(Path source, PathPackResources pack) {
+    public VanillaPathResourcePackProvider(Path source, PathResourcePack pack) {
         this.source = source;
         this.pack = pack;
     }
@@ -52,7 +52,7 @@ public class VanillaPathResourcePackProvider implements ResourceProvider,Hierarc
         if(path.startsWith("/"))
             path = path.substring(1);
         path = "script/" + path;
-        return ((PathPackResourceMixin) pack).invokeResolve(path);
+        return ((PathResourcePackMixin) pack).invokeResolve(path);
     }
 }
 

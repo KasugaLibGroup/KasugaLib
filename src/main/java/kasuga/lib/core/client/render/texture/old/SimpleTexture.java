@@ -324,7 +324,8 @@ public class SimpleTexture {
         buffer.vertex(x, y + height, 0.0).uv(baseU, baseV + additionV).endVertex();
         buffer.vertex(x + width, y + height, 0.0).uv(baseU + additionU,baseV + additionV).endVertex();
         buffer.vertex(x + width, y, 0.0).uv(baseU + additionU, baseV).endVertex();
-        BufferUploader.drawWithShader(buffer.end());
+        buffer.end();
+        BufferUploader.end(buffer);
         RenderSystem.disableBlend();
     }
 

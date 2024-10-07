@@ -41,7 +41,8 @@ public class AllGuiStyles {
                 (v)->StyleTarget.LAYOUT_NODE.create((node)->{
                     node.setPositionType(v.getValue());
                 }),
-                PositionType.STATIC
+                // TODO: NEED REVIEW
+                PositionType.ABSOLUTE
         ));
 
         styleRegistry.register("alignContent", EnumStyle.EnumStyleType.of(

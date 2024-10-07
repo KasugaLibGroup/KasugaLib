@@ -7,6 +7,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -56,14 +57,16 @@ public class DevOpenScreenPacket extends S2CPacket {
             stream = response.getEntity().getContent();
             reader = new InputStreamReader(stream);
         }catch (IOException e){
-            minecraft.player.sendSystemMessage(Component.literal("Failed to fetch"));
+            // TODO: NEED REVIEW
+            minecraft.player.displayClientMessage(new TextComponent("Failed to fetch"), false);
             return;
         }
         Source source;
         try{
             source = Source.newBuilder("js",reader,"bundled.js").build();
         }catch (IOException e){
-            minecraft.player.sendSystemMessage(Component.literal("Failed to parse source:"+e.toString()));
+            // TODO: NEED REVIEW
+            minecraft.player.displayClientMessage(new TextComponent("Failed to parse source:"+e.toString()), false);
             return;
         }
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()->()-> {
