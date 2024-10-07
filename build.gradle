@@ -242,7 +242,9 @@ dependencies {
         exclude group: 'com.ibm.icu', module: 'icu4j'
     }
 
-    minecraftLibrary("org.graalvm.js:js:22.3.2")
+    minecraftLibrary("org.graalvm.js:js:22.3.2"){
+        exclude group: 'com.ibm.icu', module: 'icu4j'
+    }
     minecraftLibrary("org.graalvm.tools:chromeinspector:22.3.2")
     shadedLib("org.graalvm.tools:chromeinspector:22.3.2") {
         exclude group: 'com.ibm.icu', module: 'icu4j'
