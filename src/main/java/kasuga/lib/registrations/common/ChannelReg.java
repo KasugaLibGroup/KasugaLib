@@ -190,7 +190,7 @@ public class ChannelReg extends Reg {
         if(channel == null) {
             packetBuilders.add(() -> loadPacket(pair));
         } else {
-            channel.messageBuilder((Class<T>) pair.getFirst(), id)
+            channel.messageBuilder((Class<T>) pair.getFirst(), id++)
                     .encoder(Packet::encode)
                     .decoder((Function<FriendlyByteBuf, T>) pair.getSecond())
                     .consumerNetworkThread((first, second) -> (first.onReach(second.get()) || false))
