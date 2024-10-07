@@ -26,8 +26,8 @@ public class MixinCarriageContraptionEntityRenderer {
                         Direction d1 = instance.getInitialOrientation();
                         Direction d2 = d1;
 
-                        // 这里改成 true 就可以返回正确的朝向数据，如果为 false 则不改变从 Carriage 返回的值
-                        // 以下为对应方向的转置顺序, 前者为从Carriage中拿到的方块，后者为正确朝向
+                        // switch it to true could get correct direction，if false it would not change the value that return from Carriage.
+                        // Mappings from Carriage to correct direction.
                         // North -> West
                         // South -> East
                         // West -> South

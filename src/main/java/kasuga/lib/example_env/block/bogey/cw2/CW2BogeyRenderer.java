@@ -19,11 +19,11 @@ public class CW2BogeyRenderer extends BogeyRenderer {
     }
 
     /**
-     * 方法变更
+     * Method changes.
      *
-     * <p>1. 传参增加一个 CarriageBogey 参数
+     * <p> 1. add a CarriageBogey param.
      *
-     * <p>2. createModelInstances() -> createModelInstance()
+     * <p> 2. createModelInstances() -> createModelInstance()
      *
      * <p>
      *
@@ -46,13 +46,13 @@ public class CW2BogeyRenderer extends BogeyRenderer {
     }
 
     /**
-     * 方法变更
+     * Method Changes
      *
      * <p>1. Transform -> BogeyModelData
      *
      * <p>2. getTransformPartialModel -> getTransForm
      *
-     * <p>3. finalize() 已经被弃用 -> 调用 BogeyModelData.render()
+     * <p>3. finalize() has been deprecated -> use BogeyModelData.render() instead.
      *
      * <p>
      *

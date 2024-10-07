@@ -300,6 +300,11 @@ jar {
 if (!isSdk) {
     jar.finalizedBy('reobfShadowJar')
 }
+
+javadoc {
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
+
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 // publish.dependsOn('reobfJar')
 
