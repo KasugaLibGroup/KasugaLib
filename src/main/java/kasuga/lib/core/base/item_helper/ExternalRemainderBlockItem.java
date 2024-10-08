@@ -26,14 +26,21 @@ public class ExternalRemainderBlockItem extends BlockItem {
         return craftingRemainder;
     }
 
-    @Override
     public boolean hasCraftingRemainingItem(ItemStack stack) {
-        return super.hasCraftingRemainingItem(stack) || craftingRemainder.get() != null;
+        return hasContainerItem(stack);
+    }
+    @Override
+    public boolean hasContainerItem(ItemStack stack) {
+        return super.hasContainerItem(stack) || craftingRemainder.get() != null;
+    }
+
+    public ItemStack getCraftingRemainingItem(ItemStack stack) {
+        return getContainerItem(stack);
     }
 
     @Override
-    public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
-        ItemStack remain = super.getCraftingRemainingItem(itemStack);
+    public ItemStack getContainerItem(ItemStack itemStack) {
+        ItemStack remain = super.getContainerItem(itemStack);
         if ((remain == ItemStack.EMPTY || remain.is(Items.AIR)) && craftingRemainder.get() != null) {
             remain = craftingRemainder.get().getDefaultInstance();
         }
