@@ -1,6 +1,7 @@
 package kasuga.lib.core.client.render.texture;
 
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.KasugaLibClient;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -73,5 +74,19 @@ public class StaticImageHolder {
         if (registerType > -1) this.image = image;
         registerType = -1;
         return image;
+    }
+
+    public Supplier<StaticImage> getImageSafe() {
+        try {
+            return getImage();
+        } catch (IOException e) {
+            try {
+                return KasugaLibClient.NO_IMG.getImage();
+            } catch (IOException e2) {
+                throw new RuntimeException(e2);
+            } finally {
+                KasugaLib.MAIN_LOGGER.warn("Failed to get specified picture!", e);
+            }
+        }
     }
 }

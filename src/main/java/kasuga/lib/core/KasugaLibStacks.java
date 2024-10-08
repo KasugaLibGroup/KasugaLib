@@ -74,6 +74,7 @@ public class KasugaLibStacks {
             bus.addListener(ClientSetupEvent::onClientSetup);
             MinecraftForge.EVENT_BUS.addListener(RenderTickEvent::onRenderTick);
             GUI = Optional.of(new GuiEngine());
+            KasugaLibClient.invoke();
         }
 
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStarting);
