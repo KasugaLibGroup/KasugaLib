@@ -7,6 +7,7 @@ import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgumentInfo;
 import kasuga.lib.core.client.animation.Constants;
 import kasuga.lib.core.client.frontend.gui.GuiEngine;
+import kasuga.lib.core.client.render.texture.StaticImageHolder;
 import kasuga.lib.core.events.both.BothSetupEvent;
 import kasuga.lib.core.events.both.EntityAttributeEvent;
 import kasuga.lib.core.events.client.*;
@@ -22,6 +23,7 @@ import kasuga.lib.registrations.registry.FontRegistry;
 import kasuga.lib.registrations.registry.TextureRegistry;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
@@ -81,6 +83,7 @@ public class KasugaLibStacks {
             bus.addListener(ClientSetupEvent::onClientSetup);
             MinecraftForge.EVENT_BUS.addListener(RenderTickEvent::onRenderTick);
             GUI = Optional.of(new GuiEngine());
+            KasugaLibClient.invoke();
         }
 
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStarting);
