@@ -5,6 +5,7 @@ import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.render.SimpleColor;
 import kasuga.lib.core.client.render.texture.Vec2f;
+import kasuga.lib.core.util.ComponentHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -38,7 +39,7 @@ public class TextContext {
     }
 
     public TextContext(Font font, String text) {
-        this(font, Component.literal(text));
+        this(font, ComponentHelper.literal(text));
     }
 
     public TextContext(String text) {
