@@ -35,8 +35,8 @@ public class UnModeledBlockProperty<J extends Comparable<J>, T extends Property<
     }
 
     @Override
-    public @NotNull String getName(Comparable p_61696_) {
-        return prop.getName();
+    public @NotNull String getName(@NotNull Comparable name) {
+        return prop.getName((J) name);
     }
 
     @Override
