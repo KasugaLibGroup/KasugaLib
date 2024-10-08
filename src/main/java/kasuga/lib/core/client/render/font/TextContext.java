@@ -1,17 +1,19 @@
 package kasuga.lib.core.client.render.font;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import kasuga.lib.core.client.animation.neo_neo.VectorUtil;
 import kasuga.lib.core.client.render.SimpleColor;
 import kasuga.lib.core.client.render.texture.Vec2f;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.function.Consumer;
 
@@ -29,7 +31,7 @@ public class TextContext {
         this.text = component;
         scale = ONE;
         pivot = Vec2f.ZERO;
-        rotation = Vector3f.ZERO;
+        rotation = new Vector3f();
         style = null;
     }
 
@@ -116,14 +118,14 @@ public class TextContext {
     }
 
     public void rotate(Vector3f rotation) {
-        Quaternion quaternion = Quaternion.fromXYZ(this.rotation);
-        Quaternion other = Quaternion.fromXYZ(rotation);
+        Quaternionf quaternion = VectorUtil.fromXYZ(rotation);
+        Quaternionf other = VectorUtil.fromXYZ(rotation);
         quaternion.mul(other);
-        this.rotation = quaternion.toXYZ();
+        this.rotation = VectorUtil.toXYZ(quaternion);
     }
 
     public void rotateDeg(Vector3f rotationDeg) {
-        rotationDeg = rotationDeg.copy();
+        rotationDeg = new Vector3f(rotationDeg);
         rotationDeg.mul((float) Math.PI / 180f);
         rotate(rotationDeg);
     }
@@ -200,21 +202,21 @@ public class TextContext {
         getFont().withItalic(italic);
     }
 
-    public void renderToGui(PoseStack pose) {
-        transform(pose, obj -> {
-            Minecraft.getInstance().font.draw(pose, text, 0, 0, color.getRGB());
+    public void renderToGui(GuiGraphics guiGraphics) {
+        transform(guiGraphics.pose(), obj -> {
+            guiGraphics.drawString(Minecraft.getInstance().font, text, 0, 0, color.getRGB());
         });
     }
 
-    public void renderToWorld(PoseStack pose, MultiBufferSource source, boolean dropShadow, boolean transparent, SimpleColor bgColor, int light) {
+    public void renderToWorld(PoseStack pose, MultiBufferSource source, boolean dropShadow, net.minecraft.client.gui.Font.DisplayMode mode, SimpleColor bgColor, int light) {
         transform(pose, obj -> {
             Minecraft.getInstance().font.drawInBatch(text, 0 ,0, color.getRGB(), dropShadow, pose.last().pose(),
-                    source, transparent, bgColor.getRGB(), light);
+                    source, mode, bgColor.getRGB(), light);
         });
     }
 
     public void renderToWorld(PoseStack pose, MultiBufferSource source, boolean dropShadow, int light) {
-        renderToWorld(pose, source, dropShadow, true, SimpleColor.fromRGBA(0, 0, 0, 0), light);
+        renderToWorld(pose, source, dropShadow, net.minecraft.client.gui.Font.DisplayMode.NORMAL, SimpleColor.fromRGBA(0, 0, 0, 0), light);
     }
 
     public void renderToWorld(PoseStack pose, MultiBufferSource source, int light) {
@@ -222,14 +224,14 @@ public class TextContext {
     }
 
     private void transform(PoseStack pose, Consumer<Object> func) {
-        pose.mulPose(Quaternion.fromXYZ(this.rotation));
+        pose.mulPose(VectorUtil.fromXYZ(this.rotation));
         pose.scale(this.scale.x(), this.scale.y(), 1f);
         pose.translate(- pivot.x() * this.getWidth(), - pivot.y() * this.getHeight(), 0);
         func.accept(null);
         pose.translate(pivot.x() * this.getWidth(), pivot.y() * this.getHeight(), 0);
         pose.scale(1 / this.scale.x(), 1 / this.scale.y(), 1f);
-        Vector3f negRot = rotation.copy();
+        Vector3f negRot = new Vector3f(rotation);
         negRot.mul(-1f);
-        pose.mulPose(Quaternion.fromXYZ(negRot));
+        pose.mulPose(VectorUtil.fromXYZ(negRot));
     }
 }
