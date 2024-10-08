@@ -2,7 +2,6 @@ package kasuga.lib.example_env.client.block_entity.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import kasuga.lib.KasugaLib;
-import kasuga.lib.core.client.render.component.SimpleComponent;
 import kasuga.lib.core.client.render.model.SimpleModel;
 import kasuga.lib.core.client.render.texture.old.WorldTexture;
 import kasuga.lib.example_env.AllExampleElements;
@@ -17,7 +16,6 @@ import net.minecraft.resources.ResourceLocation;
 public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTile> {
     // SimpleModel model = AllExampleElements.greenAppleModel.getModel();
     // MultiPartModel wuling = (MultiPartModel) AllExampleElements.wuLingVans.getModel();
-    SimpleComponent component = new SimpleComponent(Component.literal("QwQ"));
     private static final WorldTexture texture = new WorldTexture(new ResourceLocation(KasugaLib.MOD_ID, "textures/common/test/green_apple_bubble.png"));
     public GreenAppleTileRenderer(BlockEntityRendererProvider.Context context) {
         texture.renderType(RenderType::text);
