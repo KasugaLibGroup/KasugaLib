@@ -1,4 +1,4 @@
-package kasuga.lib.core.client.render.component;
+package kasuga.lib.core.client.render.font;
 
 import kasuga.lib.KasugaLib;
 import net.minecraft.network.chat.Style;
