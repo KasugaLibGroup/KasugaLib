@@ -18,7 +18,6 @@ import net.minecraft.resources.ResourceLocation;
 public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTile> {
     // SimpleModel model = AllExampleElements.greenAppleModel.getModel();
     // MultiPartModel wuling = (MultiPartModel) AllExampleElements.wuLingVans.getModel();
-    SimpleComponent component = new SimpleComponent(Component.literal("QwQ"));
     private static final WorldTexture texture = new WorldTexture(new ResourceLocation(KasugaLib.MOD_ID, "textures/common/test/green_apple_bubble.png"));
     public GreenAppleTileRenderer(BlockEntityRendererProvider.Context context) {
         texture.renderType(RenderType::text);
