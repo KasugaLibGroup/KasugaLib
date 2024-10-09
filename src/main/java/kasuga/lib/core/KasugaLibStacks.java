@@ -78,6 +78,8 @@ public class KasugaLibStacks {
             bus.addListener(TextureRegistryEvent::onModelRegistry);
             bus.addListener(ClientSetupEvent::onClientSetup);
             MinecraftForge.EVENT_BUS.addListener(RenderTickEvent::onRenderTick);
+            bus.addListener(GeometryEvent::registerGeometry);
+            bus.addListener(GeometryEvent::registerReloadListener);
             GUI = Optional.of(new GuiEngine());
             KasugaLibClient.invoke();
         }

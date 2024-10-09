@@ -1,0 +1,5 @@
+{
+  "loader": "kasuga_lib:be_anim",
+  "model": "kasuga_lib:anim/test.geo",
+  "texture": "kasuga_lib:anim/test_text"
+}

@@ -48,12 +48,14 @@ public class AllExampleElements {
             .blockPredicates((location, block) -> block instanceof GreenAppleBlock)
             .submit(REGISTRY);
 
+    /*
     public static final EntityReg<WuLingEntity> wuling = new EntityReg<WuLingEntity>("wuling")
             .entityType(WuLingEntity::new)
             .size(3, 3)
             .attribute(WuLingEntity::createAttributes)
             .withRenderer(() -> (WuLingRenderer::new))
             .submit(REGISTRY);
+     */
 
     public static final ModelReg greenAppleModel = new ModelReg("green_apple", new ResourceLocation(KasugaLib.MOD_ID, "block/test/green_apple"))
             .submit(REGISTRY);

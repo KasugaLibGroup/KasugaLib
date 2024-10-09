@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "kasuga_lib:block/test/green_apple"
+      "model": "kasuga_lib:anim/green_apple"
     }
   }
 }
