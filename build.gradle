@@ -334,6 +334,6 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 mixin {
-    //add sourceSets.main, 'mixins.example.refmap.json'
+    add sourceSets.main, 'kasuga.refmap.json'
     config 'kasuga.mixins.json'
 }

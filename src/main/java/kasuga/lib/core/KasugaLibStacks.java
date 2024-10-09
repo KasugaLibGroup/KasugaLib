@@ -14,6 +14,7 @@ import kasuga.lib.core.events.server.ServerStartingEvents;
 import kasuga.lib.core.client.render.texture.old.SimpleTexture;
 import kasuga.lib.core.javascript.JavascriptApi;
 import kasuga.lib.core.util.Envs;
+import kasuga.lib.registrations.client.KeyBindingReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.registry.FontRegistry;
 import kasuga.lib.registrations.registry.TextureRegistry;
@@ -43,7 +44,7 @@ public class KasugaLibStacks {
     public final JavascriptApi JAVASCRIPT = new JavascriptApi();
 
     public Optional<GuiEngine> GUI = Optional.empty();
-    public final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
+    public static final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
 
 
     public KasugaLibStacks(IEventBus bus) {
@@ -60,6 +61,7 @@ public class KasugaLibStacks {
         MinecraftForge.EVENT_BUS.addListener(PacketEvent::onServerPayloadHandleEvent);
         bus.addListener(BothSetupEvent::onFMLCommonSetup);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
+        bus.addListener(BothSetupEvent::RegisterKeyEvent);
 
         if(Envs.isClient()) {
             MinecraftForge.EVENT_BUS.addListener(PacketEvent::onClientPayloadHandleEvent);

@@ -120,7 +120,7 @@ public class NineSlicedImageMask extends ImageMask {
         positionMatrix.set(3, 2, intersectionVector3f(positionMatrix.get(3, 1), positionMatrix.get(3, 4),
                 positionMatrix.get(4, 2), positionMatrix.get(1, 2)));
         positionMatrix.set(3, 3, intersectionVector3f(positionMatrix.get(3, 4), positionMatrix.get(3, 1),
-                positionMatrix.get(4, 3), positionMatrix.get(1, 3)));
+                positionMatrix.get(4, 3), positionMatrix.get(4, 1)));
     }
 
     public void setBorders(float left, float right, float top, float bottom) {
@@ -197,43 +197,51 @@ public class NineSlicedImageMask extends ImageMask {
         return offset;
     }
 
+    /**
+     * Algorithm from <a href="https://zhuanlan.zhihu.com/p/690258055">here</a>
+     * @param begin1 begin of line 1
+     * @param end1 end of line 1
+     * @param begin2 begin of line 2
+     * @param end2 end of line 2
+     * @return intersection point
+     */
     @Util
     public static Vector3f intersectionVector3f(Vector3f begin1, Vector3f end1, Vector3f begin2, Vector3f end2) {
-       Vector3f a = end1.copy();
-       a.sub(begin1);
-       Vector3f b = end2.copy();
-       b.sub(begin2);
-       Vector3f t = begin2.copy();
-       t.sub(begin1);
+        Vector3f a = end1.copy();
+        a.sub(begin1);
+        Vector3f b = end2.copy();
+        b.sub(begin2);
+        Vector3f t = begin2.copy();
+        t.sub(begin1);
 
-       float aSqr = a.dot(a);
-       float bSqr = b.dot(b);
-       float a_dot_b = a.dot(b);
-       float a_dot_t = a.dot(t);
-       float b_dot_t = b.dot(t);
+        float aSqr = a.dot(a);
+        float bSqr = b.dot(b);
+        float a_dot_b = a.dot(b);
+        float a_dot_t = a.dot(t);
+        float b_dot_t = b.dot(t);
 
-       float denom = aSqr * bSqr - a_dot_b * a_dot_b;
+        float denom = aSqr * bSqr - a_dot_b * a_dot_b;
 
-       float u = (a_dot_t * bSqr - b_dot_t * a_dot_b) / denom;
-       float v = (u * a_dot_b - b_dot_t) / bSqr;
+        float u = (a_dot_t * bSqr - b_dot_t * a_dot_b) / denom;
+        float v = (u * a_dot_b - b_dot_t) / bSqr;
 
-       Vector3f px = a.copy();
-       px.mul(u);
-       Vector3f p_u = begin1.copy();
-       p_u.add(px);
-       Vector3f qx = b.copy();
-       qx.mul(v);
-       Vector3f q_v = begin2.copy();
-       q_v.add(qx);
-       Vector3f vec  = q_v.copy();
-       vec.sub(p_u);
+        Vector3f px = a.copy();
+        px.mul(u);
+        Vector3f p_u = begin1.copy();
+        p_u.add(px);
+        Vector3f qx = b.copy();
+        qx.mul(v);
+        Vector3f q_v = begin2.copy();
+        q_v.add(qx);
+        Vector3f vec  = q_v.copy();
+        vec.sub(p_u);
 
-       float len = vec.dot(vec);
-       if (len == 0) {
-           return p_u;
-       } else {
-           return average(p_u, q_v);
-       }
+        float len = vec.dot(vec);
+        if (len == 0) {
+            return p_u;
+        } else {
+            return average(p_u, q_v);
+        }
     }
 
     @Util

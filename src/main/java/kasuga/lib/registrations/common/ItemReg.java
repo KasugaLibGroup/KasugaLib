@@ -2,6 +2,7 @@ package kasuga.lib.registrations.common;
 
 import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Optional;
+import kasuga.lib.core.base.item_helper.ExternalProperties;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Item is an important basic element of minecraft.
@@ -30,14 +32,22 @@ public class ItemReg<T extends Item> extends Reg {
     private boolean customRender = false;
     private ItemBuilder<T> builder;
 
-    public final Item.Properties properties = new Item.Properties();
+    public final Item.Properties properties = new ExternalProperties();
     private RegistryObject<T> registryObject = null;
-    private MenuReg<?, ?, ?> menuReg = null;
+    private MenuReg<?, ?> menuReg = null;
     private final List<TagKey<?>> tags;
     boolean registerMenu = false;
 
     /**
      * Create an item reg.
+     * <p>
+     * Note: If you want to set a Crafting Remainder for your item, please use
+     * <p>
+     * {@link kasuga.lib.core.base.item_helper.ExternalRemainderItem} or
+     * <p>
+     * {@link kasuga.lib.core.base.item_helper.ExternalRemainderBlockItem}
+     * <p>
+     * then use {@link ExternalProperties#craftRemainder(Supplier)}
      * @param registrationKey the registration key of your item.
      * @param model If your item's model doesn't lie under the "namespace:models/item" folder, pass the location here,
      *              Pay attention that your model must be under the "namespace:models" folder. If your item's model just
@@ -159,13 +169,12 @@ public class ItemReg<T extends Item> extends Reg {
      * @param screen the constructor function of your screen.
      * @return self.
      * @param <F> your menu class.
-     * @param <R> your screen class.
      * @param <U> your screen class.
      */
     @Optional
-    public <F extends AbstractContainerMenu, R extends Screen, U extends Screen & MenuAccess<F>> ItemReg<T>
+    public <F extends AbstractContainerMenu, U extends Screen & MenuAccess<F>> ItemReg<T>
     withMenu(String registrationKey, IContainerFactory<?> menu, MenuReg.ScreenInvoker<U> screen) {
-        menuReg = new MenuReg<F, R, U>(registrationKey)
+        menuReg = new MenuReg<F, U>(registrationKey)
                 .withMenuAndScreen((IContainerFactory<F>) menu, screen);
         registerMenu = true;
         return this;
@@ -178,7 +187,7 @@ public class ItemReg<T extends Item> extends Reg {
      * @return self.
      */
     @Optional
-    public ItemReg<T> withMenu(MenuReg<?, ?, ?> menuReg) {
+    public ItemReg<T> withMenu(MenuReg<?, ?> menuReg) {
         this.menuReg = menuReg;
         registerMenu = false;
         return this;

@@ -1,6 +1,7 @@
 package kasuga.lib.registrations.common;
 
 import kasuga.lib.core.annos.Mandatory;
+import kasuga.lib.core.base.item_helper.ExternalProperties;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -33,14 +34,22 @@ public class BucketItemReg<T extends BucketItem> extends ItemReg<T> {
     private boolean customRender = false;
     private BucketBuilder<T> builder;
 
-    public final Item.Properties properties = new Item.Properties();
+    public final Item.Properties properties = new ExternalProperties();
     private RegistryObject<T> registryObject = null;
-    private MenuReg<?, ?, ?> menuReg = null;
+    private MenuReg<?, ?> menuReg = null;
     private Supplier<? extends ForgeFlowingFluid> fluid = null;
     private final List<TagKey<?>> tags;
 
     /**
      * Create a bucket item reg.
+     * <p>
+     * Note: If you want to set a Crafting Remainder for your item, please use
+     * <p>
+     * {@link kasuga.lib.core.base.item_helper.ExternalRemainderItem} or
+     * <p>
+     * {@link kasuga.lib.core.base.item_helper.ExternalRemainderBlockItem}.
+     * <p>
+     * then use {@link ExternalProperties#craftRemainder(Supplier)}
      * @param registrationKey the registration key of your bucket.
      * @param model If your bucket's model doesn't lie under the "namespace:models/item" folder, pass the location here,
      *              Pay attention that your model must be under the "namespace:models" folder. If your bucket's model just
