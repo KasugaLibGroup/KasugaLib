@@ -94,7 +94,7 @@ public class GuiDomNode extends DomNode<GuiContext> {
                 .getSourceNode(source);
 
         LayoutBox coordinate = layout.getPosition();
-        background.render(context,(int)coordinate.x,(int)coordinate.y,(int)coordinate.width,(int)coordinate.height);
+        background.render(context,coordinate.x,coordinate.y,coordinate.width,coordinate.height);
 
         EdgeSize2D border = layout.getBorder();
         MultiBufferSource bufferSource = context.getBufferSource();

@@ -71,7 +71,7 @@ public class BackgroundRenderer {
         this.mode = mode;
     }
 
-    public void render(RenderContext context,int x,int y,int width,int height){
+    public void render(RenderContext context,float x,float y,float width,float height){
         if( mode == RenderMode.COMMON ) {
             // this.renderCommon(context, x, y, width, height);
             neoRenderCommon(context, x, y, width, height);
@@ -135,7 +135,8 @@ public class BackgroundRenderer {
         imageMask.rectangle(new Vector3f(x, y, 0), ImageMask.Axis.X, ImageMask.Axis.Y, true, true, width, height);
         if (context.getContextType() == RenderContext.RenderContextType.SCREEN)
             imageMask.renderToGui();
-        imageMask.renderToWorld(context.pose(), context.getBufferSource(),
+        else
+            imageMask.renderToWorld(context.pose(), context.getBufferSource(),
                 context.getRenderType().build(imageMask.image.id), true, context.packedLight);
     }
 
