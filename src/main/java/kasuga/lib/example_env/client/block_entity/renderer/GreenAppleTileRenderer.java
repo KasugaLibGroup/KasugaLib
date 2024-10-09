@@ -1,8 +1,11 @@
 package kasuga.lib.example_env.client.block_entity.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix4f;
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.client.render.font.TextContext;
 import kasuga.lib.core.client.render.model.SimpleModel;
+import kasuga.lib.core.client.render.texture.Matrix;
 import kasuga.lib.core.client.render.texture.old.WorldTexture;
 import kasuga.lib.example_env.AllExampleElements;
 import kasuga.lib.example_env.block_entity.GreenAppleTile;
@@ -14,12 +17,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTile> {
-    SimpleModel model = AllExampleElements.greenAppleModel.getModel();
+    // SimpleModel model = AllExampleElements.greenAppleModel.getModel();
     // MultiPartModel wuling = (MultiPartModel) AllExampleElements.wuLingVans.getModel();
-    private static final WorldTexture texture = new WorldTexture(new ResourceLocation(KasugaLib.MOD_ID, "textures/common/test/green_apple_bubble.png"));
+    // private static final WorldTexture texture = new WorldTexture(new ResourceLocation(KasugaLib.MOD_ID, "textures/common/test/green_apple_bubble.png"));
+
+    TextContext textContext, textContext2;
     public GreenAppleTileRenderer(BlockEntityRendererProvider.Context context) {
-        texture.renderType(RenderType::text);
-        TEXTURE.renderType(RenderType::text);
+        textContext = new TextContext("test");
+        // textContext.rotateDeg(0f, 90f, 0f);
+        // textContext2 = new TextContext("content");
+
         // model.renderType(RenderType::translucent);
         // wuling.renderType(RenderType::solid);
         // wuling.applyParentRenderTypeForAllBones();
@@ -44,9 +51,17 @@ public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTil
         // component.setFont(Minecraft.getInstance().font);
         // component.zoom(component.getZoom() * .2f);
     }
-    private WorldTexture TEXTURE = new WorldTexture(new ResourceLocation("kasuga_lib","textures/gui/pixel.png"));
+    // private WorldTexture TEXTURE = new WorldTexture(new ResourceLocation("kasuga_lib","textures/gui/pixel.png"));
     @Override
     public void render(GreenAppleTile tile, float partial, PoseStack pose, MultiBufferSource buffer, int light, int overlay) {
+        pose.pushPose();
+        // textContext.rotateDeg(1f, 1f, 1f);
+        textContext.rotateDeg(0f, 1f, 0f);
+        textContext.renderToWorld(pose, buffer, light);
+        pose.popPose();
+        // System.out.println(mtx.equals(mtx2));
+        // pose.translate(0, -1, 0);
+        // textContext2.renderToWorld(pose, buffer, light);
 /*
         BlockPos pos = tile.getBlockPos();
         pose.pushPose();

@@ -29,6 +29,8 @@ public class WuLingEntity extends LivingEntity {
     public DoorControl doorControl = new DoorControl();
 
     public final Animation animation;
+
+
     public WuLingEntity(EntityType<? extends LivingEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         animation = level.isClientSide ? AllExampleElements.test_anim.getInstance() : null;
@@ -37,11 +39,12 @@ public class WuLingEntity extends LivingEntity {
             model.renderType(RenderType::solid);
             model.applyParentRenderTypeForAllBones();
             animation.loadModel(model);
+            model.shouldUseParentPose(false);
         }
     }
 
     public WuLingEntity(Level world) {
-        this(AllExampleElements.wuling.getType(), world);
+        this(null, world);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

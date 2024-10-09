@@ -24,6 +24,8 @@ public class GreenAppleItemRenderer extends BlockEntityWithoutLevelRenderer {
     public void renderByItem(ItemStack item, ItemTransforms.TransformType transform,
                              PoseStack pose, MultiBufferSource buffer, int light, int overlay) {
         // super.renderByItem(pStack, pTransformType, pPoseStack, pBuffer, pPackedLight, pPackedOverlay);
+        pose.pushPose();
         model.render(pose, buffer, 0, 0, 0, light, overlay);
+        pose.popPose();
     }
 }
