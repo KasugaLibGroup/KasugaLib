@@ -28,6 +28,11 @@ public class SimpleColor {
         return fromRGBAInt((int)(a * 255) * 256 * 256 * 256 + rgb);
     }
 
+    public static SimpleColor fromHexString(String hex){
+        int[] color = hexToRgba(hex);
+        return fromRGBA(color[0], color[1], color[2], color[3]);
+    }
+
     public static SimpleColor fromRGB(float r, float g, float b) {
         return fromRGBA((int)(r * 255), (int)(g * 255), (int)(b * 255), 1);
     }
@@ -131,10 +136,6 @@ public class SimpleColor {
 
     public float[] getHSV() {
         return rgbToHsv(this.getR(), this.getG(), this.getB());
-    }
-
-    public SimpleColor copy() {
-        return new SimpleColor(this.getColor());
     }
 
     /**
@@ -250,5 +251,41 @@ public class SimpleColor {
         float s = 1 - Math.min(r, Math.min(g, b)) / i;
         float h = b <= g ? theta : 360 - theta;
         return new float[]{h, s, i};
+    }
+
+    public static int[] hexToRgba(String hexString){
+        try {
+            switch (hexString.length()){
+                case 3:
+                    return new int[]{
+                            Integer.parseInt(hexString.substring(0,1)),
+                            Integer.parseInt(hexString.substring(1,2)),
+                            Integer.parseInt(hexString.substring(2,3)),
+                            1
+                    };
+                case 4:
+                    return new int[]{
+                            Integer.parseInt(hexString.substring(0,1),16),
+                            Integer.parseInt(hexString.substring(1,2),16),
+                            Integer.parseInt(hexString.substring(2,3),16),
+                            Integer.parseInt(hexString.substring(3,4),16)
+                    };
+                case 6:
+                    return new int[]{
+                            Integer.parseInt(hexString.substring(0,2),16),
+                            Integer.parseInt(hexString.substring(2,4),16),
+                            Integer.parseInt(hexString.substring(4,6),16),
+                            1
+                    };
+                case 8:
+                    return new int[]{
+                            Integer.parseInt(hexString.substring(0,2),16),
+                            Integer.parseInt(hexString.substring(2,4),16),
+                            Integer.parseInt(hexString.substring(4,6),16),
+                            Integer.parseInt(hexString.substring(6,8),16)
+                    };
+            }
+        }catch (NumberFormatException e){}
+        return new int[]{0, 0, 0, 0};
     }
 }
