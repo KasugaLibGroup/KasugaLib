@@ -4,7 +4,6 @@ import kasuga.lib.core.addons.node.NodePackage;
 import kasuga.lib.core.addons.node.NodePackageLoader;
 import kasuga.lib.core.addons.node.PackageScanner;
 import kasuga.lib.core.util.data_type.Pair;
-import net.minecraft.client.Minecraft;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import java.util.List;
 public class ResourceManagerPackageProvider {
     public List<Pair<NodePackage,List<NodePackage>>> packages = new ArrayList<>();
     public ResourceManagerPackageProvider(ResourceManager resourceManager) {
-        List<ResourceProvider> providers = ResourceAdapter.adapt(Minecraft.getInstance().getResourceManager().listPacks().toList());
+        List<ResourceProvider> providers = ResourceAdapter.adapt(resourceManager.listPacks().toList());
         providers.forEach((provider)->{
             Pair<NodePackage,List<NodePackage>> result = PackageScanner.scan(provider);
             if(result != null){

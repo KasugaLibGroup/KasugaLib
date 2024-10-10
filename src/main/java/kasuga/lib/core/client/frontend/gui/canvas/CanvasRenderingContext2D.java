@@ -9,6 +9,10 @@ public class CanvasRenderingContext2D {
     Point2D current = Point2D.ZERO;
     float lineWidth = 0.0F;
 
+    public CanvasRenderingContext2D(CanvasRenderer renderer){
+        this.canvasRenderer = renderer;
+    }
+
     public void moveTo(float x, float y){
         current = new Point2D(x, y);
     }
@@ -41,7 +45,7 @@ public class CanvasRenderingContext2D {
     }
 
     private void strokeVertexProperty(VertexConsumer consumer, Integer integer) {
-        consumer.color(0.0F, 0.0F, 0.0F, 1.0F);
+        consumer.color(0.0F, 1.0F, 0.0F, 1.0F);
     }
 
     private void clearColorProperty(VertexConsumer consumer, Integer integer) {

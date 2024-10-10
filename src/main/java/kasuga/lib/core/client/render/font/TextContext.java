@@ -265,8 +265,8 @@ public class TextContext {
     public void renderToGui(PoseStack pose) {
         pose.translate(position.x(), position.y(), position.z());
         pose.mulPose(Quaternion.fromXYZ(this.rotation));
-        pose.scale(this.scale.x(), this.scale.y(), 1f);
         pose.translate(- pivot.x() * this.getWidth(), - pivot.y() * this.getHeight(), 0);
+        pose.scale(this.scale.x(), this.scale.y(), 1f);
 
         Minecraft.getInstance().font.draw(pose, text, 0, 0, color.getRGB());
 

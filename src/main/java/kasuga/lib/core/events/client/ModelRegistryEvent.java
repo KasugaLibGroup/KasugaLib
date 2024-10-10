@@ -3,6 +3,8 @@ package kasuga.lib.core.events.client;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.render.model.MultiPartModel;
 import kasuga.lib.core.client.render.model.SimpleModel;
+import kasuga.lib.core.client.render.texture.StaticImage;
+import kasuga.lib.core.client.render.texture.StaticImageHolder;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.client.ModelReg;
 import net.minecraft.client.resources.model.BakedModel;
@@ -68,5 +70,16 @@ public class ModelRegistryEvent {
             registry.onEntityRendererReg();
             registry.onAnimationReg();
         }
+    }
+
+    @SubscribeEvent
+    public static void registerStaticImages(ModelEvent.RegisterAdditional event) {
+        StaticImage.HOLDERS.forEach(holder -> {
+            try {
+                holder.getImage();
+            } catch (IOException e) {
+                KasugaLib.MAIN_LOGGER.error("Error in loading textures: ", e);
+            }
+        });
     }
 }

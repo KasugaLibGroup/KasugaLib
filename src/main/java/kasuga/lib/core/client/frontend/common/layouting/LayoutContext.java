@@ -1,6 +1,9 @@
 package kasuga.lib.core.client.frontend.common.layouting;
 
+import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.dom.nodes.DomNode;
+import kasuga.lib.core.util.Envs;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -116,5 +119,12 @@ public class LayoutContext<T extends LayoutNode,N extends DomNode> {
         if(!this.sources.containsKey(source))
             throw new IllegalStateException("Source not found");
         return this.sources.get(source);
+    }
+
+    public boolean hasSource(Object source) {
+        if(Envs.isDevEnvironment() && !this.sources.containsKey(source)){
+            KasugaLib.MAIN_LOGGER.error("Source "+source.toString()+ "has not found in layout context "+this +", it may caused by multithread problems. If this still happends, please check.");
+        }
+        return this.sources.containsKey(source);
     }
 }

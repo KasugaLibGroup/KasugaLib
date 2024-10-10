@@ -8,6 +8,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class GuiInstance {
 
@@ -109,6 +110,19 @@ public class GuiInstance {
         this.sourceInfos.remove(source);
         getContext().ifPresent((c)->{
             c.removeSourceInfo(source);
+        });
+    }
+
+    public void beforeRender(){
+        this.context.isRendering = true;
+        this.context.renderLock.lock();
+    }
+
+    public void afterRender(){
+        this.context.renderLock.unlock();
+        this.context.isRendering = false;
+        this.context.getRenderer().getContext().ifPresent((c)->{
+            c.dispatchBeforeRenderTick();
         });
     }
 }
