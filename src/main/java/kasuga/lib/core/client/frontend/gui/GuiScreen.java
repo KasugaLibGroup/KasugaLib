@@ -35,10 +35,12 @@ public class GuiScreen extends Screen {
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        this.instance.beforeRender();
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
         instance.getContext().ifPresent((context)->{
             context.render(this,RenderContext.fromScreen(this,pPoseStack,pMouseX,pMouseY,pPartialTick));
         });
+        this.instance.afterRender();
     }
 
     @Override

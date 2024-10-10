@@ -7,6 +7,8 @@ import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.resources.ResourceLocation;
 import org.graalvm.polyglot.Value;
 
+import java.util.Optional;
+
 public class DOMRegistryItemDynamicProxy {
     private final DomContext<?,?> context;
     private final DOMPriorityRegistry registry;
@@ -54,6 +56,8 @@ public class DOMRegistryItemDynamicProxy {
         this.closed = true;
         sideEffectContext.close();
         context.setNotReady();
+        this.registryContext = null;
+        this.sideEffectContext = null;
     }
 
     public void enable() {
@@ -68,5 +72,9 @@ public class DOMRegistryItemDynamicProxy {
         if(this.id == location){
             this.reload();
         }
+    }
+
+    public Optional<JavascriptContext> getContext(){
+        return Optional.ofNullable(this.registryContext);
     }
 }

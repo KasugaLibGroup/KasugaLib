@@ -70,24 +70,43 @@ public class GuiDomNode extends DomNode<GuiContext> {
     @HostAccess.Export
     @Override
     public boolean addChildAt(int i, DomNode<GuiContext> child) {
-        if(child instanceof GuiDomNode domNode)
-            getLayoutManager().addChild(i,domNode.getLayoutManager());
-        styles.notifyUpdate();
-        return super.addChildAt(i,child);
+        this.domContext.queueDuringRender(()->{
+            if(child instanceof GuiDomNode domNode)
+                getLayoutManager().addChild(i,domNode.getLayoutManager());
+            styles.notifyUpdate();
+            super.addChildAt(i,child);
+        });
+        return true;
     }
 
     @HostAccess.Export
     @Override
     public boolean removeChild(DomNode<GuiContext> child) {
-        boolean result = super.removeChild(child);
-        if(child instanceof GuiDomNode domNode)
-            getLayoutManager().removeChild(domNode.getLayoutManager());
-        styles.notifyUpdate();
-        return result;
+        this.domContext.queueDuringRender(()-> {
+            boolean result = super.removeChild(child);
+            if (child instanceof GuiDomNode domNode) {
+                getLayoutManager().removeChild(domNode.getLayoutManager());
+            }
+            styles.notifyUpdate();
+            super.removeChild(child);
+        });
+        return super.children.contains(child);
+    }
+
+    @HostAccess.Export
+    @Override
+    public boolean addChild(DomNode<GuiContext> child) {
+        this.domContext.queueDuringRender(()-> {
+            super.addChild(child);
+        });
+        return true;
     }
 
     @Override
     public void render(Object source, RenderContext context) {
+        if(!this.getLayoutManager().hasSource(source))
+            return;
+
         this.updateStyles();
 
         LayoutNode layout = this.getLayoutManager()

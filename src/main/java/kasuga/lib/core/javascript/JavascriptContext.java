@@ -7,10 +7,8 @@ import kasuga.lib.core.util.Callback;
 import net.minecraft.Util;
 import org.graalvm.polyglot.*;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.FutureTask;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -95,7 +93,14 @@ public class JavascriptContext {
 
     Set<Tickable> tickables = new HashSet<>();
 
+    Queue<CompletableFuture> futures = new ArrayDeque<>();
+
     public void tick(){
+        if(!this.futures.isEmpty()){
+            beforeRenderTick();
+            CompletableFuture future;
+            while((future = this.futures.poll()) != null) future.complete(null);
+        }
         tickables.forEach(Tickable::tick);
     }
 
@@ -128,5 +133,25 @@ public class JavascriptContext {
 
     public Optional<JavascriptModule> requireModule(String name){
         return moduleLoader.load(rootModule, name);
+    }
+
+    Queue<Runnable> afterRenderTickTasks = new ArrayDeque<>(32);
+
+    public void beforeRenderTick(){
+        Runnable task;
+        while((task = afterRenderTickTasks.poll()) != null){
+            task.run();
+        }
+    }
+
+    public CompletableFuture dispatchBeforeRenderTick(){
+        CompletableFuture future = new CompletableFuture();
+        this.futures.add(future);
+        return future;
+    }
+
+
+    public void enqueueAfterRenderTask(Runnable runnable) {
+        this.afterRenderTickTasks.add(runnable);
     }
 }
