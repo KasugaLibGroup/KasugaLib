@@ -21,7 +21,7 @@ public class EffectReg<T extends MobEffect> extends Reg {
     private MobEffectCategory category = MobEffectCategory.NEUTRAL;
     private RegistryObject<T> registryObject = null;
     private EffectBuilder<T> builder = null;
-    private ArrayList<Consumer<T>> arrributes;
+    private ArrayList<Consumer<T>> attributes;
     private int color = 0xffffff;
 
     /**
@@ -30,7 +30,7 @@ public class EffectReg<T extends MobEffect> extends Reg {
      */
     public EffectReg(String registrationKey) {
         super(registrationKey);
-        this.arrributes = new ArrayList<>();
+        this.attributes = new ArrayList<>();
     }
 
     /**
@@ -87,7 +87,7 @@ public class EffectReg<T extends MobEffect> extends Reg {
      */
     @Optional
     public EffectReg<T> attritube(Consumer<T> attributeModifier) {
-        this.arrributes.add(attributeModifier);
+        this.attributes.add(attributeModifier);
         return this;
     }
 
@@ -103,7 +103,7 @@ public class EffectReg<T extends MobEffect> extends Reg {
         }
         registryObject = registry.mob_effect().register(registrationKey, () -> {
             T effect = builder.build(category, color);
-            this.arrributes.forEach(c -> c.accept(effect));
+            this.attributes.forEach(c -> c.accept(effect));
             return effect;
         });
         return this;
