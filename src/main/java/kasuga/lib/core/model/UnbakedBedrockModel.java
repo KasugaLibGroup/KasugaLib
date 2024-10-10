@@ -6,10 +6,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.math.Vector3f;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.model.base.Geometry;
 import kasuga.lib.core.util.Resources;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
@@ -23,19 +25,16 @@ import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.SimpleUnbakedGeometry;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 
-public class UnbakedAnimModel extends SimpleUnbakedGeometry<UnbakedAnimModel> {
+public class UnbakedBedrockModel extends SimpleUnbakedGeometry<UnbakedBedrockModel> {
     public final ResourceLocation modelLocation, textureLocation;
     private Material material;
     private ArrayList<Geometry> bones;
     private final RenderType renderType;
     private String formatVersion;
-    public UnbakedAnimModel(ResourceLocation modelLocation, ResourceLocation textureLocation, RenderType renderType) {
+    public UnbakedBedrockModel(ResourceLocation modelLocation, ResourceLocation textureLocation, RenderType renderType) {
         this.modelLocation = modelLocation;
         this.textureLocation = textureLocation;
         bones = Lists.newArrayList();
@@ -59,6 +58,13 @@ public class UnbakedAnimModel extends SimpleUnbakedGeometry<UnbakedAnimModel> {
             Geometry geometry = new Geometry(geometryJson, this);
             bones.add(geometry);
         }
+    }
+
+    @Override
+    public Set<String> getConfigurableComponentNames() {
+        Set<String> result = new HashSet<>();
+        bones.forEach(bone -> result.add(bone.getDescription().getIdentifier()));
+        return result;
     }
 
     public JsonObject readModel() {

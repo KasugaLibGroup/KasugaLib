@@ -47,6 +47,15 @@ public class Vertex {
         return new Vertex(result, this.uv);
     }
 
+    public Vertex applyScale(Vector3f pivot, Vector3f scale) {
+        if (scale == null) return this;
+        Vector3f result = this.position.copy();
+        result.sub(pivot);
+        result.mul(scale.x(), scale.y(), scale.z());
+        result.add(pivot);
+        return new Vertex(result, this.uv);
+    }
+
     public void fillVertex(int[] vertexData, int index, float u0, float v0, float scaleU, float scaleV) {
         int i = index * 8;
         vertexData[i] = Float.floatToRawIntBits(this.position.x());

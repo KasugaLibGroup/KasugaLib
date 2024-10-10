@@ -11,6 +11,7 @@
     "resources.PathPackResourceMixin"
   ],
   "client": [
+    "client.MixinBlockModel$Deserializer",
     "client.MixinBlockModelBinding",
     "client.MixinBlockModelShaper"
   ],

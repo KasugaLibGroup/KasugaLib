@@ -63,8 +63,10 @@ public class Bone implements Rotationable {
             Bone parentBone = getParent();
             if (parentBone != null) parentBone.applyRotation(instructions);
         }
-        if (!this.rotation.equals(Vector3f.ZERO))
-            instructions.add(new RotationInstruction(this.pivot, this.rotation));
+        if (!this.rotation.equals(Vector3f.ZERO)) {
+            Vector3f p = this.pivot.copy(); p.mul(1 / 16f);
+            instructions.add(new RotationInstruction(p, this.rotation));
+        }
     }
 
     public void addQuads(IGeometryBakingContext owner, IModelBuilder<?> modelBuilder, ModelBakery bakery,
@@ -75,8 +77,9 @@ public class Bone implements Rotationable {
         ));
     }
     public boolean hasParent() {
-        return parent == null;
+        return parent != null;
     }
+
     public @Nullable Bone getParent() {
         if (parent == null) return null;
         return model.getBone(this.parent);

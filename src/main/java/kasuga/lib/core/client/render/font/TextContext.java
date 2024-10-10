@@ -279,25 +279,21 @@ public class TextContext {
     }
 
     public void renderToWorld(PoseStack pose, MultiBufferSource source, boolean dropShadow, boolean transparent, SimpleColor bgColor, int light) {
-        pose.translate(position.x(), position.y(), position.z());
+        PoseStack p = new PoseStack();
+        p.pushPose();
+        p.translate(position.x(), position.y(), position.z());
         float w = pivot.x() * this.getWidth(), h = pivot.y() * this.getHeight();
-        pose.mulPose(Quaternion.fromXYZ(this.rotation));
+        p.mulPose(Quaternion.fromXYZ(this.rotation));
         Vector3f negRot = rotation.copy();
 
-        pose.scale(standardScale, - standardScale, standardScale);
-        pose.scale(this.scale.x(), this.scale.y(), 1f);
-        pose.translate(- w, h, 0);
+        p.scale(standardScale, - standardScale, standardScale);
+        p.scale(this.scale.x(), this.scale.y(), 1f);
+        p.translate(- w, h, 0);
 
-        Minecraft.getInstance().font.drawInBatch(text, 0 ,0, color.getRGB(), dropShadow, pose.last().pose(),
+        Minecraft.getInstance().font.drawInBatch(text, 0 ,0, color.getRGB(), dropShadow, p.last().pose(),
                 source, transparent, bgColor.getRGB(), light);
-
-        pose.translate(w, - h, 0);
-        pose.scale(1 / this.scale.x(), 1 / this.scale.y(), 1f);
-        pose.scale(negStandardScale, - negStandardScale, negStandardScale);
-
-        negRot.mul(-1f);
-        pose.mulPose(Quaternion.fromXYZ(negRot));
-        pose.translate(- position.x(), - position.y(), - position.z());
+        pose.mulPoseMatrix(p.last().pose());
+        p.popPose();
     }
 
     public void renderToWorld(PoseStack pose, MultiBufferSource source, boolean dropShadow, int light) {
