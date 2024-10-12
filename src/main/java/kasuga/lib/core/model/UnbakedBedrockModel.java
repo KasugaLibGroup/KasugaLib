@@ -6,12 +6,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.math.Vector3f;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.model.base.Geometry;
 import kasuga.lib.core.util.Resources;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
@@ -31,14 +28,14 @@ import java.util.function.Function;
 public class UnbakedBedrockModel extends SimpleUnbakedGeometry<UnbakedBedrockModel> {
     public final ResourceLocation modelLocation, textureLocation;
     private Material material;
-    private ArrayList<Geometry> bones;
-    private final RenderType renderType;
+    private ArrayList<Geometry> geometries;
+    private final boolean flipV;
     private String formatVersion;
-    public UnbakedBedrockModel(ResourceLocation modelLocation, ResourceLocation textureLocation, RenderType renderType) {
+    public UnbakedBedrockModel(ResourceLocation modelLocation, ResourceLocation textureLocation, boolean flipV) {
+        this.flipV = flipV;
         this.modelLocation = modelLocation;
         this.textureLocation = textureLocation;
-        bones = Lists.newArrayList();
-        this.renderType = renderType;
+        geometries = Lists.newArrayList();
         parse();
     }
 
@@ -50,20 +47,19 @@ public class UnbakedBedrockModel extends SimpleUnbakedGeometry<UnbakedBedrockMod
         }
         formatVersion = model.get("format_version").getAsString();
         this.material = new Material(TextureAtlas.LOCATION_BLOCKS, textureLocation);
-        material.renderType(location -> this.renderType);
 
         JsonArray geos = model.getAsJsonArray("minecraft:geometry");
         for (JsonElement element : geos) {
             JsonObject geometryJson = element.getAsJsonObject();
             Geometry geometry = new Geometry(geometryJson, this);
-            bones.add(geometry);
+            geometries.add(geometry);
         }
     }
 
     @Override
     public Set<String> getConfigurableComponentNames() {
         Set<String> result = new HashSet<>();
-        bones.forEach(bone -> result.add(bone.getDescription().getIdentifier()));
+        geometries.forEach(bone -> result.add(bone.getDescription().getIdentifier()));
         return result;
     }
 
@@ -87,10 +83,18 @@ public class UnbakedBedrockModel extends SimpleUnbakedGeometry<UnbakedBedrockMod
         return material;
     }
 
+    public boolean isFlipV() {
+        return flipV;
+    }
+
+    public List<Geometry> getGeometries() {
+        return geometries;
+    }
+
     @Override
     protected void addQuads(IGeometryBakingContext owner, IModelBuilder<?> modelBuilder, ModelBakery bakery,
                             Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
-        bones.forEach(geometry -> geometry.addQuads(
+        geometries.forEach(geometry -> geometry.addQuads(
                 owner, modelBuilder, bakery,
                 spriteGetter, modelTransform, modelLocation
         ));

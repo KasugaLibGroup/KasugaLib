@@ -8,6 +8,8 @@ import com.mojang.math.Vector3f;
 import kasuga.lib.core.model.GeometryDescription;
 import kasuga.lib.core.model.ItemTransformMapping;
 import kasuga.lib.core.model.UnbakedBedrockModel;
+import kasuga.lib.core.model.anim_model.AnimModel;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -26,13 +28,11 @@ public class Geometry {
     private final GeometryDescription description;
     private final HashMap<String, Bone> bones;
     private final UnbakedBedrockModel model;
-    private final HashMap<String, ItemTransform> itemTransforms;
 
     public Geometry(JsonObject json, UnbakedBedrockModel model) {
         this.model = model;
         description = new GeometryDescription(json.getAsJsonObject("description"));
         bones = Maps.newHashMap();
-        itemTransforms = Maps.newHashMap();
         parse(json);
     }
 
@@ -88,7 +88,19 @@ public class Geometry {
         return bones.getOrDefault(name, null);
     }
 
+    public HashMap<String, Bone> getBones() {
+        return bones;
+    }
+
     public UnbakedBedrockModel getModel() {
         return model;
+    }
+
+    public boolean isFlipV() {
+        return model.isFlipV();
+    }
+
+    public AnimModel getAnimationModel(RenderType renderType) {
+        return new AnimModel(this, this.model.getMaterial(), renderType);
     }
 }

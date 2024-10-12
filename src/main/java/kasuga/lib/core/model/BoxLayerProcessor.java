@@ -10,12 +10,14 @@ import net.minecraft.core.Direction;
 import java.util.HashMap;
 
 public class BoxLayerProcessor {
-    private final boolean mirror, visible, emissive;
+    private final boolean mirror, visible, emissive, flipV;
     private final Vec2f textOffset;
     private final HashMap<Direction, Vec2f> faceAndSize;
     private final HashMap<Direction, Vec2f> positions;
     private final Vec2f textureSize;
-    public BoxLayerProcessor(Cube cube, Vec2f textOffset) {
+
+    public BoxLayerProcessor(Cube cube, Vec2f textOffset, boolean flipV) {
+        this.flipV = flipV;
         this.mirror = cube.mirror;
         this.visible = cube.visible;
         this.emissive = cube.emissive;
@@ -40,14 +42,14 @@ public class BoxLayerProcessor {
         positions.put(Direction.DOWN, textOffset.add(we_width + ud_width, 0));
         positions.put(Direction.NORTH, textOffset.add(we_width, ud_height));
         positions.put(Direction.SOUTH, textOffset.add(2 * we_width + ns_width, ud_height));
-        positions.put(mirror ? Direction.EAST : Direction.WEST, textOffset.add(0, ud_height));
-        positions.put(mirror ? Direction.WEST : Direction.EAST, textOffset.add(we_width + ns_width, ud_height));
+        positions.put(mirror ? Direction.WEST : Direction.EAST, textOffset.add(0, ud_height));
+        positions.put(mirror ? Direction.EAST : Direction.WEST, textOffset.add(we_width + ns_width, ud_height));
     }
 
     public UnbakedUV getUV(Direction direction) {
         boolean shouldMirror = mirror && !(direction == Direction.EAST || direction == Direction.WEST);
         return new UnbakedUV(direction, positions.get(direction), faceAndSize.get(direction),
-                textureSize.x(), textureSize.y(), shouldMirror, false, visible, emissive);
+                textureSize.x(), textureSize.y(), shouldMirror, flipV, visible, emissive);
     }
 
     public static Direction getSide(Cube cube, Vector3f pos1, Vector3f pos2) {
@@ -102,10 +104,5 @@ public class BoxLayerProcessor {
 
     public static Vec2f flatten(Pair<Vector3f, Vector3f> pair) {
         return flatten(pair.getFirst(), pair.getSecond());
-    }
-
-    public static void main(String[] args) {
-        Cube cube = new Cube(new Vector3f(-1, 0, -1), new Vector3f(4, 4, 2), true);
-        BoxLayerProcessor processor = new BoxLayerProcessor(cube, Vec2f.ZERO);
     }
 }

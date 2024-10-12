@@ -35,7 +35,7 @@ public class Bone implements Rotationable {
 
         JsonArray pivotJson = jsonObject.getAsJsonArray("pivot");
         this.pivot = new Vector3f(
-                pivotJson.get(0).getAsFloat(),
+                - pivotJson.get(0).getAsFloat(),
                 pivotJson.get(1).getAsFloat(),
                 pivotJson.get(2).getAsFloat()
                 );
@@ -49,8 +49,8 @@ public class Bone implements Rotationable {
                     );
         } else rotation = new Vector3f();
 
-
         cubes = new ArrayList<>();
+        if (!jsonObject.has("cubes")) return;
         JsonArray cubesJson = jsonObject.getAsJsonArray("cubes");
         for (JsonElement cubeJson : cubesJson) {
             Cube cube = new Cube(cubeJson.getAsJsonObject(), model, this);
@@ -58,15 +58,18 @@ public class Bone implements Rotationable {
         }
     }
 
-    public void applyRotation(List<RotationInstruction> instructions) {
-        if (this.hasParent()) {
-            Bone parentBone = getParent();
-            if (parentBone != null) parentBone.applyRotation(instructions);
-        }
-        if (!this.rotation.equals(Vector3f.ZERO)) {
-            Vector3f p = this.pivot.copy(); p.mul(1 / 16f);
-            instructions.add(new RotationInstruction(p, this.rotation));
-        }
+    public ArrayList<Cube> getCubes() {
+        return cubes;
+    }
+
+    @Override
+    public Vector3f getPivot() {
+        return pivot;
+    }
+
+    @Override
+    public Vector3f getRotation() {
+        return rotation;
     }
 
     public void addQuads(IGeometryBakingContext owner, IModelBuilder<?> modelBuilder, ModelBakery bakery,
@@ -83,5 +86,9 @@ public class Bone implements Rotationable {
     public @Nullable Bone getParent() {
         if (parent == null) return null;
         return model.getBone(this.parent);
+    }
+
+    public boolean isFlipV() {
+        return model.isFlipV();
     }
 }

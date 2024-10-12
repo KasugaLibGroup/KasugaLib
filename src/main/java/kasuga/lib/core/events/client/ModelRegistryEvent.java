@@ -3,6 +3,7 @@ package kasuga.lib.core.events.client;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.render.model.MultiPartModel;
 import kasuga.lib.core.client.render.model.SimpleModel;
+import kasuga.lib.example_env.AllExampleElements;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.client.ModelReg;
 import net.minecraft.client.resources.model.BakedModel;
@@ -20,6 +21,7 @@ public class ModelRegistryEvent {
 
     @SubscribeEvent
     public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
+        event.register(AllExampleElements.REGISTRY.asResource("block/test/test_model_complicate"));
         for(String key : KasugaLib.STACKS.getRegistries().keySet()) {
             SimpleRegistry registry = KasugaLib.STACKS.getRegistries().get(key);
             for(ResourceLocation location : registry.model().UNBAKED.keySet()) {

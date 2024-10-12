@@ -7,6 +7,9 @@ import kasuga.lib.core.client.render.font.TextContext;
 import kasuga.lib.core.client.render.model.SimpleModel;
 import kasuga.lib.core.client.render.texture.Matrix;
 import kasuga.lib.core.client.render.texture.old.WorldTexture;
+import kasuga.lib.core.model.BedrockModelLoader;
+import kasuga.lib.core.model.anim_model.AnimModel;
+import kasuga.lib.core.util.LazyRecomputable;
 import kasuga.lib.example_env.AllExampleElements;
 import kasuga.lib.example_env.block_entity.GreenAppleTile;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -21,43 +24,20 @@ public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTil
     // MultiPartModel wuling = (MultiPartModel) AllExampleElements.wuLingVans.getModel();
     // private static final WorldTexture texture = new WorldTexture(new ResourceLocation(KasugaLib.MOD_ID, "textures/common/test/green_apple_bubble.png"));
 
-    TextContext textContext, textContext2;
+    LazyRecomputable<AnimModel> testModel = LazyRecomputable.of(() -> {
+            return BedrockModelLoader.getModel(AllExampleElements.REGISTRY.asResource("block/test/test_model_complicate"), RenderType.solid());
+        }
+    );
+
     public GreenAppleTileRenderer(BlockEntityRendererProvider.Context context) {
-        textContext = new TextContext("test");
-        // textContext.rotateDeg(0f, 90f, 0f);
-        // textContext2 = new TextContext("content");
 
-        // model.renderType(RenderType::translucent);
-        // wuling.renderType(RenderType::solid);
-        // wuling.applyParentRenderTypeForAllBones();
-        /*
-        wuling.setStaticMovements(
-                m -> {
-                    m.translateBone("front_door_left", -1.18, 0, -1.55);
-                    m.translateBone("front_door_right", 1.18, 0, -1.55);
-                    m.translateBone("back_door_left", -1.23, 0, 0);
-                    m.translateBone("back_door_right", 1.23, 0, 0);
-                    m.translateBone("large_back_door", 0, 2.5, 3.2);
-                    m.translateBone("left_wheel", -1, 0.5, -1.975);
-                    m.translateBone("right_wheel", 1, 0.5, -1.975);
-                    m.translateBone("left_wheel_2", -1, 0.5, 2.05);
-                    m.translateBone("right_wheel_2", 1, 0.5, 2.05);
-                    m.translateBone("tie", -0.65, 1.6, -1.45);
-                    m.rotateXForBone("tie", -30f);
-                }
-        );
-
-         */
-        // component.setFont(Minecraft.getInstance().font);
-        // component.zoom(component.getZoom() * .2f);
     }
     // private WorldTexture TEXTURE = new WorldTexture(new ResourceLocation("kasuga_lib","textures/gui/pixel.png"));
     @Override
     public void render(GreenAppleTile tile, float partial, PoseStack pose, MultiBufferSource buffer, int light, int overlay) {
         pose.pushPose();
         // textContext.rotateDeg(1f, 1f, 1f);
-        textContext.rotateDeg(0f, 1f, 0f);
-        textContext.renderToWorld(pose, buffer, light);
+        testModel.get().render(pose, buffer, light, overlay);
         pose.popPose();
         // System.out.println(mtx.equals(mtx2));
         // pose.translate(0, -1, 0);

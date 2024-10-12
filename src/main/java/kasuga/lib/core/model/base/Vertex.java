@@ -1,9 +1,14 @@
 package kasuga.lib.core.model.base;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.render.texture.Vec2f;
 import net.minecraft.client.renderer.FaceInfo;
+import net.minecraft.core.Direction;
+
+import java.util.List;
 
 public class Vertex {
     public final Vector3f position;
@@ -17,9 +22,12 @@ public class Vertex {
 
     public Vertex(Cube cube, UnbakedUV uv, int index) {
         FaceInfo.VertexInfo vertexInfo = FaceInfo.fromFacing(uv.getDirection()).getVertexInfo(index);
-        Vector3f org = cube.getOrigin(),
+        Vector3f org = cube.getOrigin().copy(),
                 max = cube.getSize().copy();
         max.add(org);
+        org.add(- cube.getInflate(), - cube.getInflate(), - cube.getInflate());
+        max.add(cube.getInflate(), cube.getInflate(), cube.getInflate());
+
         float x = vertexInfo.xFace == FaceInfo.Constants.MAX_X ? max.x() : org.x();
         float y = vertexInfo.yFace == FaceInfo.Constants.MAX_Y ? max.y() : org.y();
         float z = vertexInfo.zFace == FaceInfo.Constants.MAX_Z ? max.z() : org.z();
@@ -39,12 +47,34 @@ public class Vertex {
         return new Vertex(result, uv);
     }
 
-    public Vertex applyRotation(Vector3f pivot, Quaternion rotation) {
+    public static void main(String[] args) {
+        for (int i = 0; i < 4; i++) {
+            FaceInfo.VertexInfo vertexInfo = FaceInfo.fromFacing(Direction.UP).getVertexInfo(i);
+            boolean x = vertexInfo.xFace == FaceInfo.Constants.MAX_X;
+            boolean y = vertexInfo.yFace == FaceInfo.Constants.MAX_Y;
+            boolean z = vertexInfo.zFace == FaceInfo.Constants.MAX_Z;
+            System.out.println("index=" + i + ", x_max=" + x + ", y_max=" + y + ", z_max=" + z);
+        }
+    }
+
+    public Vertex applyRotation(Vector3f pivot, Vector3f position, List<Quaternion> quaternions) {
         Vector3f result = this.position.copy();
         result.sub(pivot);
-        result.transform(rotation);
+        quaternions.forEach(result::transform);
+        result.add(position);
+        return new Vertex(result, this.uv);
+    }
+
+    public Vertex applyRotation(Vector3f pivot, Quaternion quaternion) {
+        Vector3f result = this.position.copy();
+        result.sub(pivot);
+        result.transform(quaternion);
         result.add(pivot);
         return new Vertex(result, this.uv);
+    }
+
+    public static boolean nearlyEquals(float num, float num2, float diff) {
+        return num > num2 - diff && num < num2 + diff;
     }
 
     public Vertex applyScale(Vector3f pivot, Vector3f scale) {

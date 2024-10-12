@@ -258,6 +258,7 @@ public class SimpleRegistry {
         ITEMS.register(eventBus);
         FLUID_TYPE.register(eventBus);
         FLUID.register(eventBus);
+        ATTRIBUTES.register(eventBus);
         for (String key : CACHE_OF_BLOCK_ENTITIES.keySet()) {
             try {
                 BlockEntityReg<?> reg = CACHE_OF_BLOCK_ENTITIES.get(key);
