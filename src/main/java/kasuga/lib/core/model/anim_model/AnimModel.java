@@ -4,9 +4,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.render.SimpleColor;
 import kasuga.lib.core.model.BedrockRenderable;
+import kasuga.lib.core.model.base.Cube;
 import kasuga.lib.core.model.base.Geometry;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -15,7 +17,7 @@ import net.minecraft.client.resources.model.Material;
 import java.util.List;
 import java.util.Map;
 
-public class AnimModel {
+public class AnimModel implements Animable {
 
     public final Map<String, BedrockRenderable> children;
     public final List<BedrockRenderable> roots;
@@ -24,18 +26,20 @@ public class AnimModel {
     public final RenderType renderType;
     private SimpleColor color;
 
-    public Vector3f position, rotation;
+    public Vector3f position, rotation,
+                    offset, animRot, scale;
 
     public AnimModel(Geometry geometry, Material material, RenderType renderType) {
         this.geometry = geometry;
         this.children = Maps.newHashMap();
         this.material = material;
         this.renderType = renderType;
-        position = Vector3f.ZERO.copy();
+        position = Cube.BASE_OFFSET.copy();
         rotation = Vector3f.ZERO.copy();
         color = SimpleColor.fromRGBInt(0xffffff);
         roots = Lists.newArrayList();
         collectChildren();
+        initAnim();
     }
 
     public AnimModel(Geometry geometry, Material material, RenderType renderType,
@@ -48,6 +52,17 @@ public class AnimModel {
         rotation = Vector3f.ZERO.copy();
         this.roots = roots;
         color = SimpleColor.fromRGBInt(0xffffff);
+        initAnim();
+    }
+
+    public void resetAnimation() {
+        this.initAnim();
+    }
+
+    private void initAnim() {
+        this.offset = Vector3f.ZERO.copy();
+        this.animRot = Vector3f.ZERO.copy();
+        this.scale = new Vector3f(1, 1, 1);
     }
 
     public void collectChildren() {
@@ -78,14 +93,41 @@ public class AnimModel {
 
 
     public void applyTranslationAndRotation(PoseStack pose) {
-        Vector3f translation = this.position;
+        Vector3f translation = getRealPosition();
         pose.translate(translation.x(), translation.y(), translation.z());
 
-        Vector3f rotation = this.rotation;
+        Vector3f rotation = getRealRotation();
         if (rotation.equals(Vector3f.ZERO)) return;
         pose.mulPose(Vector3f.ZP.rotationDegrees(rotation.z()));
         pose.mulPose(Vector3f.YP.rotationDegrees(rotation.y()));
         pose.mulPose(Vector3f.XP.rotationDegrees(rotation.x()));
+
+        if (scale.equals(Cube.BASE_SCALE)) return;
+        pose.scale(scale.x(), scale.y(), scale.z());
+    }
+
+    private Vector3f getRealPosition() {
+        Vector3f result = this.position.copy();
+        result.add(this.offset);
+        return result;
+    }
+
+    public void setOffset(Vector3f offset) {
+        this.offset = offset;
+    }
+
+    private Vector3f getRealRotation() {
+        Vector3f result = this.rotation.copy();
+        result.add(this.animRot);
+        return result;
+    }
+
+    public void setAnimRot(Vector3f animRot) {
+        this.animRot = animRot;
+    }
+
+    public void setScale(Vector3f scale) {
+        this.scale = scale;
     }
 
     public SimpleColor getColor() {

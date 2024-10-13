@@ -1,12 +1,9 @@
 package kasuga.lib.core.model.base;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.render.texture.Vec2f;
@@ -22,7 +19,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.*;
 import java.util.function.Function;
@@ -137,6 +133,15 @@ public class Cube implements Rotationable {
         return bone;
     }
 
+    @Override
+    public Vector3f getPivot() {
+        return pivot;
+    }
+
+    public float getInflate() {
+        return inflate;
+    }
+
     public void addQuads(IGeometryBakingContext owner, IModelBuilder<?> modelBuilder, ModelBakery bakery,
                          Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
 
@@ -170,25 +175,6 @@ public class Cube implements Rotationable {
             BakedQuad quad = new BakedQuad(ints, 0, direction, sprite, true);
             modelBuilder.addCulledFace(direction, quad);
         }));
-    }
-
-    public List<BakedQuad> getBaked(TextureAtlasSprite sprite) {
-        float u0 = sprite.getU0();
-        float v0 = sprite.getV0();
-        float u1 = sprite.getU1();
-        float v1 = sprite.getV1();
-        float width = u1 - u0;
-        float height = v1 - v0;
-
-        List<Quad> quads = getQuads();
-        ArrayList<BakedQuad> result = new ArrayList<>(quads.size());
-
-        HashMap<Direction, int[]> aint = fillVertices(quads, u0, v0, width, height);
-        aint.forEach(((direction, ints) -> {
-            BakedQuad baked = new BakedQuad(ints, 0, direction, sprite, true);
-            result.add(baked);
-        }));
-        return result;
     }
 
     public List<Quad> translateQuads(List<Quad> quads, Vector3f offset) {
@@ -233,12 +219,24 @@ public class Cube implements Rotationable {
         return result;
     }
 
-    @Override
-    public Vector3f getPivot() {
-        return pivot;
-    }
+    @ForAnimModel
+    public List<BakedQuad> getBaked(TextureAtlasSprite sprite, Vector3f offset) {
+        float u0 = sprite.getU0();
+        float v0 = sprite.getV0();
+        float u1 = sprite.getU1();
+        float v1 = sprite.getV1();
+        float width = u1 - u0;
+        float height = v1 - v0;
 
-    public float getInflate() {
-        return inflate;
+        List<Quad> quads = getQuads();
+        quads.forEach(quad -> quad.offsetWithoutCopy(offset));
+        ArrayList<BakedQuad> result = new ArrayList<>(quads.size());
+
+        HashMap<Direction, int[]> aint = fillVertices(quads, u0, v0, width, height);
+        aint.forEach(((direction, ints) -> {
+            BakedQuad baked = new BakedQuad(ints, 0, direction, sprite, true);
+            result.add(baked);
+        }));
+        return result;
     }
 }

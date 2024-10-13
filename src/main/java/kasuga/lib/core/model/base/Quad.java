@@ -1,5 +1,6 @@
 package kasuga.lib.core.model.base;
 
+import com.mojang.math.Vector3f;
 import net.minecraft.core.Direction;
 
 public class Quad {
@@ -28,6 +29,13 @@ public class Quad {
     public void fillVertex(int[] aint, float u0, float v0, float uWidth, float vHeight) {
         for (int i = 0; i < 4; i++) {
             vertices[i].fillVertex(aint, i, u0, v0, uWidth, vHeight);
+        }
+    }
+
+    @ForAnimModel
+    public void offsetWithoutCopy(Vector3f offset) {
+        for (int i = 0; i < 4; i++) {
+            vertices[i].position.add(offset);
         }
     }
 }

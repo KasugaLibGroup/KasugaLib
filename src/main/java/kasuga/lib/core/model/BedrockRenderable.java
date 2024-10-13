@@ -14,10 +14,8 @@ public interface BedrockRenderable {
     void applyTranslationAndRotation(PoseStack pose);
     void render(PoseStack pose, VertexConsumer consumer, SimpleColor color, int light, int overlay);
     default Vector3f vonvertPivot(Vector3f myPosition, Vector3f parentPosition) {
-        return new Vector3f(
-                myPosition.x() - parentPosition.x(),
-                parentPosition.y() - myPosition.y(),
-                myPosition.z() - parentPosition.z()
-                );
+        Vector3f vector3f = myPosition.copy();
+        vector3f.sub(parentPosition);
+        return vector3f;
     }
 }

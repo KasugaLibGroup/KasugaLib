@@ -21,12 +21,24 @@ public class AnimCube implements BedrockRenderable {
 
     // TODO: 要把绝对位移转化为相对位移
     private final AnimBone bone;
+    private final Vector3f pivot, rotation;
     public AnimCube(Cube cube, AnimModel model, AnimBone bone) {
         this.cube = cube;
-        quads = cube.getBaked(model.material.sprite());
+
+        Vector3f pos = cube.getPivot().copy();
+        pos.mul(-1 / 16f);
+        quads = cube.getBaked(model.material.sprite(), pos);
+
+        this.pivot = cube.getPivot().copy();
+        pivot.mul(1 / 16f);
+
+        this.rotation = cube.getRotation().copy();
+
         this.model = model;
         this.bone = bone;
+
     }
+
     @Override
     @Deprecated
     public Map<String, BedrockRenderable> getChildrens() {
@@ -35,18 +47,16 @@ public class AnimCube implements BedrockRenderable {
 
     @Override
     public void applyTranslationAndRotation(PoseStack pose) {
-        Vector3f translation = cube.getPivot().copy();
-        translation.mul(1 / 16f);
+        Vector3f translation = pivot.copy();
         Vector3f parentTrans = bone.getPivot().copy();
-        parentTrans.mul(1 / 16f);
         Vector3f t = vonvertPivot(translation, parentTrans);
         pose.translate(t.x(), t.y(), t.z());
 
-        Vector3f rotation = cube.getRotation();
+        Vector3f rotation = this.rotation.copy();
         if (rotation.equals(Vector3f.ZERO)) return;
         pose.mulPose(Vector3f.ZP.rotationDegrees(rotation.z()));
-        pose.mulPose(Vector3f.YP.rotationDegrees(rotation.y()));
-        pose.mulPose(Vector3f.XP.rotationDegrees(rotation.x()));
+        pose.mulPose(Vector3f.YN.rotationDegrees(rotation.y()));
+        pose.mulPose(Vector3f.XN.rotationDegrees(rotation.x()));
     }
 
     @Override
