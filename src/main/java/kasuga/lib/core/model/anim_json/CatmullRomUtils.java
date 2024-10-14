@@ -1,4 +1,4 @@
-package kasuga.lib.core.model.anim;
+package kasuga.lib.core.model.anim_json;
 
 import com.mojang.math.Vector3f;
 

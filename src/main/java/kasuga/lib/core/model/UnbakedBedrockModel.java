@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
 import kasuga.lib.KasugaLib;
-import kasuga.lib.core.model.base.Geometry;
+import kasuga.lib.core.model.model_json.Geometry;
 import kasuga.lib.core.util.Resources;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -31,11 +31,13 @@ public class UnbakedBedrockModel extends SimpleUnbakedGeometry<UnbakedBedrockMod
     private ArrayList<Geometry> geometries;
     private final boolean flipV;
     private String formatVersion;
+    private boolean legacy;
     public UnbakedBedrockModel(ResourceLocation modelLocation, ResourceLocation textureLocation, boolean flipV) {
         this.flipV = flipV;
         this.modelLocation = modelLocation;
         this.textureLocation = textureLocation;
         geometries = Lists.newArrayList();
+        legacy = false;
         parse();
     }
 
@@ -48,7 +50,15 @@ public class UnbakedBedrockModel extends SimpleUnbakedGeometry<UnbakedBedrockMod
         formatVersion = model.get("format_version").getAsString();
         this.material = new Material(TextureAtlas.LOCATION_BLOCKS, textureLocation);
 
-        JsonArray geos = model.getAsJsonArray("minecraft:geometry");
+        JsonArray geos;
+        if (model.has("minecraft:geometry")) {
+            geos = model.getAsJsonArray("minecraft:geometry");
+            legacy = false;
+        } else {
+            geos = new JsonArray();
+            if (model.has("geometry.model")) geos.add(model.get("geometry.model"));
+            legacy = true;
+        }
         for (JsonElement element : geos) {
             JsonObject geometryJson = element.getAsJsonObject();
             Geometry geometry = new Geometry(geometryJson, this);
@@ -89,6 +99,10 @@ public class UnbakedBedrockModel extends SimpleUnbakedGeometry<UnbakedBedrockMod
 
     public List<Geometry> getGeometries() {
         return geometries;
+    }
+
+    public boolean isLegacy() {
+        return legacy;
     }
 
     @Override

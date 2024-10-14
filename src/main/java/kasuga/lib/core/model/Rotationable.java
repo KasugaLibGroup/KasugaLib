@@ -2,10 +2,7 @@ package kasuga.lib.core.model;
 
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
-import kasuga.lib.core.model.base.Quad;
-import kasuga.lib.core.model.base.Vertex;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 

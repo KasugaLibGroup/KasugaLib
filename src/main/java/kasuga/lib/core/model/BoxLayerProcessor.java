@@ -2,8 +2,8 @@ package kasuga.lib.core.model;
 
 import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.render.texture.Vec2f;
-import kasuga.lib.core.model.base.Cube;
-import kasuga.lib.core.model.base.UnbakedUV;
+import kasuga.lib.core.model.model_json.Cube;
+import kasuga.lib.core.model.model_json.UnbakedUV;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.core.Direction;
 

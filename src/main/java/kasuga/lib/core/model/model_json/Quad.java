@@ -1,4 +1,4 @@
-package kasuga.lib.core.model.base;
+package kasuga.lib.core.model.model_json;
 
 import com.mojang.math.Vector3f;
 import net.minecraft.core.Direction;

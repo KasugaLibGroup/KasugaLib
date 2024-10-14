@@ -1,4 +1,4 @@
-package kasuga.lib.core.model.base;
+package kasuga.lib.core.model.model_json;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -15,7 +15,6 @@ import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 
 public class Bone implements Rotationable {

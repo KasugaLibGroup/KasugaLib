@@ -5,8 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.render.SimpleColor;
 import kasuga.lib.core.model.BedrockRenderable;
-import kasuga.lib.core.model.base.Bone;
-import kasuga.lib.core.model.base.Cube;
+import kasuga.lib.core.model.model_json.Cube;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 
 import java.util.List;

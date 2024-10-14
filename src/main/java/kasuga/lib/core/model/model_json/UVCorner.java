@@ -1,4 +1,4 @@
-package kasuga.lib.core.model.base;
+package kasuga.lib.core.model.model_json;
 
 import net.minecraft.client.renderer.FaceInfo;
 import net.minecraft.core.Direction;

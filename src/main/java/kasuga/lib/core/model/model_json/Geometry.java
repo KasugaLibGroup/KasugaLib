@@ -1,4 +1,4 @@
-package kasuga.lib.core.model.base;
+package kasuga.lib.core.model.model_json;
 
 import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;

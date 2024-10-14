@@ -1,7 +1,5 @@
-package kasuga.lib.core.model.base;
+package kasuga.lib.core.model.model_json;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.render.texture.Vec2f;

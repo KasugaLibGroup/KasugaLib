@@ -1,12 +1,12 @@
-package kasuga.lib.core.model.anim;
+package kasuga.lib.core.model.anim_json;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class Animation {
+
     public final String name;
     private final HashMap<String, KeyFrame> frames;
     public final float animationLength;
@@ -37,8 +37,23 @@ public class Animation {
         json.entrySet().forEach(
                 entry -> {
                     String boneName = name;
+                    if (!(entry.getValue() instanceof JsonObject object)) return;
+                    KeyFrame frame = new KeyFrame(boneName, object);
+                    frames.put(boneName, frame);
                 }
         );
+    }
+
+    public KeyFrame getFrame(String name) {
+        return frames.getOrDefault(name, null);
+    }
+
+    public boolean hasFrame(String name) {
+        return frames.containsKey(name);
+    }
+
+    public HashMap<String, KeyFrame> getFrames() {
+        return frames;
     }
 
     public LoopMode getLoop() {

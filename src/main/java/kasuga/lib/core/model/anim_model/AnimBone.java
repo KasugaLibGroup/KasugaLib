@@ -4,16 +4,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.render.SimpleColor;
 import kasuga.lib.core.model.BedrockRenderable;
-import kasuga.lib.core.model.base.Bone;
-import kasuga.lib.core.model.base.Cube;
-import kasuga.lib.core.model.base.Quad;
-import net.minecraft.client.renderer.MultiBufferSource;
+import kasuga.lib.core.model.model_json.Bone;
+import kasuga.lib.core.model.model_json.Cube;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

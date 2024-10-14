@@ -1,11 +1,13 @@
-package kasuga.lib.core.model.anim;
+package kasuga.lib.core.model.anim_json;
 
 import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class KeyFrame {
@@ -62,5 +64,35 @@ public class KeyFrame {
                     map.put(left, pose);
                 }
         );
+    }
+
+    public List<Map.Entry<Float, Pose>> sortPositions() {
+        return sortMap(position);
+    }
+
+    public List<Map.Entry<Float, Pose>> sortRotations() {
+        return sortMap(rotation);
+    }
+
+    public List<Map.Entry<Float, Pose>> sortScale() {
+        return sortMap(scale);
+    }
+
+    public static List<Map.Entry<Float, Pose>> sortMap(Map<Float, Pose> map) {
+        ArrayList<Map.Entry<Float, Pose>> result = new ArrayList<>(map.size());
+        for (Map.Entry<Float, Pose> entry : map.entrySet()) {
+            float t = entry.getKey();
+            for (int i = 0; i < result.size(); i++) {
+                if (i == result.size() - 1) {
+                    result.add(entry);
+                    break;
+                }
+                if (result.get(i).getKey() > t) {
+                    result.add(i, entry);
+                    break;
+                }
+            }
+        }
+        return result;
     }
 }
