@@ -36,7 +36,7 @@ public class Animation {
     private void deserializeKeyframes(JsonObject json) {
         json.entrySet().forEach(
                 entry -> {
-                    String boneName = name;
+                    String boneName = entry.getKey();
                     if (!(entry.getValue() instanceof JsonObject object)) return;
                     KeyFrame frame = new KeyFrame(boneName, object);
                     frames.put(boneName, frame);

@@ -1,0 +1,6 @@
+{
+  "loader": "kasuga_lib:bedrock_model",
+  "model": "kasuga_lib:default/missing_model",
+  "texture": "kasuga_lib:default/missing_model",
+  "particle":"kasuga_lib:default/missing_model"
+}

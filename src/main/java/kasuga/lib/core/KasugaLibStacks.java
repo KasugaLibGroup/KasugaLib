@@ -80,6 +80,8 @@ public class KasugaLibStacks {
             bus.addListener(GeometryEvent::registerGeometry);
             bus.addListener(GeometryEvent::registerReloadListener);
             GUI = Optional.of(new GuiEngine());
+            bus.addListener(AnimationModelRegistryEvent::registerAnimations);
+            bus.addListener(AnimationModelRegistryEvent::registerBedrockModels);
             KasugaLibClient.invoke();
         }
 

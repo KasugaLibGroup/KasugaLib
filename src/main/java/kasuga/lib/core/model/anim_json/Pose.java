@@ -48,7 +48,7 @@ public class Pose {
     }
 
     public boolean isCatmullRom() {
-        return lerpMode.equals("catmullrom");
+        return lerpMode != null && lerpMode.equals("catmullrom");
     }
 
     public float getTime() {

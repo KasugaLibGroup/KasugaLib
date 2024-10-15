@@ -21,7 +21,6 @@ public class ModelRegistryEvent {
 
     @SubscribeEvent
     public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
-        event.register(AllExampleElements.REGISTRY.asResource("block/test/test_model_complicate"));
         for(String key : KasugaLib.STACKS.getRegistries().keySet()) {
             SimpleRegistry registry = KasugaLib.STACKS.getRegistries().get(key);
             for(ResourceLocation location : registry.model().UNBAKED.keySet()) {

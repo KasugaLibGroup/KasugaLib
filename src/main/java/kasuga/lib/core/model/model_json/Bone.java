@@ -15,6 +15,7 @@ import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.Function;
 
 public class Bone implements Rotationable {
@@ -23,6 +24,7 @@ public class Bone implements Rotationable {
 
     public final Vector3f pivot, rotation;
     public final ArrayList<Cube> cubes;
+    public final HashMap<String, Locator> locators;
 
     public final Geometry model;
 
@@ -41,12 +43,31 @@ public class Bone implements Rotationable {
 
         if (jsonObject.has("rotation")) {
             JsonArray rotationJson = jsonObject.getAsJsonArray("rotation");
-            rotation = new Vector3f(
-                    rotationJson.get(0).getAsFloat(),
-                    rotationJson.get(1).getAsFloat(),
-                    rotationJson.get(2).getAsFloat()
-                    );
+            rotation = Geometry.readVec3fFromJsonArray(rotationJson);
         } else rotation = new Vector3f();
+
+        locators = new HashMap<>();
+        if (jsonObject.has("locators")) {
+            JsonObject locatorJson = jsonObject.getAsJsonObject("locators").getAsJsonObject();
+            locatorJson.entrySet().forEach(entry -> {
+                if (!entry.getValue().isJsonObject()) {
+                    if (entry.getValue().isJsonArray()) {
+                        Vector3f locatorPos = Geometry.readVec3fFromJsonArray(entry.getValue().getAsJsonArray());
+                        locatorPos.mul(-1, 1, 1);
+                        locators.put(entry.getKey(), new Locator(locatorPos, Vector3f.ZERO.copy()));
+                    } else return;
+                }
+                JsonObject o = entry.getValue().getAsJsonObject();
+                Vector3f locatorPos = o.has("offset") ?
+                        Geometry.readVec3fFromJsonArray(o.get("offset").getAsJsonArray()) :
+                        Vector3f.ZERO.copy();
+                locatorPos.mul(-1, 1, 1);
+                Vector3f locatorRot = o.has("rotation") ?
+                        Geometry.readVec3fFromJsonArray(o.get("rotation").getAsJsonArray()) :
+                        Vector3f.ZERO.copy();
+                locators.put(entry.getKey(), new Locator(locatorPos, locatorRot));
+            });
+        }
 
         cubes = new ArrayList<>();
         if (!jsonObject.has("cubes")) return;
@@ -55,6 +76,10 @@ public class Bone implements Rotationable {
             Cube cube = new Cube(cubeJson.getAsJsonObject(), model, this);
             this.cubes.add(cube);
         }
+    }
+
+    public HashMap<String, Locator> getLocators() {
+        return locators;
     }
 
     public ArrayList<Cube> getCubes() {

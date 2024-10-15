@@ -3,6 +3,8 @@ package kasuga.lib.example_env;
 import com.mojang.blaze3d.platform.InputConstants;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.config.SimpleConfig;
+import kasuga.lib.core.model.anim_json.AnimationFile;
+import kasuga.lib.core.util.Envs;
 import kasuga.lib.example_env.block.GreenAppleBlock;
 import kasuga.lib.example_env.block.GreenAppleItem;
 import kasuga.lib.example_env.block_entity.GreenAppleTile;
@@ -126,7 +128,8 @@ public class AllExampleElements {
             .submit(REGISTRY);
      */
 
-    public static void invoke(){
+    public static void invoke() {
+        if (Envs.isClient()) AllClient.invoke();
         REGISTRY.submit();
     }
 }

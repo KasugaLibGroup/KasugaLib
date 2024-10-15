@@ -5,6 +5,7 @@ import kasuga.lib.core.model.anim_json.CatmullRomUtils;
 import kasuga.lib.core.model.anim_json.KeyFrame;
 import kasuga.lib.core.model.anim_json.Pose;
 import kasuga.lib.core.model.anim_model.AnimBone;
+import kasuga.lib.core.util.data_type.Pair;
 
 import java.util.*;
 
@@ -17,6 +18,12 @@ public class KeyFrameInstance {
     private final float posStartSec, posEndSec;
     private final float rotStartSec, rotEndSec;
     private final float scaleStartSec, scaleEndSec;
+    private final Vector3f positionStart, positionApproach,
+                            rotationStart, rotationApproach,
+                            scaleStart, scaleApproach;
+    public static final Vector3f ONE = new Vector3f(1, 1, 1);
+
+
     public KeyFrameInstance(KeyFrame keyFrame, AnimBone bone, AnimationInstance animation) {
         this.keyFrame = keyFrame;
         this.bone = bone;
@@ -62,47 +69,79 @@ public class KeyFrameInstance {
             scaleEndSec = Math.min(animation.length, scaleFrames.get(scaleFrames.size() - 1).getKey());
         }
 
+        compile(positionFrames, rotationFrames, scaleFrames);
+
+        if (positionFrames.isEmpty()) {
+            positionStart = Vector3f.ZERO.copy();
+            positionApproach = Vector3f.ZERO.copy();
+        } else {
+            if (posStartSec <= 0) positionStart = this.position.get(0);
+            else positionStart = Vector3f.ZERO.copy();
+            positionApproach = positionFrames.get(positionFrames.size() - 1).getValue().getPost().copy();
+            positionApproach.mul(1 / 16f);
+        }
+
+        if (rotationFrames.isEmpty()) {
+            rotationStart = Vector3f.ZERO.copy();
+            rotationApproach = Vector3f.ZERO.copy();
+        } else {
+            if (rotStartSec <= 0) rotationStart = this.rotation.get(0);
+            else rotationStart = Vector3f.ZERO.copy();
+            rotationApproach = rotationFrames.get(rotationFrames.size() - 1).getValue().getPost();
+        }
+
+        if (scaleFrames.isEmpty()) {
+            scaleStart = ONE.copy();
+            scaleApproach = ONE.copy();
+        } else {
+            if (scaleStartSec <= 0) scaleStart = this.scale.get(0);
+            else scaleStart = ONE.copy();
+            scaleApproach = scaleFrames.get(scaleFrames.size() - 1).getValue().getPost();
+        }
     }
 
     private void compile(
             List<Map.Entry<Float, Pose>> position,
             List<Map.Entry<Float, Pose>> rotation,
             List<Map.Entry<Float, Pose>> scale) {
-
+            singleCompile(position, this.position, animation.getStep());
+            this.position.forEach(vec -> vec.mul(1 / 16f));
+            singleCompile(rotation, this.rotation, animation.getStep());
+            singleCompile(scale, this.scale, animation.getStep());
     }
 
-    private void singleCompile(List<Map.Entry<Float, Pose>> in, List<Vector3f> out,
-                               float start, float end, float step) {
+    private void singleCompile(List<Map.Entry<Float, Pose>> in, List<Vector3f> out, float step) {
+        if (in.isEmpty()) return;
+
         Map.Entry<Float, Pose> first, second;
         int length = in.size() - 1;
         float time1, time2;
-        if (in.isEmpty()) return;
-        float beforeStart = start - in.get(0).getKey();
-        float afterEnd = end - in.get(in.size() - 1).getKey();
-        if (beforeStart > 0) {
-            int size = (int) (beforeStart / step);
-        }
-        if (in.size() == 1) {
-            out.add(interpolationStep(in.get(0).getValue()));
-            return;
-        }
+
+        float recentTime = -1;
         for (int i = 0; i < length; i++) {
             first = in.get(i);
             second = in.get(i + 1);
             time1 = first.getKey();
             time2 = second.getKey();
+            if (recentTime < 0) recentTime = time1;
 
             // deal with step
             if (first.getValue().hasPre()) {
-                out.add(interpolationStep(first.getValue()));
+                Pair<Vector3f, Float> result = interpolationStep(first.getValue(), recentTime, step);
+                out.add(result.getFirst());
+                recentTime = result.getSecond();
                 continue;
             } else if (first.getValue().isCatmullRom() || second.getValue().isCatmullRom()) {
                 // deal with catmull-rom spline
                 Vector3f[] controlPoints;
-                // could not get catmull-rom, turn to linear (2 points)
+
                 if (length < 2) {
-                    controlPoints = interpolationLinear(first.getValue().getPost(), second.getValue().getPost(), time1, time2, step);
-                    out.addAll(Arrays.asList(controlPoints));
+                    // could not get catmull-rom, turn to linear (2 points)
+                    Pair<Vector3f[], Float> result =
+                            interpolationLinear(first.getValue().getPost(), second.getValue().getPost(),
+                                    time1, time2, step, recentTime);
+                    recentTime = result.getSecond();
+                    out.addAll(Arrays.asList(result.getFirst()));
                     continue;
                 } else if (i == length - 1) {
                     // last 3 points
@@ -121,46 +160,62 @@ public class KeyFrameInstance {
                             getVecAsRight(in.get(i + 2).getValue())
                             );
                 }
-                Vector3f[] points = interpolationCatmullRom(controlPoints, time1, time2, step);
-                out.addAll(Arrays.asList(points));
+                // apply catmull-rom spline
+                Pair<Vector3f[], Float> points = interpolationCatmullRom(controlPoints, time1, time2, step, recentTime);
+                recentTime = points.getSecond();
+                out.addAll(Arrays.asList(points.getFirst()));
                 continue;
             } else {
-                Vector3f[] points = interpolationLinear(first.getValue().getPost(), second.getValue().getPost(), time1, time2, step);
-                out.addAll(Arrays.asList(points));
+                // linear
+                Pair<Vector3f[], Float> points =
+                        interpolationLinear(first.getValue().getPost(), second.getValue().getPost(),
+                                time1, time2, step, recentTime);
+                recentTime = points.getSecond();
+                out.addAll(Arrays.asList(points.getFirst()));
             }
         }
+        // deal with the last frame.
         Pose pose = in.get(in.size() - 1).getValue();
-        if (pose.hasPre()) {out.add(interpolationStep(pose));}
+        if (pose.hasPre()) {
+            Pair<Vector3f, Float> result = interpolationStep(pose, recentTime, step);
+            out.add(result.getFirst());
+        } else {
+            out.add(pose.getPost().copy());
+        }
     }
 
-    public static Vector3f[] interpolationLinear(Vector3f first, Vector3f last,
-                                                 float start, float end, float step) {
+    public static Pair<Vector3f[], Float> interpolationLinear(Vector3f first, Vector3f last,
+                                                              float start, float end, float step, float recentTime) {
         float length = end - start;
-        int size = (int) (length / step);
+        int size = (int) ((end - recentTime) / step);
+        float timeOffset = (recentTime - start) / length;
         Vector3f[] result = new Vector3f[size];
         Vector3f offset = last.copy();
         offset.sub(first);
         for (int i = 0; i < size; i++) {
-            float time = (float) i / (float) size;
+            float time = (float) i / (float) size + timeOffset;
             Vector3f o = offset.copy();
             o.mul(time);
+            o.add(first);
             result[i] = o;
         }
-        return result;
+        return Pair.of(result, recentTime + (float) size * step);
     }
 
-    public static Vector3f[] interpolationCatmullRom(Vector3f[] controlPoints, float start, float end, float step) {
+    public static Pair<Vector3f[], Float> interpolationCatmullRom(Vector3f[] controlPoints, float start,
+                                                                  float end, float step, float recentTime) {
         float length = end - start;
-        int size = (int) (length / step);
+        int size = (int) ((end - recentTime) / step);
         Vector3f[] result = new Vector3f[size];
+        float offset = (recentTime - start) / length;
         for (int i = 0; i < size; i++) {
-            result[i] = CatmullRomUtils.applyCRS(controlPoints, (float) i / (float) size);
+            result[i] = CatmullRomUtils.applyCRS(controlPoints, (float) i / (float) size + offset);
         }
-        return result;
+        return Pair.of(result, recentTime + (float) size * step);
     }
 
-    public static Vector3f interpolationStep(Pose pose) {
-        return pose.getPost();
+    public static Pair<Vector3f, Float> interpolationStep(Pose pose, float start, float step) {
+        return Pair.of(pose.getPost().copy(), start + step);
     }
 
     public static Vector3f getVecAsLeft(Pose pose) {
@@ -169,5 +224,91 @@ public class KeyFrameInstance {
 
     public static Vector3f getVecAsRight(Pose pose) {
         return pose.hasPre() ? pose.getPre() : pose.getPost();
+    }
+
+    public Vector3f getPosition(float sec) {
+        if (sec < this.posStartSec) return positionStart;
+        if (sec >= animation.length) return switch (animation.loop) {
+            case NONE -> Vector3f.ZERO;
+            case HOLD_ON_LAST_FRAME -> positionApproach;
+            case LOOP -> getPosition(sec % animation.length);
+        };
+        if (sec >= posEndSec) {
+            return positionApproach;
+        }
+        if (position.size() < 2) {
+            return position.get(0);
+        }
+        int index = (int) ((sec - posStartSec) * this.animation.frameRate);
+        if (index >= position.size() - 1) {
+            return position.get(position.size() - 1);
+        }
+        float time = (float) index * animation.getStep();
+        float percentage = (sec - posStartSec - time) / animation.getStep();
+        return slerp(position.get(index), position.get(index + 1), percentage);
+    }
+
+    public Vector3f getRotation(float sec) {
+        if (sec < this.rotStartSec) return rotationStart;
+        if (sec >= animation.length) return switch (animation.loop) {
+            case NONE -> Vector3f.ZERO;
+            case HOLD_ON_LAST_FRAME -> rotationApproach;
+            case LOOP -> getRotation(sec % animation.length);
+        };
+        if (sec >= rotEndSec) {
+            return rotationApproach;
+        }
+        if (rotation.size() < 2) {
+            return rotation.get(0);
+        }
+        int index = (int) ((sec - rotStartSec) * this.animation.frameRate);
+        if (index >= rotation.size() - 1) {
+            return rotation.get(rotation.size() - 1);
+        }
+        float time = (float) index * animation.getStep();
+        float percentage = (sec - rotStartSec - time) / animation.getStep();
+        return slerp(rotation.get(index), rotation.get(index + 1), percentage);
+    }
+
+    public Vector3f getScale(float sec) {
+        if (sec < this.scaleStartSec) return scaleStart;
+        if (sec >= animation.length) return switch (animation.loop) {
+            case NONE -> ONE;
+            case HOLD_ON_LAST_FRAME -> scaleApproach;
+            case LOOP -> getScale(sec % animation.length);
+        };
+        if (sec >= scaleEndSec) {
+            return scaleApproach;
+        }
+        if (scale.size() < 2) {
+            return scale.get(0);
+        }
+        int index = (int) ((sec - scaleStartSec) * this.animation.frameRate);
+        if (index >= scale.size() - 1) {
+            return scale.get(scale.size() - 1);
+        }
+        float time = (float) index * animation.getStep();
+        float percentage = (sec - scaleStartSec - time) / animation.getStep();
+        return slerp(scale.get(index), scale.get(index + 1), percentage);
+    }
+
+    public static Vector3f slerp(Vector3f first, Vector3f second, float percentage) {
+        Vector3f result = second.copy();
+        result.sub(first);
+        result.mul(percentage);
+        result.add(first);
+        return result;
+    }
+
+    public void applyToBone(float sec) {
+        if (posStartSec >= 0 && posEndSec >= 0) bone.setOffset(getPosition(sec));
+        if (rotStartSec >= 0 && rotEndSec >= 0) bone.setAnimRot(getRotation(sec));
+        if (scaleStartSec >= 0 && scaleEndSec >= 0) bone.setScale(getScale(sec));
+    }
+
+    public boolean canBeRemoved() {
+        return posStartSec == -1 && posEndSec == -1 &&
+                rotStartSec == -1 && rotEndSec == -1 &&
+                scaleStartSec == -1 && scaleEndSec == -1;
     }
 }

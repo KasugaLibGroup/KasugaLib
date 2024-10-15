@@ -8,10 +8,14 @@ import kasuga.lib.core.client.render.model.SimpleModel;
 import kasuga.lib.core.client.render.texture.Matrix;
 import kasuga.lib.core.client.render.texture.old.WorldTexture;
 import kasuga.lib.core.model.BedrockModelLoader;
+import kasuga.lib.core.model.anim_instance.AnimationInstance;
+import kasuga.lib.core.model.anim_json.Animation;
 import kasuga.lib.core.model.anim_model.AnimModel;
 import kasuga.lib.core.util.LazyRecomputable;
+import kasuga.lib.example_env.AllClient;
 import kasuga.lib.example_env.AllExampleElements;
 import kasuga.lib.example_env.block_entity.GreenAppleTile;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -19,25 +23,37 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Map;
+
 public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTile> {
     // SimpleModel model = AllExampleElements.greenAppleModel.getModel();
     // MultiPartModel wuling = (MultiPartModel) AllExampleElements.wuLingVans.getModel();
     // private static final WorldTexture texture = new WorldTexture(new ResourceLocation(KasugaLib.MOD_ID, "textures/common/test/green_apple_bubble.png"));
+
 
     LazyRecomputable<AnimModel> testModel = LazyRecomputable.of(() -> {
             return BedrockModelLoader.getModel(AllExampleElements.REGISTRY.asResource("block/test/test_model_complicate"), RenderType.solid());
         }
     );
 
-    public GreenAppleTileRenderer(BlockEntityRendererProvider.Context context) {
+    LazyRecomputable<AnimationInstance> transform = LazyRecomputable.of(() -> {
+        AnimationInstance ai = new AnimationInstance(AllClient.anim.get().getAnimation("transform"),
+                testModel.get(), 60);
+        return ai;
+    });
 
-    }
+    public GreenAppleTileRenderer(BlockEntityRendererProvider.Context context) {}
     // private WorldTexture TEXTURE = new WorldTexture(new ResourceLocation("kasuga_lib","textures/gui/pixel.png"));
     @Override
     public void render(GreenAppleTile tile, float partial, PoseStack pose, MultiBufferSource buffer, int light, int overlay) {
         pose.pushPose();
+
         // textContext.rotateDeg(1f, 1f, 1f);
-        testModel.get().render(pose, buffer, light, overlay);
+            transform.get().applyAndRender(pose, buffer, light, overlay, Math.max(0, Math.min(tile.sec, 2.49f)));
+        if (tile.sec < 5f && !tile.direction) tile.sec += 0.01f;
+        else if (tile.sec >= 5f && !tile.direction) tile.direction = true;
+        if (tile.sec > -2.5f && tile.direction) tile.sec -= 0.01f;
+        else if (tile.sec <= -2.5f && tile.direction) tile.direction = false;
         pose.popPose();
         // System.out.println(mtx.equals(mtx2));
         // pose.translate(0, -1, 0);

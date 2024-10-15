@@ -42,6 +42,7 @@ public class KeyFrame {
         if (element instanceof JsonArray array) {
             Pose pose = new Pose(0, array);
             position.put(0F, pose);
+            return;
         }
         deserializeAndFillMaps(element.getAsJsonObject(), position);
     }
@@ -52,6 +53,7 @@ public class KeyFrame {
         if (element instanceof JsonArray array) {
             Pose pose = new Pose(0, array);
             scale.put(0F, pose);
+            return;
         }
         deserializeAndFillMaps(element.getAsJsonObject(), scale);
     }
@@ -82,13 +84,17 @@ public class KeyFrame {
         ArrayList<Map.Entry<Float, Pose>> result = new ArrayList<>(map.size());
         for (Map.Entry<Float, Pose> entry : map.entrySet()) {
             float t = entry.getKey();
+            if (result.isEmpty()) {
+                result.add(entry);
+                continue;
+            }
             for (int i = 0; i < result.size(); i++) {
-                if (i == result.size() - 1) {
-                    result.add(entry);
-                    break;
-                }
                 if (result.get(i).getKey() > t) {
                     result.add(i, entry);
+                    break;
+                }
+                if (i == result.size() - 1) {
+                    result.add(entry);
                     break;
                 }
             }

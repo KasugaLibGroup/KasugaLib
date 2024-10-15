@@ -8,6 +8,7 @@ import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.model.model_json.Geometry;
+import kasuga.lib.core.util.LazyRecomputable;
 import kasuga.lib.core.util.Resources;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -32,6 +33,8 @@ public class UnbakedBedrockModel extends SimpleUnbakedGeometry<UnbakedBedrockMod
     private final boolean flipV;
     private String formatVersion;
     private boolean legacy;
+
+
     public UnbakedBedrockModel(ResourceLocation modelLocation, ResourceLocation textureLocation, boolean flipV) {
         this.flipV = flipV;
         this.modelLocation = modelLocation;
