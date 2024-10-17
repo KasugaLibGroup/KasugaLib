@@ -1,4 +1,4 @@
-package kasuga.lib.example_env.block_entity;
+package kasuga.lib.example_env.block.green_apple;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import kasuga.lib.KasugaLib;

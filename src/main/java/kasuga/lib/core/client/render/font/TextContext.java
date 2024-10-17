@@ -309,7 +309,6 @@ public class TextContext {
     }
 
     private void transform(PoseStack pose, Consumer<Object> func) {
-
         func.accept(null);
 
     }

@@ -23,6 +23,12 @@ public class GuiInstance {
         this.location = location;
     }
 
+    public void open(Object object){
+        this.openInternal(object);
+        this.context.createSource(object);
+        this.context.getAttachedTargets().attach(object);
+    }
+
     public void open(Entity entity){
         this.openInternal(entity);
         this.context.createSource(entity);
@@ -64,6 +70,12 @@ public class GuiInstance {
         this.context.getAttachedTargets().detach(block);
         this.context.removeSource(block);
         this.closeInternal(block);
+    }
+
+    public void close(Object object){
+        this.context.getAttachedTargets().detach(object);
+        this.context.removeSource(object);
+        this.closeInternal(object);
     }
 
     public void openInternal(Object target){
@@ -114,11 +126,15 @@ public class GuiInstance {
     }
 
     public void beforeRender(){
+        if(this.context == null)
+            return;
         this.context.isRendering = true;
         this.context.renderLock.lock();
     }
 
     public void afterRender(){
+        if(this.context == null)
+            return;
         this.context.renderLock.unlock();
         this.context.isRendering = false;
         this.context.getRenderer().getContext().ifPresent((c)->{

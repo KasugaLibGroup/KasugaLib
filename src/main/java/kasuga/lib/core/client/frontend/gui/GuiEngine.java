@@ -13,7 +13,10 @@ import kasuga.lib.core.client.frontend.gui.styles.GuiStyleRegistry;
 import kasuga.lib.core.client.frontend.rendering.ImageProviders;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Optional;
+import java.util.UUID;
 
 public class GuiEngine {
     public final DOMPriorityRegistry domRegistry = new DOMPriorityRegistry();
@@ -48,5 +51,17 @@ public class GuiEngine {
         for (GuiInstance instance : instances) {
             instance.getContext().ifPresent(GuiContext::renderTick);
         }
+    }
+
+    public HashMap<UUID, GuiInstance> localInstances = new HashMap<>();
+
+    public GuiInstance create(UUID id, ResourceLocation location){
+        GuiInstance instance = create(location);
+        localInstances.put(id, instance);
+        return instance;
+    }
+
+    public Optional<GuiInstance> getInstanceById(UUID id) {
+        return Optional.ofNullable(localInstances.get(id));
     }
 }

@@ -70,21 +70,29 @@ public class GuiTextNode extends GuiDomNode implements MayMeasurable {
             this.color = this.attributes.get("color");
         }
         if(context.getContextType() == RenderContext.RenderContextType.SCREEN){
-            this.context.setPosition(box.x, box.y, 0);
-            this.context.setPivot(PivotPosition.fromString(this.attributes.get("textAlign")));
-            float fontSize = 8;
-            float fontWidth = 1;
-            try{
-                fontSize = Float.parseFloat(this.attributes.get("fontSize","8"));
-                fontWidth = Float.parseFloat(this.attributes.get("fontWidth","1"));
-            }catch (NumberFormatException e){};
-            this.context.setScale(fontWidth * fontSize / 8, fontSize/8);
+            this.initContext(box);
             context.pose().pushPose();
             this.context.renderToGui(context.pose());
             context.pose().popPose();
         }else{
+            this.initContext(box);
+            context.pose().pushPose();
+            this.context.renderToWorld(context.pose(), context.getBufferSource(), context.getLight());
+            context.pose().popPose();
             // this.context.renderToWorld(context.pose());
         }
+    }
+
+    private void initContext(LayoutBox box) {
+        this.context.setPosition(box.x, box.y, 0);
+        this.context.setPivot(PivotPosition.fromString(this.attributes.get("textAlign")));
+        float fontSize = 8;
+        float fontWidth = 1;
+        try{
+            fontSize = Float.parseFloat(this.attributes.get("fontSize","8"));
+            fontWidth = Float.parseFloat(this.attributes.get("fontWidth","1"));
+        }catch (NumberFormatException e){};
+        this.context.setScale(fontWidth * fontSize / 8, fontSize/8);
     }
 
     @Override

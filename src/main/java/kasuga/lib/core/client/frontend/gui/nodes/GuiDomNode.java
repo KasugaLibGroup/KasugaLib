@@ -118,8 +118,13 @@ public class GuiDomNode extends DomNode<GuiContext> {
         EdgeSize2D border = layout.getBorder();
         MultiBufferSource bufferSource = context.getBufferSource();
         // @todo render border
-
-        super.render(source, context);
+        context.pushPose();
+        context.pose().translate(0,0,this.children.size() * 0.002 + 0.002);
+        for (DomNode<GuiContext> child : this.children) {
+            context.pose().translate(0,0,0.002);
+            child.render(source,context);
+        }
+        context.popPose();
     }
 
     private void updateStyles() {

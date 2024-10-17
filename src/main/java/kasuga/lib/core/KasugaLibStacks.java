@@ -6,7 +6,6 @@ import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgumentInfo;
 import kasuga.lib.core.client.animation.Constants;
 import kasuga.lib.core.client.frontend.gui.GuiEngine;
-import kasuga.lib.core.client.render.texture.StaticImageHolder;
 import kasuga.lib.core.events.both.BothSetupEvent;
 import kasuga.lib.core.events.both.EntityAttributeEvent;
 import kasuga.lib.core.events.client.*;
@@ -14,22 +13,26 @@ import kasuga.lib.core.events.server.ServerResourceListener;
 import kasuga.lib.core.events.server.ServerStartingEvents;
 import kasuga.lib.core.client.render.texture.old.SimpleTexture;
 import kasuga.lib.core.javascript.JavascriptApi;
+import kasuga.lib.core.menu.targets.TargetsClient;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.registrations.client.KeyBindingReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.registry.FontRegistry;
 import kasuga.lib.registrations.registry.TextureRegistry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Optional;
 
 import static kasuga.lib.KasugaLib.MOD_ID;
@@ -48,6 +51,7 @@ public class KasugaLibStacks {
     public Optional<GuiEngine> GUI = Optional.empty();
     public static final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
 
+    public static HashSet<Minecraft> mcs = new HashSet<>();
 
     public KasugaLibStacks(IEventBus bus) {
         this.bus = bus;
@@ -64,9 +68,10 @@ public class KasugaLibStacks {
         MinecraftForge.EVENT_BUS.addListener(PacketEvent::onServerPayloadHandleEvent);
         bus.addListener(BothSetupEvent::onFMLCommonSetup);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
-        bus.addListener(BothSetupEvent::RegisterKeyEvent);
+
 
         if(Envs.isClient()) {
+            bus.addListener(BothSetupEvent::RegisterKeyEvent);
             MinecraftForge.EVENT_BUS.addListener(PacketEvent::onClientPayloadHandleEvent);
             MinecraftForge.EVENT_BUS.addListener(Constants::onClientTick);
             MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStart);
@@ -82,6 +87,7 @@ public class KasugaLibStacks {
             bus.addListener(GeometryEvent::registerReloadListener);
             GUI = Optional.of(new GuiEngine());
             KasugaLibClient.invoke();
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()-> TargetsClient::reigster);
         }
 
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStarting);

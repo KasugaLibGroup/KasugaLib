@@ -18,6 +18,7 @@ public class GuiScreen extends Screen {
     public GuiScreen(GuiInstance guiInstance) {
         super(Component.literal(""));
         this.instance = guiInstance;
+        this.instance.open(this);
         this.autoClose = false;
     }
 
