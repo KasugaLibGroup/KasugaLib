@@ -109,7 +109,7 @@ public class BackgroundRenderer {
             imageMask.renderToGui();
         else
             imageMask.renderToWorld(context.pose(), context.getBufferSource(),
-                context.getRenderType().build(imageMask.image.id), true, context.packedLight);
+                context.getRenderType().build(imageMask.image.id), false, context.packedLight);
     }
 
     public void renderCommon(RenderContext context,int x,int y,int width,int height){
