@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.model.Material;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +39,19 @@ public class AnimModel implements Animable {
         color = SimpleColor.fromRGBInt(0xffffff);
         roots = Lists.newArrayList();
         collectChildren();
+        initAnim();
+    }
+
+    protected AnimModel(Geometry geometry, Material material, RenderType renderType,
+                      Vector3f position, Vector3f rotation, SimpleColor color) {
+        this.geometry = geometry;
+        this.material = material;
+        this.renderType = renderType;
+        this.position = position.copy();
+        this.rotation = rotation.copy();
+        this.color = color.copy();
+        this.children = Maps.newHashMap();
+        this.roots = Lists.newArrayList();
         initAnim();
     }
 
@@ -69,6 +83,10 @@ public class AnimModel implements Animable {
             AnimBone ab = new AnimBone(bone, this);
             children.put(name, ab);
         });
+        dealWithDependency();
+    }
+
+    public void dealWithDependency() {
         children.forEach((name, ren) -> {
             if (!(ren instanceof AnimBone ab)) return;
             ab.addThisToParent();
@@ -151,5 +169,9 @@ public class AnimModel implements Animable {
         VertexConsumer consumer = buffer.getBuffer(renderType);
         roots.forEach(c -> c.render(pose, consumer, color, light, overlay));
         pose.popPose();
+    }
+
+    public AnimModel copy() {
+        return new AnimModel(this.geometry, this.material, this.renderType);
     }
 }

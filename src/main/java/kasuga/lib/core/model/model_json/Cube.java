@@ -7,8 +7,6 @@ import com.google.gson.JsonObject;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.render.texture.Vec2f;
-import kasuga.lib.core.model.BoxLayerProcessor;
-import kasuga.lib.core.model.GeometryDescription;
 import kasuga.lib.core.model.Rotationable;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

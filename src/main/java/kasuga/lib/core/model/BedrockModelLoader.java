@@ -5,6 +5,7 @@ import com.google.gson.*;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.model.anim_model.AnimModel;
 import kasuga.lib.core.model.model_json.Geometry;
+import kasuga.lib.core.model.model_json.UnbakedBedrockModel;
 import kasuga.lib.core.util.LazyRecomputable;
 import kasuga.lib.core.util.Resources;
 import net.minecraft.client.renderer.RenderType;

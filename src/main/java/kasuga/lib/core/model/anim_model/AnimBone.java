@@ -11,6 +11,7 @@ import kasuga.lib.core.model.model_json.Bone;
 import kasuga.lib.core.model.model_json.Cube;
 import kasuga.lib.core.model.model_json.Locator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,14 +41,17 @@ public class AnimBone implements BedrockRenderable, Animable {
         initAnim();
     }
 
-    public AnimBone(Bone bone, AnimModel model, Map<String, BedrockRenderable> children,
-                    List<BedrockRenderable> cubes, HashMap<String, Locator> locators) {
+    protected AnimBone(Bone bone, AnimModel model, List<BedrockRenderable> cubes, HashMap<String, Locator> locators) {
         this.bone = bone;
-        this.children = children;
+        this.children = new HashMap<>();
         this.model = model;
-        this.cubes = cubes;
+        this.cubes = new ArrayList<>(cubes.size());
+        cubes.forEach(c -> {
+            this.cubes.add(((AnimCube) c).copy(model, this));
+        });
 
-        this.locators = locators;
+        this.locators = new HashMap<>();
+        locators.forEach((name, locator) -> {this.locators.put(name, locator.copy());});
         this.pivot = bone.pivot.copy();
         this.rotation = bone.rotation.copy();
         initAnim();
@@ -156,5 +160,9 @@ public class AnimBone implements BedrockRenderable, Animable {
         cubes.forEach(c -> c.render(pose, consumer, color, light, overlay));
         children.forEach((c, d) -> d.render(pose, consumer, color, light, overlay));
         pose.popPose();
+    }
+
+    public AnimBone copy(Bone bone, AnimModel model) {
+        return new AnimBone(bone, model, this.cubes, this.locators);
     }
 }

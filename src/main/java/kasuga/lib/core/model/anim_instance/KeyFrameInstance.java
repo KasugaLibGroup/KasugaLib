@@ -1,18 +1,28 @@
 package kasuga.lib.core.model.anim_instance;
 
 import com.mojang.math.Vector3f;
+import kasuga.lib.core.client.animation.neo_neo.VectorIOUtil;
 import kasuga.lib.core.model.anim_json.CatmullRomUtils;
 import kasuga.lib.core.model.anim_json.KeyFrame;
 import kasuga.lib.core.model.anim_json.Pose;
 import kasuga.lib.core.model.anim_model.AnimBone;
 import kasuga.lib.core.util.data_type.Pair;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+
+import static kasuga.lib.core.model.anim_instance.AnimationInstance.read4Bytes;
+import static kasuga.lib.core.model.anim_instance.AnimationInstance.write4Bytes;
 
 @InstanceOf(value = KeyFrame.class)
 public class KeyFrameInstance {
     public final KeyFrame keyFrame;
+
     public final AnimBone bone;
+
     public final AnimationInstance animation;
     private final ArrayList<Vector3f> position, rotation, scale;
     private final float posStartSec, posEndSec;
@@ -310,5 +320,80 @@ public class KeyFrameInstance {
         return posStartSec == -1 && posEndSec == -1 &&
                 rotStartSec == -1 && rotEndSec == -1 &&
                 scaleStartSec == -1 && scaleEndSec == -1;
+    }
+
+    public void writeToCache(ByteArrayOutputStream stream) throws IOException {
+        String frameName = this.keyFrame.bone;
+        byte[] fnb = frameName.getBytes(StandardCharsets.UTF_8);
+        write4Bytes(fnb.length, stream);
+        stream.write(fnb);
+
+        write4Bytes(Float.floatToIntBits(posStartSec), stream);
+        write4Bytes(Float.floatToIntBits(posEndSec), stream);
+        write4Bytes(Float.floatToIntBits(rotStartSec), stream);
+        write4Bytes(Float.floatToIntBits(rotEndSec), stream);
+        write4Bytes(Float.floatToIntBits(scaleStartSec), stream);
+        write4Bytes(Float.floatToIntBits(scaleEndSec), stream);
+
+        VectorIOUtil.writeVec3fToStream(this.positionStart, stream);
+        VectorIOUtil.writeVec3fToStream(this.positionApproach, stream);
+        VectorIOUtil.writeVec3fToStream(this.rotationStart, stream);
+        VectorIOUtil.writeVec3fToStream(this.rotationApproach, stream);
+        VectorIOUtil.writeVec3fToStream(this.scaleStart, stream);
+        VectorIOUtil.writeVec3fToStream(this.scaleApproach, stream);
+
+        write4Bytes(this.position.size(), stream);
+        write4Bytes(this.rotation.size(), stream);
+        write4Bytes(this.scale.size(), stream);
+
+        for (Vector3f vector3f : this.position) {
+            VectorIOUtil.writeVec3fToStream(vector3f, stream);
+        }
+        for (Vector3f vector3f : this.rotation) {
+            VectorIOUtil.writeVec3fToStream(vector3f, stream);
+        }
+        for (Vector3f v : this.scale) {
+            VectorIOUtil.writeVec3fToStream(v, stream);
+        }
+    }
+
+    public KeyFrameInstance(AnimationInstance instance, ByteArrayInputStream stream) throws IOException {
+        this.animation = instance;
+        int fnbLength = read4Bytes(stream);
+        byte[] fnb = stream.readNBytes(fnbLength);
+        String n = new String(fnb, StandardCharsets.UTF_8);
+        this.keyFrame = instance.animation.getFrame(n);
+        this.bone = (AnimBone) instance.model.getChild(n);
+
+        this.posStartSec = Float.intBitsToFloat(read4Bytes(stream));
+        this.posEndSec = Float.intBitsToFloat(read4Bytes(stream));
+        this.rotStartSec = Float.intBitsToFloat(read4Bytes(stream));
+        this.rotEndSec = Float.intBitsToFloat(read4Bytes(stream));
+        this.scaleStartSec = Float.intBitsToFloat(read4Bytes(stream));
+        this.scaleEndSec = Float.intBitsToFloat(read4Bytes(stream));
+
+        this.positionStart = VectorIOUtil.getVec3fFromStream(stream);
+        this.positionApproach = VectorIOUtil.getVec3fFromStream(stream);
+        this.rotationStart = VectorIOUtil.getVec3fFromStream(stream);
+        this.rotationApproach = VectorIOUtil.getVec3fFromStream(stream);
+        this.scaleStart = VectorIOUtil.getVec3fFromStream(stream);
+        this.scaleApproach = VectorIOUtil.getVec3fFromStream(stream);
+
+        int posSize = read4Bytes(stream);
+        int rotSize = read4Bytes(stream);
+        int scaleSize = read4Bytes(stream);
+        this.position = new ArrayList<>(posSize);
+        this.rotation = new ArrayList<>(rotSize);
+        this.scale = new ArrayList<>(scaleSize);
+
+        for (int i = 0; i < posSize; i++) {
+            position.add(VectorIOUtil.getVec3fFromStream(stream));
+        }
+        for (int i = 0; i < rotSize; i++) {
+            rotation.add(VectorIOUtil.getVec3fFromStream(stream));
+        }
+        for (int i = 0; i < scaleSize; i++) {
+            scale.add(VectorIOUtil.getVec3fFromStream(stream));
+        }
     }
 }

@@ -23,6 +23,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import java.io.File;
 import java.util.Map;
 
 public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTile> {
@@ -32,13 +33,14 @@ public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTil
 
 
     LazyRecomputable<AnimModel> testModel = LazyRecomputable.of(() -> {
-            return BedrockModelLoader.getModel(AllExampleElements.REGISTRY.asResource("block/test/test_model_complicate"), RenderType.solid());
+            AnimModel model = BedrockModelLoader.getModel(AllExampleElements.REGISTRY.asResource("block/test/test_model_complicate"), RenderType.solid());
+            if (model == null) return null;
+            return model.copy();
         }
     );
 
     LazyRecomputable<AnimationInstance> transform = LazyRecomputable.of(() -> {
-        AnimationInstance ai = new AnimationInstance(AllClient.anim.get().getAnimation("transform"),
-                testModel.get(), 60);
+        AnimationInstance ai = AllClient.anim.get().getAnimation("transform").getInstance(testModel.get(), 60);
         return ai;
     });
 
@@ -49,7 +51,7 @@ public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTil
         pose.pushPose();
 
         // textContext.rotateDeg(1f, 1f, 1f);
-            transform.get().applyAndRender(pose, buffer, light, overlay, Math.max(0, Math.min(tile.sec, 2.49f)));
+            transform.get().applyAndRender(pose, buffer, light, overlay, Math.max(0, Math.min(tile.sec, 0f)));
         if (tile.sec < 5f && !tile.direction) tile.sec += 0.01f;
         else if (tile.sec >= 5f && !tile.direction) tile.direction = true;
         if (tile.sec > -2.5f && tile.direction) tile.sec -= 0.01f;

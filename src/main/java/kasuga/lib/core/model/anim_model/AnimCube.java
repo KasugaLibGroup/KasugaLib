@@ -8,6 +8,7 @@ import kasuga.lib.core.model.BedrockRenderable;
 import kasuga.lib.core.model.model_json.Cube;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +36,17 @@ public class AnimCube implements BedrockRenderable {
 
         this.model = model;
         this.bone = bone;
+    }
 
+    protected AnimCube(Cube cube, List<BakedQuad> quads, AnimModel model,
+                       AnimBone bone, Vector3f pivot, Vector3f rotation) {
+        this.cube = cube;
+        this.quads = new ArrayList<>(quads.size());
+        this.quads.addAll(quads);
+        this.model = model;
+        this.bone = bone;
+        this.pivot = pivot.copy();
+        this.rotation = rotation.copy();
     }
 
     @Override
@@ -70,5 +81,9 @@ public class AnimCube implements BedrockRenderable {
         quads.forEach(baked -> consumer.putBulkData(pose.last(), baked,
                 color.getfR(), color.getfG(), color.getfB(), light, overlay));
         pose.popPose();
+    }
+
+    public AnimCube copy(AnimModel model, AnimBone bone) {
+        return new AnimCube(cube, this.quads, model, bone, this.pivot, this.rotation);
     }
 }

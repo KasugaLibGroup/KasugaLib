@@ -80,6 +80,7 @@ public class AllExampleElements {
             new AnimReg("test_anim", REGISTRY.asResource("models/entity/test/wuling/wuling_anim.json"))
             .submit(REGISTRY);
 
+    /*
     public static final SimpleConfig config = new SimpleConfig()
             .common("common settings")
             .rangedIntConfig("cfg1", "this is a test cfg", 0, -1, 1)
@@ -89,6 +90,7 @@ public class AllExampleElements {
             .server("only in server")
             .intConfig("int_cfg", 4)
             .registerConfigs();
+     */
 
 
     /*

@@ -15,13 +15,16 @@ import java.util.HashSet;
 
 public class AnimationFile {
     public final String formatVersion;
+
+    public final ResourceLocation location;
     private final JsonObject animationsJson;
     private final HashMap<String, Animation> animations;
     public static final HashMap<ResourceLocation, AnimationFile> FILES = new HashMap<>();
     public static final HashSet<ResourceLocation> UNREGISTERED = new HashSet<>();
     public static boolean filesLoaded = false;
 
-    public AnimationFile(JsonObject json) {
+    public AnimationFile(ResourceLocation location, JsonObject json) {
+        this.location = location;
         formatVersion = json.get("format_version").getAsString();
         animations = new HashMap<>();
         if (!json.has("animations")) {
@@ -38,7 +41,7 @@ public class AnimationFile {
                     String name = entry.getKey();
                     JsonElement element = entry.getValue();
                     if (element instanceof JsonObject object) {
-                        Animation animation = new Animation(name, object);
+                        Animation animation = new Animation(name, object, this);
                         this.animations.put(name, animation);
                     }
                 }
@@ -63,7 +66,7 @@ public class AnimationFile {
         try {
             Resource resource = Resources.getResource(location);
             JsonObject object = JsonParser.parseReader(resource.openAsReader()).getAsJsonObject();
-            AnimationFile file = new AnimationFile(object);
+            AnimationFile file = new AnimationFile(location, object);
             FILES.put(location, file);
             return LazyRecomputable.of(() -> file);
         } catch (IOException e) {

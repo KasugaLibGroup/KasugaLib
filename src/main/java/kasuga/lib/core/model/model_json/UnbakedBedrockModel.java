@@ -1,4 +1,4 @@
-package kasuga.lib.core.model;
+package kasuga.lib.core.model.model_json;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
@@ -7,8 +7,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
 import kasuga.lib.KasugaLib;
-import kasuga.lib.core.model.model_json.Geometry;
-import kasuga.lib.core.util.LazyRecomputable;
 import kasuga.lib.core.util.Resources;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

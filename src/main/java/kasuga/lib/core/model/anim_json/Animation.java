@@ -2,16 +2,24 @@ package kasuga.lib.core.model.anim_json;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import kasuga.lib.KasugaLib;
+import kasuga.lib.core.model.anim_instance.AnimCacheManager;
+import kasuga.lib.core.model.anim_instance.AnimationInstance;
+import kasuga.lib.core.model.anim_model.AnimModel;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 
 public class Animation {
 
     public final String name;
+    public final AnimationFile file;
     private final HashMap<String, KeyFrame> frames;
     public final float animationLength;
     private final LoopMode loop;
-    public Animation(String name, JsonObject json) {
+    public Animation(String name, JsonObject json, AnimationFile file) {
+        this.file = file;
         this.frames = new HashMap<>();
         this.name = name;
 
@@ -66,5 +74,32 @@ public class Animation {
 
     public String getName() {
         return name;
+    }
+
+    public AnimationInstance getInstance(AnimModel model, int frameRate) {
+        String pureFileName = AnimCacheManager.getPureFileName(this, model, frameRate);
+        if (!AnimCacheManager.systemEnabled()) return new AnimationInstance(this, model, frameRate);
+        if (AnimCacheManager.INSTANCE.hasCache(pureFileName)) {
+            try {
+                ByteArrayInputStream bais = new ByteArrayInputStream(AnimCacheManager.INSTANCE.getCache(pureFileName));
+                AnimationInstance fromCache = new AnimationInstance(model, this, bais);
+                return fromCache;
+            } catch (IOException e) {
+                KasugaLib.MAIN_LOGGER.error("InValid file: " + pureFileName, e);
+                return buildNewInstance(model, frameRate);
+            }
+        } else {
+            return buildNewInstance(model, frameRate);
+        }
+    }
+
+    private AnimationInstance buildNewInstance(AnimModel model, int frameRate) {
+        AnimationInstance instance = new AnimationInstance(this, model, frameRate);
+        try {
+            if (AnimCacheManager.systemEnabled()) AnimCacheManager.INSTANCE.save(instance);
+        } catch (IOException e) {
+            KasugaLib.MAIN_LOGGER.error("Failed to save animation cache file: " + AnimCacheManager.getPureFileName(instance), e);
+        }
+        return instance;
     }
 }

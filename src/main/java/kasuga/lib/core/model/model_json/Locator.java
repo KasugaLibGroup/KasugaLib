@@ -15,4 +15,8 @@ public class Locator {
         neoPos.add(offset);
         return new Locator(neoPos, rotation);
     }
+
+    public Locator copy() {
+        return new Locator(position.copy(), rotation.copy());
+    }
 }
