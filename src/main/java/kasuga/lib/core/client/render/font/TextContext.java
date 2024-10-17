@@ -262,6 +262,12 @@ public class TextContext {
         return getFont().isItalic();
     }
 
+    protected boolean sizeFixure = true;
+
+    public void withoutSizeFixure(){
+        sizeFixure = false;
+    }
+
     public void renderToGui(PoseStack pose) {
         pose.translate(position.x(), position.y(), position.z());
         pose.mulPose(Quaternion.fromXYZ(this.rotation));
@@ -270,8 +276,8 @@ public class TextContext {
 
         Minecraft.getInstance().font.draw(pose, text, 0, 0, color.getRGB());
 
-        pose.translate(pivot.x() * this.getWidth(), pivot.y() * this.getHeight(), 0);
         pose.scale(1 / this.scale.x(), 1 / this.scale.y(), 1f);
+        pose.translate(pivot.x() * this.getWidth(), pivot.y() * this.getHeight(), 0);
         Vector3f negRot = rotation.copy();
         negRot.mul(-1f);
         pose.mulPose(Quaternion.fromXYZ(negRot));
@@ -284,16 +290,18 @@ public class TextContext {
         pose.mulPose(Quaternion.fromXYZ(this.rotation));
         Vector3f negRot = rotation.copy();
 
-        pose.scale(standardScale, - standardScale, standardScale);
-        pose.scale(this.scale.x(), this.scale.y(), 1f);
         pose.translate(- w, h, 0);
+        if(this.sizeFixure)
+            pose.scale(standardScale, - standardScale, standardScale);
+        pose.scale(1,-1,1);
+        pose.scale(this.scale.x(), this.scale.y(), 1f);
 
         Minecraft.getInstance().font.drawInBatch(text, 0 ,0, color.getRGB(), dropShadow, pose.last().pose(),
                 source, transparent, bgColor.getRGB(), light);
 
-        pose.translate(w, - h, 0);
         pose.scale(1 / this.scale.x(), 1 / this.scale.y(), 1f);
         pose.scale(negStandardScale, - negStandardScale, negStandardScale);
+        pose.translate(w, - h, 0);
 
         negRot.mul(-1f);
         pose.mulPose(Quaternion.fromXYZ(negRot));

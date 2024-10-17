@@ -119,9 +119,9 @@ public class GuiDomNode extends DomNode<GuiContext> {
         MultiBufferSource bufferSource = context.getBufferSource();
         // @todo render border
         context.pushPose();
-        context.pose().translate(0,0,this.children.size() * 0.002 + 0.002);
+        context.pose().translate(0,0, this.children.size() * 0.003 + 0.003 );
         for (DomNode<GuiContext> child : this.children) {
-            context.pose().translate(0,0,0.002);
+            context.pose().translate(0,0,0.003);
             child.render(source,context);
         }
         context.popPose();
