@@ -18,7 +18,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraftforge.common.util.Lazy;
 import org.graalvm.polyglot.HostAccess;
-import org.graalvm.polyglot.Value;
 
 import java.util.Objects;
 
@@ -191,7 +190,7 @@ public class GuiDomNode extends DomNode<GuiContext> {
         MouseEvent finalEvent = event.withTarget(target);
 
         if(!translated.isPropagationStopped()){
-            this.dispatchEvent(event.getType(), Value.asValue(finalEvent));
+            this.dispatchEvent(event.getType(), finalEvent);
         }else{
             event.stopPropagation();
         }

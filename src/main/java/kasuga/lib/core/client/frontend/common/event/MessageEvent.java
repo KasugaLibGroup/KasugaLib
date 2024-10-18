@@ -3,7 +3,6 @@ package kasuga.lib.core.client.frontend.common.event;
 import kasuga.lib.core.javascript.CompoundTagWrapper;
 import net.minecraft.nbt.CompoundTag;
 import org.graalvm.polyglot.HostAccess;
-import org.graalvm.polyglot.Value;
 
 public class MessageEvent extends Event{
 
