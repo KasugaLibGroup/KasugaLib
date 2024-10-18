@@ -1,11 +1,16 @@
 package kasuga.lib.core.client.frontend.dom;
 
+import kasuga.lib.core.client.frontend.dom.event.EventEmitter;
 import kasuga.lib.core.client.frontend.dom.nodes.DomNode;
 import kasuga.lib.core.client.frontend.dom.registration.DOMPriorityRegistry;
 import kasuga.lib.core.client.frontend.dom.registration.DOMRegistryItemDynamicProxy;
 import kasuga.lib.core.javascript.Tickable;
+import kasuga.lib.core.util.Callback;
 import net.minecraft.resources.ResourceLocation;
 import org.graalvm.polyglot.HostAccess;
+import org.graalvm.polyglot.Value;
+
+import java.util.ArrayDeque;
 
 public abstract class DomContext<P extends DomNode<?>,T extends P> implements Tickable {
 
@@ -13,6 +18,12 @@ public abstract class DomContext<P extends DomNode<?>,T extends P> implements Ti
 
     T rootNode;
     DOMRegistryItemDynamicProxy renderer;
+    protected ArrayDeque<Callback> queue = new ArrayDeque<>();
+
+    public void appendTask(Callback callback) {
+        this.queue.add(callback);
+    }
+
 
     protected DomContext(DOMPriorityRegistry registry, ResourceLocation location){
         rootNode = createRoot();
@@ -48,7 +59,10 @@ public abstract class DomContext<P extends DomNode<?>,T extends P> implements Ti
     }
 
     public void tick(){
-
+        int taskNumebr = 0;
+        while(!queue.isEmpty() && (++taskNumebr)<64){
+            queue.poll().execute();
+        }
     }
 
     public void setReady() {
@@ -57,5 +71,23 @@ public abstract class DomContext<P extends DomNode<?>,T extends P> implements Ti
 
     public void setNotReady() {
         ready = false;
+    }
+
+    EventEmitter emitter = new EventEmitter();
+
+    @HostAccess.Export
+    public void addEventListener(String eventName, Value callback){
+        callback.pin();
+        emitter.subscribe(eventName, callback);
+    }
+
+    @HostAccess.Export
+    public void removeEventListener(String eventName, Value callback){
+        emitter.unsubscribe(eventName, callback);
+    }
+
+    @HostAccess.Export
+    public void dispatchEvent(String eventName,Value event){
+        emitter.dispatchEvent(eventName,event);
     }
 }

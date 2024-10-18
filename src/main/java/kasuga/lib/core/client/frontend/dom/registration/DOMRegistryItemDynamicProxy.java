@@ -47,14 +47,13 @@ public class DOMRegistryItemDynamicProxy {
 
         registryContext.registerTickable(context);
 
-
         context.setReady();
 
     }
 
     public void unload(){
         this.closed = true;
-        sideEffectContext.close();
+        context.appendTask(()->sideEffectContext.close());
         context.setNotReady();
         this.registryContext = null;
         this.sideEffectContext = null;

@@ -24,8 +24,6 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
     LayoutEngine<?,GuiDomNode> layoutEngine;
 
     GuiAttachTarget attachedTargets = new GuiAttachTarget();
-    private ArrayDeque<Callback> queue = new ArrayDeque<>();
-
     ReentrantLock renderLock = new ReentrantLock();
 
     public volatile boolean isRendering;
@@ -78,9 +76,7 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
 
     @Override
     public void tick() {
-        while(!queue.isEmpty()){
-            queue.poll().execute();
-        }
+        super.tick();
         this.getRootNode().getLayoutManager().tick();
     }
 
@@ -95,9 +91,6 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
         getRootNode().render(source, context);
     }
 
-    public void appendTask(Callback callback) {
-        this.queue.add(callback);
-    }
 
     public void queueDuringRender(Runnable task) {
         Optional<JavascriptContext> threadContext = this.getRenderer().getContext();

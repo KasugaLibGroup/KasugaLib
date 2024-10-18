@@ -128,6 +128,7 @@ public class GuiTextNode extends GuiDomNode implements MayMeasurable {
     }
 
     protected void clearContext(){
+        // @TODO Sync
         context = null;
     }
 }

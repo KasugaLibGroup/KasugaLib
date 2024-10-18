@@ -1,5 +1,6 @@
 package kasuga.lib.core.javascript;
 
+import kasuga.lib.core.client.frontend.dom.registration.DOMRegistryItemDynamicProxy;
 import kasuga.lib.core.javascript.module.JavascriptModule;
 import kasuga.lib.core.javascript.module.JavascriptModuleScope;
 import kasuga.lib.core.javascript.module.ModuleLoadException;

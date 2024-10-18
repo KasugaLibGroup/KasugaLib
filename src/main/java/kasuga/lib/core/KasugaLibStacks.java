@@ -9,6 +9,7 @@ import kasuga.lib.core.client.frontend.gui.GuiEngine;
 import kasuga.lib.core.events.both.BothSetupEvent;
 import kasuga.lib.core.events.both.EntityAttributeEvent;
 import kasuga.lib.core.events.client.*;
+import kasuga.lib.core.events.server.ServerConnectionListeners;
 import kasuga.lib.core.events.server.ServerResourceListener;
 import kasuga.lib.core.events.server.ServerStartingEvents;
 import kasuga.lib.core.client.render.texture.old.SimpleTexture;
@@ -92,6 +93,7 @@ public class KasugaLibStacks {
 
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStarting);
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStopping);
+        MinecraftForge.EVENT_BUS.addListener(ServerConnectionListeners::onClientDisconnect);
     }
 
     public void stackIn(SimpleRegistry registry) {

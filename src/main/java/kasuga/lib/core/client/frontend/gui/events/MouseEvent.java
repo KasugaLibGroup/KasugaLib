@@ -1,12 +1,13 @@
 package kasuga.lib.core.client.frontend.gui.events;
 
+import kasuga.lib.core.client.frontend.common.event.DomEvent;
 import kasuga.lib.core.client.frontend.common.event.Event;
 import kasuga.lib.core.client.frontend.dom.nodes.DomNode;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomNode;
 import kasuga.lib.core.util.data_type.Vec2i;
 import org.graalvm.polyglot.HostAccess;
 
-public class MouseEvent extends Event {
+public class MouseEvent extends DomEvent {
 
     protected final Vec2i screenPosition;
     protected final int button;
