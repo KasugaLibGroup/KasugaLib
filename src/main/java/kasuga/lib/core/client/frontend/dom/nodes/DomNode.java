@@ -60,8 +60,6 @@ public class DomNode<T extends DomContext<?,?>> {
     protected EventEmitter emitter = new EventEmitter();
 
 
-    HashMap<Value, Consumer<Value>> callbacks = new HashMap<>();
-
     @HostAccess.Export
     public void addEventListener(String eventName, Value callback){
         callback.pin();
@@ -74,7 +72,7 @@ public class DomNode<T extends DomContext<?,?>> {
     }
 
     @HostAccess.Export
-    public void dispatchEvent(String eventName,Value event){
+    public void dispatchEvent(String eventName,Object event){
         emitter.dispatchEvent(eventName,event);
     }
 
@@ -83,14 +81,11 @@ public class DomNode<T extends DomContext<?,?>> {
         return this.attributes.get(attributeName);
     }
 
+    @HostAccess.Export
     public void setAttribute(String attributeName, String value){
         this.attributes.set(attributeName, value);
     }
 
-    @HostAccess.Export
-    public void setAttribute(String attributeName, Value value){
-        setAttribute(attributeName,value.asString());
-    }
 
     public void render(Object source,RenderContext context){
         for (DomNode<T> child : this.children) {

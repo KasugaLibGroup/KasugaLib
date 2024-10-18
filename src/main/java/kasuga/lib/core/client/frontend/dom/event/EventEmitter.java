@@ -7,10 +7,10 @@ import java.util.function.Consumer;
 
 public class EventEmitter {
 
-    HashMap<String, Set<Consumer<Value>>> listeners = new HashMap<>();
+    HashMap<String, Set<Consumer<Object>>> listeners = new HashMap<>();
     HashMap<String, Set<Value>> functionalListeners = new HashMap<>();
 
-    public UnsubscribeHandler subscribe(String eventName, Consumer<Value> consumer){
+    public UnsubscribeHandler subscribe(String eventName, Consumer<Object> consumer){
         listeners.computeIfAbsent(eventName,(v)->new HashSet<>())
                 .add(consumer);
         return ()->{
@@ -18,7 +18,7 @@ public class EventEmitter {
         };
     }
 
-    public void unsubscribe(String eventName, Consumer<Value> consumer){
+    public void unsubscribe(String eventName, Consumer<Object> consumer){
         listeners.computeIfPresent(eventName,(name,data)->{
            data.remove(consumer);
            return data.isEmpty() ? null : data;
@@ -37,11 +37,11 @@ public class EventEmitter {
         });
     }
 
-    public void dispatchEvent(String eventName, Value event){
-        Set<Consumer<Value>> consumers = this.listeners.get(eventName);
+    public void dispatchEvent(String eventName, Object event){
+        Set<Consumer<Object>> consumers = this.listeners.get(eventName);
         if(consumers != null){
-            List<Consumer<Value>> temporaryConsumer = new ArrayList<>(consumers);
-            for (Consumer<Value> consumer : temporaryConsumer) {
+            List<Consumer<Object>> temporaryConsumer = new ArrayList<>(consumers);
+            for (Consumer<Object> consumer : temporaryConsumer) {
                 consumer.accept(event);
             }
         }
