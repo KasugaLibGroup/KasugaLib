@@ -1,22 +1,14 @@
 package kasuga.lib.example_env;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import kasuga.lib.KasugaLib;
-import kasuga.lib.core.config.SimpleConfig;
-import kasuga.lib.core.model.anim_json.AnimationFile;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.example_env.block.GreenAppleBlock;
 import kasuga.lib.example_env.block.GreenAppleItem;
 import kasuga.lib.example_env.block_entity.GreenAppleTile;
 import kasuga.lib.example_env.client.block_entity.renderer.GreenAppleTileRenderer;
-import kasuga.lib.example_env.client.entity.renderer.WuLingRenderer;
-import kasuga.lib.example_env.client.screens.GreenAppleMenu;
-import kasuga.lib.example_env.client.screens.GreenAppleScreen;
-import kasuga.lib.example_env.entity.WuLingEntity;
 import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
 import kasuga.lib.registrations.client.AnimReg;
-import kasuga.lib.registrations.client.KeyBindingReg;
 import kasuga.lib.registrations.client.ModelReg;
 import kasuga.lib.registrations.common.*;
 import kasuga.lib.registrations.registry.SimpleRegistry;
@@ -25,8 +17,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
-import net.minecraftforge.client.settings.KeyModifier;
-import org.lwjgl.glfw.GLFW;
 
 public class AllExampleElements {
 
@@ -59,12 +49,18 @@ public class AllExampleElements {
             .submit(REGISTRY);
      */
 
+    /*
     public static final ModelReg greenAppleModel = new ModelReg("green_apple", new ResourceLocation(KasugaLib.MOD_ID, "block/test/green_apple"))
             .submit(REGISTRY);
 
+     */
+
+    /*
     public static final ModelReg wuLingVans = new
             ModelReg("wuling_vans", new ResourceLocation(KasugaLib.MOD_ID, "entity/test/wuling/wuling_base"))
             .submit(REGISTRY);
+
+     */
 
     public static final ItemReg<GreenAppleItem> greenAppleItem =
             new ItemReg<GreenAppleItem>("green_apple_item")
@@ -76,9 +72,12 @@ public class AllExampleElements {
 
     public static final CreativeTabReg tab = new CreativeTabReg("test")
             .icon(greenAppleItem).submit(REGISTRY);
+    /*
     public static final AnimReg test_anim =
             new AnimReg("test_anim", REGISTRY.asResource("models/entity/test/wuling/wuling_anim.json"))
             .submit(REGISTRY);
+
+     */
 
     /*
     public static final SimpleConfig config = new SimpleConfig()

@@ -1,6 +1,6 @@
 package kasuga.lib.core.events.client;
 
-import kasuga.lib.core.model.BedrockModelLoader;
+import kasuga.lib.core.client.model.BedrockModelLoader;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

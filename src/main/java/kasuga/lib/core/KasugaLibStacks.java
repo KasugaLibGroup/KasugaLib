@@ -72,6 +72,11 @@ public class KasugaLibStacks {
             MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStart);
             MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStop);
             MinecraftForge.EVENT_BUS.addListener(ClientTickEvent::onClientTick);
+            MinecraftForge.EVENT_BUS.addListener(ClientTickEvent::onGuiTick);
+
+            MinecraftForge.EVENT_BUS.addListener(PlayLogEvent::playerLogout);
+            MinecraftForge.EVENT_BUS.addListener(PlayLogEvent::playerLogin);
+
             bus.addListener(ModelRegistryEvent::registerAdditionalModels);
             bus.addListener(ModelRegistryEvent::bakingCompleted);
             bus.addListener(TextureRegistryEvent::onModelRegistry);

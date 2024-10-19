@@ -156,7 +156,7 @@ public class SimpleRegistry {
     }
 
     /**
-     * return the registry of ContainerMenus and GUI Screens. See {@link kasuga.lib.registrations.common.MenuReg}
+     * return the registry of ContainerMenus and RENDER Screens. See {@link kasuga.lib.registrations.common.MenuReg}
      * @return Registry of ContainerMenus.
      */
     public DeferredRegister<MenuType<?>> menus() {

@@ -1,48 +1,28 @@
 package kasuga.lib.example_env.client.block_entity.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
-import kasuga.lib.KasugaLib;
-import kasuga.lib.core.client.render.font.TextContext;
-import kasuga.lib.core.client.render.model.SimpleModel;
-import kasuga.lib.core.client.render.texture.Matrix;
-import kasuga.lib.core.client.render.texture.old.WorldTexture;
-import kasuga.lib.core.model.BedrockModelLoader;
-import kasuga.lib.core.model.anim_instance.AnimationInstance;
-import kasuga.lib.core.model.anim_json.Animation;
-import kasuga.lib.core.model.anim_model.AnimModel;
+import kasuga.lib.core.client.model.BedrockModelLoader;
+import kasuga.lib.core.client.model.anim_instance.AnimateTicker;
+import kasuga.lib.core.client.model.anim_instance.AnimationInstance;
+import kasuga.lib.core.client.model.anim_model.AnimModel;
 import kasuga.lib.core.util.LazyRecomputable;
 import kasuga.lib.example_env.AllClient;
 import kasuga.lib.example_env.AllExampleElements;
 import kasuga.lib.example_env.block_entity.GreenAppleTile;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-
-import java.io.File;
-import java.util.Map;
 
 public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTile> {
     // SimpleModel model = AllExampleElements.greenAppleModel.getModel();
     // MultiPartModel wuling = (MultiPartModel) AllExampleElements.wuLingVans.getModel();
     // private static final WorldTexture texture = new WorldTexture(new ResourceLocation(KasugaLib.MOD_ID, "textures/common/test/green_apple_bubble.png"));
 
-
-    LazyRecomputable<AnimModel> testModel = LazyRecomputable.of(() -> {
-            AnimModel model = BedrockModelLoader.getModel(AllExampleElements.REGISTRY.asResource("block/test/test_model_complicate"), RenderType.solid());
-            if (model == null) return null;
-            return model.copy();
-        }
-    );
-
-    LazyRecomputable<AnimationInstance> transform = LazyRecomputable.of(() -> {
-        AnimationInstance ai = AllClient.anim.get().getAnimation("transform").getInstance(testModel.get(), 60);
-        return ai;
-    });
+    LazyRecomputable<AnimateTicker> ticker = AnimateTicker.getTickerInstance(
+            AllExampleElements.REGISTRY.asResource("block/test/test_model_complicate"),
+            AllExampleElements.REGISTRY.asResource("animations/model.animation.json"),
+            RenderType.solid(), "transform", AnimateTicker.TickerType.RENDER, 60, 100);
 
     public GreenAppleTileRenderer(BlockEntityRendererProvider.Context context) {}
     // private WorldTexture TEXTURE = new WorldTexture(new ResourceLocation("kasuga_lib","textures/gui/pixel.png"));
@@ -51,11 +31,16 @@ public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTil
         pose.pushPose();
 
         // textContext.rotateDeg(1f, 1f, 1f);
-            transform.get().applyAndRender(pose, buffer, light, overlay, Math.max(0, Math.min(tile.sec, 0f)));
-        if (tile.sec < 5f && !tile.direction) tile.sec += 0.01f;
-        else if (tile.sec >= 5f && !tile.direction) tile.direction = true;
-        if (tile.sec > -2.5f && tile.direction) tile.sec -= 0.01f;
-        else if (tile.sec <= -2.5f && tile.direction) tile.direction = false;
+        ticker.get().tickAndRender(pose, buffer, light, overlay, partial);
+        if (tile.sec < 10) tile.sec+=0.01;
+        if (tile.sec >= 10 && !tile.saved) {
+            tile.saved = true;
+            ticker.get().start();tile.sec++;
+        }
+        // if (tile.sec < 5f && !tile.direction) tile.sec += 0.01f;
+        // else if (tile.sec >= 5f && !tile.direction) tile.direction = true;
+        // if (tile.sec > -2.5f && tile.direction) tile.sec -= 0.01f;
+        // else if (tile.sec <= -2.5f && tile.direction) tile.direction = false;
         pose.popPose();
         // System.out.println(mtx.equals(mtx2));
         // pose.translate(0, -1, 0);

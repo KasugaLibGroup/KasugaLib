@@ -29,6 +29,7 @@ public class WuLingRenderer extends EntityRenderer<WuLingEntity> {
 
     @Override
     public void render(WuLingEntity entity, float yaw, float partial, PoseStack pose, MultiBufferSource buffer, int light) {
+        /*
         Animation test_anim = entity.getAnimation();
         pose.pushPose();
         if(test_anim != null) {
@@ -39,5 +40,7 @@ public class WuLingRenderer extends EntityRenderer<WuLingEntity> {
             test_anim.getModel().render(pose, buffer, 0, 0, 0, (int)(light * .9), 0);
         }
         pose.popPose();
+
+         */
     }
 }
