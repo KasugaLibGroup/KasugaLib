@@ -16,7 +16,7 @@ import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.RegistryObject;
 
 /**
- * Menu is the base class of minecraft GUI. You could use it to open the player's screen and create container guis.
+ * Menu is the base class of minecraft RENDER. You could use it to open the player's screen and create container guis.
  * For more info, see {@link AbstractContainerMenu} and {@link Screen},
  * In order to create a menu, your game element should be a subClass of {@link net.minecraft.world.MenuProvider}
  * @param <T> your menu class.
