@@ -17,17 +17,18 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraftforge.client.model.geometry.IGeometryLoader;
+import net.minecraftforge.client.model.IModelLoader;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public class BedrockModelLoader implements IGeometryLoader<UnbakedBedrockModel>, ResourceManagerReloadListener, ItemTransformProvider {
+public class BedrockModelLoader implements IModelLoader<UnbakedBedrockModel>, ResourceManagerReloadListener, ItemTransformProvider {
 
     public static BedrockModelLoader INSTANCE = new BedrockModelLoader();
     private ResourceManager manager;
@@ -48,7 +49,7 @@ public class BedrockModelLoader implements IGeometryLoader<UnbakedBedrockModel>,
     }
 
     @Override
-    public UnbakedBedrockModel read(JsonObject jsonObject, @Nullable JsonDeserializationContext deserializationContext) throws JsonParseException {
+    public UnbakedBedrockModel read(@Nullable JsonDeserializationContext deserializationContext, JsonObject jsonObject) throws JsonParseException {
         ResourceLocation ml = new ResourceLocation(jsonObject.get("model").getAsString());
         boolean flipV = jsonObject.has("flip_v") && jsonObject.get("flip_v").getAsBoolean();
         if (MODELS.containsKey(ml)) return MODELS.get(ml);
@@ -72,7 +73,9 @@ public class BedrockModelLoader implements IGeometryLoader<UnbakedBedrockModel>,
         JsonArray geoJson;
         try {
             Resource resource = Resources.getResource(new ResourceLocation(ml.getNamespace(), "models/" + ml.getPath() + ".geo.json"));
-            JsonObject geo = JsonParser.parseReader(resource.openAsReader()).getAsJsonObject();
+            InputStreamReader reader = new InputStreamReader(resource.getInputStream());
+            JsonObject geo = JsonParser.parseReader(reader).getAsJsonObject();
+            reader.close();
             geoJson = geo.getAsJsonArray("minecraft:geometry");
         } catch (IOException e) {
             KasugaLib.MAIN_LOGGER.error("Failed to read Model: ", e);
@@ -100,6 +103,9 @@ public class BedrockModelLoader implements IGeometryLoader<UnbakedBedrockModel>,
 
     public static AnimModel getModel(ResourceLocation location, RenderType type) {
         UnbakedBedrockModel unbaked = MODELS.getOrDefault(location, null);
+        if (unbaked == null) {
+            // TODO: need to fix.
+        }
         if (unbaked == null) return null;
         List<Geometry> geometries = unbaked.getGeometries();
         if (geometries.isEmpty()) return null;
@@ -116,12 +122,13 @@ public class BedrockModelLoader implements IGeometryLoader<UnbakedBedrockModel>,
         }
         try {
             Resource resource = Resources.getResource(location);
-            JsonElement element = JsonParser.parseReader(resource.openAsReader());
+            InputStreamReader reader = new InputStreamReader(resource.getInputStream());
+            JsonElement element = JsonParser.parseReader(reader);
             if (!element.isJsonObject()) {
                 KasugaLib.MAIN_LOGGER.error(location + "is not an JsonObject");
                 return MISSING;
             }
-            UnbakedBedrockModel model = INSTANCE.read(element.getAsJsonObject(), null);
+            UnbakedBedrockModel model = INSTANCE.read(null, element.getAsJsonObject());
             MODELS.put(location, model);
             return LazyRecomputable.of(() -> model);
         } catch (IOException e) {

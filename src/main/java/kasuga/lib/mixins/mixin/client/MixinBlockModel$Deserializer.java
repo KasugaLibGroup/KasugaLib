@@ -10,8 +10,8 @@ import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.geometry.GeometryLoaderManager;
-import net.minecraftforge.client.model.geometry.IGeometryLoader;
+import net.minecraftforge.client.model.IModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -29,7 +29,7 @@ public class MixinBlockModel$Deserializer {
         JsonObject object= json.getAsJsonObject();
         if (!object.has("loader")) return;
         ResourceLocation location = new ResourceLocation(object.get("loader").getAsString());
-        IGeometryLoader<?> loader = GeometryLoaderManager.get(location);
+        IModelLoader<?> loader = ((ModelLoaderRegistryAccessor) new ModelLoaderRegistry()).getLoaders().get(location);
         if (!(loader instanceof ItemTransformProvider provider)) return;
         JsonObject transObject = new JsonObject();
         HashMap<ItemTransforms.TransformType, ItemTransform> transforms = provider.generate(object, type, context);
@@ -40,12 +40,12 @@ public class MixinBlockModel$Deserializer {
             JsonArray rotation = VectorUtil.vec3fToJsonArray(t.rotation);
             JsonArray translation = VectorUtil.vec3fToJsonArray(t.translation);
             JsonArray scale = VectorUtil.vec3fToJsonArray(t.scale);
-            JsonArray rightRotation = VectorUtil.vec3fToJsonArray(t.rightRotation);
+            // JsonArray rightRotation = VectorUtil.vec3fToJsonArray(t.);
             JsonObject transObj = new JsonObject();
             transObj.add("rotation", rotation);
             transObj.add("translation", translation);
             transObj.add("scale", scale);
-            transObj.add("right_rotation", rightRotation);
+            // transObj.add("right_rotation", rightRotation);
             transObject.add(tType.getSerializeName(), transObj);
         }
         object.add("display", transObject);

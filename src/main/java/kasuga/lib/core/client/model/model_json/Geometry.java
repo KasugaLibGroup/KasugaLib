@@ -16,13 +16,14 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelBuilder;
-import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.geometry.IModelGeometryPart;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class Geometry {
+public class Geometry implements IModelGeometryPart {
     private final GeometryDescription description;
     private final HashMap<String, Bone> bones;
     private final UnbakedBedrockModel model;
@@ -74,7 +75,12 @@ public class Geometry {
         return description;
     }
 
-    public void addQuads(IGeometryBakingContext owner, IModelBuilder<?> modelBuilder, ModelBakery bakery,
+    @Override
+    public String name() {
+        return this.description.getIdentifier();
+    }
+
+    public void addQuads(IModelConfiguration owner, IModelBuilder<?> modelBuilder, ModelBakery bakery,
                          Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
         bones.forEach((name, bone) -> bone.addQuads(
                 owner, modelBuilder, bakery,

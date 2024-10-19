@@ -11,7 +11,7 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelBuilder;
-import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.minecraftforge.client.model.IModelConfiguration;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -96,7 +96,7 @@ public class Bone implements Rotationable {
         return rotation;
     }
 
-    public void addQuads(IGeometryBakingContext owner, IModelBuilder<?> modelBuilder, ModelBakery bakery,
+    public void addQuads(IModelConfiguration owner, IModelBuilder<?> modelBuilder, ModelBakery bakery,
                          Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
         cubes.forEach(cube -> cube.addQuads(
                 owner, modelBuilder, bakery,

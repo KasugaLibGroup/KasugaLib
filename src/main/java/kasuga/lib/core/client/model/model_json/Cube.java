@@ -16,7 +16,7 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelBuilder;
-import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.minecraftforge.client.model.IModelConfiguration;
 
 import java.util.*;
 import java.util.function.Function;
@@ -140,7 +140,7 @@ public class Cube implements Rotationable {
         return inflate;
     }
 
-    public void addQuads(IGeometryBakingContext owner, IModelBuilder<?> modelBuilder, ModelBakery bakery,
+    public void addQuads(IModelConfiguration owner, IModelBuilder<?> modelBuilder, ModelBakery bakery,
                          Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
 
         TextureAtlasSprite sprite = spriteGetter.apply(model.getModel().getMaterial());
@@ -171,7 +171,7 @@ public class Cube implements Rotationable {
         HashMap<Direction, int[]> aint = fillVertices(quads, u0, v0, width, height);
         aint.forEach(((direction, ints) -> {
             BakedQuad quad = new BakedQuad(ints, 0, direction, sprite, true);
-            modelBuilder.addCulledFace(direction, quad);
+            modelBuilder.addFaceQuad(direction, quad);
         }));
     }
 

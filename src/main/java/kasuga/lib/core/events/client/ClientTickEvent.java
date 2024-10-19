@@ -22,7 +22,7 @@ public class ClientTickEvent {
     }
 
     @SubscribeEvent
-    public static void onGuiTick(TickEvent.LevelTickEvent event) {
+    public static void onGuiTick(TickEvent.WorldTickEvent event) {
         // deal with gui ticker;
         if (event.phase == TickEvent.Phase.END)
             AnimateTickerManager.INSTANCE.tickWorld();

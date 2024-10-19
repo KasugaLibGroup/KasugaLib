@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import com.mojang.datafixers.util.Pair;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.util.Resources;
@@ -17,14 +18,16 @@ import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraftforge.client.model.IModelBuilder;
-import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
-import net.minecraftforge.client.model.geometry.SimpleUnbakedGeometry;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.geometry.IModelGeometryPart;
+import net.minecraftforge.client.model.geometry.IMultipartModelGeometry;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.function.Function;
 
-public class UnbakedBedrockModel extends SimpleUnbakedGeometry<UnbakedBedrockModel> {
+public class UnbakedBedrockModel implements IMultipartModelGeometry<UnbakedBedrockModel> {
     public final ResourceLocation modelLocation, textureLocation;
     private Material material;
     private ArrayList<Geometry> geometries;
@@ -67,18 +70,13 @@ public class UnbakedBedrockModel extends SimpleUnbakedGeometry<UnbakedBedrockMod
         }
     }
 
-    @Override
-    public Set<String> getConfigurableComponentNames() {
-        Set<String> result = new HashSet<>();
-        geometries.forEach(bone -> result.add(bone.getDescription().getIdentifier()));
-        return result;
-    }
-
     public JsonObject readModel() {
         JsonObject model;
         try {
             Resource resource = Resources.getResource(modelLocation);
-            model = JsonParser.parseReader(resource.openAsReader()).getAsJsonObject();
+            InputStreamReader reader = new InputStreamReader(resource.getInputStream());
+            model = JsonParser.parseReader(reader).getAsJsonObject();
+            reader.close();
         } catch (IOException e) {
             KasugaLib.MAIN_LOGGER.error("Failed to load animated model: " + this.modelLocation.toString(), e);
             return null;
@@ -107,8 +105,8 @@ public class UnbakedBedrockModel extends SimpleUnbakedGeometry<UnbakedBedrockMod
     }
 
     @Override
-    protected void addQuads(IGeometryBakingContext owner, IModelBuilder<?> modelBuilder, ModelBakery bakery,
-                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
+    public void addQuads(IModelConfiguration owner, IModelBuilder<?> modelBuilder, ModelBakery bakery,
+                         Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
         geometries.forEach(geometry -> geometry.addQuads(
                 owner, modelBuilder, bakery,
                 spriteGetter, modelTransform, modelLocation
@@ -116,7 +114,22 @@ public class UnbakedBedrockModel extends SimpleUnbakedGeometry<UnbakedBedrockMod
     }
 
     @Override
-    public Collection<Material> getMaterials(IGeometryBakingContext context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+    public Collection<? extends IModelGeometryPart> getParts() {
+        return this.geometries;
+    }
+
+    @Override
+    public Optional<? extends IModelGeometryPart> getPart(String name) {
+        for (Geometry geometry : geometries) {
+            if (geometry.getDescription().getIdentifier().equals(name)) {
+                return Optional.of(geometry);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         Set<Material> materials = new HashSet<>();
         materials.add(this.material);
         return materials;

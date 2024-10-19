@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -65,7 +66,8 @@ public class AnimationFile {
         }
         try {
             Resource resource = Resources.getResource(location);
-            JsonObject object = JsonParser.parseReader(resource.openAsReader()).getAsJsonObject();
+            InputStreamReader reader = new InputStreamReader(resource.getInputStream());
+            JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
             AnimationFile file = new AnimationFile(location, object);
             FILES.put(location, file);
             return LazyRecomputable.of(() -> file);
