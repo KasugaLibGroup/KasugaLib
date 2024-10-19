@@ -24,7 +24,7 @@ public class JavascriptThreadGroup {
         this.threadGroup = new ThreadGroup(name);
         parent = null;
         this.name = name;
-        moduleLoader = new ContextModuleLoader();
+        moduleLoader = new ContextModuleLoader(parent.moduleLoader);
     }
 
     public JavascriptThreadGroup(JavascriptThreadGroup parent, String name){

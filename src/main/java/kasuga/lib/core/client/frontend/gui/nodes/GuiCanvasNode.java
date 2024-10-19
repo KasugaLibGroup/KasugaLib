@@ -8,7 +8,7 @@ import kasuga.lib.core.client.frontend.gui.GuiContext;
 import kasuga.lib.core.client.frontend.gui.canvas.CanvasRenderingContext2D;
 import kasuga.lib.core.client.frontend.gui.canvas.glfw.CanvasRenderer;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
-import org.graalvm.polyglot.HostAccess;
+import kasuga.lib.core.javascript.engine.HostAccess;
 
 import java.util.Map;
 

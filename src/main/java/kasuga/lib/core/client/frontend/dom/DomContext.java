@@ -5,10 +5,10 @@ import kasuga.lib.core.client.frontend.dom.nodes.DomNode;
 import kasuga.lib.core.client.frontend.dom.registration.DOMPriorityRegistry;
 import kasuga.lib.core.client.frontend.dom.registration.DOMRegistryItemDynamicProxy;
 import kasuga.lib.core.javascript.Tickable;
+import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.JavascriptValue;
 import kasuga.lib.core.util.Callback;
 import net.minecraft.resources.ResourceLocation;
-import org.graalvm.polyglot.HostAccess;
-import org.graalvm.polyglot.Value;
 
 import java.util.ArrayDeque;
 
@@ -76,18 +76,18 @@ public abstract class DomContext<P extends DomNode<?>,T extends P> implements Ti
     EventEmitter emitter = new EventEmitter();
 
     @HostAccess.Export
-    public void addEventListener(String eventName, Value callback){
+    public void addEventListener(String eventName, JavascriptValue callback){
         callback.pin();
         emitter.subscribe(eventName, callback);
     }
 
     @HostAccess.Export
-    public void removeEventListener(String eventName, Value callback){
+    public void removeEventListener(String eventName, JavascriptValue callback){
         emitter.unsubscribe(eventName, callback);
     }
 
     @HostAccess.Export
-    public void dispatchEvent(String eventName,Value event){
+    public void dispatchEvent(String eventName,Object event){
         emitter.dispatchEvent(eventName,event);
     }
 }

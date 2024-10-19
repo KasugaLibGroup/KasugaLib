@@ -48,9 +48,11 @@ public class FrontendCommands {
                         nodePackage.minecraft.clientDebuggerEntries().forEach((entry)->{
                             JavascriptContext context = thread.createContext(entry,"Debugger Context - "+entry);
 
-                            MetroLoaderModule loaderModule = new MetroLoaderModule(context, resourceProvider);
+                            MetroModuleInfo moduleInfo = new MetroModuleInfo(resourceProvider.getServerAddress(), resourceProvider);
 
-                            context.getRequireFunction(loaderModule).apply(entry);
+                            MetroLoaderModule loaderModule = new MetroLoaderModule(moduleInfo);
+
+                            context.loadModuleVoidWithParent(entry ,loaderModule);
                         });
 
                     });

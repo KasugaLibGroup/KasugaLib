@@ -1,6 +1,6 @@
 package kasuga.lib.core.client.frontend.dom.event;
 
-import org.graalvm.polyglot.Value;
+import kasuga.lib.core.javascript.engine.JavascriptValue;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 public class EventEmitter {
 
     HashMap<String, Set<Consumer<Object>>> listeners = new HashMap<>();
-    HashMap<String, Set<Value>> functionalListeners = new HashMap<>();
+    HashMap<String, Set<JavascriptValue>> functionalListeners = new HashMap<>();
 
     public UnsubscribeHandler subscribe(String eventName, Consumer<Object> consumer){
         listeners.computeIfAbsent(eventName,(v)->new HashSet<>())
@@ -25,12 +25,12 @@ public class EventEmitter {
         });
     }
 
-    public void subscribe(String eventName, Value consumer){
+    public void subscribe(String eventName, JavascriptValue consumer){
         functionalListeners.computeIfAbsent(eventName,(v)->new HashSet<>())
                 .add(consumer);
     }
 
-    public void unsubscribe(String eventName, Value consumer){
+    public void unsubscribe(String eventName, JavascriptValue consumer){
         functionalListeners.computeIfPresent(eventName,(name,data)->{
             data.remove(consumer);
             return data.isEmpty() ? null : data;
@@ -47,9 +47,9 @@ public class EventEmitter {
         }
 
         if(this.functionalListeners.containsKey(eventName)){
-            ArrayList<Value> functionalConsumers =
+            ArrayList<JavascriptValue> functionalConsumers =
                     new ArrayList<>(this.functionalListeners.get(eventName));
-            for (Value consumer : functionalConsumers) {
+            for (JavascriptValue consumer : functionalConsumers) {
                 consumer.executeVoid(event);
             }
         }

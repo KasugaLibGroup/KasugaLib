@@ -1,8 +1,8 @@
 package kasuga.lib.core.client.frontend.common.event;
 
 import kasuga.lib.core.javascript.CompoundTagWrapper;
+import kasuga.lib.core.javascript.engine.HostAccess;
 import net.minecraft.nbt.CompoundTag;
-import org.graalvm.polyglot.HostAccess;
 
 public class MessageEvent extends Event{
 

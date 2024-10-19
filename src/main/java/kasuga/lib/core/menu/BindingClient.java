@@ -7,7 +7,6 @@ import kasuga.lib.core.util.Envs;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import org.graalvm.polyglot.Value;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -42,7 +41,7 @@ public class BindingClient {
     public static void dispatchGuiEvent(UUID id, Event event){
         KasugaLib.STACKS.GUI.orElseThrow().getInstanceById(id).ifPresent((instance)->{
             instance.getContext().ifPresent((c)->{
-                c.appendTask(()->c.dispatchEvent(event.getType(), Value.asValue(event)));
+                c.appendTask(()->c.dispatchEvent(event.getType(), event));
             });
         });
     }

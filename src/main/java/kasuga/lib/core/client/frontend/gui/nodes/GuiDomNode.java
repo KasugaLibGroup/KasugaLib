@@ -14,10 +14,10 @@ import kasuga.lib.core.client.frontend.gui.events.MouseEvent;
 import kasuga.lib.core.client.frontend.gui.layout.EdgeSize2D;
 import kasuga.lib.core.client.frontend.rendering.BackgroundRenderer;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
+import kasuga.lib.core.javascript.engine.HostAccess;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraftforge.common.util.Lazy;
-import org.graalvm.polyglot.HostAccess;
 
 import java.util.Objects;
 

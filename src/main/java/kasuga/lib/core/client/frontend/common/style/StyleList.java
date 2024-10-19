@@ -1,7 +1,7 @@
 package kasuga.lib.core.client.frontend.common.style;
 
+import kasuga.lib.core.javascript.engine.HostAccess;
 import kasuga.lib.core.util.Callback;
-import org.graalvm.polyglot.HostAccess;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;

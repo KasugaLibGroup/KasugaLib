@@ -1,39 +1,49 @@
 package kasuga.lib.core.client.frontend.commands;
 
-import com.oracle.truffle.api.exception.AbstractTruffleException;
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.addons.node.AssetReader;
 import kasuga.lib.core.addons.node.PackageScanner;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.JavascriptThread;
-import kasuga.lib.core.javascript.module.JavascriptModule;
-import kasuga.lib.core.javascript.module.ModuleLoader;
-import kasuga.lib.core.javascript.module.node.CommonJSUtils;
-import org.graalvm.polyglot.Source;
-import org.graalvm.polyglot.Value;
+import kasuga.lib.core.javascript.engine.JavascriptEngineContext;
+import kasuga.lib.core.javascript.engine.JavascriptEngineModule;
+import kasuga.lib.core.javascript.engine.JavascriptModuleLoader;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.List;
-import java.util.Optional;
 
-public class MetroModuleLoader implements ModuleLoader {
+public class MetroModuleLoader implements JavascriptModuleLoader {
     @Override
-    public Optional<JavascriptModule> load(JavascriptModule source, String name) {
-        if(source instanceof MetroLoaderModule loaderModule){
-            return this.loaderLoad(loaderModule, name);
+    public JavascriptEngineModule load(JavascriptEngineContext engineContext, String name, JavascriptEngineModule source) {
+        if(!source.hasFeature("metro")){
+            return null;
         }
-        if(!(source instanceof MetroServerModule metroModule)) {
-            return Optional.empty();
+
+        if(!(source.getFeature("metro") instanceof MetroModuleInfo moduleInfo)){
+            return null;
         }
+
+        if(name == "metro:assets"){
+            JavascriptContext javascriptContext = engineContext.getContext();
+            return engineContext.compileNativeModule(
+                    new AssetReader(
+                            source.getDirectoryName(),
+                            javascriptContext,
+                            moduleInfo.getProvider(),
+                            KasugaLib.STACKS.JAVASCRIPT.ASSETS.get()
+                    ),
+                    null
+            );
+        }
+
         String path;
         if(name.startsWith("/")){
             path = name;
         }else{
             path = PackageScanner.joinPath(
                     PackageScanner.resolve(
-                            PackageScanner.splitPath(metroModule.relativePath),
+                            PackageScanner.splitPath(source.getDirectoryName()),
                             PackageScanner.splitPath(name)
                     )
             );
@@ -41,48 +51,43 @@ public class MetroModuleLoader implements ModuleLoader {
 
         return this.load(
                 path,
-                metroModule.getServerAddress(),
-                metroModule.getProvider(),
-                metroModule.getContext()
-        );
-
-    }
-
-    private Optional<JavascriptModule> loaderLoad(MetroLoaderModule loaderModule, String name) {
-        return load(
-                name,
-                loaderModule.getServerAddress(),
-                loaderModule.getProvider(),
-                loaderModule.getContext()
+                moduleInfo.getServerAddress(),
+                moduleInfo.getProvider(),
+                moduleInfo,
+                engineContext
         );
     }
 
-    protected Optional<JavascriptModule> load(
+    protected JavascriptEngineModule load(
             String path,
             String serverAddress,
             MetroServerResourceProvider provider,
-            JavascriptContext context
+            MetroModuleInfo moduleInfo, JavascriptEngineContext context
     ){
         if(path.endsWith(".bundle")){
             path += "?platform=minecraft";
         }
         try(InputStream stream = provider.open(path)){
-            InputStreamReader reader = new InputStreamReader(stream);
-            Reader parsedResource = CommonJSUtils.transform(reader);
-            Source source = Source.newBuilder("js",parsedResource,path).build();
-            List<String> parsedPath = PackageScanner.splitPath(path);
-            Value sourceValue = context.execute(source);
-            MetroServerModule module = new MetroServerModule(
-                    context,
-                    sourceValue,
-                    serverAddress,
-                    PackageScanner.joinPath(parsedPath.subList(1,parsedPath.size() - 1)),
-                    provider
+            String abstractPath = PackageScanner.joinPath(
+                    PackageScanner.resolve(
+                            PackageScanner.splitPath(serverAddress),
+                            PackageScanner.splitPath(path)
+                    )
             );
-            return Optional.of(module);
-        }catch (IOException | AbstractTruffleException e){
+
+            List<String> _path = PackageScanner.splitPath(path);
+
+            return context
+                    .compileModuleFromSource(
+                            null,
+                            path,
+                            PackageScanner.joinPath(_path.subList(1, _path.size() - 1)),
+                            stream
+                    ).setFeature("metro", moduleInfo);
+
+        }catch (IOException e){
             e.printStackTrace();
-            return Optional.empty();
+            return null;
         }
     }
 

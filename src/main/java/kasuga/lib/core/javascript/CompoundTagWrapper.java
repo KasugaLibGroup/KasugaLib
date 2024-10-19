@@ -1,10 +1,9 @@
 package kasuga.lib.core.javascript;
 
+import kasuga.lib.core.javascript.engine.HostAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import org.graalvm.polyglot.HostAccess;
-import org.graalvm.polyglot.Value;
 
 import java.util.List;
 

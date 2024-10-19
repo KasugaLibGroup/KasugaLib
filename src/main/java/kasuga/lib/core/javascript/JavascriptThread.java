@@ -5,13 +5,11 @@ import java.util.Map;
 
 public class JavascriptThread extends SynchronizedThread{
     private final JavascriptThreadGroup threadGroup;
-    ContextModuleLoader moduleLoader;
     private final Map<Object,JavascriptContext> contexts = new HashMap<>();
 
     public JavascriptThread(JavascriptThreadGroup javascriptThreadGroup, Object target, String description) {
         super("Javascript Thread - " + description);
         this.threadGroup = javascriptThreadGroup;
-        this.moduleLoader = new ContextModuleLoader(javascriptThreadGroup.getModuleLoader());
     }
 
     @Override
@@ -23,10 +21,6 @@ public class JavascriptThread extends SynchronizedThread{
     protected void beforeStop() {
         this.contexts.values().forEach(JavascriptContext::close);
         threadGroup.onTerminate(this);
-    }
-
-    public ContextModuleLoader getModuleLoader() {
-        return moduleLoader;
     }
 
     public JavascriptContext createContext(Object target,String name){

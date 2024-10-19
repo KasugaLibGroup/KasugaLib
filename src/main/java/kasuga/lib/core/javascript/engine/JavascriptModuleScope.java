@@ -1,4 +1,4 @@
-package kasuga.lib.core.javascript.module;
+package kasuga.lib.core.javascript.engine;
 
 import kasuga.lib.core.addons.node.NodePackage;
 import kasuga.lib.core.addons.node.PackageScanner;
