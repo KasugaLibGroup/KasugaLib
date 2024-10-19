@@ -28,20 +28,23 @@ import java.util.List;
 public class WuLingEntity extends LivingEntity {
     public DoorControl doorControl = new DoorControl();
 
-    public final Animation animation;
+    // public final Animation animation;
+
+
     public WuLingEntity(EntityType<? extends LivingEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        animation = level.isClientSide ? AllExampleElements.test_anim.getInstance() : null;
+        // animation = level.isClientSide ? AllExampleElements.test_anim.getInstance() : null;
         if (level.isClientSide) {
-            MultiPartModel model = (MultiPartModel) AllExampleElements.wuLingVans.getModel().clone();
-            model.renderType(RenderType::solid);
-            model.applyParentRenderTypeForAllBones();
-            animation.loadModel(model);
+            // MultiPartModel model = (MultiPartModel) AllExampleElements.wuLingVans.getModel().clone();
+            // model.renderType(RenderType::solid);
+            // model.applyParentRenderTypeForAllBones();
+            // animation.loadModel(model);
+            // model.shouldUseParentPose(false);
         }
     }
 
     public WuLingEntity(Level world) {
-        this(AllExampleElements.wuling.getType(), world);
+        this(null, world);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -123,6 +126,7 @@ public class WuLingEntity extends LivingEntity {
         return InteractionResult.SUCCESS;
     }
 
+    /*
     public Animation getAnimation() {
         return animation;
     }
@@ -134,6 +138,8 @@ public class WuLingEntity extends LivingEntity {
         animation.assign("right_back", doorControl.isRightBack() ? 1 : 0);
         animation.assign("mid_back", doorControl.isMidBack() ? 1 : 0);
     }
+
+     */
 
     public void onDrive(Player driver) {}
 

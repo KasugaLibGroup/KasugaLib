@@ -1,7 +1,9 @@
 package kasuga.lib.core.client.animation.neo_neo;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
@@ -148,5 +150,11 @@ public class VectorUtil {
         return new Vec3(vector3f);
     }
 
-
+    public static JsonArray vec3fToJsonArray(Vector3f vector3f) {
+        JsonArray array = new JsonArray(3);
+        array.add(vector3f.x());
+        array.add(vector3f.y());
+        array.add(vector3f.z());
+        return array;
+    }
 }

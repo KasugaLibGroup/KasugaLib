@@ -158,7 +158,7 @@ public class SimpleRegistry {
     }
 
     /**
-     * return the registry of ContainerMenus and GUI Screens. See {@link kasuga.lib.registrations.common.MenuReg}
+     * return the registry of ContainerMenus and RENDER Screens. See {@link kasuga.lib.registrations.common.MenuReg}
      * @return Registry of ContainerMenus.
      */
     public DeferredRegister<MenuType<?>> menus() {
@@ -255,6 +255,7 @@ public class SimpleRegistry {
         ITEMS.register(eventBus);
         FLUID_TYPE.register(eventBus);
         FLUID.register(eventBus);
+        ATTRIBUTES.register(eventBus);
         for (String key : CACHE_OF_BLOCK_ENTITIES.keySet()) {
             try {
                 BlockEntityReg<?> reg = CACHE_OF_BLOCK_ENTITIES.get(key);
@@ -268,6 +269,7 @@ public class SimpleRegistry {
         ENTITIES.register(eventBus);
         RECIPES.register(eventBus);
         RECIPE_SERIALIZERS.register(eventBus);
+        EFFECT.register(eventBus);
         KasugaLib.STACKS.stackIn(this);
     }
 
