@@ -238,29 +238,15 @@ dependencies {
 
     // shadedLib("org.graalvm.polyglot:js-community:23.1.0");
     // implementation("org.graalvm.sdk:graal-sdk:22.0.2");
-    implementation 'com.caoccao.javet:javet-core:4.0.0' // Must-have
-    implementation 'com.caoccao.javet:javet-node-linux-arm64:4.0.0'
-    implementation 'com.caoccao.javet:javet-node-linux-x86_64:4.0.0'
-    implementation 'com.caoccao.javet:javet-node-macos-arm64:4.0.0'
-    implementation 'com.caoccao.javet:javet-node-macos-x86_64:4.0.0'
-    implementation 'com.caoccao.javet:javet-node-windows-x86_64:4.0.0'
-    implementation 'com.caoccao.javet:javet-v8-linux-arm64:4.0.0'
-    implementation 'com.caoccao.javet:javet-v8-linux-x86_64:4.0.0'
-    implementation 'com.caoccao.javet:javet-v8-macos-arm64:4.0.0'
-    implementation 'com.caoccao.javet:javet-v8-macos-x86_64:4.0.0'
-    implementation 'com.caoccao.javet:javet-v8-windows-x86_64:4.0.0'
+    minecraftLibrary 'com.caoccao.javet:javet-core:4.0.0' // Must-have
+    minecraftLibrary 'com.caoccao.javet:javet-v8-linux-arm64:4.0.0'
+    minecraftLibrary 'com.caoccao.javet:javet-v8-linux-x86_64:4.0.0'
+    minecraftLibrary 'com.caoccao.javet:javet-v8-macos-arm64:4.0.0'
+    minecraftLibrary 'com.caoccao.javet:javet-v8-macos-x86_64:4.0.0'
+    minecraftLibrary 'com.caoccao.javet:javet-v8-windows-x86_64:4.0.0'
 
     shadedLib 'com.caoccao.javet:javet-core:4.0.0' // Must-have
-    shadedLib 'com.caoccao.javet:javet-node-linux-arm64:4.0.0'
-    shadedLib 'com.caoccao.javet:javet-node-linux-x86_64:4.0.0'
-    shadedLib 'com.caoccao.javet:javet-node-macos-arm64:4.0.0'
-    shadedLib 'com.caoccao.javet:javet-node-macos-x86_64:4.0.0'
-    shadedLib 'com.caoccao.javet:javet-node-windows-x86_64:4.0.0'
-    shadedLib 'com.caoccao.javet:javet-v8-linux-arm64:4.0.0'
-    shadedLib 'com.caoccao.javet:javet-v8-linux-x86_64:4.0.0'
-    shadedLib 'com.caoccao.javet:javet-v8-macos-arm64:4.0.0'
-    shadedLib 'com.caoccao.javet:javet-v8-macos-x86_64:4.0.0'
-    shadedLib 'com.caoccao.javet:javet-v8-windows-x86_64:4.0.0'
+    shadedLib 'com.caoccao.javet:javet-v8-windows-x86_64:4.0.0' // Currently, we only support Win x86-64 structure in main build
 
     // testImplementation "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.0"
     // clientAnnotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"

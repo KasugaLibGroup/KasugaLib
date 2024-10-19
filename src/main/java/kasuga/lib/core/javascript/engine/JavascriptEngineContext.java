@@ -20,6 +20,4 @@ public interface JavascriptEngineContext {
     JavascriptEngineModule compileNativeModule(Object target, String moduleName);
 
     JavascriptContext getContext();
-
-    void loadModuleWithParent(String moduleName, JavascriptEngineModule parent);
 }

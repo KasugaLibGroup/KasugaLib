@@ -8,7 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JSModuleLoader implements JavascriptModuleLoader {
+    JSModuleLoader parent;
     List<JavascriptModuleLoader> loaders = new ArrayList<>();
+
+    public JSModuleLoader(JSModuleLoader parent){
+        this.parent = parent;
+    }
 
     public void prepend(JavascriptModuleLoader moduleLoader){
         loaders.add(0, moduleLoader);
@@ -26,6 +31,16 @@ public class JSModuleLoader implements JavascriptModuleLoader {
                 return loadResult;
             }
         }
+        if(parent != null){
+            JavascriptEngineModule module = parent.load(engineContext, name, source);
+            if(module != null){
+                return module;
+            }
+        }
         return null;
+    }
+
+    public void register(JavascriptModuleLoader moduleLoader) {
+        add(moduleLoader);
     }
 }

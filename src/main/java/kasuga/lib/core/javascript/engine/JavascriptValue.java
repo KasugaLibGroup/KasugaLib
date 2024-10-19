@@ -20,4 +20,8 @@ public interface JavascriptValue {
     JavascriptValue getMember(String render);
 
     JavascriptValue invokeMember(String memberName, Object ...objects);
+
+    boolean isNumber();
+
+    int asInt();
 }

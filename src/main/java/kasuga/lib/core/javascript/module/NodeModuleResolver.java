@@ -85,13 +85,15 @@ public class NodeModuleResolver implements JavascriptModuleLoader {
 
     public List<Pair<NodePackage, String>> getModuleCandidate(JavascriptEngineContext engineContext, JavascriptEngineModule module, String name){
         List<Pair<NodePackage, String>> packageCandidates = new ArrayList<>();
-        NodePackage nodePackage = module.getPackage();
-        if(nodePackage != null){
-            List<String> relative = PackageScanner.resolve(
-                    PackageScanner.splitPath(module.getDirectoryName()),
-                    PackageScanner.splitPath(name)
-            );
-            packageCandidates.add(Pair.of(nodePackage, PackageScanner.joinPath(relative)));
+        if(module != null){
+            NodePackage nodePackage = module.getPackage();
+            if(nodePackage != null){
+                List<String> relative = PackageScanner.resolve(
+                        PackageScanner.splitPath(module.getDirectoryName()),
+                        PackageScanner.splitPath(name)
+                );
+                packageCandidates.add(Pair.of(nodePackage, PackageScanner.joinPath(relative)));
+            }
         }
 
         List<Pair<NodePackage, String>> maybeModules =

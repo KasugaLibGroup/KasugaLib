@@ -3,7 +3,9 @@ package kasuga.lib.core.javascript;
 
 import kasuga.lib.core.addons.node.EntryType;
 import kasuga.lib.core.addons.node.NodePackageLoader;
-import kasuga.lib.core.javascript.module.node.CommonJSModuleLoader;
+import kasuga.lib.core.javascript.engine.ScriptEngine;
+import kasuga.lib.core.javascript.engine.ScriptEngines;
+import kasuga.lib.core.javascript.module.NodeModuleResolver;
 import kasuga.lib.core.javascript.prebuilt.PrebuiltModuleLoader;
 import kasuga.lib.core.javascript.registration.RegistrationRegistry;
 
@@ -23,9 +25,10 @@ public class JavascriptApi {
 
     public void setupClient(){
         GROUP_CLIENT = GROUP_MAIN.createChild("client");
+        GROUP_CLIENT.setScriptEngine(ScriptEngines.JAVET.get());
         CLIENT_LOADER = new NodePackageLoader();
         CLIENT_LOADER.bindRuntime(GROUP_CLIENT, EntryType.CLIENT);
-        GROUP_CLIENT.getModuleLoader().getLoader().register(new CommonJSModuleLoader());
+        GROUP_CLIENT.getModuleLoader().getLoader().register(new NodeModuleResolver());
         GROUP_CLIENT.getModuleLoader().getLoader().register(new PrebuiltModuleLoader());
 
         registry = new RegistrationRegistry();
@@ -34,9 +37,10 @@ public class JavascriptApi {
 
     public void setupServer(){
         GROUP_SERVER = GROUP_MAIN.createChild("server");
+        GROUP_SERVER.setScriptEngine(ScriptEngines.JAVET.get());
         SERVER_LOADER = new NodePackageLoader();
         SERVER_LOADER.bindRuntime(GROUP_SERVER, EntryType.SERVER);
-        GROUP_SERVER.getModuleLoader().getLoader().register(new CommonJSModuleLoader());
+        GROUP_SERVER.getModuleLoader().getLoader().register(new NodeModuleResolver());
         GROUP_SERVER.getModuleLoader().getLoader().register(new PrebuiltModuleLoader());
     }
 

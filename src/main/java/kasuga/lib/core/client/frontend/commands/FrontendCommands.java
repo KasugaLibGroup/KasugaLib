@@ -52,7 +52,7 @@ public class FrontendCommands {
 
                             MetroLoaderModule loaderModule = new MetroLoaderModule(moduleInfo);
 
-                            context.loadModuleVoidWithParent(entry ,loaderModule);
+                            MetroModuleLoader.createSession(moduleInfo);
                         });
 
                     });

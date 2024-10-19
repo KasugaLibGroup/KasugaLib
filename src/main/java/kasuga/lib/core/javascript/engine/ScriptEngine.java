@@ -1,6 +1,8 @@
 package kasuga.lib.core.javascript.engine;
 
+import kasuga.lib.core.javascript.JavascriptContext;
+
 public interface ScriptEngine {
 
-    JavascriptEngineContext createInstance();
+    JavascriptEngineContext createInstance(JavascriptContext context);
 }

@@ -1,7 +1,17 @@
 package kasuga.lib.core.javascript.engine.javet;
 
+import com.caoccao.javet.annotations.V8Function;
+import com.caoccao.javet.enums.JavetPromiseRejectEvent;
 import com.caoccao.javet.exceptions.JavetException;
+import com.caoccao.javet.interception.BaseJavetDirectCallableInterceptor;
+import com.caoccao.javet.interception.logging.JavetStandardConsoleInterceptor;
+import com.caoccao.javet.interop.IV8Native;
+import com.caoccao.javet.interop.V8Host;
 import com.caoccao.javet.interop.V8Runtime;
+import com.caoccao.javet.values.V8Value;
+import com.caoccao.javet.values.reference.V8Module;
+import com.caoccao.javet.values.reference.V8ValueFunction;
+import com.caoccao.javet.values.reference.V8ValuePromise;
 import kasuga.lib.core.addons.node.NodePackage;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.engine.*;
@@ -9,24 +19,32 @@ import kasuga.lib.core.javascript.engine.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.UUID;
+import java.util.function.Function;
 
 public class JavetContext implements JavascriptEngineContext {
+    private final JavascriptContext context;
     V8Runtime runtime;
+    JavetModuleAPI moduleAPI;
 
-    JavetModuleAPI javetModuleAPI;
-
-    @Override
-    public void loadModule(String moduleName) {
-        try {
-            runtime.getV8ModuleResolver().resolve(runtime,moduleName,null).execute();
-        } catch (JavetException e) {
-            throw new RuntimeException(e);
-        }
+    JavetContext(JavascriptContext context) throws JavetException {
+        this.context = context;
+        runtime = V8Host.getV8Instance().createV8Runtime();
+        JavetStandardConsoleInterceptor consoleInterceptor = new JavetStandardConsoleInterceptor(runtime);
+        consoleInterceptor.register(runtime.getGlobalObject());
+        moduleAPI = new JavetModuleAPI(runtime,this, context.getModuleLoader());
+        runtime.setConverter(new JavetKasugaConverter());
+        runtime.setPromiseRejectCallback((event, promise, value)->{
+            if(event.getCode() == 0){
+                System.err.println("Error" + event.getName());
+            }
+        });
     }
 
     @Override
-    public void loadModuleWithParent(String moduleName, JavascriptEngineModule parent) {
-        this.javetModuleAPI.resolve(runtime, moduleName, parent);
+    public void loadModule(String moduleName) {
+        // this.moduleAPI.requireModule(runtime,moduleName, null);
+        this.moduleAPI.getRequireFunction(null).execute(moduleName);
     }
 
     @Override
@@ -39,7 +57,7 @@ public class JavetContext implements JavascriptEngineContext {
     }
     @Override
     public JavascriptModuleScope getModuleScope() {
-        return null;
+        return this.getContext().getModuleScope();
     }
 
     @Override
@@ -54,8 +72,22 @@ public class JavetContext implements JavascriptEngineContext {
             throw new RuntimeException("Failed to read");
         }
         try{
+            UUID uniqueId = UUID.randomUUID();
+            String temporyModuleName = fileName;
+
+            /* V8ValueFunction module =
+                    runtime
+                            .getExecutor(textBuilder.toString())
+                            .setResourceName(temporyModuleName);*/
+
+            V8ValueFunction module =
+                    runtime.getExecutor("(function(require,exports,module){"+textBuilder.toString()+"});")
+                            .setResourceName(fileName)
+                            .execute();
+            // module.setWeak();
+
             return new JavetJavascriptModule(
-                    runtime.getExecutor(textBuilder.toString()).compileV8Module(),
+                    module,
                     packageTarget,
                     dirName,
                     fileName
@@ -68,10 +100,10 @@ public class JavetContext implements JavascriptEngineContext {
     @Override
     public JavetJavascriptModule compileNativeModule(Object target, String moduleName) {
         try{
+            V8Value module = runtime.getConverter().toV8Value(runtime, target);
+            // module.setWeak();
             return new JavetJavascriptModule(
-                    runtime.createV8Module(null, runtime.getConverter().toV8Value(runtime, target)),
-                    null,
-                    "native@"+moduleName,
+                    module,
                     "native@"+moduleName
             );
         }catch (JavetException e){
@@ -81,6 +113,6 @@ public class JavetContext implements JavascriptEngineContext {
 
     @Override
     public JavascriptContext getContext() {
-        return null;
+        return context;
     }
 }

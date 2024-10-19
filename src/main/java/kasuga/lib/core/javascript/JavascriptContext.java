@@ -2,12 +2,10 @@ package kasuga.lib.core.javascript;
 
 import kasuga.lib.core.client.animation.neo_neo.base.Movement;
 import kasuga.lib.core.client.frontend.commands.MetroModuleInfo;
-import kasuga.lib.core.javascript.engine.JavascriptEngineContext;
-import kasuga.lib.core.javascript.engine.JavascriptEngineModule;
-import kasuga.lib.core.javascript.engine.JavascriptValue;
-import kasuga.lib.core.javascript.engine.ScriptEngine;
+import kasuga.lib.core.javascript.engine.*;
 import kasuga.lib.core.util.Callback;
 import net.minecraft.Util;
+import org.mozilla.javascript.commonjs.module.ModuleScope;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -23,11 +21,14 @@ public class JavascriptContext {
 
     HashMap<String,Object> environment = new HashMap<>();
 
-    JavascriptContext(String name, JavascriptThread thread, ScriptEngine scriptEngine){
+    ContextModuleLoader contextModuleLoader;
+
+    JavascriptContext(String name, JavascriptThread thread){
         this.thread = thread;
         this.name = name;
         String path = java.util.UUID.randomUUID().toString();
-        context = scriptEngine.createInstance();
+        contextModuleLoader = new ContextModuleLoader(thread.contextModuleLoader);
+        context = thread.scriptEngine.createInstance(this);
         context.loadModule("@kasugalib/core");
     }
 
@@ -103,7 +104,11 @@ public class JavascriptContext {
         this.context.loadModule(name);
     }
 
-    public void loadModuleVoidWithParent(String moduleName, JavascriptEngineModule parent) {
-        context.loadModuleWithParent(moduleName, parent);
+    public JavascriptModuleScope getModuleScope() {
+        return this.contextModuleLoader.getScope();
+    }
+
+    public JavascriptModuleLoader getModuleLoader() {
+        return this.contextModuleLoader.getLoader();
     }
 }

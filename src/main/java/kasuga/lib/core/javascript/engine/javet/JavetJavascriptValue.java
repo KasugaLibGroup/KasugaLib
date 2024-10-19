@@ -4,6 +4,7 @@ import com.caoccao.javet.annotations.V8Function;
 import com.caoccao.javet.exceptions.JavetException;
 import com.caoccao.javet.interop.V8Runtime;
 import com.caoccao.javet.values.V8Value;
+import com.caoccao.javet.values.primitive.V8ValueNumber;
 import com.caoccao.javet.values.primitive.V8ValueString;
 import com.caoccao.javet.values.reference.V8ValueFunction;
 import com.caoccao.javet.values.reference.V8ValueObject;
@@ -56,7 +57,7 @@ public class JavetJavascriptValue implements JavascriptValue {
     @Override
     public JavascriptValue execute(Object... objects) {
         try {
-            return ((V8ValueFunction)value).call(reciever, objects);
+            return new JavetJavascriptValue(((V8ValueFunction)value).call(reciever, objects), runtime);
         } catch (JavetException e) {
             throw new RuntimeException(e);
         }
@@ -99,5 +100,23 @@ public class JavetJavascriptValue implements JavascriptValue {
     @Override
     public JavascriptValue invokeMember(String memberName, Object... objects) {
         return this.getMember(memberName).execute(objects);
+    }
+
+    @Override
+    public boolean isNumber() {
+        return this.value instanceof V8ValueNumber<?>;
+    }
+
+    @Override
+    public int asInt() {
+        try {
+            return this.value.asInt();
+        } catch (JavetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public V8Value getValue(){
+        return value;
     }
 }
