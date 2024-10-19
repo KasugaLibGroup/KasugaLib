@@ -32,8 +32,9 @@ public class KasugaLib {
         JavascriptModuleCommands.invoke();
         FrontendCommands.invoke();
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()-> YogaFileLocator::configureLWJGLPath);
-        if (Envs.isDevEnvironment());
-            // AllExampleElements.invoke();
+        KasugaLibConfig.invoke();
+        if (Envs.isDevEnvironment())
+            AllExampleElements.invoke();
     }
 
     public static Logger createLogger(String name) {

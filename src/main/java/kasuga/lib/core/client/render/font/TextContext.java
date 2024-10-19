@@ -2,12 +2,17 @@ package kasuga.lib.core.client.render.font;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import kasuga.lib.core.client.animation.neo_neo.VectorUtil;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.render.SimpleColor;
 import kasuga.lib.core.client.render.texture.Vec2f;
+import kasuga.lib.core.util.ComponentHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -20,19 +25,24 @@ import java.util.function.Consumer;
 public class TextContext {
     private final Font font;
     private Style style;
-    private final Component text;
+    private Component text;
     private SimpleColor color;
     private Vec2f scale, pivot;
-    private Vector3f rotation;
+    private Vector3f rotation, position;
     public static final Vec2f ONE = new Vec2f(1, 1);
+    public static final float standardScale = .13333333333f;
+    public static final float negStandardScale = 1 / standardScale;
 
     public TextContext(Font font, Component component) {
         this.font = font;
         this.text = component;
         scale = ONE;
         pivot = Vec2f.ZERO;
+        rotation = Vector3f.ZERO;
+        position = Vector3f.ZERO;
         rotation = new Vector3f();
         style = null;
+        color = SimpleColor.fromRGBInt(0xffffff);
     }
 
     public TextContext(Component component) {
@@ -47,6 +57,38 @@ public class TextContext {
         this(null, text);
     }
 
+    public void setPosition(Vector3f position) {
+        this.position = position;
+    }
+
+    public void setPosition(float x, float y, float z) {
+        this.position = new Vector3f(x, y, z);
+    }
+
+    public void offset(float x, float y, float z) {
+        this.position.add(x, y, z);
+    }
+
+    public void offset(Vector3f offset) {
+        this.position.add(offset);
+    }
+
+    public Vector3f getPosition() {
+        return position;
+    }
+
+    public float getX() {
+        return position.x();
+    }
+
+    public float getY() {
+        return position.y();
+    }
+
+    public float getZ() {
+        return position.z();
+    }
+
     public Vec2f getPivot() {
         return pivot;
     }
@@ -57,6 +99,12 @@ public class TextContext {
 
     public void setPivot(float px, float py) {
         this.pivot = new Vec2f(px, py);
+    }
+
+    public void setPivot(PivotPosition position) {
+        Vec2f vec = PivotPosition.getPivot(position);
+        if (vec == null) return;
+        this.pivot = vec;
     }
 
     public void setScale(Vec2f scale) {
@@ -101,6 +149,22 @@ public class TextContext {
         return text;
     }
 
+    public void setText(String text) {
+        Style style1 = getFont();
+        this.text = ComponentHelper.literal(text);
+        style1.applyTo(this.text.getStyle());
+        getWidth();
+        getHeight();
+    }
+
+    public void setText(Component text) {
+        Style style1 = getFont();
+        this.text = text;
+        style1.applyTo(text.getStyle());
+        getWidth();
+        getHeight();
+    }
+
     public Style getFont() {
         if (style != null) return style;
         if (font == null) {
@@ -118,10 +182,7 @@ public class TextContext {
     }
 
     public void rotate(Vector3f rotation) {
-        Quaternionf quaternion = VectorUtil.fromXYZ(rotation);
-        Quaternionf other = VectorUtil.fromXYZ(rotation);
-        quaternion.mul(other);
-        this.rotation = VectorUtil.toXYZ(quaternion);
+        this.rotation.add(rotation);
     }
 
     public void rotateDeg(Vector3f rotationDeg) {
@@ -151,19 +212,19 @@ public class TextContext {
     }
 
     public void setInsertion(String insertion) {
-        getFont().withInsertion(insertion);
+        getFont().withInsertion(insertion).applyTo(text.getStyle());
     }
 
     public void setClickEvent(ClickEvent clickEvent) {
-        getFont().withClickEvent(clickEvent);
+        getFont().withClickEvent(clickEvent).applyTo(text.getStyle());
     }
 
     public void setHoverEvent(HoverEvent event) {
-        getFont().withHoverEvent(event);
+        getFont().withHoverEvent(event).applyTo(text.getStyle());
     }
 
     public void applyFormat(ChatFormatting... formats) {
-        getFont().applyFormats(formats);
+        getFont().applyFormats(formats).applyTo(text.getStyle());
     }
 
     public boolean isUnderlined() {
@@ -171,11 +232,11 @@ public class TextContext {
     }
 
     public void underline(boolean underline) {
-        this.getFont().withUnderlined(underline);
+        this.getFont().withUnderlined(underline).applyTo(text.getStyle());
     }
 
     public void bold(boolean bold) {
-        getFont().withBold(bold);
+        getFont().withBold(bold).applyTo(text.getStyle());
     }
 
     public boolean isBold() {
@@ -183,7 +244,7 @@ public class TextContext {
     }
 
     public void strikeThrough(boolean strikeThrough) {
-        getFont().withStrikethrough(strikeThrough);
+        getFont().withStrikethrough(strikeThrough).applyTo(text.getStyle());
     }
 
     public boolean isStrikeThrough() {
@@ -191,7 +252,7 @@ public class TextContext {
     }
 
     public void obfuscated(boolean obfuscated) {
-        getFont().withObfuscated(obfuscated);
+        getFont().withObfuscated(obfuscated).applyTo(text.getStyle());
     }
 
     public boolean isObfuscated() {
@@ -199,24 +260,49 @@ public class TextContext {
     }
 
     public void italic(boolean italic) {
-        getFont().withItalic(italic);
+        getFont().withItalic(italic).applyTo(text.getStyle());
     }
 
-    public void renderToGui(GuiGraphics guiGraphics) {
-        transform(guiGraphics.pose(), obj -> {
-            guiGraphics.drawString(Minecraft.getInstance().font, text, 0, 0, color.getRGB());
-        });
+    public boolean isItalic() {
+        return getFont().isItalic();
     }
 
-    public void renderToWorld(PoseStack pose, MultiBufferSource source, boolean dropShadow, net.minecraft.client.gui.Font.DisplayMode mode, SimpleColor bgColor, int light) {
-        transform(pose, obj -> {
-            Minecraft.getInstance().font.drawInBatch(text, 0 ,0, color.getRGB(), dropShadow, pose.last().pose(),
-                    source, mode, bgColor.getRGB(), light);
-        });
+    public void renderToGui(PoseStack pose) {
+        pose.translate(position.x(), position.y(), position.z());
+        pose.mulPose(Quaternion.fromXYZ(this.rotation));
+        pose.scale(this.scale.x(), this.scale.y(), 1f);
+        pose.translate(- pivot.x() * this.getWidth(), - pivot.y() * this.getHeight(), 0);
+
+        Minecraft.getInstance().font.draw(pose, text, 0, 0, color.getRGB());
+
+        pose.translate(pivot.x() * this.getWidth(), pivot.y() * this.getHeight(), 0);
+        pose.scale(1 / this.scale.x(), 1 / this.scale.y(), 1f);
+        Vector3f negRot = rotation.copy();
+        negRot.mul(-1f);
+        pose.mulPose(Quaternion.fromXYZ(negRot));
+        pose.translate(- position.x(), - position.y(), - position.z());
+    }
+
+    public void renderToWorld(PoseStack pose, MultiBufferSource source, boolean dropShadow, boolean transparent, SimpleColor bgColor, int light) {
+        PoseStack p = new PoseStack();
+        p.pushPose();
+        p.translate(position.x(), position.y(), position.z());
+        float w = pivot.x() * this.getWidth(), h = pivot.y() * this.getHeight();
+        p.mulPose(Quaternion.fromXYZ(this.rotation));
+        Vector3f negRot = rotation.copy();
+
+        p.scale(standardScale, - standardScale, standardScale);
+        p.scale(this.scale.x(), this.scale.y(), 1f);
+        p.translate(- w, h, 0);
+
+        Minecraft.getInstance().font.drawInBatch(text, 0 ,0, color.getRGB(), dropShadow, p.last().pose(),
+                source, transparent, bgColor.getRGB(), light);
+        pose.mulPoseMatrix(p.last().pose());
+        p.popPose();
     }
 
     public void renderToWorld(PoseStack pose, MultiBufferSource source, boolean dropShadow, int light) {
-        renderToWorld(pose, source, dropShadow, net.minecraft.client.gui.Font.DisplayMode.NORMAL, SimpleColor.fromRGBA(0, 0, 0, 0), light);
+        renderToWorld(pose, source, dropShadow, false, SimpleColor.fromRGBA(0, 0, 0, 0), light);
     }
 
     public void renderToWorld(PoseStack pose, MultiBufferSource source, int light) {
@@ -224,14 +310,8 @@ public class TextContext {
     }
 
     private void transform(PoseStack pose, Consumer<Object> func) {
-        pose.mulPose(VectorUtil.fromXYZ(this.rotation));
-        pose.scale(this.scale.x(), this.scale.y(), 1f);
-        pose.translate(- pivot.x() * this.getWidth(), - pivot.y() * this.getHeight(), 0);
+
         func.accept(null);
-        pose.translate(pivot.x() * this.getWidth(), pivot.y() * this.getHeight(), 0);
-        pose.scale(1 / this.scale.x(), 1 / this.scale.y(), 1f);
-        Vector3f negRot = new Vector3f(rotation);
-        negRot.mul(-1f);
-        pose.mulPose(VectorUtil.fromXYZ(negRot));
+
     }
 }

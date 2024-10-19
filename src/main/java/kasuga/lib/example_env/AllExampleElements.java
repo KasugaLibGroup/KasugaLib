@@ -3,14 +3,11 @@ package kasuga.lib.example_env;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.commands.CommandHandler;
 import kasuga.lib.core.config.SimpleConfig;
+import kasuga.lib.core.util.Envs;
 import kasuga.lib.example_env.block.GreenAppleBlock;
 import kasuga.lib.example_env.item.GreenAppleItem;
 import kasuga.lib.example_env.block_entity.GreenAppleTile;
 import kasuga.lib.example_env.client.block_entity.renderer.GreenAppleTileRenderer;
-import kasuga.lib.example_env.client.entity.renderer.WuLingRenderer;
-import kasuga.lib.example_env.client.screens.GreenAppleMenu;
-import kasuga.lib.example_env.client.screens.GreenAppleScreen;
-import kasuga.lib.example_env.entity.WuLingEntity;
 import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
 import kasuga.lib.registrations.client.AnimReg;
@@ -45,19 +42,27 @@ public class AllExampleElements {
             .blockPredicates((location, block) -> block instanceof GreenAppleBlock)
             .submit(testRegistry);
 
+    /*
     public static final EntityReg<WuLingEntity> wuling = new EntityReg<WuLingEntity>("wuling")
             .entityType(WuLingEntity::new)
             .size(3, 3)
             .attribute(WuLingEntity::createAttributes)
             .withRenderer(() -> (WuLingRenderer::new))
             .submit(testRegistry);
+     */
 
+    /*
     public static final ModelReg greenAppleModel = new ModelReg("green_apple", new ResourceLocation(KasugaLib.MOD_ID, "block/test/green_apple"))
             .submit(testRegistry);
 
+     */
+
+    /*
     public static final ModelReg wuLingVans = new
             ModelReg("wuling_vans", new ResourceLocation(KasugaLib.MOD_ID, "entity/test/wuling/wuling_base"))
             .submit(testRegistry);
+
+     */
 
     public static final ItemReg<GreenAppleItem> greenAppleItem =
             new ItemReg<GreenAppleItem>("green_apple_item")
@@ -69,10 +74,15 @@ public class AllExampleElements {
 
     public static final CreativeTabReg tab = new CreativeTabReg("test")
             .icon(greenAppleItem).submit(testRegistry);
+    
+    /*
     public static final AnimReg test_anim =
             new AnimReg("test_anim", testRegistry.asResource("models/entity/test/wuling/wuling_anim.json"))
             .submit(testRegistry);
 
+     */
+
+    /*
     public static final SimpleConfig config = new SimpleConfig()
             .common("common settings")
             .rangedIntConfig("cfg1", "this is a test cfg", 0, -1, 1)
@@ -82,6 +92,7 @@ public class AllExampleElements {
             .server("only in server")
             .intConfig("int_cfg", 4)
             .registerConfigs();
+     */
 
 
     /*
@@ -112,23 +123,17 @@ public class AllExampleElements {
 
 
     /*
-    public static final ArgumentTypeReg type = ArgumentTypeReg.INSTANCE.registerType(File.class, File::new)
-            .submit(testRegistry);
-
-    public static final CommandReg command = new CommandReg("nihao")
-            .addLiteral("wiorjh", false)
-            .addInteger("int", false)
-            .addURL("dou", true)
-            .setHandler(new CommandHandler(){
-                @Override
-                public void run() {
-                    System.out.println(getParameter("int", int.class));
-                    System.out.println(getParameter("dou", URL.class));
-                }
-            }).submit(testRegistry);
-    */
+    public static final KeyBindingReg key = new KeyBindingReg("oo", "saas")
+            .setKeycode(GLFW.GLFW_KEY_0, InputConstants.Type.KEYSYM)
+            .setModifier(KeyModifier.CONTROL)
+            .setEnvironment(KeyBindingReg.Environment.IN_GUI)
+            .setClientHandler(System.out::println)
+            .setServerHandler(System.out::println)
+            .submit(REGISTRY);
+     */
 
     public static void invoke() {
+        if (Envs.isClient()) AllClient.invoke();
         testRegistry.submit();
     }
 }

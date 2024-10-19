@@ -1,52 +1,50 @@
 package kasuga.lib.example_env.client.block_entity.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import kasuga.lib.KasugaLib;
-import kasuga.lib.core.client.render.model.SimpleModel;
-import kasuga.lib.core.client.render.texture.old.WorldTexture;
+import kasuga.lib.core.client.model.BedrockModelLoader;
+import kasuga.lib.core.client.model.anim_instance.AnimateTicker;
+import kasuga.lib.core.client.model.anim_instance.AnimationInstance;
+import kasuga.lib.core.client.model.anim_model.AnimModel;
+import kasuga.lib.core.util.LazyRecomputable;
+import kasuga.lib.example_env.AllClient;
 import kasuga.lib.example_env.AllExampleElements;
 import kasuga.lib.example_env.block_entity.GreenAppleTile;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTile> {
     // SimpleModel model = AllExampleElements.greenAppleModel.getModel();
     // MultiPartModel wuling = (MultiPartModel) AllExampleElements.wuLingVans.getModel();
-    private static final WorldTexture texture = new WorldTexture(new ResourceLocation(KasugaLib.MOD_ID, "textures/common/test/green_apple_bubble.png"));
-    public GreenAppleTileRenderer(BlockEntityRendererProvider.Context context) {
-        texture.renderType(RenderType::text);
-        TEXTURE.renderType(RenderType::text);
-        // model.renderType(RenderType::translucent);
-        // wuling.renderType(RenderType::solid);
-        // wuling.applyParentRenderTypeForAllBones();
-        /*
-        wuling.setStaticMovements(
-                m -> {
-                    m.translateBone("front_door_left", -1.18, 0, -1.55);
-                    m.translateBone("front_door_right", 1.18, 0, -1.55);
-                    m.translateBone("back_door_left", -1.23, 0, 0);
-                    m.translateBone("back_door_right", 1.23, 0, 0);
-                    m.translateBone("large_back_door", 0, 2.5, 3.2);
-                    m.translateBone("left_wheel", -1, 0.5, -1.975);
-                    m.translateBone("right_wheel", 1, 0.5, -1.975);
-                    m.translateBone("left_wheel_2", -1, 0.5, 2.05);
-                    m.translateBone("right_wheel_2", 1, 0.5, 2.05);
-                    m.translateBone("tie", -0.65, 1.6, -1.45);
-                    m.rotateXForBone("tie", -30f);
-                }
-        );
+    // private static final WorldTexture texture = new WorldTexture(new ResourceLocation(KasugaLib.MOD_ID, "textures/common/test/green_apple_bubble.png"));
 
-         */
-        // component.setFont(Minecraft.getInstance().font);
-        // component.zoom(component.getZoom() * .2f);
-    }
-    private WorldTexture TEXTURE = new WorldTexture(new ResourceLocation("kasuga_lib","textures/gui/pixel.png"));
+    LazyRecomputable<AnimateTicker> ticker = AnimateTicker.getTickerInstance(
+            AllExampleElements.REGISTRY.asResource("block/test/test_model_complicate"),
+            AllExampleElements.REGISTRY.asResource("animations/model.animation.json"),
+            RenderType.solid(), "transform", AnimateTicker.TickerType.RENDER, 60, 100);
+
+    public GreenAppleTileRenderer(BlockEntityRendererProvider.Context context) {}
+    // private WorldTexture TEXTURE = new WorldTexture(new ResourceLocation("kasuga_lib","textures/gui/pixel.png"));
     @Override
     public void render(GreenAppleTile tile, float partial, PoseStack pose, MultiBufferSource buffer, int light, int overlay) {
+        pose.pushPose();
+
+        // textContext.rotateDeg(1f, 1f, 1f);
+        ticker.get().tickAndRender(pose, buffer, light, overlay, partial);
+        if (tile.sec < 10) tile.sec+=0.01;
+        if (tile.sec >= 10 && !tile.saved) {
+            tile.saved = true;
+            ticker.get().start();tile.sec++;
+        }
+        // if (tile.sec < 5f && !tile.direction) tile.sec += 0.01f;
+        // else if (tile.sec >= 5f && !tile.direction) tile.direction = true;
+        // if (tile.sec > -2.5f && tile.direction) tile.sec -= 0.01f;
+        // else if (tile.sec <= -2.5f && tile.direction) tile.direction = false;
+        pose.popPose();
+        // System.out.println(mtx.equals(mtx2));
+        // pose.translate(0, -1, 0);
+        // textContext2.renderToWorld(pose, buffer, light);
 /*
         BlockPos pos = tile.getBlockPos();
         pose.pushPose();

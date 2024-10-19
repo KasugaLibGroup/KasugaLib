@@ -14,16 +14,19 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 public class GreenAppleItemRenderer extends BlockEntityWithoutLevelRenderer {
-    SimpleModel model;
+    // SimpleModel model;
     public GreenAppleItemRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet modelSet) {
         super(dispatcher, modelSet);
-        model = AllExampleElements.greenAppleModel.getModel().clone();
-        model.renderType(RenderType::solid);
+        // model = AllExampleElements.greenAppleModel.getModel().clone();
+        // model.renderType(RenderType::solid);
     }
 
     @Override
     public void renderByItem(ItemStack item,  ItemDisplayContext transform,
                              PoseStack pose, MultiBufferSource buffer, int light, int overlay) {
-        model.render(pose, buffer, 0, 0, 0, light, overlay);
+        // super.renderByItem(pStack, pTransformType, pPoseStack, pBuffer, pPackedLight, pPackedOverlay);
+        pose.pushPose();
+        // model.render(pose, buffer, 0, 0, 0, light, overlay);
+        pose.popPose();
     }
 }
