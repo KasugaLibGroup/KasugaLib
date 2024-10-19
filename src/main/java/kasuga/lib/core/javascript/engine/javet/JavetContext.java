@@ -33,7 +33,7 @@ public class JavetContext implements JavascriptEngineContext {
         JavetStandardConsoleInterceptor consoleInterceptor = new JavetStandardConsoleInterceptor(runtime);
         consoleInterceptor.register(runtime.getGlobalObject());
         moduleAPI = new JavetModuleAPI(runtime,this, context.getModuleLoader());
-        runtime.setConverter(new JavetKasugaConverter());
+        runtime.setConverter(new JavetKasugaConverter(runtime));
         runtime.setPromiseRejectCallback((event, promise, value)->{
             if(event.getCode() == 0){
                 System.err.println("Error" + event.getName());
@@ -81,16 +81,17 @@ public class JavetContext implements JavascriptEngineContext {
                             .setResourceName(temporyModuleName);*/
 
             V8ValueFunction module =
-                    runtime.getExecutor("(function(require,exports,module){"+textBuilder.toString()+"});")
+                    runtime.getExecutor(textBuilder.toString())
                             .setResourceName(fileName)
-                            .execute();
+                            .compileV8ValueFunction(new String[]{"require", "exports", "module"});
             // module.setWeak();
 
             return new JavetJavascriptModule(
                     module,
                     packageTarget,
                     dirName,
-                    fileName
+                    fileName,
+                    this.context
             );
         }catch (JavetException e){
             throw new RuntimeException(e);

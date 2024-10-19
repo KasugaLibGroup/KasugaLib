@@ -21,16 +21,16 @@ public class TimerPrebuiltModule extends PrebuiltModule {
         timer.onTick();
     }
     @HostAccess.Export
-    public int requestTimeout(KasugaTimer.Callback callback, JavascriptValue interval){
-        return requestScheduled(KasugaTimer.TimerType.TIMEOUT,callback,interval);
+    public int requestTimeout(JavascriptValue callback, JavascriptValue interval){
+        return requestScheduled(KasugaTimer.TimerType.TIMEOUT,()->callback.executeVoid(),interval);
     }
 
     @HostAccess.Export
-    public int requestInterval(KasugaTimer.Callback callback, JavascriptValue interval){
-        return requestScheduled(KasugaTimer.TimerType.INTERVAL,callback,interval);
+    public int requestInterval(JavascriptValue callback, JavascriptValue interval){
+        return requestScheduled(KasugaTimer.TimerType.INTERVAL,()->callback.executeVoid(),interval);
     }
 
-    @HostAccess.Export
+
     public int requestScheduled(KasugaTimer.TimerType type, KasugaTimer.Callback callback, JavascriptValue interval){
         if(!interval.isNumber())
             return -1;

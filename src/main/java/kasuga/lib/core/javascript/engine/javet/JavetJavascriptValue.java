@@ -2,6 +2,7 @@ package kasuga.lib.core.javascript.engine.javet;
 
 import com.caoccao.javet.annotations.V8Function;
 import com.caoccao.javet.exceptions.JavetException;
+import com.caoccao.javet.exceptions.JavetExecutionException;
 import com.caoccao.javet.interop.V8Runtime;
 import com.caoccao.javet.values.V8Value;
 import com.caoccao.javet.values.primitive.V8ValueNumber;
@@ -57,6 +58,10 @@ public class JavetJavascriptValue implements JavascriptValue {
     @Override
     public JavascriptValue execute(Object... objects) {
         try {
+            V8Value _reciever = reciever;
+            if(_reciever == null){
+
+            }
             return new JavetJavascriptValue(((V8ValueFunction)value).call(reciever, objects), runtime);
         } catch (JavetException e) {
             throw new RuntimeException(e);

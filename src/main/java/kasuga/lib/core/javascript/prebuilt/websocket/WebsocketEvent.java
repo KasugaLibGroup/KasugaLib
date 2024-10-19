@@ -16,7 +16,7 @@ public class WebsocketEvent {
         }
 
         MessageEvent(ByteBuf buf){
-            this.data = buf;
+            this.data = buf.array();
         }
     }
 

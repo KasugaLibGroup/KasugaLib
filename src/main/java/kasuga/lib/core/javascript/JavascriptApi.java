@@ -24,15 +24,14 @@ public class JavascriptApi {
     public Optional<HashMap<UUID, Object>> ASSETS = Optional.empty();
 
     public void setupClient(){
+        ASSETS = Optional.of(new HashMap<UUID, Object>());
         GROUP_CLIENT = GROUP_MAIN.createChild("client");
         GROUP_CLIENT.setScriptEngine(ScriptEngines.JAVET.get());
         CLIENT_LOADER = new NodePackageLoader();
         CLIENT_LOADER.bindRuntime(GROUP_CLIENT, EntryType.CLIENT);
         GROUP_CLIENT.getModuleLoader().getLoader().register(new NodeModuleResolver());
         GROUP_CLIENT.getModuleLoader().getLoader().register(new PrebuiltModuleLoader());
-
         registry = new RegistrationRegistry();
-        ASSETS = Optional.of(new HashMap<UUID, Object>());
     }
 
     public void setupServer(){
