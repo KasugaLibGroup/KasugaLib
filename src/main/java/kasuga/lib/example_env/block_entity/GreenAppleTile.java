@@ -18,6 +18,9 @@ import net.minecraftforge.fml.DistExecutor;
 
 public class GreenAppleTile extends BlockEntity {
 
+    public float sec = 0f;
+    public boolean direction = false;
+    public boolean saved = false;
     public GreenAppleTile(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
     }

@@ -8,15 +8,16 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class GreenAppleItem extends CustomRenderedItem {
+public class GreenAppleItem extends Item {// extends CustomRenderedItem {
 
-    public GreenAppleItem(Properties pProperties) {
+    public GreenAppleItem(Item.Properties pProperties) {
         super(pProperties);
     }
 
-    @Override
+    // @Override
     @OnlyIn(Dist.CLIENT)
     public BlockEntityWithoutLevelRenderer getCustomItemRenderer(BlockEntityRenderDispatcher dispatcher, EntityModelSet modelSet) {
-        return new GreenAppleItemRenderer(dispatcher, modelSet);
+        // return new GreenAppleItemRenderer(dispatcher, modelSet);
+        return null;
     }
 }

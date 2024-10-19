@@ -9,6 +9,6 @@ public class RenderTickEvent {
     @SubscribeEvent
     public static void onRenderTick(TickEvent.RenderTickEvent renderTickEvent){
         // KasugaLib.STACKS.JAVASCRIPT.renderTick();
-        // KasugaLib.STACKS.GUI.ifPresent(GuiEngine::renderTick);
+        // KasugaLib.STACKS.RENDER.ifPresent(GuiEngine::renderTick);
     }
 }

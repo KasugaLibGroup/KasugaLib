@@ -78,12 +78,21 @@ public class KasugaLibStacks {
             MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStart);
             MinecraftForge.EVENT_BUS.addListener(Constants::onAnimStop);
             MinecraftForge.EVENT_BUS.addListener(ClientTickEvent::onClientTick);
+            MinecraftForge.EVENT_BUS.addListener(ClientTickEvent::onGuiTick);
+
+            MinecraftForge.EVENT_BUS.addListener(PlayLogEvent::playerLogout);
+            MinecraftForge.EVENT_BUS.addListener(PlayLogEvent::playerLogin);
+
             bus.addListener(ModelRegistryEvent::registerAdditionalModels);
             bus.addListener(ModelRegistryEvent::bakingCompleted);
             bus.addListener(TextureRegistryEvent::onModelRegistry);
             bus.addListener(ClientSetupEvent::onClientSetup);
             MinecraftForge.EVENT_BUS.addListener(RenderTickEvent::onRenderTick);
+            bus.addListener(GeometryEvent::registerGeometry);
+            bus.addListener(GeometryEvent::registerReloadListener);
             GUI = Optional.of(new GuiEngine());
+            bus.addListener(AnimationModelRegistryEvent::registerAnimations);
+            bus.addListener(AnimationModelRegistryEvent::registerBedrockModels);
             KasugaLibClient.invoke();
         }
 

@@ -3,6 +3,7 @@ package kasuga.lib.example_env;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.commands.CommandHandler;
 import kasuga.lib.core.config.SimpleConfig;
+import kasuga.lib.core.util.Envs;
 import kasuga.lib.example_env.block.GreenAppleBlock;
 import kasuga.lib.example_env.block_entity.GreenAppleTile;
 import kasuga.lib.example_env.client.block_entity.renderer.GreenAppleTileRenderer;
@@ -46,19 +47,27 @@ public class AllExampleElements {
             .blockPredicates((location, block) -> block instanceof GreenAppleBlock)
             .submit(testRegistry);
 
+    /*
     public static final EntityReg<WuLingEntity> wuling = new EntityReg<WuLingEntity>("wuling")
             .entityType(WuLingEntity::new)
             .size(3, 3)
             .attribute(WuLingEntity::createAttributes)
             .withRenderer(() -> (WuLingRenderer::new))
             .submit(testRegistry);
+     */
 
+    /*
     public static final ModelReg greenAppleModel = new ModelReg("green_apple", new ResourceLocation(KasugaLib.MOD_ID, "block/test/green_apple"))
             .submit(testRegistry);
 
+     */
+
+    /*
     public static final ModelReg wuLingVans = new
             ModelReg("wuling_vans", new ResourceLocation(KasugaLib.MOD_ID, "entity/test/wuling/wuling_base"))
             .submit(testRegistry);
+
+     */
 
     public static final ItemReg<GreenAppleItem> greenAppleItem =
             new ItemReg<GreenAppleItem>("green_apple_item")
@@ -70,10 +79,15 @@ public class AllExampleElements {
 
     public static final CreativeTabReg tab = new CreativeTabReg("test")
             .icon(greenAppleItem).submit(testRegistry);
+
+    /*
     public static final AnimReg test_anim =
             new AnimReg("test_anim", testRegistry.asResource("models/entity/test/wuling/wuling_anim.json"))
             .submit(testRegistry);
 
+     */
+
+    /*
     public static final SimpleConfig config = new SimpleConfig()
             .common("common settings")
             .rangedIntConfig("cfg1", "this is a test cfg", 0, -1, 1)
@@ -83,6 +97,7 @@ public class AllExampleElements {
             .server("only in server")
             .intConfig("int_cfg", 4)
             .registerConfigs();
+     */
 
 
     /*
@@ -130,6 +145,7 @@ public class AllExampleElements {
     */
 
     public static void invoke() {
+        if (Envs.isClient()) AllClient.invoke();
         testRegistry.submit();
     }
 }

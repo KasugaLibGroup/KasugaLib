@@ -4,7 +4,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,5 +91,34 @@ public class VectorIOUtil {
             result.add(getVec3FromNbt(tag, String.valueOf(i)));
         }
         return result;
+    }
+
+    public static void writeVec3fToStream(Vector3f vec, ByteArrayOutputStream stream) throws IOException {
+        write4Bytes(Float.floatToIntBits(vec.x()), stream);
+        write4Bytes(Float.floatToIntBits(vec.y()), stream);
+        write4Bytes(Float.floatToIntBits(vec.z()), stream);
+    }
+
+    public static Vector3f getVec3fFromStream(ByteArrayInputStream stream) throws IOException {
+        float x = read4Bytes(stream);
+        float y = read4Bytes(stream);
+        float z = read4Bytes(stream);
+        return new Vector3f(x, y, z);
+    }
+
+    public static int read4Bytes(InputStream stream) throws IOException {
+        int result = 0;
+        result += stream.read();
+        result += (stream.read() << 8);
+        result += (stream.read() << 16);
+        result += (stream.read() << 24);
+        return result;
+    }
+
+    public static void write4Bytes(int in, OutputStream stream) throws IOException {
+        stream.write(in & 0xff);
+        stream.write((in >> 8) & 0xff);
+        stream.write((in >> 16) & 0xff);
+        stream.write((in >>> 24));
     }
 }

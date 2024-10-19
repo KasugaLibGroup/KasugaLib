@@ -277,9 +277,10 @@ public class SimpleRegistry {
         FLUID.register(eventBus);
         // ARGUMENT_TYPES.register("base", ()-> ArgumentTypeInfos.registerByClass(BaseArgument.class, new BaseArgumentInfo()));
         // ARGUMENT_TYPES.register(eventBus);
-        for(String key : CACHE_OF_BLOCK_ENTITIES.keySet()) {
-            BlockEntityReg<?> reg = CACHE_OF_BLOCK_ENTITIES.get(key);
+        ATTRIBUTES.register(eventBus);
+        for (String key : CACHE_OF_BLOCK_ENTITIES.keySet()) {
             try {
+                BlockEntityReg<?> reg = CACHE_OF_BLOCK_ENTITIES.get(key);
                 reg.getType();
                 reg.submit(this);
             } catch (Exception ignored) {}
@@ -290,6 +291,7 @@ public class SimpleRegistry {
         ENTITIES.register(eventBus);
         RECIPES.register(eventBus);
         RECIPE_SERIALIZERS.register(eventBus);
+        EFFECT.register(eventBus);
         KasugaLib.STACKS.stackIn(this);
     }
 

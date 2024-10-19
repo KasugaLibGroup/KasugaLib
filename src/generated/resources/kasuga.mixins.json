@@ -12,6 +12,7 @@
     "MixinStationBlockEntity"
   ],
   "client": [
+    "client.MixinBlockModel$Deserializer",
     "client.MixinBezierConnection",
     "client.MixinBlockModelBinding",
     "client.MixinBlockRenderDispatcher",
