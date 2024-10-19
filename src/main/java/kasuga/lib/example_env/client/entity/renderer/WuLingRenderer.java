@@ -1,7 +1,6 @@
 package kasuga.lib.example_env.client.entity.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.animation.Constants;
 import kasuga.lib.core.client.animation.data.Animation;

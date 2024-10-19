@@ -1,6 +1,6 @@
 package kasuga.lib.core.client.model.anim_model;
 
-import com.mojang.math.Vector3f;
+import org.joml.Vector3f;
 
 public interface Animable {
 

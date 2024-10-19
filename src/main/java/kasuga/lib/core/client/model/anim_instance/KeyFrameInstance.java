@@ -1,12 +1,12 @@
 package kasuga.lib.core.client.model.anim_instance;
 
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.animation.neo_neo.VectorIOUtil;
 import kasuga.lib.core.client.model.anim_json.CatmullRomUtils;
 import kasuga.lib.core.client.model.anim_json.KeyFrame;
 import kasuga.lib.core.client.model.anim_json.Pose;
 import kasuga.lib.core.client.model.anim_model.AnimBone;
 import kasuga.lib.core.util.data_type.Pair;
+import org.joml.Vector3f;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -82,30 +82,30 @@ public class KeyFrameInstance {
         compile(positionFrames, rotationFrames, scaleFrames);
 
         if (positionFrames.isEmpty()) {
-            positionStart = Vector3f.ZERO.copy();
-            positionApproach = Vector3f.ZERO.copy();
+            positionStart = new Vector3f();
+            positionApproach = new Vector3f();
         } else {
             if (posStartSec <= 0) positionStart = this.position.get(0);
-            else positionStart = Vector3f.ZERO.copy();
-            positionApproach = positionFrames.get(positionFrames.size() - 1).getValue().getPost().copy();
+            else positionStart = new Vector3f();
+            positionApproach = new Vector3f(positionFrames.get(positionFrames.size() - 1).getValue().getPost());
             positionApproach.mul(1 / 16f);
         }
 
         if (rotationFrames.isEmpty()) {
-            rotationStart = Vector3f.ZERO.copy();
-            rotationApproach = Vector3f.ZERO.copy();
+            rotationStart = new Vector3f();
+            rotationApproach = new Vector3f();
         } else {
             if (rotStartSec <= 0) rotationStart = this.rotation.get(0);
-            else rotationStart = Vector3f.ZERO.copy();
+            else rotationStart = new Vector3f();
             rotationApproach = rotationFrames.get(rotationFrames.size() - 1).getValue().getPost();
         }
 
         if (scaleFrames.isEmpty()) {
-            scaleStart = ONE.copy();
-            scaleApproach = ONE.copy();
+            scaleStart = new Vector3f(ONE);
+            scaleApproach = new Vector3f(ONE);
         } else {
             if (scaleStartSec <= 0) scaleStart = this.scale.get(0);
-            else scaleStart = ONE.copy();
+            else scaleStart = new Vector3f(ONE);
             scaleApproach = scaleFrames.get(scaleFrames.size() - 1).getValue().getPost();
         }
     }
@@ -190,7 +190,7 @@ public class KeyFrameInstance {
             Pair<Vector3f, Float> result = interpolationStep(pose, recentTime, step);
             out.add(result.getFirst());
         } else {
-            out.add(pose.getPost().copy());
+            out.add(new Vector3f(pose.getPost()));
         }
     }
 
@@ -200,11 +200,11 @@ public class KeyFrameInstance {
         int size = (int) ((end - recentTime) / step);
         float timeOffset = (recentTime - start) / length;
         Vector3f[] result = new Vector3f[size];
-        Vector3f offset = last.copy();
+        Vector3f offset = new Vector3f(last);
         offset.sub(first);
         for (int i = 0; i < size; i++) {
             float time = (float) i / (float) size + timeOffset;
-            Vector3f o = offset.copy();
+            Vector3f o = new Vector3f(offset);
             o.mul(time);
             o.add(first);
             result[i] = o;
@@ -225,7 +225,7 @@ public class KeyFrameInstance {
     }
 
     public static Pair<Vector3f, Float> interpolationStep(Pose pose, float start, float step) {
-        return Pair.of(pose.getPost().copy(), start + step);
+        return Pair.of(new Vector3f(pose.getPost()), start + step);
     }
 
     public static Vector3f getVecAsLeft(Pose pose) {
@@ -239,7 +239,7 @@ public class KeyFrameInstance {
     public Vector3f getPosition(float sec) {
         if (sec < this.posStartSec) return positionStart;
         if (sec >= animation.length) return switch (animation.loop) {
-            case NONE -> Vector3f.ZERO;
+            case NONE -> new Vector3f();
             case HOLD_ON_LAST_FRAME -> positionApproach;
             case LOOP -> getPosition(sec % animation.length);
         };
@@ -261,7 +261,7 @@ public class KeyFrameInstance {
     public Vector3f getRotation(float sec) {
         if (sec < this.rotStartSec) return rotationStart;
         if (sec >= animation.length) return switch (animation.loop) {
-            case NONE -> Vector3f.ZERO;
+            case NONE -> new Vector3f();
             case HOLD_ON_LAST_FRAME -> rotationApproach;
             case LOOP -> getRotation(sec % animation.length);
         };
@@ -303,7 +303,7 @@ public class KeyFrameInstance {
     }
 
     public static Vector3f slerp(Vector3f first, Vector3f second, float percentage) {
-        Vector3f result = second.copy();
+        Vector3f result = new Vector3f(second);
         result.sub(first);
         result.mul(percentage);
         result.add(first);

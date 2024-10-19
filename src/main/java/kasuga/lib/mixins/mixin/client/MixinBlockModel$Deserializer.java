@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraftforge.client.model.geometry.GeometryLoaderManager;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,7 +25,7 @@ import java.util.HashMap;
 public class MixinBlockModel$Deserializer {
 
     @Inject(method = "deserialize(Lcom/google/gson/JsonElement;Ljava/lang/reflect/Type;Lcom/google/gson/JsonDeserializationContext;)Lnet/minecraft/client/renderer/block/model/BlockModel;",
-    at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/model/BlockModel$Deserializer;getAmbientOcclusion(Lcom/google/gson/JsonObject;)Z"))
+    at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/model/BlockModel$Deserializer;getAmbientOcclusion(Lcom/google/gson/JsonObject;)Ljava/lang/Boolean;"))
     public void doDeserialize(JsonElement json, Type type, JsonDeserializationContext context, CallbackInfoReturnable<BlockModel> callBack) {
         JsonObject object= json.getAsJsonObject();
         if (!object.has("loader")) return;
@@ -32,9 +33,9 @@ public class MixinBlockModel$Deserializer {
         IGeometryLoader<?> loader = GeometryLoaderManager.get(location);
         if (!(loader instanceof ItemTransformProvider provider)) return;
         JsonObject transObject = new JsonObject();
-        HashMap<ItemTransforms.TransformType, ItemTransform> transforms = provider.generate(object, type, context);
+        HashMap<ItemDisplayContext, ItemTransform> transforms = provider.generate(object, type, context);
         if (transforms == null) return;
-        for (ItemTransforms.TransformType tType : ItemTransforms.TransformType.values()) {
+        for (ItemDisplayContext tType : ItemDisplayContext.values()) {
             if (!transforms.containsKey(tType)) continue;
             ItemTransform t = transforms.get(tType);
             JsonArray rotation = VectorUtil.vec3fToJsonArray(t.rotation);
@@ -46,7 +47,7 @@ public class MixinBlockModel$Deserializer {
             transObj.add("translation", translation);
             transObj.add("scale", scale);
             transObj.add("right_rotation", rightRotation);
-            transObject.add(tType.getSerializeName(), transObj);
+            transObject.add(tType.getSerializedName(), transObj);
         }
         object.add("display", transObject);
     }

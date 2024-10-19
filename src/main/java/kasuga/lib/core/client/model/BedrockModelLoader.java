@@ -17,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
 
 import javax.annotation.Nullable;
@@ -67,7 +68,7 @@ public class BedrockModelLoader implements IGeometryLoader<UnbakedBedrockModel>,
     }
 
     @Override
-    public HashMap<ItemTransforms.TransformType, ItemTransform> generate(JsonObject jsonObject, Type type, JsonDeserializationContext context) {
+    public HashMap<ItemDisplayContext, ItemTransform> generate(JsonObject jsonObject, Type type, JsonDeserializationContext context) {
         ResourceLocation ml = new ResourceLocation(jsonObject.get("model").getAsString());
         JsonArray geoJson;
         try {
@@ -82,7 +83,7 @@ public class BedrockModelLoader implements IGeometryLoader<UnbakedBedrockModel>,
             KasugaLib.MAIN_LOGGER.error("Failed to parse Model: " + ml);
             return null;
         }
-        HashMap<ItemTransforms.TransformType, ItemTransform> result = Maps.newHashMap();
+        HashMap<ItemDisplayContext, ItemTransform> result = Maps.newHashMap();
         for (JsonElement geometry : geoJson.getAsJsonArray()) {
             result.putAll(Geometry.parseTransforms(geometry.getAsJsonObject()));
         }

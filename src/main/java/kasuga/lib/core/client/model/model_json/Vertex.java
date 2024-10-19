@@ -1,10 +1,10 @@
 package kasuga.lib.core.client.model.model_json;
 
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.render.texture.Vec2f;
 import net.minecraft.client.renderer.FaceInfo;
 import net.minecraft.core.Direction;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.List;
 
@@ -20,8 +20,8 @@ public class Vertex {
 
     public Vertex(Cube cube, UnbakedUV uv, int index) {
         FaceInfo.VertexInfo vertexInfo = FaceInfo.fromFacing(uv.getDirection()).getVertexInfo(index);
-        Vector3f org = cube.getOrigin().copy(),
-                max = cube.getSize().copy();
+        Vector3f org = new Vector3f(cube.getOrigin()),
+                max = new Vector3f(cube.getSize());
         max.add(org);
         org.add(- cube.getInflate(), - cube.getInflate(), - cube.getInflate());
         max.add(cube.getInflate(), cube.getInflate(), cube.getInflate());
@@ -40,7 +40,7 @@ public class Vertex {
     }
 
     public Vertex applyTranslation(Vector3f translate) {
-        Vector3f result = this.position.copy();
+        Vector3f result = new Vector3f(this.position);
         result.add(translate);
         return new Vertex(result, uv);
     }
@@ -55,18 +55,18 @@ public class Vertex {
         }
     }
 
-    public Vertex applyRotation(Vector3f pivot, Vector3f position, List<Quaternion> quaternions) {
-        Vector3f result = this.position.copy();
+    public Vertex applyRotation(Vector3f pivot, Vector3f position, List<Quaternionf> quaternions) {
+        Vector3f result = new Vector3f(this.position);
         result.sub(pivot);
-        quaternions.forEach(result::transform);
+        quaternions.forEach(quaternionf -> quaternionf.transform(result));
         result.add(position);
         return new Vertex(result, this.uv);
     }
 
-    public Vertex applyRotation(Vector3f pivot, Quaternion quaternion) {
-        Vector3f result = this.position.copy();
+    public Vertex applyRotation(Vector3f pivot, Quaternionf quaternion) {
+        Vector3f result = new Vector3f(this.position);
         result.sub(pivot);
-        result.transform(quaternion);
+        quaternion.transform(result);
         result.add(pivot);
         return new Vertex(result, this.uv);
     }
@@ -77,7 +77,7 @@ public class Vertex {
 
     public Vertex applyScale(Vector3f pivot, Vector3f scale) {
         if (scale == null) return this;
-        Vector3f result = this.position.copy();
+        Vector3f result = new Vector3f(this.position);
         result.sub(pivot);
         result.mul(scale.x(), scale.y(), scale.z());
         result.add(pivot);

@@ -4,8 +4,6 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.model.Rotationable;
 import kasuga.lib.core.client.render.texture.Vec2f;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -17,6 +15,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.*;
 import java.util.function.Function;
@@ -50,7 +50,7 @@ public class Cube implements Rotationable {
                 sizeJson.get(1).getAsFloat() / 16f,
                 sizeJson.get(2).getAsFloat() / 16f
         );
-        origin.setX(-1 * (origin.x() + size.x()));
+        origin.x = (-1 * (origin.x() + size.x()));
 
         if (object.has("pivot")) {
             JsonArray pivotJson = object.getAsJsonArray("pivot");
@@ -155,19 +155,19 @@ public class Cube implements Rotationable {
         Vector3f position = context.position();
         position.mul(1 / 16f);
 
-        Vector3f pivot = getPivot().copy();
+        Vector3f pivot = new Vector3f(getPivot());
         pivot.mul(1 / 16f);
         List<Quad> quads = getQuads();
-        Vector3f universalOffset = modelTransform.getRotation().getTranslation().copy();
+        Vector3f universalOffset = new Vector3f(modelTransform.getRotation().getTranslation());
         Vector3f universalScale = modelTransform.getRotation().getScale();
         universalOffset.add(BASE_OFFSET);
         quads = rotQuads(quads, pivot, position, context.quaternions());
-        if (!modelTransform.getRotation().getLeftRotation().equals(Quaternion.ONE))
-            quads = rotQuads(quads, Vector3f.ZERO, modelTransform.getRotation().getLeftRotation());
+        if (!modelTransform.getRotation().getLeftRotation().equals(new Quaternionf()))
+            quads = rotQuads(quads, Rotationable.ZERO, modelTransform.getRotation().getLeftRotation());
         if (!universalOffset.equals(BASE_OFFSET))
             quads = translateQuads(quads, universalOffset);
         if (!universalScale.equals(BASE_SCALE))
-            quads = scaleQuads(quads, Vector3f.ZERO, universalScale);    
+            quads = scaleQuads(quads, Rotationable.ZERO, universalScale);
         HashMap<Direction, int[]> aint = fillVertices(quads, u0, v0, width, height);
         aint.forEach(((direction, ints) -> {
             BakedQuad quad = new BakedQuad(ints, 0, direction, sprite, true);
@@ -179,18 +179,18 @@ public class Cube implements Rotationable {
         return controlQuads(quads, vertex -> vertex.applyTranslation(offset));
     }
 
-    public List<Quad> rotQuads(List<Quad> input, Vector3f pivot, Vector3f position, List<Quaternion> quaternions) {
-        final Vector3f p = pivot.copy();
+    public List<Quad> rotQuads(List<Quad> input, Vector3f pivot, Vector3f position, List<Quaternionf> quaternions) {
+        final Vector3f p = new Vector3f(pivot);
         return controlQuads(input, vertex -> vertex.applyRotation(p, position, quaternions));
     }
 
-    public List<Quad> rotQuads(List<Quad> input, Vector3f pivot, Quaternion quaternion) {
-        final Vector3f p = pivot.copy();
+    public List<Quad> rotQuads(List<Quad> input, Vector3f pivot, Quaternionf quaternion) {
+        final Vector3f p = new Vector3f(pivot);
         return controlQuads(input, vertex -> vertex.applyRotation(p, quaternion));
     }
 
     public List<Quad> scaleQuads(List<Quad> input, Vector3f pivot, Vector3f scale) {
-        Vector3f s = scale.copy();
+        Vector3f s = new Vector3f(scale);
         return controlQuads(input, vertex -> vertex.applyScale(pivot, s));
     }
 

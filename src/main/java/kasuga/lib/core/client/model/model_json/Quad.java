@@ -1,7 +1,7 @@
 package kasuga.lib.core.client.model.model_json;
 
-import com.mojang.math.Vector3f;
 import net.minecraft.core.Direction;
+import org.joml.Vector3f;
 
 public class Quad {
     public final Vertex[] vertices;

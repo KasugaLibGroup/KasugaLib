@@ -2,11 +2,14 @@ package kasuga.lib.core.client.model.anim_model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
+import kasuga.lib.core.client.animation.neo_neo.rotation.Rotation;
+import kasuga.lib.core.client.model.Rotationable;
 import kasuga.lib.core.client.render.SimpleColor;
 import kasuga.lib.core.client.model.BedrockRenderable;
 import kasuga.lib.core.client.model.model_json.Cube;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +28,14 @@ public class AnimCube implements BedrockRenderable {
     public AnimCube(Cube cube, AnimModel model, AnimBone bone) {
         this.cube = cube;
 
-        Vector3f pos = cube.getPivot().copy();
+        Vector3f pos = new Vector3f(cube.getPivot());
         pos.mul(-1 / 16f);
         quads = cube.getBaked(model.material.sprite(), pos);
 
-        this.pivot = cube.getPivot().copy();
+        this.pivot = new Vector3f(cube.getPivot());
         pivot.mul(1 / 16f);
 
-        this.rotation = cube.getRotation().copy();
+        this.rotation = new Vector3f(cube.getRotation());
 
         this.model = model;
         this.bone = bone;
@@ -45,8 +48,8 @@ public class AnimCube implements BedrockRenderable {
         this.quads.addAll(quads);
         this.model = model;
         this.bone = bone;
-        this.pivot = pivot.copy();
-        this.rotation = rotation.copy();
+        this.pivot = new Vector3f(pivot);
+        this.rotation = new Vector3f(rotation);
     }
 
     @Override
@@ -57,16 +60,16 @@ public class AnimCube implements BedrockRenderable {
 
     @Override
     public void applyTranslationAndRotation(PoseStack pose) {
-        Vector3f translation = pivot.copy();
-        Vector3f parentTrans = bone.getPivot().copy();
+        Vector3f translation = new Vector3f(pivot);
+        Vector3f parentTrans = new Vector3f(bone.getPivot());
         Vector3f t = vonvertPivot(translation, parentTrans);
         pose.translate(t.x(), t.y(), t.z());
 
-        Vector3f rotation = this.rotation.copy();
-        if (rotation.equals(Vector3f.ZERO)) return;
-        pose.mulPose(Vector3f.ZP.rotationDegrees(rotation.z()));
-        pose.mulPose(Vector3f.YN.rotationDegrees(rotation.y()));
-        pose.mulPose(Vector3f.XN.rotationDegrees(rotation.x()));
+        Vector3f rotation = new Vector3f(this.rotation);
+        if (rotation.equals(Rotationable.ZERO)) return;
+        pose.mulPose(Axis.ZP.rotationDegrees(rotation.z()));
+        pose.mulPose(Axis.YN.rotationDegrees(rotation.y()));
+        pose.mulPose(Axis.XN.rotationDegrees(rotation.x()));
     }
 
     @Override

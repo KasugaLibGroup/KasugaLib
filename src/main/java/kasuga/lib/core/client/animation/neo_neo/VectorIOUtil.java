@@ -2,9 +2,9 @@ package kasuga.lib.core.client.animation.neo_neo;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.math.Vector3f;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 import java.io.*;
 import java.util.ArrayList;

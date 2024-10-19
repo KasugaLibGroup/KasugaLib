@@ -3,7 +3,6 @@ package kasuga.lib.core.client.model.model_json;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.model.Rotationable;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
@@ -12,6 +11,7 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -54,17 +54,17 @@ public class Bone implements Rotationable {
                     if (entry.getValue().isJsonArray()) {
                         Vector3f locatorPos = Geometry.readVec3fFromJsonArray(entry.getValue().getAsJsonArray());
                         locatorPos.mul(-1, 1, 1);
-                        locators.put(entry.getKey(), new Locator(locatorPos, Vector3f.ZERO.copy()));
+                        locators.put(entry.getKey(), new Locator(locatorPos, new Vector3f()));
                     } else return;
                 }
                 JsonObject o = entry.getValue().getAsJsonObject();
                 Vector3f locatorPos = o.has("offset") ?
                         Geometry.readVec3fFromJsonArray(o.get("offset").getAsJsonArray()) :
-                        Vector3f.ZERO.copy();
+                        new Vector3f();
                 locatorPos.mul(-1, 1, 1);
                 Vector3f locatorRot = o.has("rotation") ?
                         Geometry.readVec3fFromJsonArray(o.get("rotation").getAsJsonArray()) :
-                        Vector3f.ZERO.copy();
+                        new Vector3f();
                 locators.put(entry.getKey(), new Locator(locatorPos, locatorRot));
             });
         }

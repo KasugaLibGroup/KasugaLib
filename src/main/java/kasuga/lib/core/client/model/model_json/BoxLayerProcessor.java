@@ -1,9 +1,9 @@
 package kasuga.lib.core.client.model.model_json;
 
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.render.texture.Vec2f;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.core.Direction;
+import org.joml.Vector3f;
 
 import java.util.HashMap;
 
@@ -52,7 +52,7 @@ public class BoxLayerProcessor {
 
     public static Direction getSide(Cube cube, Vector3f pos1, Vector3f pos2) {
         Vector3f org = cube.getOrigin(),
-                max = org.copy();
+                max = new Vector3f(org);
         max.add(cube.getSize());
         if (pos1.y() == max.y() && pos2.y() == max.y()) {
             return Direction.UP;
@@ -76,16 +76,16 @@ public class BoxLayerProcessor {
 
     public static Pair<Vector3f, Vector3f> getPositionPair(Cube cube, Direction direction) {
         Vector3f org = cube.getOrigin();
-        Vector3f max = org.copy();
+        Vector3f max = new Vector3f(org);
         max.add(cube.getSize());
 
         return switch (direction) {
-            case UP -> Pair.of(new Vector3f(org.x(), max.y(), org.z()), max.copy());
-            case DOWN -> Pair.of(org.copy(), new Vector3f(max.x(), org.y(), max.z()));
-            case EAST -> Pair.of(new Vector3f(max.x(), org.y(), org.z()), max.copy());
-            case WEST -> Pair.of(org.copy(), new Vector3f(org.x(), max.y(), max.z()));
-            case NORTH -> Pair.of(org.copy(), new Vector3f(max.x(), max.y(), org.z()));
-            case SOUTH -> Pair.of(new Vector3f(org.x(), org.y(), max.z()), max.copy());
+            case UP -> Pair.of(new Vector3f(org.x(), max.y(), org.z()), new Vector3f(max));
+            case DOWN -> Pair.of(new Vector3f(org), new Vector3f(max.x(), org.y(), max.z()));
+            case EAST -> Pair.of(new Vector3f(max.x(), org.y(), org.z()), new Vector3f(max));
+            case WEST -> Pair.of(new Vector3f(org), new Vector3f(org.x(), max.y(), max.z()));
+            case NORTH -> Pair.of(new Vector3f(org), new Vector3f(max.x(), max.y(), org.z()));
+            case SOUTH -> Pair.of(new Vector3f(org.x(), org.y(), max.z()), new Vector3f(max));
         };
     }
 

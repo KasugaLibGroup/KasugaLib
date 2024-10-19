@@ -2,9 +2,6 @@ package kasuga.lib.core.client.render.font;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import kasuga.lib.core.client.animation.neo_neo.VectorUtil;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.render.SimpleColor;
 import kasuga.lib.core.client.render.texture.Vec2f;
 import kasuga.lib.core.util.ComponentHelper;
@@ -17,6 +14,7 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.FormattedCharSequence;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -38,8 +36,7 @@ public class TextContext {
         this.text = component;
         scale = ONE;
         pivot = Vec2f.ZERO;
-        rotation = Vector3f.ZERO;
-        position = Vector3f.ZERO;
+        position = new Vector3f();
         rotation = new Vector3f();
         style = null;
         color = SimpleColor.fromRGBInt(0xffffff);
@@ -267,42 +264,43 @@ public class TextContext {
         return getFont().isItalic();
     }
 
-    public void renderToGui(PoseStack pose) {
+    public void renderToGui(GuiGraphics gui) {
+        PoseStack pose = gui.pose();
         pose.translate(position.x(), position.y(), position.z());
-        pose.mulPose(Quaternion.fromXYZ(this.rotation));
+        pose.mulPose(VectorUtil.fromXYZ(this.rotation));
         pose.scale(this.scale.x(), this.scale.y(), 1f);
         pose.translate(- pivot.x() * this.getWidth(), - pivot.y() * this.getHeight(), 0);
 
-        Minecraft.getInstance().font.draw(pose, text, 0, 0, color.getRGB());
+        gui.drawString(Minecraft.getInstance().font, text, 0, 0, color.getRGB());
 
         pose.translate(pivot.x() * this.getWidth(), pivot.y() * this.getHeight(), 0);
         pose.scale(1 / this.scale.x(), 1 / this.scale.y(), 1f);
-        Vector3f negRot = rotation.copy();
+        Vector3f negRot = new Vector3f(rotation);
         negRot.mul(-1f);
-        pose.mulPose(Quaternion.fromXYZ(negRot));
+        pose.mulPose(VectorUtil.fromXYZ(negRot));
         pose.translate(- position.x(), - position.y(), - position.z());
     }
 
-    public void renderToWorld(PoseStack pose, MultiBufferSource source, boolean dropShadow, boolean transparent, SimpleColor bgColor, int light) {
+    public void renderToWorld(PoseStack pose, MultiBufferSource source, boolean dropShadow, net.minecraft.client.gui.Font.DisplayMode mode, SimpleColor bgColor, int light) {
         PoseStack p = new PoseStack();
         p.pushPose();
         p.translate(position.x(), position.y(), position.z());
         float w = pivot.x() * this.getWidth(), h = pivot.y() * this.getHeight();
-        p.mulPose(Quaternion.fromXYZ(this.rotation));
-        Vector3f negRot = rotation.copy();
+        p.mulPose(VectorUtil.fromXYZ(this.rotation));
+        Vector3f negRot = new Vector3f(rotation);
 
         p.scale(standardScale, - standardScale, standardScale);
         p.scale(this.scale.x(), this.scale.y(), 1f);
         p.translate(- w, h, 0);
 
         Minecraft.getInstance().font.drawInBatch(text, 0 ,0, color.getRGB(), dropShadow, p.last().pose(),
-                source, transparent, bgColor.getRGB(), light);
+                source, mode, bgColor.getRGB(), light);
         pose.mulPoseMatrix(p.last().pose());
         p.popPose();
     }
 
     public void renderToWorld(PoseStack pose, MultiBufferSource source, boolean dropShadow, int light) {
-        renderToWorld(pose, source, dropShadow, false, SimpleColor.fromRGBA(0, 0, 0, 0), light);
+        renderToWorld(pose, source, dropShadow, net.minecraft.client.gui.Font.DisplayMode.NORMAL, SimpleColor.fromRGBA(0, 0, 0, 0), light);
     }
 
     public void renderToWorld(PoseStack pose, MultiBufferSource source, int light) {

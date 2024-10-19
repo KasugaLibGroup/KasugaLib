@@ -2,8 +2,8 @@ package kasuga.lib.core.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.render.SimpleColor;
+import org.joml.Vector3f;
 
 import java.util.Map;
 
@@ -13,7 +13,7 @@ public interface BedrockRenderable {
     void applyTranslationAndRotation(PoseStack pose);
     void render(PoseStack pose, VertexConsumer consumer, SimpleColor color, int light, int overlay);
     default Vector3f vonvertPivot(Vector3f myPosition, Vector3f parentPosition) {
-        Vector3f vector3f = myPosition.copy();
+        Vector3f vector3f = new Vector3f(myPosition);
         vector3f.sub(parentPosition);
         return vector3f;
     }

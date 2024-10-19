@@ -4,12 +4,14 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import kasuga.lib.core.client.model.BedrockRenderable;
+import kasuga.lib.core.client.model.Rotationable;
 import kasuga.lib.core.client.model.model_json.Bone;
 import kasuga.lib.core.client.model.model_json.Cube;
 import kasuga.lib.core.client.model.model_json.Locator;
 import kasuga.lib.core.client.render.SimpleColor;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,8 +32,8 @@ public class AnimBone implements BedrockRenderable, Animable {
 
     public AnimBone(Bone bone, AnimModel model) {
         this.bone = bone;
-        this.pivot = bone.pivot.copy();
-        this.rotation = bone.rotation.copy();
+        this.pivot = new Vector3f(bone.pivot);
+        this.rotation = new Vector3f(bone.rotation);
         pivot.mul(1 / 16f);
         children = Maps.newHashMap();
         this.model = model;
@@ -52,14 +54,14 @@ public class AnimBone implements BedrockRenderable, Animable {
 
         this.locators = new HashMap<>();
         locators.forEach((name, locator) -> {this.locators.put(name, locator.copy());});
-        this.pivot = bone.pivot.copy();
-        this.rotation = bone.rotation.copy();
+        this.pivot = new Vector3f(bone.pivot);
+        this.rotation = new Vector3f(bone.rotation);
         initAnim();
     }
 
     private void collectLocators() {
         HashMap<String, Locator> locators = bone.getLocators();
-        Vector3f parentPivot = parent == null ? Vector3f.ZERO.copy() : parent.getPivot().copy();
+        Vector3f parentPivot = parent == null ? new Vector3f() : new Vector3f(parent.getPivot());
         locators.forEach((name, loc) -> {
             this.locators.put(name, new Locator(vonvertPivot(loc.position, parentPivot), loc.rotation));
         });
@@ -98,7 +100,7 @@ public class AnimBone implements BedrockRenderable, Animable {
     }
 
     public Vector3f getPivot() {
-        return this.pivot.copy();
+        return new Vector3f(this.pivot);
     }
 
     public void resetAnimation() {
@@ -106,13 +108,13 @@ public class AnimBone implements BedrockRenderable, Animable {
     }
 
     private void initAnim() {
-        this.offset = Vector3f.ZERO.copy();
-        this.animRot = Vector3f.ZERO.copy();
+        this.offset = new Vector3f();
+        this.animRot = new Vector3f();
         this.scale = new Vector3f(1, 1, 1);
     }
 
     public Vector3f getRealPosition() {
-        Vector3f result = this.pivot.copy();
+        Vector3f result = new Vector3f(this.pivot);
         result.add(this.offset);
         return result;
     }
@@ -122,7 +124,7 @@ public class AnimBone implements BedrockRenderable, Animable {
     }
 
     public Vector3f getRealRotation() {
-        Vector3f result = this.rotation.copy();
+        Vector3f result = new Vector3f(this.rotation);
         result.add(this.animRot);
         return result;
     }
@@ -138,15 +140,15 @@ public class AnimBone implements BedrockRenderable, Animable {
     @Override
     public void applyTranslationAndRotation(PoseStack pose) {
         Vector3f translation = getRealPosition();
-        Vector3f parentTrans = parent != null ? parent.getPivot().copy() : Vector3f.ZERO.copy();
+        Vector3f parentTrans = parent != null ? new Vector3f(parent.getPivot()) : new Vector3f();
         Vector3f t = vonvertPivot(translation, parentTrans);
         pose.translate(t.x(), t.y(), t.z());
 
         Vector3f rotation = getRealRotation();
-        if (!rotation.equals(Vector3f.ZERO)) {
-            pose.mulPose(Vector3f.ZP.rotationDegrees(rotation.z()));
-            pose.mulPose(Vector3f.YN.rotationDegrees(rotation.y()));
-            pose.mulPose(Vector3f.XN.rotationDegrees(rotation.x()));
+        if (!rotation.equals(Rotationable.ZERO)) {
+            pose.mulPose(Axis.ZP.rotationDegrees(rotation.z()));
+            pose.mulPose(Axis.YN.rotationDegrees(rotation.y()));
+            pose.mulPose(Axis.XN.rotationDegrees(rotation.x()));
         }
 
         if (scale.equals(Cube.BASE_SCALE)) return;

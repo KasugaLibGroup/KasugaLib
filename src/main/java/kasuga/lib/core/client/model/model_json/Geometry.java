@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.model.ItemTransformMapping;
 import kasuga.lib.core.client.model.anim_model.AnimModel;
 import net.minecraft.client.renderer.RenderType;
@@ -15,8 +14,10 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import org.joml.Vector3f;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,13 +44,13 @@ public class Geometry {
         parseTransforms(json);
     }
 
-    public static HashMap<ItemTransforms.TransformType, ItemTransform> parseTransforms(JsonObject json) {
+    public static HashMap<ItemDisplayContext, ItemTransform> parseTransforms(JsonObject json) {
         if (!json.has("item_display_transforms")) return Maps.newHashMap();
         JsonObject displayTransforms = json.getAsJsonObject("item_display_transforms");
-        HashMap<ItemTransforms.TransformType, ItemTransform> result = Maps.newHashMap();
+        HashMap<ItemDisplayContext, ItemTransform> result = Maps.newHashMap();
         for (Map.Entry<String, JsonElement> entry : displayTransforms.entrySet()) {
             String transName = entry.getKey();
-            ItemTransforms.TransformType type = ItemTransformMapping.getType(transName);
+            ItemDisplayContext type = ItemTransformMapping.getType(transName);
             JsonObject transBody = entry.getValue().getAsJsonObject();
             Vector3f rotation = readVec3fFromJsonArray(transBody.getAsJsonArray("rotation"));
             Vector3f translation = readVec3fFromJsonArray(transBody.getAsJsonArray("translation"));

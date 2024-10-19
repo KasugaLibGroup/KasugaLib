@@ -2,7 +2,7 @@ package kasuga.lib.core.client.model.model_json;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.mojang.math.Vector3f;
+import org.joml.Vector3f;
 
 public class GeometryDescription {
     private final String identifier;

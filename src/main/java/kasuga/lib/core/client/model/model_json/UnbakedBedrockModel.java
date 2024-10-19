@@ -8,12 +8,10 @@ import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.util.Resources;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraftforge.client.model.IModelBuilder;
@@ -107,18 +105,10 @@ public class UnbakedBedrockModel extends SimpleUnbakedGeometry<UnbakedBedrockMod
     }
 
     @Override
-    protected void addQuads(IGeometryBakingContext owner, IModelBuilder<?> modelBuilder, ModelBakery bakery,
-                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
+    protected void addQuads(IGeometryBakingContext owner, IModelBuilder<?> modelBuilder, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
         geometries.forEach(geometry -> geometry.addQuads(
-                owner, modelBuilder, bakery,
+                owner, modelBuilder, Minecraft.getInstance().getModelManager().getModelBakery(),
                 spriteGetter, modelTransform, modelLocation
         ));
-    }
-
-    @Override
-    public Collection<Material> getMaterials(IGeometryBakingContext context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-        Set<Material> materials = new HashSet<>();
-        materials.add(this.material);
-        return materials;
     }
 }

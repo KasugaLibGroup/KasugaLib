@@ -1,12 +1,16 @@
 package kasuga.lib.core.client.model;
 
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+
+import com.mojang.math.Axis;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public interface Rotationable {
+
+    static final Vector3f ZERO = new Vector3f();
     Vector3f getPivot();
     Vector3f getRotation();
     boolean hasParent();
@@ -15,45 +19,45 @@ public interface Rotationable {
     default RotationContext compileRotate(RotationContext context) {
         if (hasParent())
             context = getParent().compileRotate(context);
-        Vector3f offset = this.getPivot().copy();
+        Vector3f offset = new Vector3f(this.getPivot());
         offset.sub(context.lastPivot());
-        context.quaternions.forEach(offset::transform);
+        context.quaternions.forEach(quaternionf -> quaternionf.transform(offset));
         context.position.add(offset);
 
-        if (!getRotation().equals(Vector3f.ZERO)) {
-            Vector3f rotation = getRotation().copy();
+        if (!getRotation().equals(ZERO)) {
+            Vector3f rotation = new Vector3f(getRotation());
             rotation.mul(-1, -1, 1);
-            Quaternion cubeRot = Quaternion.ONE.copy();
+            Quaternionf cubeRot = new Quaternionf();
             rotQuaternion(cubeRot, rotation);
             context.quaternions.add(0, cubeRot);
         }
 
-        Vector3f pivot = this.getPivot().copy();
+        Vector3f pivot = new Vector3f(this.getPivot());
         return new RotationContext(context.position, pivot, context.quaternions);
     }
 
     default RotationContext startCompileRotate() {
         return this.compileRotate(
                 new RotationContext(
-                        Vector3f.ZERO.copy(),
-                        Vector3f.ZERO.copy(),
+                        new Vector3f(),
+                        new Vector3f(),
                         new LinkedList<>()
                 )
         );
     }
 
     default Vector3f getNearestValidPivot() {
-        if (!this.getRotation().equals(Vector3f.ZERO)) return this.getPivot();
+        if (!this.getRotation().equals(ZERO)) return this.getPivot();
         if (this.hasParent()) return this.getParent().getNearestValidPivot();
-        return Vector3f.ZERO;
+        return new Vector3f(ZERO);
     }
 
-    private void rotQuaternion(Quaternion quaternion, Vector3f rotDeg) {
-        quaternion.mul(Vector3f.ZP.rotationDegrees(rotDeg.z()));
-        quaternion.mul(Vector3f.YP.rotationDegrees(rotDeg.y()));
-        quaternion.mul(Vector3f.XP.rotationDegrees(rotDeg.x()));
+    private void rotQuaternion(Quaternionf quaternion, Vector3f rotDeg) {
+        quaternion.mul(Axis.ZP.rotationDegrees(rotDeg.z()));
+        quaternion.mul(Axis.YP.rotationDegrees(rotDeg.y()));
+        quaternion.mul(Axis.XP.rotationDegrees(rotDeg.x()));
     }
 
 
-    record RotationContext(Vector3f position, Vector3f lastPivot, List<Quaternion> quaternions) {}
+    record RotationContext(Vector3f position, Vector3f lastPivot, List<Quaternionf> quaternions) {}
 }
