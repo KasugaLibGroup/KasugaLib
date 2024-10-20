@@ -103,9 +103,6 @@ public class BedrockModelLoader implements IModelLoader<UnbakedBedrockModel>, Re
 
     public static AnimModel getModel(ResourceLocation location, RenderType type) {
         UnbakedBedrockModel unbaked = MODELS.getOrDefault(location, null);
-        if (unbaked == null) {
-            // TODO: need to fix.
-        }
         if (unbaked == null) return null;
         List<Geometry> geometries = unbaked.getGeometries();
         if (geometries.isEmpty()) return null;
