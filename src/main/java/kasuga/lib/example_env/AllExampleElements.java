@@ -152,8 +152,5 @@ public class AllExampleElements {
 
      */
 
-    public static void invoke() {
-        if (Envs.isClient()) AllClient.invoke();
-        testRegistry.submit();
-    }
+    public static void invoke() {}
 }

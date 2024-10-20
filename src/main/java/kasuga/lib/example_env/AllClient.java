@@ -6,7 +6,7 @@ import kasuga.lib.core.util.LazyRecomputable;
 public class AllClient {
 
     public static final LazyRecomputable<AnimationFile> anim = AnimationFile.
-            fromFile(AllExampleElements.REGISTRY.asResource("animations/model.animation.json"));
+            fromFile(AllExampleElements.testRegistry.asResource("animations/model.animation.json"));
 
     public static void invoke(){}
 }
