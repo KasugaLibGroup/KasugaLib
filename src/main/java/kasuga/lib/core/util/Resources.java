@@ -89,7 +89,7 @@ public class Resources {
         Collection<ResourceLocation> resources = rm.listResources(location.getPath(), l -> true);
         HashMap<String, net.minecraft.server.packs.resources.Resource> result = new HashMap<>();
         for(ResourceLocation location1 : resources) {
-            if(!location.getPath().contains(".") || !location.getNamespace().equals(location.getNamespace())) continue;
+            if(!location1.getPath().contains(".") || !location1.getNamespace().equals(location.getNamespace())) continue;
             if(fullyPath)
                 if(location1.getPath().contains("."))
                     result.put(location1.getPath(), getResource(location1));

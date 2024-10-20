@@ -1,0 +1,21 @@
+package kasuga.lib.core.events.client;
+
+import kasuga.lib.core.client.model.BedrockModelLoader;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+public class GeometryEvent {
+
+    @SubscribeEvent
+    public static void registerGeometry(ModelRegistryEvent event) {
+        ModelLoaderRegistry.registerLoader(new ResourceLocation("kasuga_lib", "bedrock_model"), BedrockModelLoader.INSTANCE);
+    }
+
+    @SubscribeEvent
+    public static void registerReloadListener(RegisterClientReloadListenersEvent event) {
+        event.registerReloadListener(BedrockModelLoader.INSTANCE);
+    }
+}

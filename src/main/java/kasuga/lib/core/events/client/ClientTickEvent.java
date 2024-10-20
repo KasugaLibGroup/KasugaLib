@@ -1,6 +1,7 @@
 package kasuga.lib.core.events.client;
 
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.client.model.anim_instance.AnimateTickerManager;
 import kasuga.lib.registrations.client.KeyBindingReg;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -12,8 +13,18 @@ public class ClientTickEvent {
             KasugaLib.STACKS.JAVASCRIPT.GROUP_CLIENT.dispatchTick();
         }
 
-        if(event.phase == TickEvent.Phase.END){
+        if(event.phase == TickEvent.Phase.END) {
             KeyBindingReg.onClientTick();
+            AnimateTickerManager.INSTANCE.tickGui();
         }
+
+        // deal with world ticker;
+    }
+
+    @SubscribeEvent
+    public static void onGuiTick(TickEvent.WorldTickEvent event) {
+        // deal with gui ticker;
+        if (event.phase == TickEvent.Phase.END)
+            AnimateTickerManager.INSTANCE.tickWorld();
     }
 }

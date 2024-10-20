@@ -6,13 +6,17 @@
   "refmap": "kasuga.refmap.json",
   "mixins": [
     "MixinNbtUtils",
-    "resources.FilePackResourceMixin",
     "resources.DelegatingResourcePackMixin",
+    "resources.FilePackResourceMixin",
     "resources.PathResourcePackMixin",
     "MixinStationBlockEntity"
   ],
   "client": [
+    "client.MixinBlockModel$Deserializer",
+    "client.ModelLoaderRegistryAccessor",
     "client.MixinBlockModelBinding",
+    "client.MixinBlockModelShaper",
+    "client.MixinBlockRenderDispatcher",
     "client.MixinObjLoader",
     "client.MixinBezierConnection",
     "client.MixinCarriageContraptionEntityRenderer",
