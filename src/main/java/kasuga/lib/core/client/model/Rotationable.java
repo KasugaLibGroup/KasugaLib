@@ -4,10 +4,13 @@ package kasuga.lib.core.client.model;
 import com.mojang.math.Axis;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.LinkedList;
 import java.util.List;
 
+@OnlyIn(Dist.CLIENT)
 public interface Rotationable {
 
     static final Vector3f ZERO = new Vector3f();

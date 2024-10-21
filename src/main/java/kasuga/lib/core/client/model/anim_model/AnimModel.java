@@ -14,10 +14,15 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.model.Material;
 import org.joml.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.commons.lang3.tuple.Triple;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@OnlyIn(Dist.CLIENT)
 public class AnimModel implements Animable {
 
     public final Map<String, BedrockRenderable> children;
@@ -170,6 +175,25 @@ public class AnimModel implements Animable {
         VertexConsumer consumer = buffer.getBuffer(renderType);
         roots.forEach(c -> c.render(pose, consumer, color, light, overlay));
         pose.popPose();
+    }
+
+    public void clearAnim() {
+        this.initAnim();
+        this.roots.forEach(b -> {
+            if (!(b instanceof AnimBone animBone)) return;
+            animBone.recursionClearAnim();
+        });
+    }
+
+    public void applyAnimation(HashMap<String, Triple<Vector3f, Vector3f, Vector3f>> multipliers) {
+        this.children.forEach((name, r) -> {
+            if (!(r instanceof AnimBone animBone)) return;
+            Triple<Vector3f, Vector3f, Vector3f> multiplier = multipliers.getOrDefault(name, null);
+            if (multiplier == null) return;
+            animBone.setOffset(multiplier.getLeft());
+            animBone.setAnimRot(multiplier.getMiddle());
+            animBone.setScale(multiplier.getRight());
+        });
     }
 
     public AnimModel copy() {

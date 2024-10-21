@@ -66,7 +66,6 @@ public class KasugaLibStacks {
         MinecraftForge.EVENT_BUS.addListener(PacketEvent::onServerPayloadHandleEvent);
         bus.addListener(BothSetupEvent::onFMLCommonSetup);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
-        bus.addListener(BothSetupEvent::RegisterKeyEvent);
 
         if(Envs.isClient()) {
             MinecraftForge.EVENT_BUS.addListener(PacketEvent::onClientPayloadHandleEvent);
@@ -86,10 +85,10 @@ public class KasugaLibStacks {
             MinecraftForge.EVENT_BUS.addListener(RenderTickEvent::onRenderTick);
             bus.addListener(GeometryEvent::registerGeometry);
             bus.addListener(GeometryEvent::registerReloadListener);
+            bus.addListener(BothSetupEvent::RegisterKeyEvent);
             GUI = Optional.of(new GuiEngine());
             bus.addListener(AnimationModelRegistryEvent::registerAnimations);
-            bus.addListener(AnimationModelRegistryEvent::registerBedrockModels);
-            KasugaLibClient.invoke();
+            if (Envs.isDevEnvironment()) KasugaLibClient.invoke();
         }
 
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStarting);

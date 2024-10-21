@@ -1,7 +1,10 @@
 package kasuga.lib.core.client.model.model_json;
 
 import org.joml.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class Locator {
     public final Vector3f position, rotation;
 

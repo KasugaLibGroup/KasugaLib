@@ -15,6 +15,8 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import org.joml.Vector3f;
@@ -23,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+@OnlyIn(Dist.CLIENT)
 public class Geometry {
     private final GeometryDescription description;
     private final HashMap<String, Bone> bones;
