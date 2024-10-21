@@ -4,9 +4,12 @@ import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.render.texture.Vec2f;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.core.Direction;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.HashMap;
 
+@OnlyIn(Dist.CLIENT)
 public class BoxLayerProcessor {
     private final boolean mirror, visible, emissive, flipV;
     private final Vec2f textOffset;

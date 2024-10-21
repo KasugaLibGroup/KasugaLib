@@ -21,7 +21,7 @@ public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTil
 
     LazyRecomputable<AnimateTicker> ticker = AnimateTicker.getTickerInstance(
             AllExampleElements.REGISTRY.asResource("block/test/test_model_complicate"),
-            AllExampleElements.REGISTRY.asResource("animations/model.animation.json"),
+            AllExampleElements.REGISTRY.asResource("model"),
             RenderType.solid(), "transform", AnimateTicker.TickerType.RENDER, 60, 100);
 
     public GreenAppleTileRenderer(BlockEntityRendererProvider.Context context) {}

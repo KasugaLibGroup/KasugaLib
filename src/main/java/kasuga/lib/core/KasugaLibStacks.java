@@ -76,8 +76,7 @@ public class KasugaLibStacks {
             bus.addListener(GeometryEvent::registerReloadListener);
             GUI = Optional.of(new GuiEngine());
             bus.addListener(AnimationModelRegistryEvent::registerAnimations);
-            bus.addListener(AnimationModelRegistryEvent::registerBedrockModels);
-            KasugaLibClient.invoke();
+            if (Envs.isDevEnvironment()) KasugaLibClient.invoke();
         }
 
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStarting);

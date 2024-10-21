@@ -2,7 +2,10 @@ package kasuga.lib.core.client.model.model_json;
 
 import net.minecraft.client.renderer.FaceInfo;
 import net.minecraft.core.Direction;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public enum UVCorner {
     LEFT_TOP, LEFT_DOWN, RIGHT_TOP, RIGHT_DOWN;
     public static boolean isLeft(UVCorner corner) {

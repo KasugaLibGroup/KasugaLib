@@ -1,11 +1,15 @@
 package kasuga.lib.core.client.model.anim_instance;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import java.util.HashSet;
 
+@OnlyIn(Dist.CLIENT)
 public class AnimateTickerManager {
 
     public static final AnimateTickerManager INSTANCE = new AnimateTickerManager();
-    private final HashSet<AnimateTicker> GUI_TICKER, WORLD_TICKER;
+    private final HashSet<Ticker> GUI_TICKER, WORLD_TICKER;
     private int guiTick, worldTick;
 
     public AnimateTickerManager() {
@@ -15,18 +19,18 @@ public class AnimateTickerManager {
         worldTick = 0;
     }
 
-    protected void putTickerIn(AnimateTicker ticker) {
-        if (ticker.type == AnimateTicker.TickerType.RENDER)
+    protected void putTickerIn(Ticker ticker) {
+        if (ticker.getType() == AnimateTicker.TickerType.RENDER)
             putGuiTickerIn(ticker);
         else
             putWorldTickerIn(ticker);
     }
 
-    protected void putGuiTickerIn(AnimateTicker ticker) {
+    protected void putGuiTickerIn(Ticker ticker) {
         this.GUI_TICKER.add(ticker);
     }
 
-    protected void putWorldTickerIn(AnimateTicker ticker) {
+    protected void putWorldTickerIn(Ticker ticker) {
         this.WORLD_TICKER.add(ticker);
     }
 
@@ -52,8 +56,8 @@ public class AnimateTickerManager {
         return type == AnimateTicker.TickerType.RENDER ? getGuiTick() : getWorldTick();
     }
 
-    public void removeTicker(AnimateTicker ticker) {
-        if (ticker.type == AnimateTicker.TickerType.RENDER)
+    public void removeTicker(Ticker ticker) {
+        if (ticker.getType() == AnimateTicker.TickerType.RENDER)
             GUI_TICKER.remove(ticker);
         else
             WORLD_TICKER.remove(ticker);

@@ -9,8 +9,13 @@ import kasuga.lib.core.util.LazyRecomputable;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class AnimateTicker {
+import java.util.Map;
+
+@OnlyIn(Dist.CLIENT)
+public class AnimateTicker implements Ticker {
     private float playSpeed;
 
     public final AnimationInstance animation;
@@ -18,7 +23,7 @@ public class AnimateTicker {
     public final TickerType type;
     private float recent;
     private int starterTick, tick, endTick;
-    private boolean moving;
+    private boolean moving, paused;
 
     public AnimateTicker(AnimationInstance instance, TickerType type, float playSpeed) {
         this.playSpeed = playSpeed;
@@ -33,6 +38,11 @@ public class AnimateTicker {
 
     public void unload() {
         AnimateTickerManager.INSTANCE.removeTicker(this);
+    }
+
+    @Override
+    public TickerType getType() {
+        return type;
     }
 
     public void setTick(int tick) {
@@ -51,7 +61,7 @@ public class AnimateTicker {
     }
 
     public int getEndTick() {
-        return (int) Math.ceil(starterTick + animation.length * 20f);
+        return (int) Math.ceil(starterTick + animation.length * 20f * Math.abs(playSpeed / 100f));
     }
 
     public int getTick() {
@@ -59,16 +69,27 @@ public class AnimateTicker {
     }
 
     public void start() {
-        setStarterTick(AnimateTickerManager.INSTANCE.getTick(type));
-        this.recent = 0f;
-        this.moving = true;
-        this.tick = starterTick;
-        System.out.println("start time: " + System.currentTimeMillis());
+        if (!paused) {
+            setStarterTick(AnimateTickerManager.INSTANCE.getTick(type));
+            this.recent = 0f;
+            this.moving = true;
+            this.tick = starterTick;
+        } else {
+            int t = AnimateTickerManager.INSTANCE.getTick(type);
+            setStarterTick(t - tick);
+            this.moving = true;
+            paused = false;
+            this.tick = t;
+        }
     }
 
     public void stop() {
         this.moving = false;
-        System.out.println("stop time: " + System.currentTimeMillis());
+    }
+
+    public void pause() {
+        this.paused = true;
+        this.moving = false;
     }
 
     public float getPlaySpeed() {
@@ -79,14 +100,18 @@ public class AnimateTicker {
         return moving;
     }
 
+    public boolean isPaused() {
+        return paused;
+    }
+
     public void setMoving(boolean moving) {
         this.moving = moving;
     }
 
     public float tickToSec(float partial) {
         int offset = tick - starterTick;
-        float result = ((float) offset + partial) / 20f * (playSpeed / 100f);
-        if (result < 0) result += animation.length;
+        float result = ((float) offset + partial) / 20f;
+        if (playSpeed < 0) result = animation.length - result;
         this.recent = result;
         return result;
     }
@@ -96,7 +121,7 @@ public class AnimateTicker {
         animation.applyAndRender(pose, source, light, overlay, sec);
     }
 
-    protected void tick(int tick) {
+    public void tick(int tick) {
         if (!moving) return;
         this.tick = tick;
         if (tick >= endTick) {
@@ -130,6 +155,7 @@ public class AnimateTicker {
         });
     }
 
+    @OnlyIn(Dist.CLIENT)
     public static enum TickerType {
         RENDER, LOGICAL;
     }
