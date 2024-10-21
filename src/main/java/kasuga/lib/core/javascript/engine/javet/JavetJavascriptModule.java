@@ -47,7 +47,7 @@ public class JavetJavascriptModule extends AbstractJavascriptEngineModule {
     public V8Value getModule(V8Runtime runtime, JavascriptValue requireFunction){
         try {
             if(this.rawModule != null){
-                return this.rawModule.toClone();
+                return JavetValue.weakClone(rawModule);
             }
             V8ValueObject moduleObject = runtime.createV8ValueObject();
             V8ValueObject exportsObject = runtime.createV8ValueObject();

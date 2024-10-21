@@ -1,5 +1,7 @@
 package kasuga.lib.core.javascript.engine.javet;
 
+import com.caoccao.javet.annotations.V8Convert;
+import com.caoccao.javet.annotations.V8Function;
 import com.caoccao.javet.exceptions.JavetException;
 import com.caoccao.javet.interfaces.IJavetEntityFunction;
 import com.caoccao.javet.interop.V8Runtime;
@@ -10,6 +12,7 @@ import com.caoccao.javet.utils.receivers.JavetCallbackReceiver;
 import com.caoccao.javet.values.V8Value;
 import com.caoccao.javet.values.reference.V8ValueFunction;
 import com.caoccao.javet.values.reference.V8ValueObject;
+import com.caoccao.javet.values.reference.V8ValueReference;
 import com.caoccao.javet.values.reference.V8ValueSymbol;
 import kasuga.lib.core.javascript.engine.HostAccess;
 import kasuga.lib.core.javascript.engine.JavascriptValue;
@@ -25,6 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class JavetKasugaConverter extends JavetObjectConverter {
 
+    JavetProxyConverter proxyConverter = new JavetProxyConverter();
     private final V8Runtime runtime;
 
     private final V8ValueSymbol SYMBOL_NATIVE_OBJECT;
@@ -50,10 +54,15 @@ public class JavetKasugaConverter extends JavetObjectConverter {
         T v8Value = super.toV8Value(v8Runtime, object, depth);
 
         Class objectClass = object.getClass();
+
+        if(objectClass.isAnnotationPresent(V8Convert.class)){
+            return proxyConverter.toV8Value(v8Runtime, object);
+        }
+
         if (v8Value != null && !(v8Value.isUndefined())) {
             if(v8Value instanceof V8ValueObject v8ValueObject){
                 int hashCode = System.identityHashCode(object);
-                v8ValueObject.setInteger(SYMBOL_NATIVE_OBJECT.toClone(),hashCode);
+                v8ValueObject.setInteger(SYMBOL_NATIVE_OBJECT, hashCode);
             }
             return v8Value;
         }
@@ -66,7 +75,7 @@ public class JavetKasugaConverter extends JavetObjectConverter {
         HashMap<String, ArrayList<Method>> methodsFromName = new HashMap<>();
 
         for (Method method : methods) {
-            if (!Modifier.isStatic(method.getModifiers()) && method.canAccess(object)) {
+            if (!Modifier.isStatic(method.getModifiers()) && method.canAccess(object) && method.isAnnotationPresent(HostAccess.Export.class)) {
                 methodsFromName.computeIfAbsent(method.getName(), (e)->new ArrayList<>()).add(method);
             }
         }
@@ -93,6 +102,7 @@ public class JavetKasugaConverter extends JavetObjectConverter {
             }
         }else v8ValueObject = v8Runtime.createV8ValueObject();
 
+
         V8ValueObject finalV8ValueObject = v8ValueObject;
         methodsFromName.forEach((methodName, sameNameMethods)->{
             if (methodName != null) {
@@ -101,11 +111,10 @@ public class JavetKasugaConverter extends JavetObjectConverter {
                         createProxiedCallByMethods(object, sameNameMethods, v8Runtime),
                         PROXIED_CALL_METHOD
                 );
-
-                V8ValueFunction v8Function = null;
                 try {
-                    v8Function = v8Runtime.createV8ValueFunction(functionContext);
-                    finalV8ValueObject.set(methodName, v8Function);
+                    try(V8ValueFunction v8Function = v8Runtime.createV8ValueFunction(functionContext);){
+                        finalV8ValueObject.set(methodName, v8Function);
+                    }
                 } catch (JavetException e) {
                     throw new RuntimeException(e);
                 }
@@ -124,7 +133,7 @@ public class JavetKasugaConverter extends JavetObjectConverter {
                 }
             }
             int hashCode = System.identityHashCode(object);
-            v8ValueObject.setProperty(SYMBOL_NATIVE_OBJECT.toClone(),hashCode);
+            v8ValueObject.setProperty(SYMBOL_NATIVE_OBJECT,hashCode);
             // @TODO BE AWARE OF SANDBOX ESCAPE
             cachedObjects.put(hashCode, new WeakReference<>(object));
         } catch (IllegalAccessException e) {
@@ -147,7 +156,7 @@ public class JavetKasugaConverter extends JavetObjectConverter {
         }
         T parentConvertResult = super.toObject(v8Value, depth);
         if(parentConvertResult instanceof V8Value){
-            return (T) new JavetJavascriptValue(v8Value.toClone(), v8Value.getV8Runtime());
+            return (T) new JavetJavascriptValue(JavetValue.weakClone(v8Value), v8Value.getV8Runtime());
         }
         return parentConvertResult;
     }
@@ -156,6 +165,7 @@ public class JavetKasugaConverter extends JavetObjectConverter {
 
     @FunctionalInterface
     static interface ProxiedCall{
+        @V8Function
         public V8Value call(V8Value ...args);
     }
 
@@ -172,6 +182,9 @@ public class JavetKasugaConverter extends JavetObjectConverter {
                     for (Method sameNameMethod : sameNameMethods) {
                         Pair<Boolean, V8Value> callResult = call(sameNameMethod, argsList, converted);
                         if(callResult.getFirst()){
+                            if(callResult.getSecond() instanceof V8ValueReference reference){
+                                reference.setWeak();
+                            }
                             return callResult.getSecond();
                         }
                     }
@@ -187,7 +200,7 @@ public class JavetKasugaConverter extends JavetObjectConverter {
                 int i=0;
                 for(Parameter parameter : parameters){
                     if(parameter.getType() == JavascriptValue.class){
-                        V8Value value = originValues.get(i).toClone();
+                        V8Value value = JavetValue.weakClone(originValues.get(i));
                         callParameter.add(new JavetJavascriptValue(value, v8Runtime));
                     }else{
                         if(!parameter.getType().isAssignableFrom(convertedValues.get(i).getClass())){

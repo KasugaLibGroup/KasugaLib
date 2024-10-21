@@ -1,5 +1,6 @@
 package kasuga.lib.core.client.frontend.gui.nodes;
 
+import com.caoccao.javet.annotations.V8Convert;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutBox;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutNode;
 import kasuga.lib.core.client.frontend.dom.attribute.AttributeProxy;
@@ -22,6 +23,7 @@ import net.minecraft.world.phys.Vec2;
 
 import java.util.Optional;
 
+@V8Convert()
 public class GuiTextNode extends GuiDomNode implements MayMeasurable {
 
     static Font font = new Font(); // Currently we do not support change font
@@ -129,6 +131,8 @@ public class GuiTextNode extends GuiDomNode implements MayMeasurable {
 
     protected void clearContext(){
         // @TODO Sync
-        context = null;
+        this.getDomContext().queueDuringRender(()->{
+            context = null;
+        });
     }
 }

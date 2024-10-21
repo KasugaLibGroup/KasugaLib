@@ -1,5 +1,6 @@
 package kasuga.lib.core.client.frontend.dom;
 
+import com.caoccao.javet.annotations.V8Convert;
 import kasuga.lib.core.client.frontend.dom.event.EventEmitter;
 import kasuga.lib.core.client.frontend.dom.nodes.DomNode;
 import kasuga.lib.core.client.frontend.dom.registration.DOMPriorityRegistry;
@@ -12,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayDeque;
 
+@V8Convert()
 public abstract class DomContext<P extends DomNode<?>,T extends P> implements Tickable {
 
     protected boolean ready = false;

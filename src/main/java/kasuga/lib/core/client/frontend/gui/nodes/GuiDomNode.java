@@ -1,5 +1,6 @@
 package kasuga.lib.core.client.frontend.gui.nodes;
 
+import com.caoccao.javet.annotations.V8Convert;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutBox;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutContext;
@@ -21,6 +22,7 @@ import net.minecraftforge.common.util.Lazy;
 
 import java.util.Objects;
 
+@V8Convert()
 public class GuiDomNode extends DomNode<GuiContext> {
 
     @HostAccess.Export
@@ -161,6 +163,9 @@ public class GuiDomNode extends DomNode<GuiContext> {
         // 3. If the event is not stopped, dispatch the event to the parent
 
         LayoutContext<?,GuiDomNode> layout = getLayoutManager();
+        if(!layout.hasSource(source)){
+            return false; // Source already unloaded
+        }
         LayoutNode sourceNode = layout.getSourceNode(source);
         if(sourceNode == null)
             return false;

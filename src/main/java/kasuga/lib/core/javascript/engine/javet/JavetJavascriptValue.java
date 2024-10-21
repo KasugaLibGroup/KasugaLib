@@ -9,6 +9,7 @@ import com.caoccao.javet.values.primitive.V8ValueNumber;
 import com.caoccao.javet.values.primitive.V8ValueString;
 import com.caoccao.javet.values.reference.V8ValueFunction;
 import com.caoccao.javet.values.reference.V8ValueObject;
+import com.caoccao.javet.values.reference.V8ValueReference;
 import kasuga.lib.core.javascript.engine.JavascriptValue;
 
 public class JavetJavascriptValue implements JavascriptValue {
@@ -18,7 +19,7 @@ public class JavetJavascriptValue implements JavascriptValue {
     public V8Value reciever;
 
     public JavetJavascriptValue(V8Value v8Value, V8Runtime runtime) throws JavetException {
-        this(v8Value, runtime.createV8ValueObject(), runtime);
+        this(v8Value, v8Value, runtime);
     }
 
     public JavetJavascriptValue(V8Value v8Value, V8Value reciever, V8Runtime runtime) {
@@ -60,7 +61,7 @@ public class JavetJavascriptValue implements JavascriptValue {
         try {
             V8Value _reciever = reciever;
             if(_reciever == null){
-
+                _reciever = value;
             }
             return new JavetJavascriptValue(((V8ValueFunction)value).call(reciever, objects), runtime);
         } catch (JavetException e) {
@@ -78,7 +79,15 @@ public class JavetJavascriptValue implements JavascriptValue {
     }
 
     @Override
-    public void pin() {}
+    public void pin() {
+        if(value instanceof V8ValueReference reference){
+            try {
+                reference.clearWeak();
+            } catch (JavetException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
     @Override
     public boolean hasMember(String memberName) {

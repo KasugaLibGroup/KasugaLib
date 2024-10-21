@@ -1,5 +1,6 @@
 package kasuga.lib.core.client.frontend.gui;
 
+import com.caoccao.javet.annotations.V8Convert;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutEngine;
 import kasuga.lib.core.client.frontend.dom.DomContext;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantLock;
 
+@V8Convert()
 public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tickable {
 
     LayoutEngine<?,GuiDomNode> layoutEngine;
