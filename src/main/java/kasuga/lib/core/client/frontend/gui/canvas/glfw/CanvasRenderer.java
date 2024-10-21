@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
+import kasuga.lib.core.client.frontend.gui.canvas.CanvasManager;
 import kasuga.lib.core.util.Callback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
@@ -18,17 +19,24 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static net.minecraft.client.Minecraft.ON_OSX;
 
 public class CanvasRenderer {
+    private final CanvasManager manager;
     RenderBuffers renderBuffer = Minecraft.getInstance().renderBuffers();
 
-    TextureTarget target = new TextureTarget(256,256,true, ON_OSX);
+    TextureTarget target;
 
     Queue<Callback> taskQueue = new ArrayDeque<>();
 
 
     private AtomicBoolean shouldClear;
 
+    public CanvasRenderer(CanvasManager manager, int width, int height){
+        target = new TextureTarget(256,256,true, ON_OSX);
+        this.manager = manager;
+        init();
+    }
+
     public void init(){
-        target.createBuffers(256,256,false);
+        target.createBuffers(target.width, target.height, false);
         target.setClearColor(0,1,0,1);
         target.clear(true);
     }
@@ -66,7 +74,7 @@ public class CanvasRenderer {
     }
 
 
-    public void renderToScreen(int x,int y,int width,int height){
+    public void renderToScreen(float x,float y,float width,float height){
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, target.getColorTextureId());
         RenderSystem.setShaderColor(1,1,1,1);
@@ -92,6 +100,7 @@ public class CanvasRenderer {
 
     public void close(){
         target.destroyBuffers();
+        this.manager.remove(this);
     }
 
     public void pushTask(Callback drawFunction) {

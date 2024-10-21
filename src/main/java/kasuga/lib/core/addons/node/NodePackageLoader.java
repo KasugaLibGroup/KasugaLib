@@ -4,7 +4,6 @@ import kasuga.lib.core.addons.resource.HierarchicalFilesystem;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.JavascriptThread;
 import kasuga.lib.core.javascript.JavascriptThreadGroup;
-import kasuga.lib.core.javascript.module.JavascriptModule;
 import kasuga.lib.core.util.glob.GlobMatcher;
 
 import java.io.IOException;
@@ -93,7 +92,7 @@ public class NodePackageLoader {
             System.out.printf("Create entry \"%s\" for module %s\n",entry,nodePackage.packageName);
             JavascriptContext context = thread.createContext(entriesList, "Package " + nodePackage.packageName + " Entry " + entry);
             context.runTask(()->{
-                context.requireModule(nodePackage.packageName + "/" + entry).ifPresent(JavascriptModule::get);
+                context.loadModuleVoid(nodePackage.packageName + "/" + entry);
             });
         }
     }

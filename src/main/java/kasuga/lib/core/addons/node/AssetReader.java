@@ -2,7 +2,7 @@ package kasuga.lib.core.addons.node;
 
 import kasuga.lib.core.addons.resource.ResourceProvider;
 import kasuga.lib.core.javascript.JavascriptContext;
-import org.graalvm.polyglot.HostAccess;
+import kasuga.lib.core.javascript.engine.HostAccess;
 
 import java.io.IOException;
 import java.io.InputStream;

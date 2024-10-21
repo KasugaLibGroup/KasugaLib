@@ -3,9 +3,11 @@ package kasuga.lib.core.client.frontend.dom.registration;
 import kasuga.lib.core.client.frontend.dom.DomContext;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.SideEffectContext;
+import kasuga.lib.core.javascript.engine.JavascriptValue;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.resources.ResourceLocation;
-import org.graalvm.polyglot.Value;
+
+import java.util.Optional;
 
 public class DOMRegistryItemDynamicProxy {
     private final DomContext<?,?> context;
@@ -37,7 +39,7 @@ public class DOMRegistryItemDynamicProxy {
         DOMRegistryItem item = registryItemPair.getFirst();
         JavascriptContext registryContext = registryItemPair.getSecond();
         registryContext.runTask(()->{
-            Value unload = item.render(context);
+            JavascriptValue unload = item.render(context);
             if(unload.canExecute())
                 sideEffectContext.collect(unload::executeVoid);
         });
@@ -45,15 +47,16 @@ public class DOMRegistryItemDynamicProxy {
 
         registryContext.registerTickable(context);
 
-
         context.setReady();
 
     }
 
     public void unload(){
         this.closed = true;
-        sideEffectContext.close();
+        context.appendTask(()->sideEffectContext.close());
         context.setNotReady();
+        this.registryContext = null;
+        this.sideEffectContext = null;
     }
 
     public void enable() {
@@ -68,5 +71,9 @@ public class DOMRegistryItemDynamicProxy {
         if(this.id == location){
             this.reload();
         }
+    }
+
+    public Optional<JavascriptContext> getContext(){
+        return Optional.ofNullable(this.registryContext);
     }
 }

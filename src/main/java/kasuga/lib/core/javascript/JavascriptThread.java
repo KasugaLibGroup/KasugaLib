@@ -1,17 +1,25 @@
 package kasuga.lib.core.javascript;
 
+import kasuga.lib.core.client.animation.neo_neo.base.Movement;
+import kasuga.lib.core.client.animation.neo_neo.key_frame.KeyFrameHolder;
+import kasuga.lib.core.javascript.engine.ScriptEngine;
+import org.mozilla.javascript.commonjs.module.ModuleScope;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class JavascriptThread extends SynchronizedThread{
     private final JavascriptThreadGroup threadGroup;
-    ContextModuleLoader moduleLoader;
     private final Map<Object,JavascriptContext> contexts = new HashMap<>();
+    public ScriptEngine scriptEngine;
+
+    public ContextModuleLoader contextModuleLoader;
 
     public JavascriptThread(JavascriptThreadGroup javascriptThreadGroup, Object target, String description) {
         super("Javascript Thread - " + description);
         this.threadGroup = javascriptThreadGroup;
-        this.moduleLoader = new ContextModuleLoader(javascriptThreadGroup.getModuleLoader());
+        this.scriptEngine = javascriptThreadGroup.getScriptEngine();
+        this.contextModuleLoader = new ContextModuleLoader(javascriptThreadGroup.getModuleLoader());
     }
 
     @Override
@@ -25,10 +33,6 @@ public class JavascriptThread extends SynchronizedThread{
         threadGroup.onTerminate(this);
     }
 
-    public ContextModuleLoader getModuleLoader() {
-        return moduleLoader;
-    }
-
     public JavascriptContext createContext(Object target,String name){
         return contexts.computeIfAbsent(target, o -> new JavascriptContext(name, this));
     }
@@ -38,5 +42,9 @@ public class JavascriptThread extends SynchronizedThread{
         if(context != null){
             context.close();
         }
+    }
+
+    public ContextModuleLoader getContextModuleLoader() {
+        return contextModuleLoader;
     }
 }

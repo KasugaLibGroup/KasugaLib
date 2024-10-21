@@ -1,7 +1,7 @@
 package kasuga.lib.core.javascript.prebuilt.process;
 import kasuga.lib.core.javascript.JavascriptContext;
+import kasuga.lib.core.javascript.engine.HostAccess;
 import kasuga.lib.core.javascript.prebuilt.PrebuiltModule;
-import org.graalvm.polyglot.HostAccess;
 
 public class ProcessModule extends PrebuiltModule {
     private final JavascriptContext runtime;

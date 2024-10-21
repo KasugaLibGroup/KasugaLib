@@ -5,6 +5,10 @@ import kasuga.lib.core.util.Envs;
 import kasuga.lib.example_env.block.GreenAppleBlock;
 import kasuga.lib.example_env.block.GreenAppleItem;
 import kasuga.lib.example_env.block_entity.GreenAppleTile;
+import kasuga.lib.core.config.SimpleConfig;
+import kasuga.lib.example_env.block.gui.GuiExampleBlock;
+import kasuga.lib.example_env.block.gui.GuiExampleBlockEntity;
+import kasuga.lib.example_env.block.gui.GuiExampleBlockRenderer;
 import kasuga.lib.example_env.client.block_entity.renderer.GreenAppleTileRenderer;
 import kasuga.lib.example_env.client.screens.GreenAppleMenu;
 import kasuga.lib.example_env.client.screens.GreenAppleScreen;
@@ -41,6 +45,22 @@ public class AllExampleElements {
             .withRenderer(() -> GreenAppleTileRenderer::new)
             .blockPredicates((location, block) -> block instanceof GreenAppleBlock)
             .submit(REGISTRY);
+
+    public static final BlockReg<GuiExampleBlock> guiExampleBlock =
+            new BlockReg<GuiExampleBlock>("gui_example_block")
+                    .blockType(GuiExampleBlock::new)
+                    .material(Material.AIR)
+                    .defaultBlockItem()
+                    .tabTo(CreativeModeTab.TAB_DECORATIONS)
+                    .submit(REGISTRY);
+
+    public static final BlockEntityReg<GuiExampleBlockEntity> guiExampleTile =
+            new BlockEntityReg<GuiExampleBlockEntity>("gui_example_tile")
+                    .blockEntityType(GuiExampleBlockEntity::new)
+                    .blockPredicates((location, block) -> block instanceof GuiExampleBlock)
+                    .withRenderer(()-> GuiExampleBlockRenderer::new)
+                    .submit(REGISTRY);
+
 
     /*
     public static final EntityReg<WuLingEntity> wuling = new EntityReg<WuLingEntity>("wuling")
