@@ -1,7 +1,6 @@
 package kasuga.lib.core.client.model.anim_instance;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.model.anim_json.Animation;
 import kasuga.lib.core.client.model.BedrockRenderable;
@@ -12,6 +11,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Triple;
+import org.joml.Vector3f;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -151,7 +151,7 @@ public class AnimationInstance {
             }
             cached.getLeft().add(v.getLeft());
             cached.getMiddle().add(v.getMiddle());
-            cached.getRight().add(v.getRight());
+            cached.getRight().mul(v.getRight());
         });
     }
 

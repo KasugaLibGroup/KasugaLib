@@ -2,7 +2,6 @@ package kasuga.lib.core.client.model.anim_instance;
 
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.annos.Beta;
 import kasuga.lib.core.client.model.BedrockModelLoader;
 import kasuga.lib.core.client.model.anim_json.Animation;
@@ -16,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Triple;
+import org.joml.Vector3f;
 
 import java.util.HashMap;
 
