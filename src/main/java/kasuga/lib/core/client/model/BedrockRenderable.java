@@ -4,9 +4,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.render.SimpleColor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Map;
 
+@OnlyIn(Dist.CLIENT)
 public interface BedrockRenderable {
     Map<String, BedrockRenderable> getChildrens();
     BedrockRenderable getChild(String name);

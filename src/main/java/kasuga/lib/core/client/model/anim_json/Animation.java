@@ -6,11 +6,14 @@ import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.model.anim_instance.AnimCacheManager;
 import kasuga.lib.core.client.model.anim_instance.AnimationInstance;
 import kasuga.lib.core.client.model.anim_model.AnimModel;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
+@OnlyIn(Dist.CLIENT)
 public class Animation {
 
     public final String name;

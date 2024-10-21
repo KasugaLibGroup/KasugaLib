@@ -5,9 +5,12 @@ import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.render.texture.Vec2f;
 import net.minecraft.client.renderer.FaceInfo;
 import net.minecraft.core.Direction;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 
+@OnlyIn(Dist.CLIENT)
 public class Vertex {
     public final Vector3f position;
 
@@ -43,16 +46,6 @@ public class Vertex {
         Vector3f result = this.position.copy();
         result.add(translate);
         return new Vertex(result, uv);
-    }
-
-    public static void main(String[] args) {
-        for (int i = 0; i < 4; i++) {
-            FaceInfo.VertexInfo vertexInfo = FaceInfo.fromFacing(Direction.UP).getVertexInfo(i);
-            boolean x = vertexInfo.xFace == FaceInfo.Constants.MAX_X;
-            boolean y = vertexInfo.yFace == FaceInfo.Constants.MAX_Y;
-            boolean z = vertexInfo.zFace == FaceInfo.Constants.MAX_Z;
-            System.out.println("index=" + i + ", x_max=" + x + ", y_max=" + y + ", z_max=" + z);
-        }
     }
 
     public Vertex applyRotation(Vector3f pivot, Vector3f position, List<Quaternion> quaternions) {

@@ -1,11 +1,14 @@
 package kasuga.lib.core.client.model;
 
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
+@OnlyIn(Dist.CLIENT)
 public class ItemTransformMapping {
     public static final HashMap<String, ItemTransforms.TransformType> TYPES = new HashMap<>();
 

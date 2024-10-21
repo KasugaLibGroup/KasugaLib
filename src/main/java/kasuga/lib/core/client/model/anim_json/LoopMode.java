@@ -1,5 +1,9 @@
 package kasuga.lib.core.client.model.anim_json;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+@OnlyIn(Dist.CLIENT)
 public enum LoopMode {
     NONE(1),
     HOLD_ON_LAST_FRAME(2),

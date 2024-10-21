@@ -16,6 +16,8 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.SimpleUnbakedGeometry;
@@ -24,6 +26,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 
+@OnlyIn(Dist.CLIENT)
 public class UnbakedBedrockModel extends SimpleUnbakedGeometry<UnbakedBedrockModel> {
     public final ResourceLocation modelLocation, textureLocation;
     private Material material;
