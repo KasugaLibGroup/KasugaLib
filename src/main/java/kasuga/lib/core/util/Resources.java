@@ -61,6 +61,16 @@ public class Resources {
         return rm.getResource(location);
     }
 
+    @Util
+    public static Optional<Resource> attemptGetResource(ResourceLocation location) {
+        try {
+            Resource resources = getResource(location);
+            return Optional.of(resources);
+        } catch (IOException e) {
+            return Optional.empty();
+        }
+    }
+
     /**
      * Get Block from its registration key.
      * @param location the block registration key (we usually use them in data-gen)
