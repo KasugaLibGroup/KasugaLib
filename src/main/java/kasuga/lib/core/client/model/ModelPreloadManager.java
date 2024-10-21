@@ -12,6 +12,7 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Optional;
@@ -32,12 +33,9 @@ public class ModelPreloadManager {
             Optional<Resource> resource = Resources.attemptGetResource(loc);
             if (resource.isEmpty()) return;
             Resource r = resource.get();
-            try {
-                JsonElement element = JsonParser.parseReader(r.openAsReader());
-                if (element.isJsonObject()) objs.put(name, element.getAsJsonObject());
-            } catch (IOException e) {
-                KasugaLib.MAIN_LOGGER.error("Failed to parse ANIM_MODEL_PRELOAD file " + loc, e);
-            }
+            InputStreamReader reader = new InputStreamReader(r.getInputStream());
+            JsonElement element = JsonParser.parseReader(reader);
+            if (element.isJsonObject()) objs.put(name, element.getAsJsonObject());
         });
         objs.forEach((name, obj) -> {
             if (obj.has("model")) {
