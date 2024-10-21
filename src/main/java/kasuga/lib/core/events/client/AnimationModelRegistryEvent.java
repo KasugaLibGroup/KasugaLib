@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.model.BedrockModelLoader;
+import kasuga.lib.core.client.model.ModelPreloadManager;
 import kasuga.lib.core.client.model.anim_instance.AnimCacheManager;
 import kasuga.lib.core.client.model.anim_json.AnimationFile;
 import kasuga.lib.core.util.Resources;
@@ -22,6 +23,8 @@ public class AnimationModelRegistryEvent {
     @SubscribeEvent
     public static void registerAnimations(ModelBakeEvent event) {
         AnimationFile.filesLoaded = true;
+        BedrockModelLoader.registerFired = true;
+        ModelPreloadManager.INSTANCE.scan();
         for (ResourceLocation location : AnimationFile.UNREGISTERED) {
             try {
                 Resource resource = Resources.getResource(location);
@@ -35,13 +38,9 @@ public class AnimationModelRegistryEvent {
             }
         }
         AnimCacheManager.INSTANCE.scanFolder();
-    }
-
-    @SubscribeEvent
-    public static void registerBedrockModels(ModelRegistryEvent event) {
-        BedrockModelLoader.registerFired = true;
         ForgeModelBakery.addSpecialModel(BedrockModelLoader.MISSING_MODEL_LOCATION);
-        for (ResourceLocation location : BedrockModelLoader.UNREGISTERED)
-            ForgeModelBakery.addSpecialModel(location);
+        for (ResourceLocation location : BedrockModelLoader.UNREGISTERED) {
+            BedrockModelLoader.fromFile(location);
+        }
     }
 }

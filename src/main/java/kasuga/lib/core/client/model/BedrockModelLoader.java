@@ -18,6 +18,9 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraftforge.client.model.IModelLoader;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.geometry.IGeometryLoader;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -28,6 +31,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+@OnlyIn(Dist.CLIENT)
 public class BedrockModelLoader implements IModelLoader<UnbakedBedrockModel>, ResourceManagerReloadListener, ItemTransformProvider {
 
     public static BedrockModelLoader INSTANCE = new BedrockModelLoader();
@@ -52,7 +56,6 @@ public class BedrockModelLoader implements IModelLoader<UnbakedBedrockModel>, Re
     public UnbakedBedrockModel read(@Nullable JsonDeserializationContext deserializationContext, JsonObject jsonObject) throws JsonParseException {
         ResourceLocation ml = new ResourceLocation(jsonObject.get("model").getAsString());
         boolean flipV = jsonObject.has("flip_v") && jsonObject.get("flip_v").getAsBoolean();
-        if (MODELS.containsKey(ml)) return MODELS.get(ml);
 
         UnbakedBedrockModel model = new UnbakedBedrockModel(new ResourceLocation(ml.getNamespace(), "models/" + ml.getPath() + ".geo.json"),
                 new ResourceLocation(jsonObject.get("texture").getAsString()), flipV);
@@ -63,7 +66,6 @@ public class BedrockModelLoader implements IModelLoader<UnbakedBedrockModel>, Re
                     new ResourceLocation(location.getNamespace(), "textures/" + location.getPath() + ".png")
             );
         }
-        MODELS.put(ml, model);
         return model;
     }
 
@@ -111,6 +113,8 @@ public class BedrockModelLoader implements IModelLoader<UnbakedBedrockModel>, Re
     }
 
     public static LazyRecomputable<UnbakedBedrockModel> fromFile(ResourceLocation location) {
+        ResourceLocation location1 =
+                new ResourceLocation(location.getNamespace(), "models/" + location.getPath() + ".json");
         if (!registerFired) {
             UNREGISTERED.add(location);
             return LazyRecomputable.of(() -> MODELS.getOrDefault(location, null));
@@ -118,11 +122,11 @@ public class BedrockModelLoader implements IModelLoader<UnbakedBedrockModel>, Re
             MODELS.get(location);
         }
         try {
-            Resource resource = Resources.getResource(location);
+            Resource resource = Resources.getResource(location1);
             InputStreamReader reader = new InputStreamReader(resource.getInputStream());
             JsonElement element = JsonParser.parseReader(reader);
             if (!element.isJsonObject()) {
-                KasugaLib.MAIN_LOGGER.error(location + "is not an JsonObject");
+                KasugaLib.MAIN_LOGGER.error(location + " is not a JsonObject");
                 return MISSING;
             }
             UnbakedBedrockModel model = INSTANCE.read(null, element.getAsJsonObject());

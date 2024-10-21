@@ -7,11 +7,14 @@ import kasuga.lib.core.client.render.SimpleColor;
 import kasuga.lib.core.client.model.BedrockRenderable;
 import kasuga.lib.core.client.model.model_json.Cube;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@OnlyIn(Dist.CLIENT)
 public class AnimCube implements BedrockRenderable {
 
     public final Cube cube;

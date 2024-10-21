@@ -8,12 +8,15 @@ import kasuga.lib.core.util.LazyRecomputable;
 import kasuga.lib.core.util.Resources;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
 
+@OnlyIn(Dist.CLIENT)
 public class AnimationFile {
     public final String formatVersion;
 
@@ -58,6 +61,8 @@ public class AnimationFile {
     }
 
     public static LazyRecomputable<AnimationFile> fromFile(ResourceLocation location) {
+        final ResourceLocation location1 =
+                new ResourceLocation(location.getNamespace(), "animations/" + location.getPath() + ".animation.json");
         if (!filesLoaded) {
             UNREGISTERED.add(location);
             return LazyRecomputable.of(() -> FILES.getOrDefault(location, null));
@@ -65,14 +70,14 @@ public class AnimationFile {
             return LazyRecomputable.of(() -> FILES.get(location));
         }
         try {
-            Resource resource = Resources.getResource(location);
+            Resource resource = Resources.getResource(location1);
             InputStreamReader reader = new InputStreamReader(resource.getInputStream());
             JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
-            AnimationFile file = new AnimationFile(location, object);
+            AnimationFile file = new AnimationFile(location1, object);
             FILES.put(location, file);
             return LazyRecomputable.of(() -> file);
         } catch (IOException e) {
-            KasugaLib.MAIN_LOGGER.error("Failed to open animation file " + location, e);
+            KasugaLib.MAIN_LOGGER.error("Failed to open animation file " + location1, e);
             return LazyRecomputable.of(() -> null);
         }
     }

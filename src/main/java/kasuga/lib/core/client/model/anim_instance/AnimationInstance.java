@@ -1,6 +1,7 @@
 package kasuga.lib.core.client.model.anim_instance;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.model.anim_json.Animation;
 import kasuga.lib.core.client.model.BedrockRenderable;
@@ -8,6 +9,9 @@ import kasuga.lib.core.client.model.anim_json.LoopMode;
 import kasuga.lib.core.client.model.anim_model.AnimBone;
 import kasuga.lib.core.client.model.anim_model.AnimModel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.commons.lang3.tuple.Triple;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -15,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+@OnlyIn(Dist.CLIENT)
 @InstanceOf(value = Animation.class)
 public class AnimationInstance {
 
@@ -134,6 +139,20 @@ public class AnimationInstance {
     public void applyAndRender(PoseStack pose, MultiBufferSource buffer, int light, int overlay, float sec) {
         frames.forEach((name, frame) -> {frame.applyToBone(sec);});
         model.render(pose, buffer, light, overlay);
+    }
+
+    public void mergeAnimation(HashMap<String, Triple<Vector3f, Vector3f, Vector3f>> vectors, float sec) {
+        this.frames.forEach((name, frame) -> {
+            Triple<Vector3f, Vector3f, Vector3f> v = frame.getVectors(sec);
+            Triple<Vector3f, Vector3f, Vector3f> cached = vectors.getOrDefault(name, null);
+            if (cached == null) {
+                vectors.put(name, v);
+                return;
+            }
+            cached.getLeft().add(v.getLeft());
+            cached.getMiddle().add(v.getMiddle());
+            cached.getRight().add(v.getRight());
+        });
     }
 
     public void writeToCache(ByteArrayOutputStream stream) throws IOException {

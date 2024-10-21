@@ -1,0 +1,8 @@
+{
+  "animation": [
+    "kasuga_lib:model"
+  ],
+  "model": [
+    "kasuga_lib:block/test/test_model_complicate"
+  ]
+}
