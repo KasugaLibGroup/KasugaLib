@@ -2,7 +2,10 @@ package kasuga.lib.core.client.model.model_json;
 
 import net.minecraft.core.Direction;
 import org.joml.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class Quad {
     public final Vertex[] vertices;
 

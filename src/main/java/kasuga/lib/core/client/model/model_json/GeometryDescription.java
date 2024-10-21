@@ -3,7 +3,10 @@ package kasuga.lib.core.client.model.model_json;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.joml.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class GeometryDescription {
     private final String identifier;
     private final float textureWidth, textureHeight, visibleBoundsWidth, visibleBoundsHeight;

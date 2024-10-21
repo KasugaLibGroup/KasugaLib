@@ -3,8 +3,11 @@ package kasuga.lib.core.client.model.anim_instance;
 import com.google.common.collect.Maps;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.KasugaLibConfig;
+import kasuga.lib.core.annos.Beta;
 import kasuga.lib.core.client.model.anim_json.Animation;
 import kasuga.lib.core.client.model.anim_model.AnimModel;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,6 +15,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
 
+@Beta
+@OnlyIn(Dist.CLIENT)
 public class AnimCacheManager {
     public static final String PATH = "kasuga/anim_cache/";
     // public static final String MAPPING_FILE = PATH + "mappings.nbt";

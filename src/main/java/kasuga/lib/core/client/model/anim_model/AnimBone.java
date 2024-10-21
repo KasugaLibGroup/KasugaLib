@@ -12,12 +12,15 @@ import kasuga.lib.core.client.model.model_json.Cube;
 import kasuga.lib.core.client.model.model_json.Locator;
 import kasuga.lib.core.client.render.SimpleColor;
 import org.joml.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@OnlyIn(Dist.CLIENT)
 public class AnimBone implements BedrockRenderable, Animable {
 
     public final Bone bone;
@@ -107,7 +110,7 @@ public class AnimBone implements BedrockRenderable, Animable {
         this.initAnim();
     }
 
-    private void initAnim() {
+    public void initAnim() {
         this.offset = new Vector3f();
         this.animRot = new Vector3f();
         this.scale = new Vector3f(1, 1, 1);
@@ -162,6 +165,14 @@ public class AnimBone implements BedrockRenderable, Animable {
         cubes.forEach(c -> c.render(pose, consumer, color, light, overlay));
         children.forEach((c, d) -> d.render(pose, consumer, color, light, overlay));
         pose.popPose();
+    }
+
+    public void recursionClearAnim() {
+        this.initAnim();
+        this.children.forEach((name, b) -> {
+            if (!(b instanceof AnimBone animBone)) return;
+            animBone.recursionClearAnim();
+        });
     }
 
     public AnimBone copy(Bone bone, AnimModel model) {
