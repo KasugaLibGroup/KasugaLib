@@ -2,10 +2,10 @@ package kasuga.lib.example_env;
 
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.util.Envs;
-import kasuga.lib.example_env.block.GreenAppleBlock;
-import kasuga.lib.example_env.block.GreenAppleItem;
-import kasuga.lib.example_env.block_entity.GreenAppleTile;
 import kasuga.lib.core.config.SimpleConfig;
+import kasuga.lib.example_env.block.green_apple.GreenAppleBlock;
+import kasuga.lib.example_env.block.green_apple.GreenAppleItem;
+import kasuga.lib.example_env.block.green_apple.GreenAppleTile;
 import kasuga.lib.example_env.block.gui.GuiExampleBlock;
 import kasuga.lib.example_env.block.gui.GuiExampleBlockEntity;
 import kasuga.lib.example_env.block.gui.GuiExampleBlockRenderer;
