@@ -197,6 +197,17 @@ public class JavetClassConverter {
         for (Method method : methods) {
             methodsFromName.computeIfAbsent(method.getName(), (e)->new ArrayList<>()).add(method);
         }
+        if(
+                objectClass.isAnnotationPresent(FunctionalInterface.class)
+        ){
+            Method method = objectClass.getDeclaredMethods()[0];
+            if(
+                    !methodsFromName.containsKey(method.getName()) ||
+                            !methodsFromName.get(method.getName()).contains(method)
+            ){
+                methodsFromName.computeIfAbsent(method.getName(), (e)->new ArrayList<>()).add(method);
+            }
+        }
         HashMap<Field, Boolean> fields = getFields(objectClass);
         V8ValueObject prototype = createPrototype(runtime, sourceObject.getClass(), methodsFromName, fields);
         try {
