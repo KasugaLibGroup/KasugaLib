@@ -4,9 +4,13 @@ import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.commands.CommandHandler;
 import kasuga.lib.core.config.SimpleConfig;
 import kasuga.lib.core.util.Envs;
-import kasuga.lib.example_env.block.GreenAppleBlock;
-import kasuga.lib.example_env.item.GreenAppleItem;
-import kasuga.lib.example_env.block_entity.GreenAppleTile;
+import kasuga.lib.core.config.SimpleConfig;
+import kasuga.lib.example_env.block.green_apple.GreenAppleBlock;
+import kasuga.lib.example_env.block.green_apple.GreenAppleItem;
+import kasuga.lib.example_env.block.green_apple.GreenAppleTile;
+import kasuga.lib.example_env.block.gui.GuiExampleBlock;
+import kasuga.lib.example_env.block.gui.GuiExampleBlockEntity;
+import kasuga.lib.example_env.block.gui.GuiExampleBlockRenderer;
 import kasuga.lib.example_env.client.block_entity.renderer.GreenAppleTileRenderer;
 import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
@@ -42,6 +46,21 @@ public class AllExampleElements {
             .blockPredicates((location, block) -> block instanceof GreenAppleBlock)
             .submit(testRegistry);
 
+    public static final BlockReg<GuiExampleBlock> guiExampleBlock =
+            new BlockReg<GuiExampleBlock>("gui_example_block")
+                    .blockType(GuiExampleBlock::new)
+                    .materialColor(MapColor.COLOR_GREEN)
+                    .defaultBlockItem()
+                    .tabTo(CreativeModeTab.TAB_DECORATIONS)
+                    .submit(REGISTRY);
+
+    public static final BlockEntityReg<GuiExampleBlockEntity> guiExampleTile =
+            new BlockEntityReg<GuiExampleBlockEntity>("gui_example_tile")
+                    .blockEntityType(GuiExampleBlockEntity::new)
+                    .blockPredicates((location, block) -> block instanceof GuiExampleBlock)
+                    .withRenderer(()-> GuiExampleBlockRenderer::new)
+                    .submit(REGISTRY);
+
     /*
     public static final EntityReg<WuLingEntity> wuling = new EntityReg<WuLingEntity>("wuling")
             .entityType(WuLingEntity::new)
@@ -74,7 +93,7 @@ public class AllExampleElements {
 
     public static final CreativeTabReg tab = new CreativeTabReg("test")
             .icon(greenAppleItem).submit(testRegistry);
-    
+
     /*
     public static final AnimReg test_anim =
             new AnimReg("test_anim", testRegistry.asResource("models/entity/test/wuling/wuling_anim.json"))
@@ -106,13 +125,11 @@ public class AllExampleElements {
 
      */
 
-    /*
     public static final MenuReg<GreenAppleMenu, GreenAppleScreen> apple =
-            new MenuReg<GreenAppleMenu, GreenAppleScreen>("green_apple")
-                    .withMenuAndScreen(GreenAppleMenu::new, GreenAppleScreen::new)
+            new MenuReg<GreenAppleMenu, GreenAppleScreen>("green_apple_screen")
+                    .withMenuAndScreen(GreenAppleMenu::new, () -> GreenAppleScreen::new)
                     .submit(REGISTRY);
 
-     */
 
     public static final ChannelReg Channel = new ChannelReg("example_channel")
             .brand("1.0")
