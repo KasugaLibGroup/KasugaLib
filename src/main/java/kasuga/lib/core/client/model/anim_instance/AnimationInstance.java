@@ -151,7 +151,7 @@ public class AnimationInstance {
             }
             cached.getLeft().add(v.getLeft());
             cached.getMiddle().add(v.getMiddle());
-            cached.getRight().add(v.getRight());
+            cached.getRight().mul(v.getRight().x(), v.getRight().y(), v.getRight().z());
         });
     }
 

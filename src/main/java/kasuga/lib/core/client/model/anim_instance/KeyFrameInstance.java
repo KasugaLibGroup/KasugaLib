@@ -323,7 +323,7 @@ public class KeyFrameInstance {
     public Triple<Vector3f, Vector3f, Vector3f> getVectors(float sec) {
         Vector3f translation = posStartSec >= 0 && posEndSec >= 0 ? getPosition(sec) : Vector3f.ZERO.copy();
         Vector3f rotation = rotStartSec >= 0 && rotEndSec >= 0 ? getRotation(sec) : Vector3f.ZERO.copy();
-        Vector3f scale = scaleStartSec >= 0 && scaleEndSec >= 0 ? getScale(sec) : Vector3f.ZERO.copy();
+        Vector3f scale = scaleStartSec >= 0 && scaleEndSec >= 0 ? getScale(sec) : ONE.copy();
         return Triple.of(translation, rotation, scale);
     }
 
