@@ -7,6 +7,9 @@ import kasuga.lib.core.client.model.anim_json.KeyFrame;
 import kasuga.lib.core.client.model.anim_json.Pose;
 import kasuga.lib.core.client.model.anim_model.AnimBone;
 import kasuga.lib.core.util.data_type.Pair;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.commons.lang3.tuple.Triple;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -17,6 +20,7 @@ import java.util.*;
 import static kasuga.lib.core.client.model.anim_instance.AnimationInstance.read4Bytes;
 import static kasuga.lib.core.client.model.anim_instance.AnimationInstance.write4Bytes;
 
+@OnlyIn(Dist.CLIENT)
 @InstanceOf(value = KeyFrame.class)
 public class KeyFrameInstance {
     public final KeyFrame keyFrame;
@@ -314,6 +318,13 @@ public class KeyFrameInstance {
         if (posStartSec >= 0 && posEndSec >= 0) bone.setOffset(getPosition(sec));
         if (rotStartSec >= 0 && rotEndSec >= 0) bone.setAnimRot(getRotation(sec));
         if (scaleStartSec >= 0 && scaleEndSec >= 0) bone.setScale(getScale(sec));
+    }
+
+    public Triple<Vector3f, Vector3f, Vector3f> getVectors(float sec) {
+        Vector3f translation = posStartSec >= 0 && posEndSec >= 0 ? getPosition(sec) : Vector3f.ZERO.copy();
+        Vector3f rotation = rotStartSec >= 0 && rotEndSec >= 0 ? getRotation(sec) : Vector3f.ZERO.copy();
+        Vector3f scale = scaleStartSec >= 0 && scaleEndSec >= 0 ? getScale(sec) : Vector3f.ZERO.copy();
+        return Triple.of(translation, rotation, scale);
     }
 
     public boolean canBeRemoved() {

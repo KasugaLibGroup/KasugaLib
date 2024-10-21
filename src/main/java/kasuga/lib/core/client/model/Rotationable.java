@@ -2,10 +2,13 @@ package kasuga.lib.core.client.model;
 
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.LinkedList;
 import java.util.List;
 
+@OnlyIn(Dist.CLIENT)
 public interface Rotationable {
     Vector3f getPivot();
     Vector3f getRotation();

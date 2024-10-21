@@ -15,12 +15,15 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 
 import java.util.*;
 import java.util.function.Function;
 
+@OnlyIn(Dist.CLIENT)
 public class Cube implements Rotationable {
     private final Vector3f origin, size, pivot, rotation;
     private final ArrayList<UnbakedUV> uvs;
