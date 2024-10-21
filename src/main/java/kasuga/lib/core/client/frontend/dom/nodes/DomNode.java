@@ -62,7 +62,6 @@ public class DomNode<T extends DomContext<?,?>> {
 
     @HostAccess.Export
     public void addEventListener(String eventName, JavascriptValue callback){
-        callback.pin();
         emitter.subscribe(eventName, callback);
     }
 

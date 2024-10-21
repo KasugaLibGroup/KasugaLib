@@ -1,8 +1,6 @@
 package kasuga.lib.core.javascript.engine.javet;
 
-import com.caoccao.javet.annotations.V8Function;
 import com.caoccao.javet.exceptions.JavetException;
-import com.caoccao.javet.exceptions.JavetExecutionException;
 import com.caoccao.javet.interop.V8Runtime;
 import com.caoccao.javet.values.V8Value;
 import com.caoccao.javet.values.primitive.V8ValueNumber;
@@ -11,6 +9,8 @@ import com.caoccao.javet.values.reference.V8ValueFunction;
 import com.caoccao.javet.values.reference.V8ValueObject;
 import com.caoccao.javet.values.reference.V8ValueReference;
 import kasuga.lib.core.javascript.engine.JavascriptValue;
+
+import java.util.Objects;
 
 public class JavetJavascriptValue implements JavascriptValue {
 
@@ -90,6 +90,17 @@ public class JavetJavascriptValue implements JavascriptValue {
     }
 
     @Override
+    public void unpin(){
+        if(value instanceof V8ValueReference reference){
+            try {
+                reference.setWeak();
+            } catch (JavetException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @Override
     public boolean hasMember(String memberName) {
         try {
             return ((V8ValueObject)value).has(memberName);
@@ -132,5 +143,22 @@ public class JavetJavascriptValue implements JavascriptValue {
 
     public V8Value getValue(){
         return value;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        JavetJavascriptValue that = (JavetJavascriptValue) object;
+        try {
+            return (value == that.value || value.equals(that.value)) && Objects.equals(reciever, that.reciever);
+        } catch (JavetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value, reciever);
     }
 }

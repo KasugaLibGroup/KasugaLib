@@ -26,13 +26,20 @@ public class EventEmitter {
     }
 
     public void subscribe(String eventName, JavascriptValue consumer){
+        consumer.pin();
         functionalListeners.computeIfAbsent(eventName,(v)->new HashSet<>())
                 .add(consumer);
     }
 
     public void unsubscribe(String eventName, JavascriptValue consumer){
         functionalListeners.computeIfPresent(eventName,(name,data)->{
-            data.remove(consumer);
+            for(JavascriptValue entryValue:data){
+                if(consumer.equals(entryValue)){
+                    data.remove(entryValue);
+                    entryValue.unpin();
+                    break;
+                }
+            }
             return data.isEmpty() ? null : data;
         });
     }

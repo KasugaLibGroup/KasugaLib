@@ -79,7 +79,6 @@ public abstract class DomContext<P extends DomNode<?>,T extends P> implements Ti
 
     @HostAccess.Export
     public void addEventListener(String eventName, JavascriptValue callback){
-        callback.pin();
         emitter.subscribe(eventName, callback);
     }
 

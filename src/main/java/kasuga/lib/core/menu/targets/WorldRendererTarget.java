@@ -13,7 +13,11 @@ public class WorldRendererTarget {
     }
 
     public void render(RenderContext context){
-        guiInstance.getContext().ifPresent((guiContext)->guiContext.render(context.source, context));
+        guiInstance.beforeRender();
+        guiInstance.getContext().ifPresent((guiContext)->{
+            guiContext.render(context.source, context);
+        });
+        guiInstance.afterRender();
     }
 
     public void attach(){

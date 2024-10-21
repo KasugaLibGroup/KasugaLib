@@ -15,6 +15,8 @@ public interface JavascriptValue {
 
     void pin();
 
+    void unpin();
+
     boolean hasMember(String render);
 
     JavascriptValue getMember(String render);

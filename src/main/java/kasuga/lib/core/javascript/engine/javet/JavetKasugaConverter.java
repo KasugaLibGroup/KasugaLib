@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class JavetKasugaConverter extends JavetObjectConverter {
 
-    JavetProxyConverter proxyConverter = new JavetProxyConverter();
+    JavetClassConverter classConverter;
     private final V8Runtime runtime;
 
     private final V8ValueSymbol SYMBOL_NATIVE_OBJECT;
@@ -38,6 +38,7 @@ public class JavetKasugaConverter extends JavetObjectConverter {
         this.runtime = runtime;
         try{
             SYMBOL_NATIVE_OBJECT = runtime.createV8ValueSymbol("NATIVE OBJECT");
+            classConverter = new JavetClassConverter(runtime,this);
         } catch (JavetException e) {
             throw new RuntimeException(e);
         }
@@ -53,95 +54,27 @@ public class JavetKasugaConverter extends JavetObjectConverter {
         }
         T v8Value = super.toV8Value(v8Runtime, object, depth);
 
-        Class objectClass = object.getClass();
-
-        if(objectClass.isAnnotationPresent(V8Convert.class)){
-            return proxyConverter.toV8Value(v8Runtime, object);
-        }
-
         if (v8Value != null && !(v8Value.isUndefined())) {
             if(v8Value instanceof V8ValueObject v8ValueObject){
                 int hashCode = System.identityHashCode(object);
                 v8ValueObject.setInteger(SYMBOL_NATIVE_OBJECT, hashCode);
+                cachedObjects.put(hashCode, new WeakReference<>(object));
             }
             return v8Value;
         }
 
-        V8ValueObject v8ValueObject = null;
+        V8Value v8ValueConverted = classConverter.toV8Value(runtime, object);
 
-        Method[] methods = objectClass.getMethods();
-
-
-        HashMap<String, ArrayList<Method>> methodsFromName = new HashMap<>();
-
-        for (Method method : methods) {
-            if (!Modifier.isStatic(method.getModifiers()) && method.canAccess(object) && method.isAnnotationPresent(HostAccess.Export.class)) {
-                methodsFromName.computeIfAbsent(method.getName(), (e)->new ArrayList<>()).add(method);
+        if (v8ValueConverted != null && !(v8ValueConverted.isUndefined())) {
+            if(v8ValueConverted instanceof V8ValueObject v8ValueObject){
+                int hashCode = System.identityHashCode(object);
+                v8ValueObject.setProperty(SYMBOL_NATIVE_OBJECT,hashCode);
+                cachedObjects.put(hashCode, new WeakReference<>(object));
             }
+
+            return (T) v8ValueConverted;
         }
-
-        if(
-                objectClass.isAnnotationPresent(FunctionalInterface.class) ||
-                        objectClass.getDeclaredMethods().length == 1 ||
-                        methodsFromName.containsKey("apply")
-        ){
-            if(methodsFromName.containsKey("apply")){
-                JavetCallbackContext functionContext = new JavetCallbackContext(
-                        objectClass.getDeclaredMethods()[0].getName(),
-                        createProxiedCallByMethods(object, methodsFromName.get("apply"), v8Runtime),
-                        PROXIED_CALL_METHOD
-                );
-                v8ValueObject = v8Runtime.createV8ValueFunction(functionContext);
-            }else{
-                JavetCallbackContext functionContext = new JavetCallbackContext(
-                        objectClass.getDeclaredMethods()[0].getName(),
-                        createProxiedCallFromFunctionialInterface(object, v8Runtime),
-                        PROXIED_CALL_METHOD
-                );
-                v8ValueObject = v8Runtime.createV8ValueFunction(functionContext);
-            }
-        }else v8ValueObject = v8Runtime.createV8ValueObject();
-
-
-        V8ValueObject finalV8ValueObject = v8ValueObject;
-        methodsFromName.forEach((methodName, sameNameMethods)->{
-            if (methodName != null) {
-                JavetCallbackContext functionContext = new JavetCallbackContext(
-                        methodName,
-                        createProxiedCallByMethods(object, sameNameMethods, v8Runtime),
-                        PROXIED_CALL_METHOD
-                );
-                try {
-                    try(V8ValueFunction v8Function = v8Runtime.createV8ValueFunction(functionContext);){
-                        finalV8ValueObject.set(methodName, v8Function);
-                    }
-                } catch (JavetException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-
-        Field[] fields = objectClass.getFields();
-
-        try {
-            for (Field field : fields) {
-                if (!Modifier.isStatic(field.getModifiers())
-                        && field.canAccess(object)
-                ) {
-                    Object value = field.get(object);
-                    v8ValueObject.set(field.getName(), value);
-                }
-            }
-            int hashCode = System.identityHashCode(object);
-            v8ValueObject.setProperty(SYMBOL_NATIVE_OBJECT,hashCode);
-            // @TODO BE AWARE OF SANDBOX ESCAPE
-            cachedObjects.put(hashCode, new WeakReference<>(object));
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-
-
-        return (T) v8ValueObject;
+        throw new IllegalStateException("Unknown converting");
     }
 
 
@@ -159,65 +92,5 @@ public class JavetKasugaConverter extends JavetObjectConverter {
             return (T) new JavetJavascriptValue(JavetValue.weakClone(v8Value), v8Value.getV8Runtime());
         }
         return parentConvertResult;
-    }
-
-    public static Method PROXIED_CALL_METHOD = (ProxiedCall.class).getMethods()[0];
-
-    @FunctionalInterface
-    static interface ProxiedCall{
-        @V8Function
-        public V8Value call(V8Value ...args);
-    }
-
-    protected ProxiedCall createProxiedCallByMethods(Object object, List<Method> sameNameMethods, V8Runtime v8Runtime){
-        ProxiedCall proxiedCall = new ProxiedCall(){
-            @Override
-            public V8Value call(V8Value... args) {
-                List<V8Value> argsList = List.of(args);
-                ArrayList<Object> converted = new ArrayList<>();
-                try{
-                    for (V8Value value : argsList) {
-                        converted.add(toObject(value));
-                    }
-                    for (Method sameNameMethod : sameNameMethods) {
-                        Pair<Boolean, V8Value> callResult = call(sameNameMethod, argsList, converted);
-                        if(callResult.getFirst()){
-                            if(callResult.getSecond() instanceof V8ValueReference reference){
-                                reference.setWeak();
-                            }
-                            return callResult.getSecond();
-                        }
-                    }
-                }catch (JavetException | InvocationTargetException | IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
-                throw new RuntimeException("Invalid call target to "+object.getClass().getName()+"::"+sameNameMethods.get(0).getName());
-            }
-
-            protected Pair<Boolean,V8Value> call(Method method, List<V8Value> originValues, List<Object> convertedValues) throws JavetException, InvocationTargetException, IllegalAccessException {
-                Parameter[] parameters = method.getParameters();
-                List<Object> callParameter = new ArrayList<>();
-                int i=0;
-                for(Parameter parameter : parameters){
-                    if(parameter.getType() == JavascriptValue.class){
-                        V8Value value = JavetValue.weakClone(originValues.get(i));
-                        callParameter.add(new JavetJavascriptValue(value, v8Runtime));
-                    }else{
-                        if(!parameter.getType().isAssignableFrom(convertedValues.get(i).getClass())){
-                            return Pair.of(false, null);
-                        }
-                        callParameter.add(convertedValues.get(i));
-                    }
-                    i++;
-                }
-                Object returnValue = method.invoke(object, (Object[]) callParameter.toArray());
-                return Pair.of(true,toV8Value(v8Runtime,returnValue,0));
-            }
-        };
-        return proxiedCall;
-    }
-
-    protected ProxiedCall createProxiedCallFromFunctionialInterface(Object object, V8Runtime v8Runtime){
-        return createProxiedCallByMethods(object,List.of(object.getClass().getDeclaredMethods()),v8Runtime);
     }
 }
