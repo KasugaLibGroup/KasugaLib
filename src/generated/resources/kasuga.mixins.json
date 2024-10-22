@@ -15,6 +15,7 @@
     "client.MixinBlockModelBinding",
     "client.MixinBlockRenderDispatcher",
     "client.MixinDirectoryLister",
+    "client.MixinTextureManager",
     "client.MixinBlockModelShaper"
   ],
   "minVersion": "0.8"

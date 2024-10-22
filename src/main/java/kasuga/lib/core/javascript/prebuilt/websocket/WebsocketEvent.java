@@ -1,23 +1,22 @@
 package kasuga.lib.core.javascript.prebuilt.websocket;
 
 import io.netty.buffer.ByteBuf;
-import org.graalvm.polyglot.HostAccess;
-import org.graalvm.polyglot.Value;
+import kasuga.lib.core.javascript.engine.HostAccess;
 
 public class WebsocketEvent {
 
     public static class MessageEvent extends WebsocketEvent{
         @HostAccess.Export
-        public final Value data;
+        public final Object data;
         @HostAccess.Export
         public final String lastEventId = "";
 
         MessageEvent(String data){
-            this.data = Value.asValue(data);
+            this.data = data;
         }
 
         MessageEvent(ByteBuf buf){
-            this.data = Value.asValue(buf);
+            this.data = buf.array();
         }
     }
 

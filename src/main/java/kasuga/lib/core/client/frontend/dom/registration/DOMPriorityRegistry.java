@@ -3,14 +3,14 @@ package kasuga.lib.core.client.frontend.dom.registration;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.gui.GuiInstance;
 import kasuga.lib.core.javascript.JavascriptContext;
+import kasuga.lib.core.javascript.engine.JavascriptValue;
 import kasuga.lib.core.javascript.registration.JavascriptPriorityRegistry;
 import net.minecraft.resources.ResourceLocation;
-import org.graalvm.polyglot.Value;
 
 public class DOMPriorityRegistry extends JavascriptPriorityRegistry<DOMRegistryItem> {
 
     @Override
-    public DOMRegistryItem fromValue(Value value) {
+    public DOMRegistryItem fromValue(JavascriptValue value) {
         value.pin();
         if(value.canExecute()){
            return DOMRegistryItem.fromExecutable(value);

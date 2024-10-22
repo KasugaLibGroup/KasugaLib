@@ -180,9 +180,9 @@ public class StaticImage {
         Matrix4f matrix = pose.last().pose();
         VertexConsumer consumer = buffer.getBuffer(type);
         buildVertex(consumer, matrix, leftTop, uvLeftTop, color, light);
-        buildVertex(consumer, matrix, rightTop, uvRightTop, color, light);
-        buildVertex(consumer, matrix, rightDown, uvRightDown, color, light);
         buildVertex(consumer, matrix, leftDown, uvLeftDown, color, light);
+        buildVertex(consumer, matrix, rightDown, uvRightDown, color, light);
+        buildVertex(consumer, matrix, rightTop, uvRightTop, color, light);
         pose.popPose();
         if(!shouldPush) {
             pose.pushPose();

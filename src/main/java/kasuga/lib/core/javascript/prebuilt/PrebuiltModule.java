@@ -1,12 +1,10 @@
 package kasuga.lib.core.javascript.prebuilt;
 
 import kasuga.lib.core.javascript.JavascriptContext;
-import kasuga.lib.core.javascript.module.JavascriptModule;
-import org.graalvm.polyglot.Value;
+import kasuga.lib.core.javascript.engine.JavascriptValue;
 
-public abstract class PrebuiltModule extends JavascriptModule {
+public abstract class PrebuiltModule {
     protected PrebuiltModule(JavascriptContext runtime){
-        super(runtime);
         if(isTickable()){
             runtime.registerTickable(this::tick);
         }
@@ -19,9 +17,4 @@ public abstract class PrebuiltModule extends JavascriptModule {
 
     protected void tick(){}
     protected void close() {}
-
-    @Override
-    public Value get() {
-        return Value.asValue(this);
-    }
 }

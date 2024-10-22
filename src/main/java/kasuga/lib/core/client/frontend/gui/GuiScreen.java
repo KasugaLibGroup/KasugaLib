@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutBox;
 import kasuga.lib.core.client.frontend.gui.events.MouseClickEvent;
+import kasuga.lib.core.client.frontend.gui.events.MouseReleasedEvent;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
 import kasuga.lib.core.util.data_type.Vec2i;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,6 +20,7 @@ public class GuiScreen extends Screen {
     public GuiScreen(GuiInstance guiInstance) {
         super(Component.literal(""));
         this.instance = guiInstance;
+        this.instance.open(this);
         this.autoClose = false;
     }
 
@@ -36,10 +38,12 @@ public class GuiScreen extends Screen {
 
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        this.instance.beforeRender();
         super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
         instance.getContext().ifPresent((context)->{
             context.render(this,RenderContext.fromScreen(this, guiGraphics, pMouseX,pMouseY,pPartialTick));
         });
+        this.instance.afterRender();
     }
 
     @Override
@@ -54,6 +58,17 @@ public class GuiScreen extends Screen {
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         MouseClickEvent event = MouseClickEvent.fromScreen(null, new Vec2i((int)pMouseX,(int)pMouseY), pButton);
+        instance.getContext().ifPresent((context)->{
+            context.appendTask(()->{
+                context.getRootNode().onMouseEvent(this,event);
+            });
+        });
+        return true;
+    }
+
+    @Override
+    public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
+        MouseReleasedEvent event = MouseReleasedEvent.fromScreen(null, new Vec2i((int)pMouseX,(int)pMouseY), pButton);
         instance.getContext().ifPresent((context)->{
             context.appendTask(()->{
                 context.getRootNode().onMouseEvent(this,event);
