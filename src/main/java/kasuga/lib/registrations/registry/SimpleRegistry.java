@@ -291,6 +291,7 @@ public class SimpleRegistry {
         RECIPES.register(eventBus);
         RECIPE_SERIALIZERS.register(eventBus);
         EFFECT.register(eventBus);
+        TABS.register(eventBus);
         KasugaLib.STACKS.stackIn(this);
     }
 
