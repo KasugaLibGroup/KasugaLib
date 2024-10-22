@@ -7,7 +7,7 @@ import kasuga.lib.core.client.model.anim_instance.AnimationInstance;
 import kasuga.lib.core.client.model.anim_model.AnimModel;
 import kasuga.lib.core.util.LazyRecomputable;
 import kasuga.lib.example_env.AllExampleElements;
-import kasuga.lib.example_env.block_entity.GreenAppleTile;
+import kasuga.lib.example_env.block.green_apple.GreenAppleTile;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;

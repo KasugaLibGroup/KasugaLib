@@ -62,4 +62,8 @@ public class MetroServerResourceProvider implements ResourceProvider {
     public boolean isDirectory(String path) {
         return path.endsWith("/");
     }
+
+    public String getServerAddress() {
+        return "http://localhost:8081";
+    }
 }

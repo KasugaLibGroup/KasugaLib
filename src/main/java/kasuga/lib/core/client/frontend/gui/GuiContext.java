@@ -1,5 +1,6 @@
 package kasuga.lib.core.client.frontend.gui;
 
+import com.caoccao.javet.annotations.V8Convert;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutEngine;
 import kasuga.lib.core.client.frontend.dom.DomContext;
@@ -8,19 +9,26 @@ import kasuga.lib.core.client.frontend.gui.layout.LayoutEngines;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomNode;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomRoot;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
+import kasuga.lib.core.javascript.JavascriptContext;
+import kasuga.lib.core.javascript.JavascriptThread;
 import kasuga.lib.core.javascript.Tickable;
 import kasuga.lib.core.util.Callback;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayDeque;
 import java.util.HashMap;
+import java.util.Optional;
+import java.util.concurrent.locks.ReentrantLock;
 
+@V8Convert()
 public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tickable {
 
     LayoutEngine<?,GuiDomNode> layoutEngine;
 
     GuiAttachTarget attachedTargets = new GuiAttachTarget();
-    private ArrayDeque<Callback> queue = new ArrayDeque<>();
+    ReentrantLock renderLock = new ReentrantLock();
+
+    public volatile boolean isRendering;
 
     public GuiContext(DOMPriorityRegistry registry, ResourceLocation location) {
         super(registry, location);
@@ -70,9 +78,7 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
 
     @Override
     public void tick() {
-        while(!queue.isEmpty()){
-            queue.poll().execute();
-        }
+        super.tick();
         this.getRootNode().getLayoutManager().tick();
     }
 
@@ -87,7 +93,43 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
         getRootNode().render(source, context);
     }
 
-    public void appendTask(Callback callback) {
-        this.queue.add(callback);
+
+    public void queueDuringRender(Runnable task) {
+        Optional<JavascriptContext> threadContext = this.getRenderer().getContext();
+        if(threadContext.isEmpty()){
+            task.run();
+            return;
+        }
+        JavascriptContext context = threadContext.get();
+        if(!this.isRendering){
+            this.renderLock.lock();
+            context.beforeRenderTick();
+            RuntimeException _e = null;
+            try{
+                task.run();
+            }catch (RuntimeException e){
+                _e = e;
+            }
+            this.renderLock.unlock();
+            if(_e!=null) throw _e;
+        }else{
+            context.enqueueAfterRenderTask(task);
+        }
+    }
+
+    public void queueDuringRenderUnsafe(Runnable task){
+        Optional<JavascriptContext> threadContext = this.getRenderer().getContext();
+        if(threadContext.isEmpty()){
+            task.run();
+            return;
+        }
+        JavascriptContext context = threadContext.get();
+        if(!this.isRendering){
+            context.beforeRenderTick();
+            task.run();
+            this.renderLock.unlock();
+        }else{
+            context.enqueueAfterRenderTask(task);
+        }
     }
 }

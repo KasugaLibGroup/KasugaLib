@@ -18,7 +18,8 @@
     "client.MixinBlockModelShaper",
     "client.MixinBlockRenderDispatcher",
     "client.MixinCarriageContraptionEntityRenderer",
-    "client.MixinStationBlockEntityClient"
+    "client.MixinStationBlockEntityClient",
+    "client.MixinTextureManager"
   ],
   "minVersion": "0.8"
 }
