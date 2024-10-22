@@ -48,9 +48,9 @@ public class AllExampleElements {
     public static final BlockReg<GuiExampleBlock> guiExampleBlock =
             new BlockReg<GuiExampleBlock>("gui_example_block")
                     .blockType(GuiExampleBlock::new)
-                    .material(Material.AIR)
+                    .materialColor(MapColor.COLOR_GREEN)
                     .defaultBlockItem()
-                    .tabTo(CreativeModeTab.TAB_DECORATIONS)
+                    // .tabTo(CreativeModeTab.TAB_DECORATIONS)
                     .submit(testRegistry);
 
     public static final BlockEntityReg<GuiExampleBlockEntity> guiExampleTile =
@@ -128,7 +128,7 @@ public class AllExampleElements {
     public static final MenuReg<GreenAppleMenu, GreenAppleScreen> apple =
             new MenuReg<GreenAppleMenu, GreenAppleScreen>("green_apple_screen")
                     .withMenuAndScreen(GreenAppleMenu::new, () -> GreenAppleScreen::new)
-                    .submit(REGISTRY);
+                    .submit(testRegistry);
 
 
     public static final ChannelReg Channel = new ChannelReg("example_channel")
