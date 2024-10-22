@@ -3,7 +3,6 @@ package kasuga.lib.core.javascript;
 import kasuga.lib.core.client.animation.neo_neo.base.Movement;
 import kasuga.lib.core.client.animation.neo_neo.key_frame.KeyFrameHolder;
 import kasuga.lib.core.javascript.engine.ScriptEngine;
-import org.mozilla.javascript.commonjs.module.ModuleScope;
 
 import java.util.HashMap;
 import java.util.Map;

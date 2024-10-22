@@ -75,7 +75,7 @@ public class ModelRegistryEvent {
     }
 
     @SubscribeEvent
-    public static void registerStaticImages(ModelEvent.RegisterAdditional event) {
+    public static void registerStaticImages(ModelBakeEvent event) {
         StaticImage.HOLDERS.forEach(holder -> {
             try {
                 holder.getImage();

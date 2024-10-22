@@ -88,7 +88,7 @@ public class Texture extends GraphicsImage<Texture> {
     protected static byte[] getRawImageFromLocation(ResourceLocation location){
         try{
             Resource resource = Resources.getResource(location);
-            InputStream stream = resource.open();
+            InputStream stream = resource.getInputStream();
             return stream.readAllBytes();
         }catch (IOException e){
             throw new RuntimeException(e);
@@ -123,7 +123,8 @@ public class Texture extends GraphicsImage<Texture> {
         buffer.vertex(x, y + height, 0.0).uv(uOffsetUVCache, vOffsetUVCache + vHeightUVCache).endVertex();
         buffer.vertex(x + width, y + height, 0.0).uv(uOffsetUVCache + uWidthUVCache,vOffsetUVCache + vHeightUVCache).endVertex();
         buffer.vertex(x + width, y, 0.0).uv(uOffsetUVCache + uWidthUVCache, vOffsetUVCache).endVertex();
-        BufferUploader.drawWithShader(buffer.end());
+        buffer.end();
+        BufferUploader.end(buffer);
         RenderSystem.disableBlend();
     }
 
