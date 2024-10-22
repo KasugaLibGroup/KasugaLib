@@ -58,6 +58,7 @@ public class DOMRegistryItemDynamicProxy {
     public void unload(){
         if(this.closed)
             return;
+        this.context.getRootNode().clear();
         this.closed = true;
         context.appendTask(()->sideEffectContext.close());
         context.setNotReady();

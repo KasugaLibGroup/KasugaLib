@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class MetroModuleLoader implements JavascriptModuleLoader {
     protected static HashMap<UUID, MetroModuleInfo> sessions = new HashMap<>();
@@ -125,11 +126,22 @@ public class MetroModuleLoader implements JavascriptModuleLoader {
                 .register(new MetroModuleLoader());
     }
 
-    public static JavascriptThread getThread(){
-        return KasugaLib
+    public static CompletableFuture<JavascriptThread> getThread(){
+        JavascriptThread oldThread = KasugaLib.STACKS.JAVASCRIPT.GROUP_CLIENT.getThread(MetroModuleLoader.class);
+        if(oldThread != null) return oldThread.terminate().thenApply((t)->{
+            return KasugaLib
+                    .STACKS
+                    .JAVASCRIPT
+                    .GROUP_CLIENT
+                    .getOrCreate(MetroModuleLoader.class,"Metro Server Thread");
+        });
+
+        CompletableFuture futureNow = new CompletableFuture();
+        futureNow.complete(KasugaLib
                 .STACKS
                 .JAVASCRIPT
                 .GROUP_CLIENT
-                .getOrCreate(MetroModuleLoader.class,"Metro Server Thread");
+                .getOrCreate(MetroModuleLoader.class,"Metro Server Thread"));
+        return futureNow;
     }
 }

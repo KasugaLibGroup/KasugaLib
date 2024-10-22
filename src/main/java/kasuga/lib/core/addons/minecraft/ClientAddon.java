@@ -25,7 +25,7 @@ public class ClientAddon {
     }
 
     public static void reload(){
-        load();
         unload();
+        load();
     }
 }

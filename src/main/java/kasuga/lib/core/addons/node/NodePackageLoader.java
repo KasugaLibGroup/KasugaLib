@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class NodePackageLoader {
     public HashMap<String, NodePackage> packages = new HashMap<>();
@@ -36,9 +37,10 @@ public class NodePackageLoader {
         }
     }
 
-    public void removePackage(NodePackage nodePackage){
+    public CompletableFuture<JavascriptThread> removePackage(NodePackage nodePackage){
         packages.remove(nodePackage.packageName, nodePackage);
         group.getModuleLoader().unregisterPackage(nodePackage);
+        return destoryRuntime(nodePackage);
     }
 
     public void bindRuntime(JavascriptThreadGroup group, EntryType type) {
@@ -98,10 +100,14 @@ public class NodePackageLoader {
         }
     }
 
-    protected void destoryRuntime(NodePackage nodePackage){
+    protected CompletableFuture<JavascriptThread> destoryRuntime(NodePackage nodePackage){
+        if(nodePackage.minecraft == null || group == null)
+            return null;
         JavascriptThread thread = group.getThread(nodePackage);
         if(thread != null){
-            thread.terminate();
+            CompletableFuture<JavascriptThread> future = thread.terminate();
+            return future;
         }
+        return null;
     }
 }

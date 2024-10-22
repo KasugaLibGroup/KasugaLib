@@ -19,12 +19,14 @@ public class JavascriptThread extends SynchronizedThread{
 
     public ContextModuleLoader contextModuleLoader;
     private Set<CompletableFuture> afterTerminate = new HashSet<>();
+    private Object target;
 
     public JavascriptThread(JavascriptThreadGroup javascriptThreadGroup, Object target, String description) {
         super("Javascript Thread - " + description);
         this.threadGroup = javascriptThreadGroup;
         this.scriptEngine = javascriptThreadGroup.getScriptEngine();
         this.contextModuleLoader = new ContextModuleLoader(javascriptThreadGroup.getModuleLoader());
+        this.target = target;
     }
 
     @Override
@@ -61,7 +63,8 @@ public class JavascriptThread extends SynchronizedThread{
             return future;
         }
         this.afterTerminate.add(future);
-        this.interrupt();
+        this.shouldShutdown.set(true);
+        this.threadGroup.terminate(this.target);
         return future;
     }
 }

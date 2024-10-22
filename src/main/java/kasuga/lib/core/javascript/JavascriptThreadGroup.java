@@ -60,7 +60,7 @@ public class JavascriptThreadGroup {
 
         if(thread != null) {
             thread.shouldShutdown.set(true);
-            this.threads.remove(thread);
+            this.threads.remove(target);
             terminating.add(thread);
             thread.interrupt();
         }
