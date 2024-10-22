@@ -3,10 +3,14 @@ package kasuga.lib.core.javascript;
 import kasuga.lib.core.client.animation.neo_neo.base.Movement;
 import kasuga.lib.core.client.animation.neo_neo.key_frame.KeyFrameHolder;
 import kasuga.lib.core.javascript.engine.ScriptEngine;
+import org.apache.commons.compress.changes.ChangeSet;
 import org.mozilla.javascript.commonjs.module.ModuleScope;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public class JavascriptThread extends SynchronizedThread{
     private final JavascriptThreadGroup threadGroup;
@@ -14,6 +18,7 @@ public class JavascriptThread extends SynchronizedThread{
     public ScriptEngine scriptEngine;
 
     public ContextModuleLoader contextModuleLoader;
+    private Set<CompletableFuture> afterTerminate = new HashSet<>();
 
     public JavascriptThread(JavascriptThreadGroup javascriptThreadGroup, Object target, String description) {
         super("Javascript Thread - " + description);
@@ -31,6 +36,7 @@ public class JavascriptThread extends SynchronizedThread{
     protected void beforeStop() {
         this.contexts.values().forEach(JavascriptContext::close);
         threadGroup.onTerminate(this);
+        afterTerminate.forEach((v)->v.complete(this));
     }
 
     public JavascriptContext createContext(Object target,String name){
@@ -46,5 +52,16 @@ public class JavascriptThread extends SynchronizedThread{
 
     public ContextModuleLoader getContextModuleLoader() {
         return contextModuleLoader;
+    }
+
+    public CompletableFuture<JavascriptThread> terminate() {
+        CompletableFuture<JavascriptThread> future = new CompletableFuture<>();
+        if(!this.isAlive()){
+            future.complete(this);
+            return future;
+        }
+        this.afterTerminate.add(future);
+        this.interrupt();
+        return future;
     }
 }

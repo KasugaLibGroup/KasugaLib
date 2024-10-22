@@ -100,4 +100,8 @@ public class JavascriptThreadGroup {
     public ScriptEngine getScriptEngine() {
         return scriptEngine;
     }
+
+    public JavascriptThread getThread(Object target) {
+        return threads.get(target);
+    }
 }

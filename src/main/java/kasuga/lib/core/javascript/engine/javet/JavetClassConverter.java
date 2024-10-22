@@ -313,7 +313,7 @@ public class JavetClassConverter {
                     return null;
                 for (Field field : fieldArrayList) {
                     if(field.canAccess(object)){
-                        return toV8Value(v8Runtime,field.get(object));
+                        return converter.toV8Value(v8Runtime,field.get(object));
                     }
                 }
                 return null;

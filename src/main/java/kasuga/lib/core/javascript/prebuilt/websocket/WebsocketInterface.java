@@ -94,7 +94,7 @@ public class WebsocketInterface {
     @HostAccess.Export
     public void send(JavascriptValue value){
         if(value.isString()){
-            this.handler.send(value.toString());
+            this.handler.send(value.asString());
             return;
         }
         ByteBuf buffer;
