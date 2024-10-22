@@ -5,7 +5,6 @@ import kasuga.lib.core.client.frontend.commands.MetroModuleInfo;
 import kasuga.lib.core.javascript.engine.*;
 import kasuga.lib.core.util.Callback;
 import net.minecraft.Util;
-import org.mozilla.javascript.commonjs.module.ModuleScope;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;

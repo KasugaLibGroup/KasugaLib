@@ -75,7 +75,7 @@ public class GuiTextNode extends GuiDomNode implements MayMeasurable {
             this.context.setPosition(box.x, box.y, 0);
             this.initContext(box, 1);
             context.pose().pushPose();
-            this.context.renderToGui(context.pose());
+            this.context.renderToGui(context.guiGraphics());
             context.pose().popPose();
         }else{
             this.context.setPosition(box.x, -box.y, 0);

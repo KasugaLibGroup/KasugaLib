@@ -6,6 +6,7 @@ import kasuga.lib.core.client.render.texture.old.WorldTexture;
 import kasuga.lib.core.util.LazyRecomputable;
 import net.minecraft.resources.ResourceLocation;
 import kasuga.lib.core.client.render.texture.*;
+import org.joml.Vector3f;
 
 public class BackgroundRenderer {
 

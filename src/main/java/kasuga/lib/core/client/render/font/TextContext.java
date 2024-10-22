@@ -287,7 +287,7 @@ public class TextContext {
         pose.translate(- position.x(), - position.y(), - position.z());
     }
 
-    public void renderToWorld(PoseStack pose, MultiBufferSource source, boolean dropShadow, boolean transparent, SimpleColor bgColor, int light) {
+    public void renderToWorld(PoseStack pose, MultiBufferSource source, boolean dropShadow, net.minecraft.client.gui.Font.DisplayMode mode, SimpleColor bgColor, int light) {
         pose.translate(position.x(), position.y(), position.z());
         float w = pivot.x() * this.getWidth(), h = pivot.y() * this.getHeight();
         pose.mulPose(VectorUtil.fromXYZ(this.rotation));
@@ -299,16 +299,15 @@ public class TextContext {
         pose.scale(1,-1,1);
         pose.scale(this.scale.x(), this.scale.y(), 1f);
 
-        Minecraft.getInstance().font.drawInBatch(text, 0 ,0, color.getRGB(), dropShadow, p.last().pose(),
+        Minecraft.getInstance().font.drawInBatch(text, 0 ,0, color.getRGB(), dropShadow, pose.last().pose(),
                 source, mode, bgColor.getRGB(), light);
-        pose.mulPoseMatrix(p.last().pose());
 
         pose.scale(1 / this.scale.x(), 1 / this.scale.y(), 1f);
         pose.scale(negStandardScale, - negStandardScale, negStandardScale);
         pose.translate(w, - h, 0);
 
         negRot.mul(-1f);
-        pose.mulPose(Quaternion.fromXYZ(negRot));
+        pose.mulPose(VectorUtil.fromXYZ(negRot));
         pose.translate(- position.x(), - position.y(), - position.z());
     }
 
