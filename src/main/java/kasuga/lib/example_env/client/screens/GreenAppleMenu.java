@@ -14,13 +14,14 @@ public class GreenAppleMenu extends AbstractContainerMenu {
         super(pMenuType, pContainerId);
     }
 
-    // public GreenAppleMenu(int containerId, Inventory inventory) {
-        // this(AllExampleElements.apple.getMenuType(), containerId);
-    // }
 
-    // public GreenAppleMenu(int i, Inventory inventory, FriendlyByteBuf buf) {
-        // this(i, inventory);
-    // }
+    public GreenAppleMenu(int containerId, Inventory inventory) {
+        this(AllExampleElements.apple.getMenuType(), containerId);
+    }
+
+    public GreenAppleMenu(int i, Inventory inventory, FriendlyByteBuf buf) {
+        this(i, inventory);
+    }
 
     @Override
     public ItemStack quickMoveStack(Player pPlayer, int pIndex) {

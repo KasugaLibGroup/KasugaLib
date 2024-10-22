@@ -2,9 +2,9 @@ package kasuga.lib.example_env;
 
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.util.Envs;
-import kasuga.lib.example_env.block.GreenAppleBlock;
-import kasuga.lib.example_env.block.GreenAppleItem;
-import kasuga.lib.example_env.block.block_entity.GreenAppleTile;
+import kasuga.lib.example_env.block.green_apple.GreenAppleBlock;
+import kasuga.lib.example_env.block.green_apple.GreenAppleItem;
+import kasuga.lib.example_env.block.green_apple.GreenAppleTile;
 import kasuga.lib.example_env.block.gui.GuiExampleBlock;
 import kasuga.lib.example_env.block.gui.GuiExampleBlockEntity;
 import kasuga.lib.example_env.block.gui.GuiExampleBlockRenderer;
@@ -53,14 +53,14 @@ public class AllExampleElements {
                     .material(Material.AIR)
                     .defaultBlockItem()
                     .tabTo(CreativeModeTab.TAB_DECORATIONS)
-                    .submit(REGISTRY);
+                    .submit(testRegistry);
 
     public static final BlockEntityReg<GuiExampleBlockEntity> guiExampleTile =
             new BlockEntityReg<GuiExampleBlockEntity>("gui_example_tile")
                     .blockEntityType(GuiExampleBlockEntity::new)
                     .blockPredicates((location, block) -> block instanceof GuiExampleBlock)
                     .withRenderer(()-> GuiExampleBlockRenderer::new)
-                    .submit(REGISTRY);
+                    .submit(testRegistry);
 
 
     /*
@@ -129,7 +129,7 @@ public class AllExampleElements {
     public static final MenuReg<GreenAppleMenu, GreenAppleScreen> apple =
             new MenuReg<GreenAppleMenu, GreenAppleScreen>("green_apple_screen")
                     .withMenuAndScreen(GreenAppleMenu::new, () -> GreenAppleScreen::new)
-                    .submit(REGISTRY);
+                    .submit(testRegistry);
 
 
     public static final ChannelReg Channel = new ChannelReg("example_channel")

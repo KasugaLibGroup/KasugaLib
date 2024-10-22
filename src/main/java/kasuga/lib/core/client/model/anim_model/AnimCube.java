@@ -21,8 +21,6 @@ public class AnimCube implements BedrockRenderable {
     private final List<BakedQuad> quads;
 
     public final AnimModel model;
-
-    // TODO: 要把绝对位移转化为相对位移
     private final AnimBone bone;
     private final Vector3f pivot, rotation;
     public AnimCube(Cube cube, AnimModel model, AnimBone bone) {
