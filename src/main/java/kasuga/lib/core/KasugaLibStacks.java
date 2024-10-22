@@ -45,6 +45,7 @@ public class KasugaLibStacks {
     private final FontRegistry FONTS;
     private final RandomSource random = RandomSource.create();
     private final HashMap<Block, CustomBlockRenderer> BLOCK_RENDERERS;
+
     public final JavascriptApi JAVASCRIPT = new JavascriptApi();
 
     public Optional<GuiEngine> GUI = Optional.empty();
@@ -89,6 +90,7 @@ public class KasugaLibStacks {
             GUI = Optional.of(new GuiEngine());
             bus.addListener(AnimationModelRegistryEvent::registerAnimations);
             if (Envs.isDevEnvironment()) KasugaLibClient.invoke();
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()-> TargetsClient::reigster);
         }
 
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStarting);
