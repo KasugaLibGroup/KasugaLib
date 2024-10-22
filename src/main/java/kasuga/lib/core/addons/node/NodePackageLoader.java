@@ -83,6 +83,7 @@ public class NodePackageLoader {
                                     .filter((p)->p.startsWith(nodePackage.reader.getPath()))
                                     .map((p)->p.substring(nodePackage.reader.getPath().length()))
                                     .map(PackageScanner::splitPath)
+                                    .filter((p)->p.size() != 0)
                             ).stream()
                             .map(PackageScanner::joinPath)
                             .toList()
@@ -94,6 +95,13 @@ public class NodePackageLoader {
             context.runTask(()->{
                 context.loadModuleVoid(nodePackage.packageName + "/" + entry);
             });
+        }
+    }
+
+    protected void destoryRuntime(NodePackage nodePackage){
+        JavascriptThread thread = group.getThread(nodePackage);
+        if(thread != null){
+            thread.terminate();
         }
     }
 }
