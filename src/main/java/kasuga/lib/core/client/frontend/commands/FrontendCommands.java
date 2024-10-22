@@ -52,7 +52,9 @@ public class FrontendCommands {
 
                             MetroLoaderModule loaderModule = new MetroLoaderModule(moduleInfo);
 
-                            MetroModuleLoader.createSession(moduleInfo);
+                            String session = MetroModuleLoader.createSession(moduleInfo);
+
+                            context.loadModuleVoid("metro-session:"+session+"/"+entry);
                         });
 
                     });

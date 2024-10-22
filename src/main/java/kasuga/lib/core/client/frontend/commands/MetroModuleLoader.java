@@ -39,27 +39,14 @@ public class MetroModuleLoader implements JavascriptModuleLoader {
             name = _name;
         }else{
             UUID sessionId = UUID.fromString(_name.substring(
-                    _name.indexOf(":"),
-                    _name.indexOf("/") - 1
+                    _name.lastIndexOf(":") + 1,
+                    _name.indexOf("/")
             ));
             if(sessions.containsKey(sessionId)){
                 name = _name.substring(_name.indexOf("/"));
                 moduleInfo = sessions.get(sessionId);
 
             }else return null;
-        }
-
-        if(name == "metro:assets"){
-            JavascriptContext javascriptContext = engineContext.getContext();
-            return engineContext.compileNativeModule(
-                    new AssetReader(
-                            source.getDirectoryName(),
-                            javascriptContext,
-                            moduleInfo.getProvider(),
-                            KasugaLib.STACKS.JAVASCRIPT.ASSETS.get()
-                    ),
-                    null
-            );
         }
 
 
@@ -88,7 +75,8 @@ public class MetroModuleLoader implements JavascriptModuleLoader {
             String path,
             String serverAddress,
             MetroServerResourceProvider provider,
-            MetroModuleInfo moduleInfo, JavascriptEngineContext context
+            MetroModuleInfo moduleInfo,
+            JavascriptEngineContext context
     ){
         if(path.endsWith(".bundle")){
             path += "?platform=minecraft";
@@ -103,13 +91,23 @@ public class MetroModuleLoader implements JavascriptModuleLoader {
 
             List<String> _path = PackageScanner.splitPath(path);
 
-            return context
+            JavascriptEngineModule module = context
                     .compileModuleFromSource(
                             null,
                             path,
                             PackageScanner.joinPath(_path.subList(1, _path.size() - 1)),
                             stream
                     ).setFeature("metro", moduleInfo);
+
+            JavascriptContext javascriptContext = context.getContext();
+
+            module.setAssetReader(new AssetReader(
+                    module.getDirectoryName(),
+                    javascriptContext,
+                    moduleInfo.getProvider(),
+                    KasugaLib.STACKS.JAVASCRIPT.ASSETS.get()
+            ));
+            return module;
 
         }catch (IOException e){
             e.printStackTrace();
