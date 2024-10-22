@@ -1,18 +1,14 @@
 package kasuga.lib.core.client.frontend.common.event;
 
 import kasuga.lib.core.client.frontend.dom.nodes.DomNode;
-import org.graalvm.polyglot.HostAccess;
+import kasuga.lib.core.javascript.engine.HostAccess;
 
 public abstract class Event {
-    protected final DomNode<?> currentTarget;
-    protected final DomNode<?> target;
+
     protected final boolean trusted;
     protected boolean defaultPrevented;
-    protected boolean propagationStopped;
 
-    public Event(DomNode<?> currentTarget, DomNode<?> target, boolean trusted){
-        this.currentTarget = currentTarget;
-        this.target = target;
+    public Event(boolean trusted){
         this.trusted = trusted;
     }
 
@@ -26,10 +22,6 @@ public abstract class Event {
         return true;
     }
 
-    @HostAccess.Export
-    public DomNode<?> getCurrentTarget(){
-        return currentTarget;
-    }
 
     @HostAccess.Export
     public boolean getDefaultPrevented(){
@@ -41,23 +33,10 @@ public abstract class Event {
         return trusted;
     }
 
-    @HostAccess.Export
-    public DomNode<?> getTarget(){
-        return target;
-    }
 
     @HostAccess.Export
     public abstract String getType();
 
-    @HostAccess.Export
-    public void stopPropagation(){
-        this.propagationStopped = true;
-    }
-
-    @HostAccess.Export
-    public boolean isPropagationStopped(){
-        return propagationStopped;
-    }
 
     @HostAccess.Export
     public void preventDefault(){

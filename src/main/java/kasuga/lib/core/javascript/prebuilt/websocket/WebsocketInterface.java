@@ -1,10 +1,9 @@
 package kasuga.lib.core.javascript.prebuilt.websocket;
 
 import io.netty.buffer.ByteBuf;
+import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.JavascriptValue;
 import kasuga.lib.core.util.data_type.Pair;
-import org.graalvm.polyglot.HostAccess;
-import org.graalvm.polyglot.PolyglotException;
-import org.graalvm.polyglot.Value;
 
 import java.util.ArrayDeque;
 import java.util.HashMap;
@@ -20,17 +19,17 @@ public class WebsocketInterface {
         this.handler = new WebsocketHandler(url);
     }
 
-    HashMap<Value,Consumer<?>> listeners = new HashMap<>();
+    HashMap<JavascriptValue,Consumer<?>> listeners = new HashMap<>();
 
     @HostAccess.Export
-    public void addEventListener(Value eventName, Value eventConsumer){
+    public void addEventListener(JavascriptValue eventName, JavascriptValue eventConsumer){
         if(!eventName.isString())
             throw new IllegalArgumentException("Illegal argument: invalid type for event name : expected string");
         eventConsumer.pin();
         addEventListener(eventName.asString(),eventConsumer);
     }
 
-    public void addEventListener(String eventName, Value eventConsumer){
+    public void addEventListener(String eventName, JavascriptValue eventConsumer){
         if(!eventConsumer.canExecute()){
             throw new IllegalArgumentException("Invalid argument event consumer: should can execute");
         }
@@ -77,12 +76,12 @@ public class WebsocketInterface {
     }
 
     @HostAccess.Export
-    public void removeEventListener(Value eventName, Value eventConsumer){
+    public void removeEventListener(JavascriptValue eventName, JavascriptValue eventConsumer){
         if(!eventName.isString())
             throw new IllegalArgumentException("Illegal argument: invalid type for event name : expected string");
         removeEventListener(eventName.asString(),eventConsumer);
     }
-    public void removeEventListener(String eventName, Value eventConsumer){
+    public void removeEventListener(String eventName, JavascriptValue eventConsumer){
         if(!this.listeners.containsKey(eventConsumer))
             return;
         Consumer<?> eventFinalConsumer = this.listeners.get(eventConsumer);
@@ -93,7 +92,7 @@ public class WebsocketInterface {
     }
 
     @HostAccess.Export
-    public void send(Value value){
+    public void send(JavascriptValue value){
         if(value.isString()){
             this.handler.send(value.toString());
             return;
@@ -101,7 +100,7 @@ public class WebsocketInterface {
         ByteBuf buffer;
         try{
             buffer = value.as(ByteBuf.class);
-        }catch (ClassCastException | IllegalStateException | PolyglotException e){
+        }catch (ClassCastException | IllegalStateException e){
             throw new IllegalArgumentException("Failed to cast type to buffer like");
         }
         this.handler.send(buffer);

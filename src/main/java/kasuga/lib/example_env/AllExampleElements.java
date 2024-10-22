@@ -4,14 +4,17 @@ import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.commands.CommandHandler;
 import kasuga.lib.core.config.SimpleConfig;
 import kasuga.lib.core.util.Envs;
-import kasuga.lib.example_env.block.GreenAppleBlock;
-import kasuga.lib.example_env.block.GreenAppleItem;
-import kasuga.lib.example_env.block_entity.GreenAppleTile;
+import kasuga.lib.example_env.block.green_apple.GreenAppleBlock;
+import kasuga.lib.example_env.block.green_apple.GreenAppleItem;
+import kasuga.lib.example_env.block.green_apple.GreenAppleTile;
+import kasuga.lib.example_env.block.gui.GuiExampleBlock;
+import kasuga.lib.example_env.block.gui.GuiExampleBlockEntity;
+import kasuga.lib.example_env.block.gui.GuiExampleBlockRenderer;
 import kasuga.lib.example_env.client.block_entity.renderer.GreenAppleTileRenderer;
+import kasuga.lib.example_env.client.screens.GreenAppleMenu;
+import kasuga.lib.example_env.client.screens.GreenAppleScreen;
 import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
-import kasuga.lib.registrations.client.AnimReg;
-import kasuga.lib.registrations.client.ModelReg;
 import kasuga.lib.registrations.common.*;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.resources.ResourceLocation;
@@ -44,6 +47,22 @@ public class AllExampleElements {
             .withRenderer(() -> GreenAppleTileRenderer::new)
             .blockPredicates((location, block) -> block instanceof GreenAppleBlock)
             .submit(REGISTRY);
+
+    public static final BlockReg<GuiExampleBlock> guiExampleBlock =
+            new BlockReg<GuiExampleBlock>("gui_example_block")
+                    .blockType(GuiExampleBlock::new)
+                    .material(Material.AIR)
+                    .defaultBlockItem()
+                    .tabTo(CreativeModeTab.TAB_DECORATIONS)
+                    .submit(REGISTRY);
+
+    public static final BlockEntityReg<GuiExampleBlockEntity> guiExampleTile =
+            new BlockEntityReg<GuiExampleBlockEntity>("gui_example_tile")
+                    .blockEntityType(GuiExampleBlockEntity::new)
+                    .blockPredicates((location, block) -> block instanceof GuiExampleBlock)
+                    .withRenderer(()-> GuiExampleBlockRenderer::new)
+                    .submit(REGISTRY);
+
 
     /*
     public static final EntityReg<WuLingEntity> wuling = new EntityReg<WuLingEntity>("wuling")
@@ -108,13 +127,11 @@ public class AllExampleElements {
 
      */
 
-    /*
     public static final MenuReg<GreenAppleMenu, GreenAppleScreen> apple =
-            new MenuReg<GreenAppleMenu, GreenAppleScreen>("green_apple")
-                    .withMenuAndScreen(GreenAppleMenu::new, GreenAppleScreen::new)
+            new MenuReg<GreenAppleMenu, GreenAppleScreen>("green_apple_screen")
+                    .withMenuAndScreen(GreenAppleMenu::new, () -> GreenAppleScreen::new)
                     .submit(REGISTRY);
 
-     */
 
     public static final ChannelReg Channel = new ChannelReg("example_channel")
             .brand("1.0")

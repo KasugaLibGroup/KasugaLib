@@ -15,6 +15,7 @@ public class GuiAttachTarget implements Iterable<Object> {
     Set<Entity> entity = new HashSet<>();
     Set<BlockEntity> block = new HashSet<>();
     Set<Screen> screen = new HashSet<>();
+    Set<Object> objects = new HashSet<>();
     int unattachedLivingTicks = 0;
 
     public void detach(){
@@ -24,7 +25,7 @@ public class GuiAttachTarget implements Iterable<Object> {
     }
 
     public boolean isClosable(){
-        return isBlockEntitySourceClosable() && isEntitySourceClosable() && isScreenSourceClosable();
+        return isBlockEntitySourceClosable() && isEntitySourceClosable() && isScreenSourceClosable() && objects.isEmpty();
     }
 
     public boolean isBlockEntitySourceClosable(){
@@ -75,6 +76,10 @@ public class GuiAttachTarget implements Iterable<Object> {
     public void detach(Entity entity){
         this.entity.remove(entity);
     }
+
+    public void attach(Object object){this.objects.add(object);}
+
+    public void detach(Object object){this.objects.remove(object);}
 
     @NotNull
     @Override

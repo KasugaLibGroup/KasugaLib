@@ -1,12 +1,17 @@
 package kasuga.lib.core.javascript.prebuilt.timer;
 
 import kasuga.lib.core.javascript.JavascriptContext;
+import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.JavascriptValue;
+import kasuga.lib.core.javascript.engine.javet.JavetClassConverter;
 import kasuga.lib.core.javascript.prebuilt.PrebuiltModule;
-import org.graalvm.polyglot.HostAccess;
-import org.graalvm.polyglot.Value;
+
+import java.util.HashMap;
 
 public class TimerPrebuiltModule extends PrebuiltModule {
     KasugaTimer timer = new KasugaTimer();
+    private HashMap<Integer, Runnable> cancelHandler = new HashMap();
+
     public TimerPrebuiltModule(JavascriptContext runtime) {
         super(runtime);
     }
@@ -21,33 +26,40 @@ public class TimerPrebuiltModule extends PrebuiltModule {
         timer.onTick();
     }
     @HostAccess.Export
-    @HostAccess.DisableMethodScoping
-    public int requestTimeout(KasugaTimer.Callback callback, Value interval){
-        return requestScheduled(KasugaTimer.TimerType.TIMEOUT,callback,interval);
+    public int requestTimeout(JavascriptValue callback, JavascriptValue interval){
+        callback.pin();
+        int[] cancelHandler = new int[1];
+        cancelHandler[0] = -1;
+        return cancelHandler[0] = requestScheduled(KasugaTimer.TimerType.TIMEOUT,()->{
+            this.cancelHandler.remove(cancelHandler[0]);
+            callback.executeVoid();
+            callback.unpin();
+        }, ()->{callback.unpin();},interval);
     }
 
     @HostAccess.Export
-    @HostAccess.DisableMethodScoping
-    public int requestInterval(KasugaTimer.Callback callback, Value interval){
-        return requestScheduled(KasugaTimer.TimerType.INTERVAL,callback,interval);
+    public int requestInterval(JavascriptValue callback, JavascriptValue interval){
+        return requestScheduled(KasugaTimer.TimerType.INTERVAL,()->callback.executeVoid(), ()->callback.unpin(), interval);
     }
 
-    @HostAccess.Export
-    @HostAccess.DisableMethodScoping
-    public int requestScheduled(KasugaTimer.TimerType type, KasugaTimer.Callback callback, Value interval){
+
+    public int requestScheduled(KasugaTimer.TimerType type, KasugaTimer.Callback callback, Runnable cancelHandler, JavascriptValue interval){
         if(!interval.isNumber())
             return -1;
-        return timer.register(type, callback,Math.max(50,interval.asInt() / 50));
+        int cancelId = timer.register(type, callback,Math.max(50,interval.asInt() / 50));
+        this.cancelHandler.put(cancelId, cancelHandler);
+        return cancelId;
     }
 
     @HostAccess.Export
-    @HostAccess.DisableMethodScoping
-    public void clearSchedule(Value scheduleId){
+    public void clearSchedule(JavascriptValue scheduleId){
         if(!scheduleId.isNumber()){
             return;
         }
         int x = scheduleId.asInt();
         timer.unregister(x);
+        Runnable cancelHandler = this.cancelHandler.remove(x);
+        cancelHandler.run();
     }
 
     @Override
