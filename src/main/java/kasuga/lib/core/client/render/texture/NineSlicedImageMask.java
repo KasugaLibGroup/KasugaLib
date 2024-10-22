@@ -120,7 +120,7 @@ public class NineSlicedImageMask extends ImageMask {
         positionMatrix.set(3, 2, intersectionVector3f(positionMatrix.get(3, 1), positionMatrix.get(3, 4),
                 positionMatrix.get(4, 2), positionMatrix.get(1, 2)));
         positionMatrix.set(3, 3, intersectionVector3f(positionMatrix.get(3, 4), positionMatrix.get(3, 1),
-                positionMatrix.get(4, 3), positionMatrix.get(4, 1)));
+                positionMatrix.get(4, 3), positionMatrix.get(1, 3)));
     }
 
     public void setBorders(float left, float right, float top, float bottom) {

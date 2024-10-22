@@ -144,7 +144,7 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     }
 
     /**
-     * See {@link BlockReg#withMenu(String, IContainerFactory, MenuReg.ScreenInvoker)}
+     * See {@link BlockReg#withMenu(String, IContainerFactory, Supplier)}
      * @param registrationKey the name of your menu.
      * @param menu the menu instance supplier.
      * @param screen the screen instance supplier.
@@ -154,7 +154,7 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
      */
     @Optional
     public <F extends AbstractContainerMenu, U extends Screen & MenuAccess<F>> FluidBlockReg<T>
-    withMenu(String registrationKey, IContainerFactory<?> menu, MenuReg.ScreenInvoker<U> screen) {
+    withMenu(String registrationKey, IContainerFactory<?> menu, Supplier<MenuReg.FullScreenInvoker<F, U>> screen) {
         menuReg = new MenuReg<F, U>(registrationKey)
                 .withMenuAndScreen((IContainerFactory<F>) menu, screen);
         registerMenu = true;

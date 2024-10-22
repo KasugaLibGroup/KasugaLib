@@ -7,27 +7,30 @@ import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgumentInfo;
 import kasuga.lib.core.client.animation.Constants;
 import kasuga.lib.core.client.frontend.gui.GuiEngine;
-import kasuga.lib.core.client.render.texture.StaticImageHolder;
 import kasuga.lib.core.events.both.BothSetupEvent;
 import kasuga.lib.core.events.both.EntityAttributeEvent;
 import kasuga.lib.core.events.client.*;
+import kasuga.lib.core.events.server.ServerConnectionListeners;
 import kasuga.lib.core.events.server.ServerResourceListener;
 import kasuga.lib.core.events.server.ServerStartingEvents;
 import kasuga.lib.core.client.render.texture.old.SimpleTexture;
 import kasuga.lib.core.javascript.JavascriptApi;
+import kasuga.lib.core.menu.targets.TargetsClient;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.registrations.client.KeyBindingReg;
 import kasuga.lib.registrations.create.TrackMaterialReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.registry.FontRegistry;
 import kasuga.lib.registrations.registry.TextureRegistry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -48,11 +51,13 @@ public class KasugaLibStacks {
     private final RandomSource random = RandomSource.create();
     private final HashMap<TrackMaterial, TrackMaterialReg> TRACK_MATERIALS;
     private final HashMap<Block, CustomBlockRenderer> BLOCK_RENDERERS;
+
     public final JavascriptApi JAVASCRIPT = new JavascriptApi();
 
     public Optional<GuiEngine> GUI = Optional.empty();
     public static final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
 
+    public static HashSet<Minecraft> mcs = new HashSet<>();
 
     public KasugaLibStacks(IEventBus bus) {
         this.bus = bus;
@@ -71,6 +76,7 @@ public class KasugaLibStacks {
         bus.addListener(BothSetupEvent::onFMLCommonSetup);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
 
+
         if(Envs.isClient()) {
             MinecraftForge.EVENT_BUS.addListener(PacketEvent::onClientPayloadHandleEvent);
             MinecraftForge.EVENT_BUS.addListener(Constants::onClientTick);
@@ -83,6 +89,7 @@ public class KasugaLibStacks {
             MinecraftForge.EVENT_BUS.addListener(PlayLogEvent::playerLogin);
 
             bus.addListener(ModelRegistryEvent::registerAdditionalModels);
+            bus.addListener(ModelRegistryEvent::registerStaticImages);
             bus.addListener(ModelRegistryEvent::bakingCompleted);
             bus.addListener(TextureRegistryEvent::onModelRegistry);
             bus.addListener(ClientSetupEvent::onClientSetup);
@@ -93,10 +100,12 @@ public class KasugaLibStacks {
             GUI = Optional.of(new GuiEngine());
             bus.addListener(AnimationModelRegistryEvent::registerAnimations);
             if (Envs.isDevEnvironment()) KasugaLibClient.invoke();
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()-> TargetsClient::reigster);
         }
 
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStarting);
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStopping);
+        MinecraftForge.EVENT_BUS.addListener(ServerConnectionListeners::onClientDisconnect);
     }
 
     public static void registerNamespace(SimpleRegistry registry) {

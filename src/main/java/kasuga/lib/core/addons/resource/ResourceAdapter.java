@@ -41,7 +41,7 @@ public class ResourceAdapter {
             /*  TODO: Needed to be checked.
             else if(resource instanceof FolderPackResources folder){
                 result.add(new VanillaFolderResourcePackProvider(folder.file));
-            }else if(resource instanceof DefaultClientPackResources){
+            }else if(resource instanceof VanillaPackResources){
                 continue;
             }
              */

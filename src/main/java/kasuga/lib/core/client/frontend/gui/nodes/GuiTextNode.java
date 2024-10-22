@@ -1,5 +1,6 @@
 package kasuga.lib.core.client.frontend.gui.nodes;
 
+import com.caoccao.javet.annotations.V8Convert;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutBox;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutNode;
 import kasuga.lib.core.client.frontend.dom.attribute.AttributeProxy;
@@ -11,19 +12,27 @@ import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaMeasureMode;
 import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaMeasureOutput;
 import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaNode;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
+import kasuga.lib.core.client.render.SimpleColor;
+import kasuga.lib.core.client.render.font.Font;
+import kasuga.lib.core.client.render.font.PivotPosition;
+import kasuga.lib.core.client.render.font.TextContext;
 import kasuga.lib.core.util.LazyRecomputable;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.world.phys.Vec2;
 
 import java.util.Optional;
 
+@V8Convert()
 public class GuiTextNode extends GuiDomNode implements MayMeasurable {
 
-    Font font = Minecraft.getInstance().font;
+    static Font font = new Font(); // Currently we do not support change font
+
+    TextContext context;
 
     String content = "";
+
+    String color = "";
 
     LazyRecomputable<Pair<Integer,Integer>> measureResult = LazyRecomputable.of(()->{
         Vec2 measureResult = FontHelper.measure(Minecraft.getInstance().font, fontSize.get(), content, 1);
@@ -42,6 +51,7 @@ public class GuiTextNode extends GuiDomNode implements MayMeasurable {
             public String set(String value) {
                 content = value;
                 getLayoutManager().markDirty();
+                clearContext();
                 return value;
             }
         });
@@ -52,7 +62,42 @@ public class GuiTextNode extends GuiDomNode implements MayMeasurable {
         super.render(source, context);
         LayoutNode layout = getLayoutManager().getSourceNode(source);
         LayoutBox box = layout.getPosition();
-        FontHelper.draw(Minecraft.getInstance().font, context, new Vec2(box.x,box.y), fontSize.get(),content,0xff000000);
+        // FontHelper.draw(Minecraft.getInstance().font, context.pose(), new Vec2(box.x,box.y), fontSize.get(),content,0xff000000);
+        if(this.context == null || this.attributes.get("color") != this.color){
+            this.context = new TextContext(font, this.content);
+            String colorAttr = this.attributes.get("color");
+            if(colorAttr != null && colorAttr.startsWith("#") && colorAttr.length() == 7){
+                this.context.setColor(SimpleColor.fromHexString(colorAttr.substring(1)));
+            }
+            this.color = this.attributes.get("color");
+        }
+        if(context.getContextType() == RenderContext.RenderContextType.SCREEN){
+            this.context.setPosition(box.x, box.y, 0);
+            this.initContext(box, 1);
+            context.pose().pushPose();
+            this.context.renderToGui(context.guiGraphics());
+            context.pose().popPose();
+        }else{
+            this.context.setPosition(box.x, -box.y, 0);
+            this.initContext(box, 1);
+            context.pose().pushPose();
+            context.pose().translate(0,0,0.5);
+            this.context.withoutSizeFixure();
+            this.context.renderToWorld(context.pose(), context.getBufferSource(), context.getLight());
+            context.pose().popPose();
+            // this.context.renderToWorld(context.pose());
+        }
+    }
+
+    private void initContext(LayoutBox box, int initalScale) {
+        this.context.setPivot(PivotPosition.fromString(this.attributes.get("textAlign")));
+        float fontSize = 8;
+        float fontWidth = 1;
+        try{
+            fontSize = Float.parseFloat(this.attributes.get("fontSize","8"));
+            fontWidth = Float.parseFloat(this.attributes.get("fontWidth","1"));
+        }catch (NumberFormatException e){};
+        this.context.setScale(fontWidth * initalScale * fontSize / 8,  initalScale * fontSize/8);
     }
 
     @Override
@@ -82,5 +127,12 @@ public class GuiTextNode extends GuiDomNode implements MayMeasurable {
     protected void fontSizeUpdated() {
         measureResult.clear();
         this.layoutManager.get().markDirty();
+    }
+
+    protected void clearContext(){
+        // @TODO Sync
+        this.getDomContext().queueDuringRender(()->{
+            context = null;
+        });
     }
 }

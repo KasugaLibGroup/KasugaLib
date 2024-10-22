@@ -6,6 +6,7 @@ import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.packs.resources.CloseableResourceManager;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ServerStartingEvents {

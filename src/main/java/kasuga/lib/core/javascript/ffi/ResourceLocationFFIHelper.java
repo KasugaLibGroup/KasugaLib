@@ -1,10 +1,10 @@
 package kasuga.lib.core.javascript.ffi;
 
+import kasuga.lib.core.javascript.engine.JavascriptValue;
 import net.minecraft.resources.ResourceLocation;
-import org.graalvm.polyglot.Value;
 
 public class ResourceLocationFFIHelper {
-    public static ResourceLocation fromValue(Value value){
+    public static ResourceLocation fromValue(JavascriptValue value){
         if(!value.isString())
             throw new IllegalArgumentException();
         String val = value.asString();

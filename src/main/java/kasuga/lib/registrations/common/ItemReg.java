@@ -160,7 +160,7 @@ public class ItemReg<T extends Item> extends Reg {
      */
     @Optional
     public <F extends AbstractContainerMenu, U extends Screen & MenuAccess<F>> ItemReg<T>
-    withMenu(String registrationKey, IContainerFactory<?> menu, MenuReg.ScreenInvoker<U> screen) {
+    withMenu(String registrationKey, IContainerFactory<?> menu, Supplier<MenuReg.FullScreenInvoker<F, U>> screen) {
         menuReg = new MenuReg<F, U>(registrationKey)
                 .withMenuAndScreen((IContainerFactory<F>) menu, screen);
         registerMenu = true;
