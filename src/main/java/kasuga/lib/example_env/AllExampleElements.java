@@ -2,7 +2,6 @@ package kasuga.lib.example_env;
 
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.util.Envs;
-import kasuga.lib.core.config.SimpleConfig;
 import kasuga.lib.example_env.block.green_apple.GreenAppleBlock;
 import kasuga.lib.example_env.block.green_apple.GreenAppleItem;
 import kasuga.lib.example_env.block.green_apple.GreenAppleTile;
@@ -14,8 +13,6 @@ import kasuga.lib.example_env.client.screens.GreenAppleMenu;
 import kasuga.lib.example_env.client.screens.GreenAppleScreen;
 import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
-import kasuga.lib.registrations.client.AnimReg;
-import kasuga.lib.registrations.client.ModelReg;
 import kasuga.lib.registrations.common.*;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.resources.ResourceLocation;

@@ -149,17 +149,17 @@ public class MultiAnimateTicker implements Ticker {
     }
 
     public static LazyRecomputable<MultiAnimateTicker> getTickerInstance(
-            RenderType type, String animName, AnimateTicker.TickerType ticker,
-            int frameRate, float playSpeed, Pair<ResourceLocation, ResourceLocation>... anims) {
+            ResourceLocation modelLoc, RenderType type, AnimateTicker.TickerType ticker,
+            int frameRate, float playSpeed, Pair<ResourceLocation, String>... anims) {
         return new LazyRecomputable<>(() -> {
             AnimationInstance[] instances = new AnimationInstance[anims.length];
             int counter = 0;
-            for (Pair<ResourceLocation, ResourceLocation> a : anims) {
-                AnimModel model = BedrockModelLoader.getModel(a.getFirst(), type);
-                if (model == null) return null;
-                AnimationFile file = AnimationFile.fromFile(a.getSecond()).get();
+            AnimModel model = BedrockModelLoader.getModel(modelLoc, type);
+            if (model == null) return null;
+            for (Pair<ResourceLocation, String> a : anims) {
+                AnimationFile file = AnimationFile.fromFile(a.getFirst()).get();
                 if (file == null) return null;
-                Animation anim = file.getAnimation(animName);
+                Animation anim = file.getAnimation(a.getSecond());
                 if (anim == null) return null;
                 instances[counter] = anim.getInstance(model, frameRate);
                 counter++;
