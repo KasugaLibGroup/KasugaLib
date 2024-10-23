@@ -60,7 +60,7 @@ public class JavascriptThreadGroup {
 
         if(thread != null) {
             thread.shouldShutdown.set(true);
-            this.threads.remove(thread);
+            this.threads.remove(target);
             terminating.add(thread);
             thread.interrupt();
         }
@@ -99,5 +99,9 @@ public class JavascriptThreadGroup {
 
     public ScriptEngine getScriptEngine() {
         return scriptEngine;
+    }
+
+    public JavascriptThread getThread(Object target) {
+        return threads.get(target);
     }
 }

@@ -1,5 +1,6 @@
 package kasuga.lib.core.javascript.engine;
 
+import kasuga.lib.core.addons.node.AssetReader;
 import kasuga.lib.core.addons.node.NodePackage;
 
 public interface JavascriptEngineModule {
@@ -11,4 +12,5 @@ public interface JavascriptEngineModule {
     boolean shouldCache();
     void setShouldCache(boolean shouldCache);
     JavascriptEngineModule setFeature(String name, Object object);
+    void setAssetReader(AssetReader reader);
 }
