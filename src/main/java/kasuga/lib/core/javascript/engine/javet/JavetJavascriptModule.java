@@ -23,9 +23,27 @@ public class JavetJavascriptModule extends AbstractJavascriptEngineModule {
     String absolutePath;
     NodePackage nodePackage;
     String directoryName;
+
+    AssetReader assetReader;
+
     public JavetJavascriptModule(
             V8ValueFunction module,
             NodePackage nodePackage,
+            String absolutePath,
+            String directoryName,
+            JavascriptContext context
+    ){
+      this(module, nodePackage, nodePackage!= null ? new AssetReader(
+              directoryName,
+              context,
+              nodePackage.reader,
+              KasugaLib.STACKS.JAVASCRIPT.ASSETS.get()
+      ): null, absolutePath, directoryName, context);
+    }
+    public JavetJavascriptModule(
+            V8ValueFunction module,
+            NodePackage nodePackage,
+            AssetReader reader,
             String absolutePath,
             String directoryName,
             JavascriptContext context
@@ -55,12 +73,6 @@ public class JavetJavascriptModule extends AbstractJavascriptEngineModule {
             moduleObject.set("require", requireFunction);
             moduleObject.set("exports", exportsObject);
             if(KasugaLib.STACKS.JAVASCRIPT.ASSETS.isPresent() && this.context != null){
-                BiFunction<String, String, String> assetReader = new AssetReader(
-                        directoryName,
-                        this.context,
-                        nodePackage.reader,
-                        KasugaLib.STACKS.JAVASCRIPT.ASSETS.get()
-                );
                 moduleObject.set("asset", assetReader);
             }
             module.callVoid(thisObject, requireFunction, exportsObject, moduleObject);
@@ -83,5 +95,10 @@ public class JavetJavascriptModule extends AbstractJavascriptEngineModule {
     @Override
     public String getDirectoryName() {
         return directoryName;
+    }
+
+    @Override
+    public void setAssetReader(AssetReader assetReader) {
+        this.assetReader = assetReader;
     }
 }

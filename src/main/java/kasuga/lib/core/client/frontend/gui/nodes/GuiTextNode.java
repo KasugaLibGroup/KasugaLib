@@ -60,32 +60,36 @@ public class GuiTextNode extends GuiDomNode implements MayMeasurable {
     @Override
     public void render(Object source, RenderContext context) {
         super.render(source, context);
+        if(!this.getLayoutManager().hasSource(source))
+            return;
         LayoutNode layout = getLayoutManager().getSourceNode(source);
         LayoutBox box = layout.getPosition();
         // FontHelper.draw(Minecraft.getInstance().font, context.pose(), new Vec2(box.x,box.y), fontSize.get(),content,0xff000000);
-        if(this.context == null || this.attributes.get("color") != this.color){
-            this.context = new TextContext(font, this.content);
-            String colorAttr = this.attributes.get("color");
-            if(colorAttr != null && colorAttr.startsWith("#") && colorAttr.length() == 7){
-                this.context.setColor(SimpleColor.fromHexString(colorAttr.substring(1)));
+        synchronized (this) {
+            if (this.context == null || this.attributes.get("color") != this.color) {
+                this.context = new TextContext(font, this.content);
+                String colorAttr = this.attributes.get("color");
+                if (colorAttr != null && colorAttr.startsWith("#") && colorAttr.length() == 7) {
+                    this.context.setColor(SimpleColor.fromHexString(colorAttr.substring(1)));
+                }
+                this.color = this.attributes.get("color");
             }
-            this.color = this.attributes.get("color");
-        }
-        if(context.getContextType() == RenderContext.RenderContextType.SCREEN){
-            this.context.setPosition(box.x, box.y, 0);
-            this.initContext(box, 1);
-            context.pose().pushPose();
-            this.context.renderToGui(context.guiGraphics());
-            context.pose().popPose();
-        }else{
-            this.context.setPosition(box.x, -box.y, 0);
-            this.initContext(box, 1);
-            context.pose().pushPose();
-            context.pose().translate(0,0,0.5);
-            this.context.withoutSizeFixure();
-            this.context.renderToWorld(context.pose(), context.getBufferSource(), context.getLight());
-            context.pose().popPose();
-            // this.context.renderToWorld(context.pose());
+            if (context.getContextType() == RenderContext.RenderContextType.SCREEN) {
+                this.context.setPosition(box.x, box.y, 0);
+                this.initContext(box, 1);
+                context.pose().pushPose();
+                this.context.renderToGui(context.guiGraphics());
+                context.pose().popPose();
+            } else {
+                this.context.setPosition(box.x, -box.y, 0);
+                this.initContext(box, 1);
+                context.pose().pushPose();
+                context.pose().translate(0, 0, 0.5);
+                this.context.withoutSizeFixure();
+                this.context.renderToWorld(context.pose(), context.getBufferSource(), context.getLight());
+                context.pose().popPose();
+                // this.context.renderToWorld(context.pose());
+            }
         }
     }
 
@@ -132,7 +136,10 @@ public class GuiTextNode extends GuiDomNode implements MayMeasurable {
     protected void clearContext(){
         // @TODO Sync
         this.getDomContext().queueDuringRender(()->{
-            context = null;
+            synchronized (this){
+                // @TODO Why should we use synchronized? Is the updater not queued?
+                context = null;
+            }
         });
     }
 }

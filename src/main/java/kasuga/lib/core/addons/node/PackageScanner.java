@@ -75,7 +75,7 @@ public class PackageScanner {
     }
 
     public static List<NodePackage> matchFlat(GlobMatcher matcher, FlatFilesystem flat) {
-        List<List<String>> workspaces = matcher.collect(flat.listEntries().map(PackageScanner::splitPath));
+        List<List<String>> workspaces = matcher.collect(flat.listEntries().map(PackageScanner::splitPath).filter(t->t.size() > 0));
         return collect(flat, workspaces);
     }
 

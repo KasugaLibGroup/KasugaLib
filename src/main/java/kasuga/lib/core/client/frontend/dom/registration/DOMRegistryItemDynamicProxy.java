@@ -7,6 +7,7 @@ import kasuga.lib.core.javascript.engine.JavascriptValue;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class DOMRegistryItemDynamicProxy {
@@ -30,6 +31,9 @@ public class DOMRegistryItemDynamicProxy {
     }
 
     public void load(){
+        if(this.sideEffectContext != null)
+            this.sideEffectContext.close();
+        this.sideEffectContext = new SideEffectContext();
         this.closed = false;
         Pair<DOMRegistryItem, JavascriptContext> registryItemPair = registry.get(id);
         if(registryItemPair == null){
@@ -52,6 +56,9 @@ public class DOMRegistryItemDynamicProxy {
     }
 
     public void unload(){
+        if(this.closed)
+            return;
+        this.context.getRootNode().clear();
         this.closed = true;
         context.appendTask(()->sideEffectContext.close());
         context.setNotReady();
@@ -68,7 +75,7 @@ public class DOMRegistryItemDynamicProxy {
     }
 
     public void notifyUpdate(ResourceLocation location) {
-        if(this.id == location){
+        if(Objects.equals(this.id, location)){
             this.reload();
         }
     }
