@@ -14,10 +14,10 @@ public class MetroModuleInfo {
     }
 
     public String getServerAddress() {
-        return null;
+        return serverAddress;
     }
 
     public MetroServerResourceProvider getProvider() {
-        return null;
+        return provider;
     }
 }
