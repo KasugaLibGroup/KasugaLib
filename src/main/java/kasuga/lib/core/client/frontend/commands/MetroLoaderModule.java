@@ -1,5 +1,6 @@
 package kasuga.lib.core.client.frontend.commands;
 
+import kasuga.lib.core.addons.node.AssetReader;
 import kasuga.lib.core.addons.node.NodePackage;
 import kasuga.lib.core.javascript.engine.AbstractJavascriptEngineModule;
 import kasuga.lib.core.javascript.engine.JavascriptEngineModule;
@@ -17,6 +18,9 @@ public class MetroLoaderModule extends AbstractJavascriptEngineModule {
         }
         return super.getFeature(name);
     }
+
+    @Override
+    public void setAssetReader(AssetReader reader) {}
 
     @Override
     public String getAbsoultePath() {

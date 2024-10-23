@@ -202,4 +202,10 @@ public class GuiDomNode extends DomNode<GuiContext> {
 
         return true;
     }
+
+    @Override
+    public void clear() {
+        super.clear();
+        this.close();
+    }
 }
