@@ -33,8 +33,12 @@ public class ExternalRemainderBlockItem extends BlockItem {
 
     @Override
     public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
-        ItemStack remain = super.getCraftingRemainingItem(itemStack);
-        if ((remain == ItemStack.EMPTY || remain.is(Items.AIR)) && craftingRemainder.get() != null) {
+        ItemStack remain = null;
+        try {
+            remain = super.getCraftingRemainingItem(itemStack);
+            return remain;
+        } catch (Exception ignored) {}
+        if (craftingRemainder.get() != null) {
             remain = craftingRemainder.get().getDefaultInstance();
         }
         return remain;
