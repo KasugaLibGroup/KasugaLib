@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class MetroModuleLoader implements JavascriptModuleLoader {
     protected static HashMap<UUID, MetroModuleInfo> sessions = new HashMap<>();
@@ -39,27 +40,14 @@ public class MetroModuleLoader implements JavascriptModuleLoader {
             name = _name;
         }else{
             UUID sessionId = UUID.fromString(_name.substring(
-                    _name.indexOf(":"),
-                    _name.indexOf("/") - 1
+                    _name.lastIndexOf(":") + 1,
+                    _name.indexOf("/")
             ));
             if(sessions.containsKey(sessionId)){
                 name = _name.substring(_name.indexOf("/"));
                 moduleInfo = sessions.get(sessionId);
 
             }else return null;
-        }
-
-        if(name == "metro:assets"){
-            JavascriptContext javascriptContext = engineContext.getContext();
-            return engineContext.compileNativeModule(
-                    new AssetReader(
-                            source.getDirectoryName(),
-                            javascriptContext,
-                            moduleInfo.getProvider(),
-                            KasugaLib.STACKS.JAVASCRIPT.ASSETS.get()
-                    ),
-                    null
-            );
         }
 
 
@@ -88,7 +76,8 @@ public class MetroModuleLoader implements JavascriptModuleLoader {
             String path,
             String serverAddress,
             MetroServerResourceProvider provider,
-            MetroModuleInfo moduleInfo, JavascriptEngineContext context
+            MetroModuleInfo moduleInfo,
+            JavascriptEngineContext context
     ){
         if(path.endsWith(".bundle")){
             path += "?platform=minecraft";
@@ -103,13 +92,23 @@ public class MetroModuleLoader implements JavascriptModuleLoader {
 
             List<String> _path = PackageScanner.splitPath(path);
 
-            return context
+            JavascriptEngineModule module = context
                     .compileModuleFromSource(
                             null,
                             path,
                             PackageScanner.joinPath(_path.subList(1, _path.size() - 1)),
                             stream
                     ).setFeature("metro", moduleInfo);
+
+            JavascriptContext javascriptContext = context.getContext();
+
+            module.setAssetReader(new AssetReader(
+                    module.getDirectoryName(),
+                    javascriptContext,
+                    moduleInfo.getProvider(),
+                    KasugaLib.STACKS.JAVASCRIPT.ASSETS.get()
+            ));
+            return module;
 
         }catch (IOException e){
             e.printStackTrace();
@@ -127,11 +126,22 @@ public class MetroModuleLoader implements JavascriptModuleLoader {
                 .register(new MetroModuleLoader());
     }
 
-    public static JavascriptThread getThread(){
-        return KasugaLib
+    public static CompletableFuture<JavascriptThread> getThread(){
+        JavascriptThread oldThread = KasugaLib.STACKS.JAVASCRIPT.GROUP_CLIENT.getThread(MetroModuleLoader.class);
+        if(oldThread != null) return oldThread.terminate().thenApply((t)->{
+            return KasugaLib
+                    .STACKS
+                    .JAVASCRIPT
+                    .GROUP_CLIENT
+                    .getOrCreate(MetroModuleLoader.class,"Metro Server Thread");
+        });
+
+        CompletableFuture futureNow = new CompletableFuture();
+        futureNow.complete(KasugaLib
                 .STACKS
                 .JAVASCRIPT
                 .GROUP_CLIENT
-                .getOrCreate(MetroModuleLoader.class,"Metro Server Thread");
+                .getOrCreate(MetroModuleLoader.class,"Metro Server Thread"));
+        return futureNow;
     }
 }

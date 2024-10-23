@@ -248,6 +248,10 @@ dependencies {
     shadedLib 'com.caoccao.javet:javet-core:4.0.0' // Must-have
     shadedLib 'com.caoccao.javet:javet-v8-windows-x86_64:4.0.0' // Currently, we only support Win x86-64 structure in main build
 
+    shadedLib 'org.apache.httpcomponents:httpcore:4.4.14'
+    shadedLib 'org.apache.httpcomponents:httpclient:4.5.13'
+
+
     // testImplementation "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.0"
     // clientAnnotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
     // apiAnnotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
@@ -301,6 +305,8 @@ shadowJar{
     relocate ('io.netty.handler.codec.rtsp', 'kasuga.lib.vendor_modules.io.netty.handler.codec.rtsp');
     relocate ('io.netty.handler.codec.spdy', 'kasuga.lib.vendor_modules.io.netty.handler.codec.spdy');
     relocate('interpreter','kasuga.lib.vendor_modules.interpreter');
+    relocate ('org.apache.httpcomponents', 'kasuga.lib.vendor_modules.org.apache.httpcomponents');
+    relocate ('com.caoccao.javet', 'kasuga.lib.vendor_modules.com.caoccao.javet');
     finalizedBy 'reobfShadowJar'
 }
 

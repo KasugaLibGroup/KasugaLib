@@ -52,6 +52,7 @@ public class DomNode<T extends DomContext<?,?>> {
 
     public void clear(){
         for (DomNode<T> child : children) {
+            child.clear();
             child.parent = null;
         }
         children.clear();
