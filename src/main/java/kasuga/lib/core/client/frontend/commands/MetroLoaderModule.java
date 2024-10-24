@@ -1,21 +1,39 @@
 package kasuga.lib.core.client.frontend.commands;
 
-import kasuga.lib.core.javascript.JavascriptContext;
-import kasuga.lib.core.javascript.module.JavascriptModule;
+import kasuga.lib.core.addons.node.AssetReader;
+import kasuga.lib.core.addons.node.NodePackage;
+import kasuga.lib.core.javascript.engine.AbstractJavascriptEngineModule;
+import kasuga.lib.core.javascript.engine.JavascriptEngineModule;
 
-public class MetroLoaderModule extends JavascriptModule {
-    MetroServerResourceProvider provider;
-    String serverAddress = "http://127.0.0.1:8081";
-    public MetroLoaderModule(JavascriptContext context, MetroServerResourceProvider provider) {
-        super(context);
-        this.provider = provider;
+public class MetroLoaderModule extends AbstractJavascriptEngineModule {
+    private MetroModuleInfo metroInfo;
+    MetroLoaderModule(MetroModuleInfo info){
+        metroInfo = info;
     }
 
-    public String getServerAddress() {
-        return serverAddress;
+    @Override
+    public Object getFeature(String name) {
+        if(name == "metro"){
+            return metroInfo;
+        }
+        return super.getFeature(name);
     }
 
-    public MetroServerResourceProvider getProvider() {
-        return provider;
+    @Override
+    public void setAssetReader(AssetReader reader) {}
+
+    @Override
+    public String getAbsoultePath() {
+        return "";
+    }
+
+    @Override
+    public NodePackage getPackage() {
+        return null;
+    }
+
+    @Override
+    public String getDirectoryName() {
+        return "";
     }
 }

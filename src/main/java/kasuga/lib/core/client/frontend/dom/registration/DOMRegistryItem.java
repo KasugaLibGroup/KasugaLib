@@ -1,26 +1,26 @@
 package kasuga.lib.core.client.frontend.dom.registration;
 
 import kasuga.lib.core.client.frontend.dom.DomContext;
-import org.graalvm.polyglot.Value;
+import kasuga.lib.core.javascript.engine.JavascriptValue;
 
 public abstract class DOMRegistryItem {
     public String renderEngine = "yoga";
 
     public String lightLevel = "full";
 
-    abstract Value render(DomContext<?,?> document);
+    abstract JavascriptValue render(DomContext<?,?> document);
 
 
-    public static DOMRegistryItem fromExecutable(Value executable){
+    public static DOMRegistryItem fromExecutable(JavascriptValue executable){
         return new DOMRegistryItem() {
             @Override
-            Value render(DomContext<?, ?> document) {
+            JavascriptValue render(DomContext<?, ?> document) {
                 return executable.execute(document);
             }
         };
     }
 
-    public static DOMRegistryItem fromConfigurableObject(Value object){
+    public static DOMRegistryItem fromConfigurableObject(JavascriptValue object){
 
         if(!object.hasMember("render") || !object.getMember("render").canExecute()){
             throw new IllegalArgumentException("Object must have a render method");
@@ -28,7 +28,7 @@ public abstract class DOMRegistryItem {
 
         DOMRegistryItem item = new DOMRegistryItem() {
             @Override
-            Value render(DomContext<?, ?> document) {
+            JavascriptValue render(DomContext<?, ?> document) {
                 return object.invokeMember("render", document);
             }
         };

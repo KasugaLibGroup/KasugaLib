@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class FrontendCommands {
     public static final SimpleRegistry REGISTRY = KasugaLib.STACKS.REGISTRY;
@@ -34,25 +35,31 @@ public class FrontendCommands {
                 public void run() {
                     MetroServerResourceProvider resourceProvider = new MetroServerResourceProvider();
                     UUID contextId = UUID.randomUUID();
-                    JavascriptThread thread = MetroModuleLoader.getThread();
-                    thread.recordCall(()->{
-                        NodePackage nodePackage = null;
-                        try(InputStream inputStream = resourceProvider.open("/package.json")){
-                            InputStreamReader reader = new InputStreamReader(inputStream);
-                            JsonObject json = KasugaLib.GSON.fromJson(reader, JsonObject.class);
-                            nodePackage = NodePackage.parse(json, null);
-                        }catch (IOException e){
-                            return;
-                        }
+                    CompletableFuture<JavascriptThread> threadFuture = MetroModuleLoader.getThread();
+                    threadFuture.thenAccept((thread)->{
+                        thread.recordCall(()->{
+                            NodePackage nodePackage = null;
+                            try(InputStream inputStream = resourceProvider.open("/package.json")){
+                                InputStreamReader reader = new InputStreamReader(inputStream);
+                                JsonObject json = KasugaLib.GSON.fromJson(reader, JsonObject.class);
+                                nodePackage = NodePackage.parse(json, null);
+                            }catch (IOException e){
+                                return;
+                            }
 
-                        nodePackage.minecraft.clientDebuggerEntries().forEach((entry)->{
-                            JavascriptContext context = thread.createContext(entry,"Debugger Context - "+entry);
+                            nodePackage.minecraft.clientDebuggerEntries().forEach((entry)->{
+                                JavascriptContext context = thread.createContext(entry,"Debugger Context - "+entry);
 
-                            MetroLoaderModule loaderModule = new MetroLoaderModule(context, resourceProvider);
+                                MetroModuleInfo moduleInfo = new MetroModuleInfo(resourceProvider.getServerAddress(), resourceProvider);
 
-                            context.getRequireFunction(loaderModule).apply(entry);
+                                MetroLoaderModule loaderModule = new MetroLoaderModule(moduleInfo);
+
+                                String session = MetroModuleLoader.createSession(moduleInfo);
+
+                                context.loadModuleVoid("metro-session:"+session+"/"+entry);
+                            });
+
                         });
-
                     });
 
                 }

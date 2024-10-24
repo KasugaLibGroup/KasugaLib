@@ -3,9 +3,12 @@ package kasuga.lib.core.client.frontend.dom.registration;
 import kasuga.lib.core.client.frontend.dom.DomContext;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.SideEffectContext;
+import kasuga.lib.core.javascript.engine.JavascriptValue;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.resources.ResourceLocation;
-import org.graalvm.polyglot.Value;
+
+import java.util.Objects;
+import java.util.Optional;
 
 public class DOMRegistryItemDynamicProxy {
     private final DomContext<?,?> context;
@@ -28,6 +31,9 @@ public class DOMRegistryItemDynamicProxy {
     }
 
     public void load(){
+        if(this.sideEffectContext != null)
+            this.sideEffectContext.close();
+        this.sideEffectContext = new SideEffectContext();
         this.closed = false;
         Pair<DOMRegistryItem, JavascriptContext> registryItemPair = registry.get(id);
         if(registryItemPair == null){
@@ -37,7 +43,7 @@ public class DOMRegistryItemDynamicProxy {
         DOMRegistryItem item = registryItemPair.getFirst();
         JavascriptContext registryContext = registryItemPair.getSecond();
         registryContext.runTask(()->{
-            Value unload = item.render(context);
+            JavascriptValue unload = item.render(context);
             if(unload.canExecute())
                 sideEffectContext.collect(unload::executeVoid);
         });
@@ -45,15 +51,19 @@ public class DOMRegistryItemDynamicProxy {
 
         registryContext.registerTickable(context);
 
-
         context.setReady();
 
     }
 
     public void unload(){
+        if(this.closed)
+            return;
+        this.context.getRootNode().clear();
         this.closed = true;
-        sideEffectContext.close();
+        context.appendTask(()->sideEffectContext.close());
         context.setNotReady();
+        this.registryContext = null;
+        this.sideEffectContext = null;
     }
 
     public void enable() {
@@ -65,8 +75,12 @@ public class DOMRegistryItemDynamicProxy {
     }
 
     public void notifyUpdate(ResourceLocation location) {
-        if(this.id == location){
+        if(Objects.equals(this.id, location)){
             this.reload();
         }
+    }
+
+    public Optional<JavascriptContext> getContext(){
+        return Optional.ofNullable(this.registryContext);
     }
 }

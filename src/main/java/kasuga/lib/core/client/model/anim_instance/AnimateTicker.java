@@ -61,7 +61,7 @@ public class AnimateTicker implements Ticker {
     }
 
     public int getEndTick() {
-        return (int) Math.ceil(starterTick + animation.length * 20f * Math.abs(playSpeed / 100f));
+        return (int) Math.ceil((double) this.starterTick + (this.animation.length * 20) * 100f / Math.abs(playSpeed));
     }
 
     public int getTick() {
@@ -85,6 +85,7 @@ public class AnimateTicker implements Ticker {
 
     public void stop() {
         this.moving = false;
+        this.paused = false;
     }
 
     public void pause() {
@@ -109,9 +110,10 @@ public class AnimateTicker implements Ticker {
     }
 
     public float tickToSec(float partial) {
-        int offset = tick - starterTick;
-        float result = ((float) offset + partial) / 20f;
-        if (playSpeed < 0) result = animation.length - result;
+        float offset = (float) tick - (float) starterTick + partial;
+        float percentage = offset / (float) (endTick - starterTick);
+        float result = percentage * this.animation.length;
+        if (playSpeed < 0) result = this.animation.length - result;
         this.recent = result;
         return result;
     }

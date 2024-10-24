@@ -1,17 +1,31 @@
 package kasuga.lib.core.javascript;
 
+import kasuga.lib.core.client.animation.neo_neo.base.Movement;
+import kasuga.lib.core.client.animation.neo_neo.key_frame.KeyFrameHolder;
+import kasuga.lib.core.javascript.engine.ScriptEngine;
+import org.apache.commons.compress.changes.ChangeSet;
+
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public class JavascriptThread extends SynchronizedThread{
     private final JavascriptThreadGroup threadGroup;
-    ContextModuleLoader moduleLoader;
     private final Map<Object,JavascriptContext> contexts = new HashMap<>();
+    public ScriptEngine scriptEngine;
+
+    public ContextModuleLoader contextModuleLoader;
+    private Set<CompletableFuture> afterTerminate = new HashSet<>();
+    private Object target;
 
     public JavascriptThread(JavascriptThreadGroup javascriptThreadGroup, Object target, String description) {
         super("Javascript Thread - " + description);
         this.threadGroup = javascriptThreadGroup;
-        this.moduleLoader = new ContextModuleLoader(javascriptThreadGroup.getModuleLoader());
+        this.scriptEngine = javascriptThreadGroup.getScriptEngine();
+        this.contextModuleLoader = new ContextModuleLoader(javascriptThreadGroup.getModuleLoader());
+        this.target = target;
     }
 
     @Override
@@ -23,10 +37,7 @@ public class JavascriptThread extends SynchronizedThread{
     protected void beforeStop() {
         this.contexts.values().forEach(JavascriptContext::close);
         threadGroup.onTerminate(this);
-    }
-
-    public ContextModuleLoader getModuleLoader() {
-        return moduleLoader;
+        afterTerminate.forEach((v)->v.complete(this));
     }
 
     public JavascriptContext createContext(Object target,String name){
@@ -38,5 +49,21 @@ public class JavascriptThread extends SynchronizedThread{
         if(context != null){
             context.close();
         }
+    }
+
+    public ContextModuleLoader getContextModuleLoader() {
+        return contextModuleLoader;
+    }
+
+    public CompletableFuture<JavascriptThread> terminate() {
+        CompletableFuture<JavascriptThread> future = new CompletableFuture<>();
+        if(!this.isAlive()){
+            future.complete(this);
+            return future;
+        }
+        this.afterTerminate.add(future);
+        this.shouldShutdown.set(true);
+        this.threadGroup.terminate(this.target);
+        return future;
     }
 }

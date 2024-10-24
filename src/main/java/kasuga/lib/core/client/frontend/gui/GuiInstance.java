@@ -8,6 +8,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class GuiInstance {
 
@@ -20,6 +21,12 @@ public class GuiInstance {
 
     public GuiInstance(ResourceLocation location){
         this.location = location;
+    }
+
+    public void open(Object object){
+        this.openInternal(object);
+        this.context.createSource(object);
+        this.context.getAttachedTargets().attach(object);
     }
 
     public void open(Entity entity){
@@ -63,6 +70,12 @@ public class GuiInstance {
         this.context.getAttachedTargets().detach(block);
         this.context.removeSource(block);
         this.closeInternal(block);
+    }
+
+    public void close(Object object){
+        this.context.getAttachedTargets().detach(object);
+        this.context.removeSource(object);
+        this.closeInternal(object);
     }
 
     public void openInternal(Object target){
@@ -109,6 +122,23 @@ public class GuiInstance {
         this.sourceInfos.remove(source);
         getContext().ifPresent((c)->{
             c.removeSourceInfo(source);
+        });
+    }
+
+    public void beforeRender(){
+        if(this.context == null)
+            return;
+        this.context.isRendering = true;
+        this.context.renderLock.lock();
+    }
+
+    public void afterRender(){
+        if(this.context == null)
+            return;
+        this.context.renderLock.unlock();
+        this.context.isRendering = false;
+        this.context.getRenderer().getContext().ifPresent((c)->{
+            c.dispatchBeforeRenderTick();
         });
     }
 }

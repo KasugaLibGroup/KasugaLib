@@ -4,13 +4,13 @@ import kasuga.lib.core.addons.resource.HierarchicalFilesystem;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.JavascriptThread;
 import kasuga.lib.core.javascript.JavascriptThreadGroup;
-import kasuga.lib.core.javascript.module.JavascriptModule;
 import kasuga.lib.core.util.glob.GlobMatcher;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class NodePackageLoader {
     public HashMap<String, NodePackage> packages = new HashMap<>();
@@ -37,9 +37,10 @@ public class NodePackageLoader {
         }
     }
 
-    public void removePackage(NodePackage nodePackage){
+    public CompletableFuture<JavascriptThread> removePackage(NodePackage nodePackage){
         packages.remove(nodePackage.packageName, nodePackage);
         group.getModuleLoader().unregisterPackage(nodePackage);
+        return destoryRuntime(nodePackage);
     }
 
     public void bindRuntime(JavascriptThreadGroup group, EntryType type) {
@@ -84,6 +85,7 @@ public class NodePackageLoader {
                                     .filter((p)->p.startsWith(nodePackage.reader.getPath()))
                                     .map((p)->p.substring(nodePackage.reader.getPath().length()))
                                     .map(PackageScanner::splitPath)
+                                    .filter((p)->p.size() != 0)
                             ).stream()
                             .map(PackageScanner::joinPath)
                             .toList()
@@ -93,8 +95,19 @@ public class NodePackageLoader {
             System.out.printf("Create entry \"%s\" for module %s\n",entry,nodePackage.packageName);
             JavascriptContext context = thread.createContext(entriesList, "Package " + nodePackage.packageName + " Entry " + entry);
             context.runTask(()->{
-                context.requireModule(nodePackage.packageName + "/" + entry).ifPresent(JavascriptModule::get);
+                context.loadModuleVoid(nodePackage.packageName + "/" + entry);
             });
         }
+    }
+
+    protected CompletableFuture<JavascriptThread> destoryRuntime(NodePackage nodePackage){
+        if(nodePackage.minecraft == null || group == null)
+            return null;
+        JavascriptThread thread = group.getThread(nodePackage);
+        if(thread != null){
+            CompletableFuture<JavascriptThread> future = thread.terminate();
+            return future;
+        }
+        return null;
     }
 }

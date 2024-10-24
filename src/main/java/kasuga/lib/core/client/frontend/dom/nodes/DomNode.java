@@ -5,8 +5,8 @@ import kasuga.lib.core.client.frontend.dom.attribute.AttributeMap;
 import kasuga.lib.core.client.frontend.dom.event.EventEmitter;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
 import kasuga.lib.core.javascript.JavascriptContext;
-import org.graalvm.polyglot.HostAccess;
-import org.graalvm.polyglot.Value;
+import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.JavascriptValue;
 
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +52,7 @@ public class DomNode<T extends DomContext<?,?>> {
 
     public void clear(){
         for (DomNode<T> child : children) {
+            child.clear();
             child.parent = null;
         }
         children.clear();
@@ -60,21 +61,18 @@ public class DomNode<T extends DomContext<?,?>> {
     protected EventEmitter emitter = new EventEmitter();
 
 
-    HashMap<Value, Consumer<Value>> callbacks = new HashMap<>();
-
     @HostAccess.Export
-    public void addEventListener(String eventName, Value callback){
-        callback.pin();
+    public void addEventListener(String eventName, JavascriptValue callback){
         emitter.subscribe(eventName, callback);
     }
 
     @HostAccess.Export
-    public void removeEventListener(String eventName, Value callback){
+    public void removeEventListener(String eventName, JavascriptValue callback){
         emitter.unsubscribe(eventName, callback);
     }
 
     @HostAccess.Export
-    public void dispatchEvent(String eventName,Value event){
+    public void dispatchEvent(String eventName,Object event){
         emitter.dispatchEvent(eventName,event);
     }
 
@@ -83,14 +81,11 @@ public class DomNode<T extends DomContext<?,?>> {
         return this.attributes.get(attributeName);
     }
 
+    @HostAccess.Export
     public void setAttribute(String attributeName, String value){
         this.attributes.set(attributeName, value);
     }
 
-    @HostAccess.Export
-    public void setAttribute(String attributeName, Value value){
-        setAttribute(attributeName,value.asString());
-    }
 
     public void render(Object source,RenderContext context){
         for (DomNode<T> child : this.children) {

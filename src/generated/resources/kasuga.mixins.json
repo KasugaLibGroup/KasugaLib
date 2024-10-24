@@ -15,6 +15,8 @@
     "client.MixinBlockModel$Deserializer",
     "client.ModelLoaderRegistryAccessor",
     "client.MixinBlockModelBinding",
+    "client.MixinTextureManager",
+    "client.MixinBlockModelBinding",
     "client.MixinBlockModelShaper",
     "client.MixinBlockRenderDispatcher",
     "client.MixinObjLoader",

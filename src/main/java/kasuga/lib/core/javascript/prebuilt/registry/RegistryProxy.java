@@ -1,12 +1,12 @@
 package kasuga.lib.core.javascript.prebuilt.registry;
 
 import kasuga.lib.core.javascript.JavascriptContext;
+import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.JavascriptValue;
 import kasuga.lib.core.javascript.ffi.ResourceLocationFFIHelper;
 import kasuga.lib.core.javascript.registration.JavascriptPriorityRegistry;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.resources.ResourceLocation;
-import org.graalvm.polyglot.HostAccess;
-import org.graalvm.polyglot.Value;
 
 import java.io.Closeable;
 import java.util.HashSet;
@@ -39,7 +39,7 @@ public class RegistryProxy<T> implements Closeable {
     }
 
     @HostAccess.Export
-    public void register(Value location, Value item){
+    public void register(JavascriptValue location, JavascriptValue item){
         ResourceLocation resourceLocation = ResourceLocationFFIHelper.fromValue(location);
         T localItem = target.fromValue(item);
 

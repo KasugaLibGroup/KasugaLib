@@ -1,5 +1,7 @@
 package kasuga.lib.core.javascript;
 
+import kasuga.lib.core.javascript.engine.ScriptEngine;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -19,6 +21,7 @@ public class JavascriptThreadGroup {
     Set<JavascriptThreadGroup> children = new HashSet<>();
 
     ContextModuleLoader moduleLoader;
+    private ScriptEngine scriptEngine;
 
     public JavascriptThreadGroup(String name){
         this.threadGroup = new ThreadGroup(name);
@@ -57,7 +60,7 @@ public class JavascriptThreadGroup {
 
         if(thread != null) {
             thread.shouldShutdown.set(true);
-            this.threads.remove(thread);
+            this.threads.remove(target);
             terminating.add(thread);
             thread.interrupt();
         }
@@ -88,5 +91,17 @@ public class JavascriptThreadGroup {
 
     public ContextModuleLoader getModuleLoader() {
         return moduleLoader;
+    }
+
+    public void setScriptEngine(ScriptEngine scriptEngine) {
+        this.scriptEngine = scriptEngine;
+    }
+
+    public ScriptEngine getScriptEngine() {
+        return scriptEngine;
+    }
+
+    public JavascriptThread getThread(Object target) {
+        return threads.get(target);
     }
 }

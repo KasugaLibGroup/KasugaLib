@@ -9,6 +9,7 @@ import net.minecraft.server.packs.FolderPackResources;
 import net.minecraft.server.packs.PackResources;
 import net.minecraftforge.resource.DelegatingResourcePack;
 import net.minecraftforge.resource.PathResourcePack;
+import net.minecraft.server.packs.VanillaPackResources;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class ResourceAdapter {
                 result.add(new VanillaPathResourcePackProvider(path.getSource(),path));
             }else if(resource instanceof FolderPackResources folder){
                 result.add(new VanillaFolderResourcePackProvider(folder.file));
-            }else if(resource instanceof DefaultClientPackResources){
+            }else if(resource instanceof VanillaPackResources){
                 continue;
             }else{
                 if(Envs.isDevEnvironment()){

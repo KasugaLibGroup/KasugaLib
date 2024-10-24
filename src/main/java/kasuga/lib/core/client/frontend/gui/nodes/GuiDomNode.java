@@ -1,5 +1,6 @@
 package kasuga.lib.core.client.frontend.gui.nodes;
 
+import com.caoccao.javet.annotations.V8Convert;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutBox;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutContext;
@@ -14,14 +15,14 @@ import kasuga.lib.core.client.frontend.gui.events.MouseEvent;
 import kasuga.lib.core.client.frontend.gui.layout.EdgeSize2D;
 import kasuga.lib.core.client.frontend.rendering.BackgroundRenderer;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
+import kasuga.lib.core.javascript.engine.HostAccess;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraftforge.common.util.Lazy;
-import org.graalvm.polyglot.HostAccess;
-import org.graalvm.polyglot.Value;
 
 import java.util.Objects;
 
+@V8Convert()
 public class GuiDomNode extends DomNode<GuiContext> {
 
     @HostAccess.Export
@@ -70,37 +71,61 @@ public class GuiDomNode extends DomNode<GuiContext> {
     @HostAccess.Export
     @Override
     public boolean addChildAt(int i, DomNode<GuiContext> child) {
-        if(child instanceof GuiDomNode domNode)
-            getLayoutManager().addChild(i,domNode.getLayoutManager());
-        styles.notifyUpdate();
-        return super.addChildAt(i,child);
+        this.domContext.queueDuringRender(()->{
+            if(child instanceof GuiDomNode domNode)
+                getLayoutManager().addChild(i,domNode.getLayoutManager());
+            styles.notifyUpdate();
+            super.addChildAt(i,child);
+        });
+        return true;
     }
 
     @HostAccess.Export
     @Override
     public boolean removeChild(DomNode<GuiContext> child) {
-        boolean result = super.removeChild(child);
-        if(child instanceof GuiDomNode domNode)
-            getLayoutManager().removeChild(domNode.getLayoutManager());
-        styles.notifyUpdate();
-        return result;
+        this.domContext.queueDuringRender(()-> {
+            boolean result = super.removeChild(child);
+            if (child instanceof GuiDomNode domNode) {
+                getLayoutManager().removeChild(domNode.getLayoutManager());
+            }
+            styles.notifyUpdate();
+            super.removeChild(child);
+        });
+        return super.children.contains(child);
+    }
+
+    @HostAccess.Export
+    @Override
+    public boolean addChild(DomNode<GuiContext> child) {
+        this.domContext.queueDuringRender(()-> {
+            super.addChild(child);
+        });
+        return true;
     }
 
     @Override
     public void render(Object source, RenderContext context) {
+        if(!this.getLayoutManager().hasSource(source))
+            return;
+
         this.updateStyles();
 
         LayoutNode layout = this.getLayoutManager()
                 .getSourceNode(source);
 
         LayoutBox coordinate = layout.getPosition();
-        background.render(context,(int)coordinate.x,(int)coordinate.y,(int)coordinate.width,(int)coordinate.height);
+        background.render(context,coordinate.x,coordinate.y,coordinate.width,coordinate.height);
 
         EdgeSize2D border = layout.getBorder();
         MultiBufferSource bufferSource = context.getBufferSource();
         // @todo render border
-
-        super.render(source, context);
+        context.pushPose();
+        context.pose().translate(0,0, this.children.size() * 0.003 + 0.003 );
+        for (DomNode<GuiContext> child : this.children) {
+            context.pose().translate(0,0,0.003);
+            child.render(source,context);
+        }
+        context.popPose();
     }
 
     private void updateStyles() {
@@ -138,6 +163,9 @@ public class GuiDomNode extends DomNode<GuiContext> {
         // 3. If the event is not stopped, dispatch the event to the parent
 
         LayoutContext<?,GuiDomNode> layout = getLayoutManager();
+        if(!layout.hasSource(source)){
+            return false; // Source already unloaded
+        }
         LayoutNode sourceNode = layout.getSourceNode(source);
         if(sourceNode == null)
             return false;
@@ -167,11 +195,17 @@ public class GuiDomNode extends DomNode<GuiContext> {
         MouseEvent finalEvent = event.withTarget(target);
 
         if(!translated.isPropagationStopped()){
-            this.dispatchEvent(event.getType(), Value.asValue(finalEvent));
+            this.dispatchEvent(event.getType(), finalEvent);
         }else{
             event.stopPropagation();
         }
 
         return true;
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+        this.close();
     }
 }
