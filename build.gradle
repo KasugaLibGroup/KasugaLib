@@ -306,7 +306,7 @@ shadowJar{
     relocate ('io.netty.handler.codec.rtsp', 'kasuga.lib.vendor_modules.io.netty.handler.codec.rtsp');
     relocate ('io.netty.handler.codec.spdy', 'kasuga.lib.vendor_modules.io.netty.handler.codec.spdy');
     relocate('interpreter','kasuga.lib.vendor_modules.interpreter');
-    relocate ('org.apache.httpcomponents', 'kasuga.lib.vendor_modules.org.apache.httpcomponents');
+    relocate('org.apache', 'kasuga.lib.vendor_modules.org.apache');
     relocate ('com.caoccao.javet', 'kasuga.lib.vendor_modules.com.caoccao.javet');
     finalizedBy 'reobfShadowJar'
 }
