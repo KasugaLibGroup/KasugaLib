@@ -1,6 +1,8 @@
 package kasuga.lib.core.client.model.anim_json;
 
 import com.mojang.math.Vector3f;
+import kasuga.lib.core.client.render.texture.Vec2f;
+import net.minecraft.world.phys.Vec2;
 
 public class CatmullRomUtils {
     public static final float DEFAULT_TAU = 0.5f;
@@ -120,5 +122,42 @@ public class CatmullRomUtils {
         v3.mul(u * u * u);
         result.add(v3);
         return result;
+    }
+
+    public static Vec2f[] first3PointsToCRSPoints(Vec2f p0, Vec2f p1, Vec2f p2) {
+        return genDefaultCRSPoints(p0, p1, p2, p2.scale(2).subtract(p1));
+    }
+
+    public static Vec2f[] last3PointsToCRSPoints(Vec2f p1, Vec2f p2, Vec2f p3) {
+        return genDefaultCRSPoints(p1.scale(2).subtract(p2), p1, p2, p3);
+    }
+
+    public static Vec2f[] genDefaultCRSPoints
+            (Vec2f p0, Vec2f p1, Vec2f p2, Vec2f p3) {
+        return genCRSPoints(DEFAULT_TAU, p0, p1, p2, p3);
+    }
+
+    public static Vec2f[] genCRSPoints
+            (float tau, Vec2f p0, Vec2f p1, Vec2f p2, Vec2f p3) {
+        Vec2f c0 = p0;
+        Vec2f c1 = p0.scale(-tau)
+                .add(p2.scale(tau));
+        Vec2f c2 = p0.scale(2 * tau)
+                .add(p1.scale(tau - 3))
+                .add(p2.scale(3 - 2 * tau))
+                .add(p3.scale(-tau));
+        Vec2f c3 = p0.scale(-tau)
+                .add(p1.scale(2 - tau))
+                .add(p2.scale(tau - 2))
+                .add(p3.scale(tau));
+
+        return new Vec2f[]{c0, c1, c2, c3};
+    }
+
+    public static Vec2f applyCRS(Vec2f[] points, float u) {
+        return points[0]
+                .add(points[1].scale(u))
+                .add(points[2].scale(u * u))
+                .add(points[3].scale(u * u * u));
     }
 }
