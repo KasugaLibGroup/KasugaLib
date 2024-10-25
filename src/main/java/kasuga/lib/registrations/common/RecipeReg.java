@@ -17,7 +17,6 @@ import net.minecraftforge.registries.RegistryObject;
  * @param <F> the class of your recipe serializer.
  */
 public class RecipeReg<T extends Recipe<?>, F extends RecipeSerializer<?>> extends Reg {
-    public T recipe;
     public F recipeSerializer;
     public RegistryObject<RecipeType<T>> recipeRegistryObject = null;
     public RegistryObject<F> recipeSerializerRegistryObject = null;
@@ -29,12 +28,11 @@ public class RecipeReg<T extends Recipe<?>, F extends RecipeSerializer<?>> exten
     /**
      * Create a recipe reg.
      * @param registrationKey The registration key of your recipe.
-     * @param recipe The recipe instance.
      * @param serializer The recipe serializer instance.
      */
-    public RecipeReg(String registrationKey, Recipe<?> recipe, RecipeSerializer<?> serializer) {
+    public RecipeReg(String registrationKey, RecipeSerializer<?> serializer) {
         this(registrationKey);
-        withRecipeAndSerializer(recipe, serializer);
+        withSerializer(serializer);
     }
 
     /**
@@ -45,9 +43,6 @@ public class RecipeReg<T extends Recipe<?>, F extends RecipeSerializer<?>> exten
     @Override
     @Mandatory
     public RecipeReg<T, F> submit(SimpleRegistry registry) {
-        if (recipe == null) {
-            crashOnNotPresent(Recipe.class, "recipe", "submit");
-        }
         if (recipeSerializer == null) {
             crashOnNotPresent(RecipeSerializer.class, "recipeSerializer", "submit");
         }
@@ -67,9 +62,7 @@ public class RecipeReg<T extends Recipe<?>, F extends RecipeSerializer<?>> exten
         return recipeRegistryObject == null ? null : recipeRegistryObject.get();
     }
 
-    @Inner
-    private RecipeReg<T, F> withRecipeAndSerializer(Recipe<?> recipe, RecipeSerializer<?> serializer) {
-        this.recipe = (T) recipe;
+    public RecipeReg<T, F> withSerializer(RecipeSerializer<?> serializer) {
         this.recipeSerializer = (F) serializer;
         return this;
     }
