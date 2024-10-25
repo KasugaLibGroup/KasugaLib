@@ -1,5 +1,6 @@
 package kasuga.lib.core.client.model.anim_json;
 
+import kasuga.lib.core.client.render.texture.Vec2f;
 import org.joml.Vector3f;
 
 public class CatmullRomUtils {
