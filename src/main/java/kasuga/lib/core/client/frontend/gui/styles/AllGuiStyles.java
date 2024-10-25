@@ -137,5 +137,6 @@ public class AllGuiStyles {
         styleRegistry.register("backgroundNineSliceParam", BackgroundNineSliceParam.TYPE);
 
         styleRegistry.register("fontSize", FontSizeStyle.TYPE);
+        styleRegistry.register("zIndex", ZIndexStyle.TYPE);
     }
 }

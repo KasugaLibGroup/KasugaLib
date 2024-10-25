@@ -9,9 +9,4 @@ public class GuiViewNode extends GuiDomNode{
     GuiViewNode(GuiContext context) {
         super(context);
     }
-
-    @Override
-    public void render(Object source,RenderContext context) {
-        super.render(source, context);
-    }
 }

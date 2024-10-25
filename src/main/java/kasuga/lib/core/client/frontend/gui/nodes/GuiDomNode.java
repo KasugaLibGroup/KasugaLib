@@ -20,7 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraftforge.common.util.Lazy;
 
-import java.util.Objects;
+import java.util.*;
 
 @V8Convert()
 public class GuiDomNode extends DomNode<GuiContext> {
@@ -39,6 +39,7 @@ public class GuiDomNode extends DomNode<GuiContext> {
                 this.fontSizeUpdated();
             }
     );
+    private Integer zIndex = 0;
 
     protected void fontSizeUpdated() {
 
@@ -103,10 +104,13 @@ public class GuiDomNode extends DomNode<GuiContext> {
         return true;
     }
 
-    @Override
-    public void render(Object source, RenderContext context) {
+    public void render(Object source, RenderContext context){
+        renderNode(source, context);
+    }
+
+    public float renderNode(Object source, RenderContext context) {
         if(!this.getLayoutManager().hasSource(source))
-            return;
+            return 0;
 
         this.updateStyles();
 
@@ -119,13 +123,32 @@ public class GuiDomNode extends DomNode<GuiContext> {
         EdgeSize2D border = layout.getBorder();
         MultiBufferSource bufferSource = context.getBufferSource();
         // @todo render border
-        context.pushPose();
-        context.pose().translate(0,0, this.children.size() * 0.003 + 0.003 );
+        HashMap<Integer, ArrayList<DomNode<GuiContext>>> childrenDepthMap = new HashMap<>();
+
         for (DomNode<GuiContext> child : this.children) {
-            context.pose().translate(0,0,0.003);
-            child.render(source,context);
+            childrenDepthMap.computeIfAbsent(((GuiDomNode)child).zIndex, (i)->new ArrayList<>()).add(child);
         }
-        context.popPose();
+
+        List<Integer> zIndexList = new ArrayList<>(childrenDepthMap.keySet().stream().toList());
+
+        zIndexList.sort(Integer::compareTo);
+
+        float totalDepth = 0.003f;
+        context.pose().translate(0,0,0.003);
+
+        for(Integer zIndex : zIndexList){
+            ArrayList<DomNode<GuiContext>> zList = childrenDepthMap.get(zIndex);
+            float maxiumDepth = 0;
+            for (DomNode<GuiContext> guiContextDomNode : zList) {
+                maxiumDepth = Math.max(
+                        maxiumDepth,
+                        ((GuiDomNode)guiContextDomNode).renderNode(source, context)
+                );
+            }
+            context.pose().translate(0,0,maxiumDepth + 0.003);
+            totalDepth += maxiumDepth + 0.003;
+        }
+        return totalDepth;
     }
 
     private void updateStyles() {
@@ -203,9 +226,7 @@ public class GuiDomNode extends DomNode<GuiContext> {
         return true;
     }
 
-    @Override
-    public void clear() {
-        super.clear();
-        this.close();
+    public void setZIndex(Integer zIndex) {
+        this.zIndex = zIndex;
     }
 }
