@@ -1,9 +1,8 @@
 package kasuga.lib.core.create.graph;
 
-import com.simibubi.create.Create;
-import com.simibubi.create.content.trains.GlobalRailwayManager;
 import com.simibubi.create.content.trains.graph.DimensionPalette;
 import com.simibubi.create.content.trains.graph.TrackGraph;
+import kasuga.lib.core.create.boundary.ResourcePattle;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -54,27 +53,27 @@ public class RailwayData {
         markDirty();
     }
 
-    public CompoundTag write(DimensionPalette dimensions) {
+    public CompoundTag write(DimensionPalette dimensions, ResourcePattle resourcePattle) {
         CompoundTag tag = new CompoundTag();
         ListTag extraDataTags = new ListTag();
         for (Map.Entry<UUID, GraphExtraData> entry : this.extraDatas.entrySet()) {
             CompoundTag graphExtraDataTag = new CompoundTag();
             graphExtraDataTag.putUUID("Id", entry.getKey());
-            graphExtraDataTag.put("Data", entry.getValue().write(dimensions));
+            graphExtraDataTag.put("Data", entry.getValue().write(dimensions, resourcePattle));
             extraDataTags.add(graphExtraDataTag);
         }
         tag.put("ExtraDatas", extraDataTags);
         return tag;
     }
 
-    public void read(CompoundTag compoundTag, DimensionPalette dimensions) {
+    public void read(CompoundTag compoundTag, DimensionPalette dimensions, ResourcePattle resourcePattle) {
         markDirty();
         ListTag extraDataTags = compoundTag.getList("ExtraDatas", Tag.TAG_COMPOUND);
         for(int i=0;i<extraDataTags.size();i++){
             CompoundTag tag = extraDataTags.getCompound(i);
             UUID id = tag.getUUID("Id");
             GraphExtraData extraData = extraDatas.computeIfAbsent(id, (x)->new GraphExtraData());
-            extraData.read(tag.getCompound("Data"), dimensions);
+            extraData.read(tag.getCompound("Data"), dimensions, resourcePattle);
         }
     }
 

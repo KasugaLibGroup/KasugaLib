@@ -1,6 +1,7 @@
 package kasuga.lib.core.create.graph;
 
 import com.simibubi.create.content.trains.graph.DimensionPalette;
+import kasuga.lib.core.create.boundary.ResourcePattle;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
 
@@ -14,7 +15,8 @@ public class KasugaRailwayDataManager extends SavedData {
     @Override
     public CompoundTag save(CompoundTag compoundTag) {
         DimensionPalette dimensions = new DimensionPalette();
-        compoundTag.put("Data", railwayData.write(dimensions));
+        ResourcePattle resourcePattle = new ResourcePattle();
+        compoundTag.put("Data", railwayData.write(dimensions,resourcePattle));
         dimensions.write(compoundTag);
         return compoundTag;
     }
@@ -22,7 +24,8 @@ public class KasugaRailwayDataManager extends SavedData {
     public static KasugaRailwayDataManager load(CompoundTag compoundTag){
         KasugaRailwayDataManager railwayData = new KasugaRailwayDataManager();
         DimensionPalette dimensions = DimensionPalette.read(compoundTag);
-        railwayData.railwayData.read(compoundTag, dimensions);
+        ResourcePattle resourcePattle = ResourcePattle.read(compoundTag);
+        railwayData.railwayData.read(compoundTag, dimensions, resourcePattle);
         return railwayData;
     }
 

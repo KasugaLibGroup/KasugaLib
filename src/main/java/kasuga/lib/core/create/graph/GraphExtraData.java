@@ -3,14 +3,18 @@ package kasuga.lib.core.create.graph;
 import com.simibubi.create.content.trains.graph.DimensionPalette;
 import com.simibubi.create.content.trains.graph.TrackEdge;
 import com.simibubi.create.content.trains.graph.TrackNode;
+import kasuga.lib.core.create.boundary.CustomTrackSegment;
+import kasuga.lib.core.create.boundary.ResourcePattle;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.LevelAccessor;
 
 import java.util.*;
 
 public class GraphExtraData {
     HashMap<TrackEdgeLocation, EdgeExtraData> edgeExtraData = new HashMap<>();
+    HashMap<ResourceLocation, HashMap<UUID, CustomTrackSegment>> segmentInstances = new HashMap<>();
     public void transfer(
             LevelAccessor level,
             TrackNode node,
@@ -63,26 +67,50 @@ public class GraphExtraData {
         return edgeExtraData.get(TrackEdgeLocation.fromEdge(edge));
     }
 
-    public CompoundTag write(DimensionPalette dimensions) {
+    public CompoundTag write(DimensionPalette dimensions, ResourcePattle resourcePattle) {
         CompoundTag tag = new CompoundTag();
         ListTag listTag = new ListTag();
         for (Map.Entry<TrackEdgeLocation, EdgeExtraData> entry : edgeExtraData.entrySet()) {
             CompoundTag entryTag = new CompoundTag();
             entryTag.put("Location", entry.getKey().write(dimensions));
-            entryTag.put("Data", entry.getValue().write());
+            entryTag.put("Data", entry.getValue().write(resourcePattle));
             listTag.add(entryTag);
         }
         tag.put("EdgeExtraDatas", listTag);
+        ListTag segmentListTag = new ListTag();
         return tag;
     }
 
-    public void read(CompoundTag data, DimensionPalette dimensions) {
+    public void read(CompoundTag data, DimensionPalette dimensions, ResourcePattle resourcePattle) {
         ListTag listTag = data.getList("EdgeExtraDatas", ListTag.TAG_COMPOUND);
         for(int i=0;i<listTag.size();i++){
             CompoundTag entryTag = listTag.getCompound(i);
             TrackEdgeLocation edgeLocation = TrackEdgeLocation.read(entryTag.getCompound("Location"), dimensions);
             EdgeExtraData extraData = edgeExtraData.computeIfAbsent(edgeLocation, (x)->new EdgeExtraData());
-            extraData.read(entryTag.get("Data"));
+            extraData.read(entryTag.getCompound("Data"), resourcePattle);
         }
+    }
+
+
+    public void addSegment(ResourceLocation featureName, UUID featureId, CustomTrackSegment segment){
+        segmentInstances.computeIfAbsent(featureName, (i)->new HashMap<>()).put(featureId, segment);
+    }
+
+    public void removeSegment(ResourceLocation featureName, UUID featureId) {
+        if(!segmentInstances.containsKey(featureName))
+            return;
+        segmentInstances.get(featureName).remove(featureId);
+    }
+
+    public CustomTrackSegment getSegment(ResourceLocation featureName, UUID featureId) {
+        if(!segmentInstances.containsKey(featureName))
+            return null;
+        return segmentInstances.get(featureName).get(featureId);
+    }
+
+    public boolean hasSegment(ResourceLocation featureName, UUID featureId){
+        if(!segmentInstances.containsKey(featureName))
+            return false;
+        return segmentInstances.get(featureName).containsKey(featureId);
     }
 }
