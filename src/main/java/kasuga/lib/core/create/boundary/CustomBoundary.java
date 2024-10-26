@@ -43,6 +43,7 @@ public abstract class CustomBoundary extends SingleBlockEntityEdgePoint {
     public void tick(TrackGraph graph, boolean preTrains) {
         for (boolean i : Iterate.trueAndFalse){
             if(shouldUpdate(i)){
+                dirty.put(i, false);
                 CustomTrackSegmentPropagator.propagate(graph,this,i);
             }
         }

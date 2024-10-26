@@ -63,6 +63,8 @@ public class TestGraphDataTrainMixin {
             text.append(extraData.getBoundaryFeature(EXAMPLE_SEGMENT_FEATURE).toString().substring(28));
         else text.append("< NULL >");
         text.append(", SIG=" + edgeData.getGroupAtPosition(graph, tp.position).toString().substring(28));
+        text.append(", SIGCUR=");
+        // text.append(edgeData.getEffectiveEdgeGroupId(edgeData.singleSignalGroup))
         player.displayClientMessage(Component.literal(text.toString()),true);
     }
 }

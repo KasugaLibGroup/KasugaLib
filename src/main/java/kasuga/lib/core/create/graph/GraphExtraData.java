@@ -27,6 +27,15 @@ public class GraphExtraData {
         }
     }
 
+    public TrackEdgeLocation DEBUG_findLocationOf(EdgeExtraData data){
+        for (Map.Entry<TrackEdgeLocation, EdgeExtraData> entry : edgeExtraData.entrySet()) {
+            if(entry.getValue() == data){
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
     public void transferAll(GraphExtraData toOtherExtra) {
         edgeExtraData.forEach(toOtherExtra::addEdge);
         edgeExtraData.clear();

@@ -8,6 +8,7 @@ import com.simibubi.create.foundation.utility.Iterate;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.create.graph.EdgeExtraData;
 import kasuga.lib.core.create.graph.GraphExtraData;
+import kasuga.lib.core.create.graph.TrackEdgeLocation;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.resources.ResourceLocation;
 
@@ -34,9 +35,10 @@ public class CustomTrackSegmentPropagator{
                     TrackNode node = val.getFirst();
                     CustomBoundary newBoundary = (CustomBoundary) val.getSecond();
                     UUID currentGroup = newBoundary.getGroupId(newBoundary.isPrimary(node));
-                    if(extraData.hasSegment(featureName,currentGroup)){
+                    if(extraData.hasSegment(featureName, currentGroup)){
                         extraData.removeSegment(featureName, currentGroup);
                     }
+                    System.out.printf("[BG] Set Boundary Group For Boundary Node %s -> %s\n", newBoundary.id, segmentId);
                     newBoundary.setSegment(newBoundary.isPrimary(node), segmentId);
                     sync.pointAdded(graph, newBoundary);
                     return true;
@@ -45,6 +47,8 @@ public class CustomTrackSegmentPropagator{
                     if(val.hasBoundaryFeature(featureName)){
                         extraData.removeSegment(featureName ,val.getBoundaryFeature(featureName));
                     }
+                    TrackEdgeLocation location = extraData.DEBUG_findLocationOf(val);
+                    System.out.printf("[BG] Set Boundary Group For Edge Node %s -> %s\n", location.toString(), segmentId);
                     val.setBoundaryFeature(featureName, segmentId);
                     return true;
                 },

@@ -32,4 +32,9 @@ public class TrackEdgeLocation extends Pair<TrackNodeLocation,TrackNodeLocation>
         TrackNodeLocation location2 = TrackNodeLocation.read(tag.getCompound("Second"), palette);
         return new TrackEdgeLocation(location1, location2);
     }
+
+    @Override
+    public String toString() {
+        return getFirst().getLocation().toString() + "-" + getSecond().getLocation().toString();
+    }
 }
