@@ -9,7 +9,10 @@
     "MixinStationBlockEntity",
     "resources.DelegatingPackResourcesMixin",
     "resources.FilePackResourceMixin",
-    "resources.PathPackResourceMixin"
+    "resources.PathPackResourceMixin",
+    "create.GlobalRailwayManagerMixin",
+    "create.TrackGraphMixin",
+    "create.TrackGraphAccessor"
   ],
   "client": [
     "client.MixinBlockModel$Deserializer",
@@ -19,7 +22,7 @@
     "client.MixinBlockRenderDispatcher",
     "client.MixinCarriageContraptionEntityRenderer",
     "client.MixinStationBlockEntityClient",
-    "client.MixinTextureManager"
+    "client.MixinTextureManager",
   ],
   "minVersion": "0.8"
 }
