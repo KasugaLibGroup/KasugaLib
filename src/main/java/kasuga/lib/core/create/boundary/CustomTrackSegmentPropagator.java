@@ -2,6 +2,7 @@ package kasuga.lib.core.create.boundary;
 
 import com.simibubi.create.Create;
 import com.simibubi.create.content.trains.graph.*;
+import com.simibubi.create.content.trains.signal.SignalBoundary;
 import com.simibubi.create.content.trains.signal.SignalPropagator;
 import com.simibubi.create.foundation.utility.Couple;
 import com.simibubi.create.foundation.utility.Iterate;
@@ -38,7 +39,6 @@ public class CustomTrackSegmentPropagator{
                     if(extraData.hasSegment(featureName, currentGroup)){
                         extraData.removeSegment(featureName, currentGroup);
                     }
-                    System.out.printf("[BG] Set Boundary Group For Boundary Node %s -> %s\n", newBoundary.id, segmentId);
                     newBoundary.setSegment(newBoundary.isPrimary(node), segmentId);
                     sync.pointAdded(graph, newBoundary);
                     return true;
@@ -48,13 +48,33 @@ public class CustomTrackSegmentPropagator{
                         extraData.removeSegment(featureName ,val.getBoundaryFeature(featureName));
                     }
                     TrackEdgeLocation location = extraData.DEBUG_findLocationOf(val);
-                    System.out.printf("[BG] Set Boundary Group For Edge Node %s -> %s\n", location.toString(), segmentId);
                     val.setBoundaryFeature(featureName, segmentId);
                     return true;
                 },
                 false
         );
         extraData.addSegment(featureName, segmentId, segment);
+    }
+
+    public static void notifyNewNode(TrackGraph graph, TrackNode node){
+        for (EdgePointType<? extends CustomBoundary> boundary : BoundarySegmentRegistry.getBoundaries()) {
+            List<Couple<TrackNode>> frontier = new ArrayList();
+            frontier.add(Couple.create(node, (TrackNode) null));
+            ResourceLocation featureName = BoundarySegmentRegistry.getFeatureName(boundary);
+            GraphExtraData extraData = KasugaLib.STACKS.RAILWAY.get().withGraph(graph);
+            walk(graph, featureName, frontier, (EdgePointType<? super CustomBoundary>) boundary, (pair)->{
+                TrackNode node1 = pair.getFirst();
+                CustomBoundary customBoundaryInstance = (CustomBoundary) pair.getSecond();
+                customBoundaryInstance.markDirty(customBoundaryInstance.isPrimary(node1));
+                return false;
+            }, (edge)->{
+                if(!edge.hasCustomBoundaryInThisEdge(featureName)){
+                    edge.setBoundaryFeature(featureName, EdgeExtraData.passiveBoundaryGroup);
+                    return true;
+                }
+                return false;
+            },false);
+        }
     }
 
     public static void onRemoved(TrackGraph graph, CustomBoundary customBoundary) {

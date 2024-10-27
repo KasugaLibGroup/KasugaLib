@@ -13,7 +13,8 @@
     "create.GlobalRailwayManagerMixin",
     "create.TrackGraphMixin",
     "create.TrackGraphAccessor",
-    "create.EdgeDataMixin"
+    "create.SignalPropagatorMixin",
+    "create.EdgeDataMixin",
   ],
   "client": [
     "client.MixinBlockModel$Deserializer",
