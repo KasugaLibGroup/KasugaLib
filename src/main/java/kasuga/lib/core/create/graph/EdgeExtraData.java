@@ -7,7 +7,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -20,7 +19,11 @@ public class EdgeExtraData {
         for (Map.Entry<ResourceLocation, UUID> entry : customBoundaryGroups.entrySet()) {
             CompoundTag entryTag = new CompoundTag();
             entryTag.putInt("Id", resourcePattle.encode(entry.getKey()));
-            entryTag.putUUID("Value", entry.getValue());
+            if(entry.getValue() == null){
+                entryTag.putBoolean("NullValue", true);
+            }else{
+                entryTag.putUUID("Value", entry.getValue());
+            }
         }
         tag.put("BoundaryGroups", listTag);
         return tag;
@@ -30,30 +33,38 @@ public class EdgeExtraData {
         ListTag tag = data.getList("BoundaryGroups", Tag.TAG_COMPOUND);
         for(int i=0;i<tag.size();i++){
             CompoundTag entryTag = tag.getCompound(i);
+            UUID value;
+            if(!entryTag.getBoolean("NullValue")){
+                value = entryTag.getUUID("Value");
+            } else value = null;
             customBoundaryGroups.put(
                     resourcePattle.decode(entryTag.getInt("Id")),
-                    entryTag.getUUID("Value")
+                    value
             );
         }
     }
 
     public boolean hasBoundaryFeature(ResourceLocation featureName) {
-        return customBoundaryGroups.containsKey(featureName);
+        return !customBoundaryGroups.containsKey(featureName) || customBoundaryGroups.get(featureName)!=null;
+    }
+
+    public boolean hasCustomBoundaryInThisEdge(ResourceLocation featureName){
+        return customBoundaryGroups.containsKey(featureName) && customBoundaryGroups.get(featureName)==null;
     }
 
     public void setBoundaryFeature(ResourceLocation featureName, UUID segmentId) {
-        if(segmentId == null){
-            removeBoundaryFeature(featureName);
+        if(segmentId == passiveBoundaryGroup){
+            setBoundaryFeaturePassive(featureName);
             return;
         }
         customBoundaryGroups.put(featureName, segmentId);
     }
 
     public UUID getBoundaryFeature(ResourceLocation featureName) {
-        return customBoundaryGroups.get(featureName);
+        return customBoundaryGroups.getOrDefault(featureName, passiveBoundaryGroup);
     }
 
-    public void removeBoundaryFeature(ResourceLocation featureName) {
+    public void setBoundaryFeaturePassive(ResourceLocation featureName) {
         customBoundaryGroups.remove(featureName);
     }
 }

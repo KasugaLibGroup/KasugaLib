@@ -22,7 +22,7 @@ public class CustomSegmentUtil {
             ResourceLocation featureName,
             double position
     ){
-        if(!extraData.hasBoundaryFeature(featureName)){
+        if(!extraData.hasCustomBoundaryInThisEdge(featureName)){
             return getEffectiveCircuit(graph,extraData,featureName);
         }
         CustomBoundary firstCircuit = edgeData.next(boundaryType,0);

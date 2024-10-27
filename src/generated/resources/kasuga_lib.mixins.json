@@ -12,7 +12,8 @@
     "resources.PathPackResourceMixin",
     "create.GlobalRailwayManagerMixin",
     "create.TrackGraphMixin",
-    "create.TrackGraphAccessor"
+    "create.TrackGraphAccessor",
+    "create.EdgeDataMixin"
   ],
   "client": [
     "client.MixinBlockModel$Deserializer",

@@ -44,7 +44,7 @@ public class CustomTrackSegmentPropagator{
                     return true;
                 },
                 (val)->{
-                    if(val.hasBoundaryFeature(featureName)){
+                    if(val.hasBoundaryFeature(featureName) && val.getBoundaryFeature(featureName) != EdgeExtraData.passiveBoundaryGroup){
                         extraData.removeSegment(featureName ,val.getBoundaryFeature(featureName));
                     }
                     TrackEdgeLocation location = extraData.DEBUG_findLocationOf(val);
@@ -75,7 +75,7 @@ public class CustomTrackSegmentPropagator{
                         boundary.markDirty(boundary.isPrimary(node));
                         return false;
                     },edgeData -> {
-                        if(!edgeData.hasBoundaryFeature(featureName)){
+                        if(!edgeData.hasCustomBoundaryInThisEdge(featureName)){
                             extraData.removeSegment(featureName ,edgeData.getBoundaryFeature(featureName));
                             edgeData.setBoundaryFeature(featureName, EdgeExtraData.passiveBoundaryGroup);
                             return true;
@@ -185,7 +185,7 @@ public class CustomTrackSegmentPropagator{
                     EdgeExtraData extraData = graphExtraData.getEdgeData(currentEdge);
 
                     // no boundary- update group of edge
-                    if (!extraData.hasBoundaryFeature(featureName)) {
+                    if (!extraData.hasCustomBoundaryInThisEdge(featureName)) {
                         if (nonBoundaryCallback.test(extraData)) {
                             // Create.RAILWAYS.sync.edgeDataChanged(graph, currentNode, nextNode, edge, oppositeEdge);
                             // @TODO: Notify ourselves sync module to notify edge data changed
