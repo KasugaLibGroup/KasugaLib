@@ -165,15 +165,7 @@ public class StaticImage {
                               Vector3f leftTop, Vector3f rightTop, Vector3f leftDown, Vector3f rightDown,
                               Vec2f uvLeftTop, Vec2f uvRightTop, Vec2f uvLeftDown, Vec2f uvRightDown,
                               SimpleColor color, boolean reverse, int light) {
-        boolean shouldPush = !pose.clear();
-        Matrix4f lastMatrix = null;
-        if(shouldPush) {
-            pose.pushPose();
-        } else {
-            lastMatrix = pose.last().pose();
-            pose.popPose();
-            pose.pushPose();
-        }
+        pose.pushPose();
         if (!reverse)
             pose.scale(1.0f, -1.0f, 1.0f);
         pose.translate(.5f, 0, .5f);
@@ -184,10 +176,6 @@ public class StaticImage {
         buildVertex(consumer, matrix, rightDown, uvRightDown, color, light);
         buildVertex(consumer, matrix, rightTop, uvRightTop, color, light);
         pose.popPose();
-        if(!shouldPush) {
-            pose.pushPose();
-            pose.mulPoseMatrix(lastMatrix);
-        }
     }
 
     public void renderToWorld(PoseStack pose, MultiBufferSource buffer, RenderType type,
