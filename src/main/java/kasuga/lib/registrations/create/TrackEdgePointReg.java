@@ -2,11 +2,17 @@ package kasuga.lib.registrations.create;
 
 import com.simibubi.create.content.trains.graph.EdgePointType;
 import com.simibubi.create.content.trains.signal.TrackEdgePoint;
+import com.simibubi.create.content.trains.track.TrackTargetingBlockItem;
+import com.tterrag.registrate.util.nullness.NonNullBiFunction;
 import kasuga.lib.core.create.edge_point.EdgePointOverlayRenderer;
 import kasuga.lib.registrations.Reg;
-import kasuga.lib.registrations.registry.CreateRegistry;
+import kasuga.lib.registrations.common.BlockReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public class TrackEdgePointReg<T extends TrackEdgePoint> extends Reg {
@@ -36,6 +42,11 @@ public class TrackEdgePointReg<T extends TrackEdgePoint> extends Reg {
 
     public EdgePointType<T> getType(){
         return type;
+    }
+
+    public BiFunction<Block, Item.Properties, TrackTargetingBlockItem> getBlockItemFactory(){
+        NonNullBiFunction<? super Block, Item.Properties, TrackTargetingBlockItem> apply = TrackTargetingBlockItem.ofType(type);
+        return (i,j)->apply.apply(i,j);
     }
 
     @Override
