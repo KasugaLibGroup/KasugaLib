@@ -1,8 +1,7 @@
 {
   "variants": {
-
-  },
-  "": {
-    "model": "kasuga_lib:block/test/test_model_complicate"
+    "": {
+      "model": "kasuga_lib:block/test/test_model_complicate"
+    }
   }
 }
