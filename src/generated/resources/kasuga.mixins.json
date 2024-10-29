@@ -18,7 +18,8 @@
     "client.MixinBlockModelBinding",
     "client.MixinBlockModelShaper",
     "client.MixinBlockRenderDispatcher",
-    "client.MixinObjLoader"
+    "client.MixinObjLoader",
+    "client.MixinModelBakery"
   ],
   "minVersion": "0.8"
 }
