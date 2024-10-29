@@ -7,6 +7,7 @@ import com.tterrag.registrate.util.nullness.NonNullBiFunction;
 import kasuga.lib.core.create.edge_point.EdgePointOverlayRenderer;
 import kasuga.lib.example_env.boundary.ExampleBoundaryBlock;
 import kasuga.lib.registrations.Reg;
+import kasuga.lib.registrations.builders.SelfReferenceItemBuilder;
 import kasuga.lib.registrations.common.BlockReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.resources.ResourceLocation;
@@ -45,9 +46,8 @@ public class TrackEdgePointReg<T extends TrackEdgePoint> extends Reg {
         return type;
     }
 
-    public BiFunction<Block, Item.Properties, Item> getBlockItemFactory(){
+    public <T extends Block> SelfReferenceItemBuilder<?,T> getBlockItemFactory(){
         NonNullBiFunction<? super Block, Item.Properties, TrackTargetingBlockItem> apply = TrackTargetingBlockItem.ofType(type);
-        new BlockReg<>("").blockType(ExampleBoundaryBlock::new).withItem(getBlockItemFactory(), null);
         return (i,j)->(Item) apply.apply(i,j);
     }
 
