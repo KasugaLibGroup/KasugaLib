@@ -8,6 +8,7 @@ import kasuga.lib.core.client.model.anim_model.AnimModel;
 import kasuga.lib.core.client.model.model_json.Geometry;
 import kasuga.lib.core.util.LazyRecomputable;
 import kasuga.lib.core.util.Resources;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -35,15 +36,13 @@ public class BedrockModelLoader implements IGeometryLoader<UnbakedBedrockModel>,
     public static BedrockModelLoader INSTANCE = new BedrockModelLoader();
     private ResourceManager manager;
     public static final HashSet<ResourceLocation> UNREGISTERED = new HashSet<>();
+    public static final HashSet<Material> ADDITIONAL_MATERIALS = new HashSet<>();
     public static boolean registerFired = false;
     public static final HashMap<ResourceLocation, UnbakedBedrockModel> MODELS = new HashMap<>();
-
     public static final ResourceLocation MISSING_MODEL_LOCATION = new ResourceLocation(KasugaLib.MOD_ID, "default/missing_model");
-
     private static final LazyRecomputable<UnbakedBedrockModel> MISSING = new LazyRecomputable<>(() -> MODELS.get(MISSING_MODEL_LOCATION));
 
-    public BedrockModelLoader() {
-    }
+    public BedrockModelLoader() {}
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
         this.manager = resourceManager;
@@ -60,9 +59,11 @@ public class BedrockModelLoader implements IGeometryLoader<UnbakedBedrockModel>,
         if (jsonObject.has("particle")) {
             String particleStr = jsonObject.get("particle").getAsString();
             ResourceLocation location = new ResourceLocation(particleStr);
-            Material material = new Material(TextureAtlas.LOCATION_PARTICLES,
-                    new ResourceLocation(location.getNamespace(), "textures/" + location.getPath() + ".png")
-            );
+            Material material = new Material(TextureAtlas.LOCATION_PARTICLES, location);
+            ADDITIONAL_MATERIALS.add(material);
+        }
+        if (deserializationContext == null) {
+            ADDITIONAL_MATERIALS.add(model.getMaterial());
         }
         return model;
     }
@@ -124,7 +125,8 @@ public class BedrockModelLoader implements IGeometryLoader<UnbakedBedrockModel>,
                 KasugaLib.MAIN_LOGGER.error(location + " is not a JsonObject");
                 return MISSING;
             }
-            UnbakedBedrockModel model = INSTANCE.read(element.getAsJsonObject(), null);
+            JsonObject jsObj = element.getAsJsonObject();
+            UnbakedBedrockModel model = INSTANCE.read(jsObj, null);
             MODELS.put(location, model);
             return LazyRecomputable.of(() -> model);
         } catch (IOException e) {
