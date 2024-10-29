@@ -20,14 +20,27 @@ public class BoundarySegmentRegistry
 
     public static HashSet<EdgePointType<? extends CustomBoundary>> BOUNDARY_TYPES = new HashSet<>();
 
+    public static HashMap<ResourceLocation, HashSet<EdgePointType<?>>> UPDATE_LISTENERS = new HashMap<>();
+
     public static CustomTrackSegment createSegment(CustomBoundary boundary, UUID uuid){
         return CONSTRUCT_FUNCTION.get(boundary.getType()).apply(uuid);
     }
 
-    public static void register(ResourceLocation featureLocation,EdgePointType<? extends CustomBoundary> boundary, Function<UUID, CustomTrackSegment> constructor){
+    public static void register(
+            ResourceLocation featureLocation,
+            EdgePointType<? extends CustomBoundary> boundary,
+            Function<UUID, CustomTrackSegment> constructor
+    ){
         FEATURE_LOCATION.put(boundary, featureLocation);
         CONSTRUCT_FUNCTION.put(boundary, constructor);
         BOUNDARY_TYPES.add(boundary);
+    }
+
+    public static void registerUpdateListener(
+            ResourceLocation featureLocation,
+            EdgePointType<? extends SegmentUpdateListener> listener
+    ){
+        UPDATE_LISTENERS.computeIfAbsent(featureLocation, (l)->new HashSet<>()).add(listener);
     }
 
     public static ResourceLocation getFeatureName(CustomBoundary boundary) {
