@@ -20,6 +20,7 @@ import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.SimpleUnbakedGeometry;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
@@ -40,17 +41,26 @@ public class UnbakedBedrockModel extends SimpleUnbakedGeometry<UnbakedBedrockMod
         this.textureLocation = textureLocation;
         geometries = Lists.newArrayList();
         legacy = false;
-        parse();
+        parse(null);
     }
 
-    public void parse() {
+    public UnbakedBedrockModel(ResourceLocation modelLocation, Material material, boolean flipV) {
+        this.flipV = flipV;
+        this.modelLocation = modelLocation;
+        this.textureLocation = material.texture();
+        this.geometries = new ArrayList<>();
+        legacy = false;
+        parse(material);
+    }
+
+    public void parse(@Nullable Material material) {
         JsonObject model = readModel();
         if (model == null) {
             KasugaLib.MAIN_LOGGER.warn("Unable to open animated model: " + this.modelLocation.toString());
             return;
         }
         formatVersion = model.get("format_version").getAsString();
-        this.material = new Material(TextureAtlas.LOCATION_BLOCKS, textureLocation);
+        this.material = material == null ? new Material(TextureAtlas.LOCATION_BLOCKS, textureLocation) : material;
 
         JsonArray geos;
         if (model.has("minecraft:geometry")) {
