@@ -24,6 +24,7 @@ import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometryPart;
 import net.minecraftforge.client.model.geometry.IMultipartModelGeometry;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
@@ -45,17 +46,26 @@ public class UnbakedBedrockModel implements IMultipartModelGeometry<UnbakedBedro
         this.textureLocation = textureLocation;
         geometries = Lists.newArrayList();
         legacy = false;
-        parse();
+        parse(null);
     }
 
-    public void parse() {
+    public UnbakedBedrockModel(ResourceLocation modelLocation, Material material, boolean flipV) {
+        this.flipV = flipV;
+        this.modelLocation = modelLocation;
+        this.textureLocation = material.texture();
+        this.geometries = new ArrayList<>();
+        legacy = false;
+        parse(material);
+    }
+
+    public void parse(@Nullable Material material) {
         JsonObject model = readModel();
         if (model == null) {
             KasugaLib.MAIN_LOGGER.warn("Unable to open animated model: " + this.modelLocation.toString());
             return;
         }
         formatVersion = model.get("format_version").getAsString();
-        this.material = new Material(TextureAtlas.LOCATION_BLOCKS, textureLocation);
+        this.material = material == null ? new Material(TextureAtlas.LOCATION_BLOCKS, textureLocation) : material;
 
         JsonArray geos;
         if (model.has("minecraft:geometry")) {

@@ -22,7 +22,8 @@
     "client.MixinObjLoader",
     "client.MixinBezierConnection",
     "client.MixinCarriageContraptionEntityRenderer",
-    "client.MixinStationBlockEntityClient"
+    "client.MixinStationBlockEntityClient",
+    "client.MixinModelBakery"
   ],
   "minVersion": "0.8"
 }
