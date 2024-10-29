@@ -31,6 +31,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 
@@ -284,6 +285,13 @@ public class BlockReg<T extends Block> extends Reg {
         itemReg = new ItemReg<R>(registrationKey, itemModelLocation);
         itemReg.itemType(builder);
         registerItem = true;
+        return this;
+    }
+
+    @Optional
+    public <R extends Item> BlockReg<T> withItem(BiFunction<T, Item.Properties, R> builder, ResourceLocation itemModelLocation) {
+        itemReg = new ItemReg<R>(registrationKey, itemModelLocation);
+        itemReg.itemType((p)->builder.apply(this.registryObject.get(),p));
         return this;
     }
 
