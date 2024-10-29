@@ -13,9 +13,9 @@
   "client": [
     "client.MixinBlockModel$Deserializer",
     "client.MixinBlockModelBinding",
-    "client.MixinTextureManager",
-    "client.MixinBlockModelBinding",
-    "client.MixinBlockModelShaper"
+    "client.MixinBlockModelShaper",
+    "client.MixinModelBakery",
+    "client.MixinTextureManager"
   ],
   "minVersion": "0.8"
 }
