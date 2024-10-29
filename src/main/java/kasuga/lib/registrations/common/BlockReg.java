@@ -7,6 +7,7 @@ import kasuga.lib.core.annos.Optional;
 import kasuga.lib.core.base.CustomBlockRenderer;
 import kasuga.lib.registrations.BlockEntityRendererBuilder;
 import kasuga.lib.registrations.Reg;
+import kasuga.lib.registrations.builders.SelfReferenceItemBuilder;
 import kasuga.lib.registrations.exception.RegistryElementNotPresentException;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.CrashReport;
@@ -289,9 +290,9 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     @Optional
-    public <R extends Item> BlockReg<T> withItem(BiFunction<T, Item.Properties, R> builder, ResourceLocation itemModelLocation) {
+    public <R extends Item> BlockReg<T> withItem(SelfReferenceItemBuilder<R,T> builder, ResourceLocation itemModelLocation) {
         itemReg = new ItemReg<R>(registrationKey, itemModelLocation);
-        itemReg.itemType((p)->builder.apply(this.registryObject.get(),p));
+        itemReg.itemType((p)->builder.build(this.registryObject.get(),p));
         return this;
     }
 
