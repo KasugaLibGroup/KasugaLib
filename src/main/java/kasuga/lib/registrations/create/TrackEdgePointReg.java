@@ -5,6 +5,7 @@ import com.simibubi.create.content.trains.signal.TrackEdgePoint;
 import com.simibubi.create.content.trains.track.TrackTargetingBlockItem;
 import com.tterrag.registrate.util.nullness.NonNullBiFunction;
 import kasuga.lib.core.create.edge_point.EdgePointOverlayRenderer;
+import kasuga.lib.example_env.boundary.ExampleBoundaryBlock;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.common.BlockReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
@@ -44,9 +45,10 @@ public class TrackEdgePointReg<T extends TrackEdgePoint> extends Reg {
         return type;
     }
 
-    public BiFunction<Block, Item.Properties, TrackTargetingBlockItem> getBlockItemFactory(){
+    public BiFunction<Block, Item.Properties, Item> getBlockItemFactory(){
         NonNullBiFunction<? super Block, Item.Properties, TrackTargetingBlockItem> apply = TrackTargetingBlockItem.ofType(type);
-        return (i,j)->apply.apply(i,j);
+        new BlockReg<>("").blockType(ExampleBoundaryBlock::new).withItem(getBlockItemFactory(), null);
+        return (i,j)->(Item) apply.apply(i,j);
     }
 
     @Override
