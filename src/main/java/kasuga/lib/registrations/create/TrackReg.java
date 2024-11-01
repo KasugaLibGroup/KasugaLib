@@ -110,7 +110,7 @@ public class TrackReg<T extends TrackBlock> extends BlockReg<T> {
         if (!(registry instanceof CreateRegistry createRegistry)) return this;
         initProperties();
         CreateRegistrate registrate = createRegistry.createRegistry();
-        if (tabSupplier != null) registrate.creativeModeTab(tabSupplier);
+        if (tabSupplier != null) registrate = registrate.creativeModeTab(tabSupplier);
         TrackMaterial material = trackMaterialSupplier.get();
         com.tterrag.registrate.builders.BlockBuilder<T, CreateRegistrate> builder =
                 (com.tterrag.registrate.builders.BlockBuilder<T, CreateRegistrate>)
