@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.function.Supplier;
 
 /**
@@ -23,7 +24,7 @@ import java.util.function.Supplier;
 public class CreativeTabReg extends Reg {
     CreativeModeTab.Builder builder;
     RegistryObject<CreativeModeTab> tabRegistryObject;
-    private final HashSet<Supplier<Item>> items;
+    private final LinkedList<Supplier<Item>> items;
     /**
      * Use this to create your tab registration.
      * @param registrationKey the name or translation key of your tab.
@@ -32,7 +33,7 @@ public class CreativeTabReg extends Reg {
         super(registrationKey);
         builder = CreativeModeTab.builder();
         builder.title(Component.translatable("itemGroup." + registrationKey));
-        items = new HashSet<>();
+        items = new LinkedList<>();
     }
 
     /**
