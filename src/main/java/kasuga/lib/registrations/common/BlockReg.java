@@ -293,6 +293,7 @@ public class BlockReg<T extends Block> extends Reg {
     public <R extends Item> BlockReg<T> withItem(SelfReferenceItemBuilder<R,T> builder, ResourceLocation itemModelLocation) {
         itemReg = new ItemReg<R>(registrationKey, itemModelLocation);
         itemReg.itemType((p)->builder.build(this.registryObject.get(),p));
+        registerItem = true;
         return this;
     }
 
