@@ -3,6 +3,7 @@ package kasuga.lib.core.create.graph;
 import com.simibubi.create.content.trains.graph.DimensionPalette;
 import com.simibubi.create.content.trains.graph.TrackEdge;
 import com.simibubi.create.content.trains.graph.TrackNode;
+import kasuga.lib.core.create.boundary.BoundarySegmentRegistry;
 import kasuga.lib.core.create.boundary.CustomTrackSegment;
 import kasuga.lib.core.create.boundary.ResourcePattle;
 import net.minecraft.nbt.CompoundTag;
@@ -87,6 +88,16 @@ public class GraphExtraData {
         }
         tag.put("EdgeExtraDatas", listTag);
         ListTag segmentListTag = new ListTag();
+        for (Map.Entry<ResourceLocation, HashMap<UUID, CustomTrackSegment>> entry : segmentInstances.entrySet()) {
+            for (Map.Entry<UUID, CustomTrackSegment> segmentEntry : entry.getValue().entrySet()) {
+                CompoundTag segmentTag = new CompoundTag();
+                segmentTag.putUUID("FeatureId", segmentEntry.getKey());
+                segmentTag.putString("FeatureName", entry.getKey().toString());
+                segmentTag.put("Data", segmentEntry.getValue().write());
+                segmentListTag.add(segmentTag);
+            }
+        }
+        tag.put("Segments", segmentListTag);
         return tag;
     }
 
@@ -97,6 +108,15 @@ public class GraphExtraData {
             TrackEdgeLocation edgeLocation = TrackEdgeLocation.read(entryTag.getCompound("Location"), dimensions);
             EdgeExtraData extraData = edgeExtraData.computeIfAbsent(edgeLocation, (x)->new EdgeExtraData());
             extraData.read(entryTag.getCompound("Data"), resourcePattle);
+        }
+        ListTag segmentListTag = data.getList("Segments", ListTag.TAG_COMPOUND);
+        for(int i=0;i<segmentListTag.size();i++){
+            CompoundTag segmentTag = segmentListTag.getCompound(i);
+            ResourceLocation featureName = new ResourceLocation(segmentTag.getString("FeatureName"));
+            UUID featureId = segmentTag.getUUID("FeatureId");
+            CustomTrackSegment segment = BoundarySegmentRegistry.createSegmentByFeatureName(featureName, featureId);
+            segment.read(segmentTag.getCompound("Data"));
+            addSegment(featureName, featureId, segment);
         }
     }
 

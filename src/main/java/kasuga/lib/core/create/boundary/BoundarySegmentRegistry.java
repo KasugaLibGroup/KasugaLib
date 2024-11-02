@@ -1,5 +1,6 @@
 package kasuga.lib.core.create.boundary;
 
+import com.ibm.icu.impl.ICUResourceBundle;
 import com.simibubi.create.content.trains.graph.EdgePointType;
 import net.minecraft.resources.ResourceLocation;
 
@@ -12,6 +13,8 @@ import java.util.function.Supplier;
 
 public class BoundarySegmentRegistry
 {
+    private static HashMap<ResourceLocation, Function<UUID, CustomTrackSegment>>
+            CONSTRUCT_FUNCTION_BY_FEATRUE = new HashMap<>();
     public static HashMap<EdgePointType<? extends CustomBoundary>, ResourceLocation>
             FEATURE_LOCATION = new HashMap<>();
 
@@ -33,6 +36,7 @@ public class BoundarySegmentRegistry
     ){
         FEATURE_LOCATION.put(boundary, featureLocation);
         CONSTRUCT_FUNCTION.put(boundary, constructor);
+        CONSTRUCT_FUNCTION_BY_FEATRUE.put(featureLocation, constructor);
         BOUNDARY_TYPES.add(boundary);
     }
 
@@ -53,5 +57,9 @@ public class BoundarySegmentRegistry
 
     public static List<EdgePointType<? extends CustomBoundary>> getBoundaries(){
         return BOUNDARY_TYPES.stream().toList();
+    }
+
+    public static CustomTrackSegment createSegmentByFeatureName(ResourceLocation featureName, UUID uuid){
+        return CONSTRUCT_FUNCTION_BY_FEATRUE.get(featureName).apply(uuid);
     }
 }

@@ -24,6 +24,7 @@ public class EdgeExtraData {
             }else{
                 entryTag.putUUID("Value", entry.getValue());
             }
+            listTag.add(entryTag);
         }
         tag.put("BoundaryGroups", listTag);
         return tag;

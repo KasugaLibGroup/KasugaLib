@@ -18,6 +18,7 @@ public class KasugaRailwayDataManager extends SavedData {
         ResourcePattle resourcePattle = new ResourcePattle();
         compoundTag.put("Data", railwayData.write(dimensions,resourcePattle));
         dimensions.write(compoundTag);
+        resourcePattle.write(compoundTag);
         return compoundTag;
     }
 
