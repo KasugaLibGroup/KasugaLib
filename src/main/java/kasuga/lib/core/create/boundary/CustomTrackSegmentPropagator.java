@@ -39,7 +39,7 @@ public class CustomTrackSegmentPropagator{
                     if(extraData.hasSegment(featureName, currentGroup)){
                         extraData.removeSegment(featureName, currentGroup);
                     }
-                    newBoundary.setSegment(newBoundary.isPrimary(node), segmentId);
+                    newBoundary.setSegmentAndUpdate(newBoundary.isPrimary(node), segmentId);
                     sync.pointAdded(graph, newBoundary);
                     return true;
                 },

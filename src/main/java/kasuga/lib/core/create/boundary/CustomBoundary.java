@@ -28,6 +28,10 @@ public abstract class CustomBoundary extends SingleBlockEntityEdgePoint {
 
     public void setSegment(boolean direction, UUID segmentId) {
         sidedSegements.put(direction, segmentId);
+    }
+
+    public void setSegmentAndUpdate(boolean direction, UUID segmentId){
+        sidedSegements.put(direction, segmentId);
         dirty.put(direction, false);
     }
 
