@@ -8,6 +8,7 @@ import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.engine.HostAccess;
 import kasuga.lib.core.javascript.engine.JavascriptValue;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -51,11 +52,10 @@ public class DomNode<T extends DomContext<?,?>> {
     }
 
     public void clear(){
-        for (DomNode<T> child : children) {
-            child.clear();
-            child.parent = null;
+        List<DomNode<T>> childrenCopy = new ArrayList<>(children);
+        for (DomNode<T> child : childrenCopy) {
+            removeChild(child);
         }
-        children.clear();
     }
 
     protected EventEmitter emitter = new EventEmitter();
