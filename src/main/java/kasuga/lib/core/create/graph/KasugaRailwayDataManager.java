@@ -26,7 +26,8 @@ public class KasugaRailwayDataManager extends SavedData {
         KasugaRailwayDataManager railwayData = new KasugaRailwayDataManager();
         DimensionPalette dimensions = DimensionPalette.read(compoundTag);
         ResourcePattle resourcePattle = ResourcePattle.read(compoundTag);
-        railwayData.railwayData.read(compoundTag, dimensions, resourcePattle);
+        CompoundTag data = compoundTag.getCompound("Data");
+        railwayData.railwayData.read(data, dimensions, resourcePattle);
         return railwayData;
     }
 
