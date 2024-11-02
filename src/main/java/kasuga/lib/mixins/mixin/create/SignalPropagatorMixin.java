@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = SignalPropagator.class,remap = false)
 public class SignalPropagatorMixin {
-    @Inject(method = "notifySignalsOfNewNode", at = @At("TAIL"))
+    @Inject(method = "notifySignalsOfNewNode", at = @At("RETURN"))
     private static void onNotifySignalsOfNewNode(TrackGraph graph, TrackNode node, CallbackInfo callbackInfo){
         CustomTrackSegmentPropagator.notifyNewNode(graph, node);
     }
