@@ -2,6 +2,7 @@ package kasuga.lib.example_env;
 
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.util.Envs;
+import kasuga.lib.example_env.boundary.ExampleBoundaryModule;
 import kasuga.lib.registrations.registry.CreateRegistry;
 
 public class ExampleMain {
@@ -13,5 +14,6 @@ public class ExampleMain {
         ExampleTracks.invoke();
         // AllExampleBogey.invoke();
         testRegistry.submit();
+        ExampleBoundaryModule.invoke();
     }
 }

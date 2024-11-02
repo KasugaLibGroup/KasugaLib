@@ -145,5 +145,21 @@ public class RenderContext {
     public void setSource(Object source){
         this.source = source;
     }
+
+    float increment = 0;
+
+    public void addIncrement(float increment){
+        this.increment += increment;
+    }
+
+    public float getIncrement(){
+        return increment;
+    }
+
+    public float getAndClearIncrement(){
+        float _inc = increment;
+        increment = 0;
+        return _inc;
+    }
 }
 
