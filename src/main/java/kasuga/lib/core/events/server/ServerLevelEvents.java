@@ -18,7 +18,5 @@ public class ServerLevelEvents {
     }
 
     @SubscribeEvent
-    public static void onLevelExit(LevelEvent.Unload event) {
-        KasugaLib.STACKS.RAILWAY.save(event.getLevel().getServer().overworld());
-    }
+    public static void onLevelExit(LevelEvent.Unload event) {}
 }
