@@ -133,9 +133,11 @@ public class AllGuiStyles {
 
         styleRegistry.register("backgroundUV", BackgroundUVStyle.TYPE);
         styleRegistry.register("backgroundImage", BackgroundImageStyle.TYPE);
+        styleRegistry.register("backgroundFilterColor", BackgroundFilterColor.TYPE);
         styleRegistry.register("backgroundRenderType", BackgroundRenderTypeStyle.TYPE);
         styleRegistry.register("backgroundNineSliceParam", BackgroundNineSliceParam.TYPE);
 
         styleRegistry.register("fontSize", FontSizeStyle.TYPE);
+        styleRegistry.register("zIndex", ZIndexStyle.TYPE);
     }
 }
