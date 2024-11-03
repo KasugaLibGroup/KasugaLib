@@ -23,6 +23,7 @@ public abstract class CustomBoundary extends SingleBlockEntityEdgePoint {
     @Override
     public void onRemoved(TrackGraph graph) {
         super.onRemoved(graph);
+        // 删除这个结点的时候, 一并移除这个customBoundary
         CustomTrackSegmentPropagator.onRemoved(graph, this);
     }
 
@@ -48,6 +49,7 @@ public abstract class CustomBoundary extends SingleBlockEntityEdgePoint {
         for (boolean i : Iterate.trueAndFalse){
             if(shouldUpdate(i)){
                 dirty.put(i, false);
+                // 如果是dirty的时候，那么就需要重新 propagate.
                 CustomTrackSegmentPropagator.propagate(graph,this,i);
             }
         }
@@ -61,7 +63,7 @@ public abstract class CustomBoundary extends SingleBlockEntityEdgePoint {
     public void write(CompoundTag nbt, DimensionPalette dimensions) {
         super.write(nbt, dimensions);
         for (boolean i : Iterate.trueAndFalse){
-            if(shouldUpdate(i)){
+            if(shouldUpdate(i)) {
                nbt.putBoolean("ShouldUpdate" + (i ? "Front" : "Back"), true);
             }
             nbt.putUUID("SignalGroup"+ (i ? "Front" : "Back"), sidedSegements.get(i));

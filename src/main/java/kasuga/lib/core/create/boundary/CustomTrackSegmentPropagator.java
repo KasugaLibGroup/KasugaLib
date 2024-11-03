@@ -16,8 +16,10 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class CustomTrackSegmentPropagator{
+public class CustomTrackSegmentPropagator {
     public static void propagate(TrackGraph graph, CustomBoundary boundary, boolean direction){
+        // neoPropagate(graph, boundary, direction);
+
         UUID segmentId = UUID.randomUUID();
         CustomTrackSegment segment = BoundarySegmentRegistry.createSegment(boundary, segmentId);
         ResourceLocation featureName = BoundarySegmentRegistry.getFeatureName(boundary);
@@ -56,10 +58,14 @@ public class CustomTrackSegmentPropagator{
         extraData.addSegment(featureName, segmentId, segment);
     }
 
+    // 增加新 Node 时候的写法
     public static void notifyNewNode(TrackGraph graph, TrackNode node){
         for (EdgePointType<? extends CustomBoundary> boundary : BoundarySegmentRegistry.getBoundaries()) {
+            // frontier -> 边界
             List<Couple<TrackNode>> frontier = new ArrayList();
             frontier.add(Couple.create(node, (TrackNode) null));
+
+            // 应该是某种信号机的种类名？
             ResourceLocation featureName = BoundarySegmentRegistry.getFeatureName(boundary);
             GraphExtraData extraData = KasugaLib.STACKS.RAILWAY.get().withGraph(graph);
             walk(graph, featureName, frontier, (EdgePointType<? super CustomBoundary>) boundary, (pair)->{
@@ -77,6 +83,7 @@ public class CustomTrackSegmentPropagator{
         }
     }
 
+    // 移除 Node 时候的写法
     public static void onRemoved(TrackGraph graph, CustomBoundary customBoundary) {
         ResourceLocation featureName = BoundarySegmentRegistry.getFeatureName(customBoundary);
         GraphExtraData extraData = KasugaLib.STACKS.RAILWAY.get().withGraph(graph);

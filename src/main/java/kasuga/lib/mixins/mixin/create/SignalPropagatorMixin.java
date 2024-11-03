@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class SignalPropagatorMixin {
     @Inject(method = "notifySignalsOfNewNode", at = @At("RETURN"))
     private static void onNotifySignalsOfNewNode(TrackGraph graph, TrackNode node, CallbackInfo callbackInfo){
+        // 增加新结点的时候，一并加入这个结点到CustomBoundary
         CustomTrackSegmentPropagator.notifyNewNode(graph, node);
     }
 }

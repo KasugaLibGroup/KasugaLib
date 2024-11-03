@@ -15,5 +15,6 @@ public class ExampleMain {
         // AllExampleBogey.invoke();
         testRegistry.submit();
         ExampleBoundaryModule.invoke();
+        if (Envs.isClient()) AllClient.invoke();
     }
 }

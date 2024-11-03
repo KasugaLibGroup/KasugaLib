@@ -7,25 +7,26 @@
   "mixins": [
     "MixinNbtUtils",
     "MixinStationBlockEntity",
+    "create.EdgeDataMixin",
+    "create.GlobalRailwayManagerMixin",
+    "create.SignalPropagatorMixin",
+    "create.TrackGraphAccessor",
+    "create.TrackGraphMixin",
     "resources.DelegatingPackResourcesMixin",
     "resources.FilePackResourceMixin",
-    "resources.PathPackResourceMixin",
-    "create.GlobalRailwayManagerMixin",
-    "create.TrackGraphMixin",
-    "create.TrackGraphAccessor",
-    "create.SignalPropagatorMixin",
-    "create.EdgeDataMixin",
+    "resources.PathPackResourceMixin"
   ],
   "client": [
-    "client.MixinBlockModel$Deserializer",
     "client.MixinBezierConnection",
+    "client.MixinBlockModel$Deserializer",
     "client.MixinBlockModelBinding",
     "client.MixinBlockModelShaper",
     "client.MixinBlockRenderDispatcher",
     "client.MixinCarriageContraptionEntityRenderer",
-    "client.MixinStationBlockEntityClient",
-    "client.MixinTextureManager",
+    "client.MixinLevelRenderer",
     "client.MixinModelBakery",
+    "client.MixinStationBlockEntityClient",
+    "client.MixinTextureManager"
   ],
   "minVersion": "0.8"
 }
