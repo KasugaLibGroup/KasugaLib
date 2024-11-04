@@ -2,7 +2,9 @@ package kasuga.lib.core.create.graph;
 
 import com.simibubi.create.content.trains.graph.DimensionPalette;
 import com.simibubi.create.content.trains.graph.TrackGraph;
+import kasuga.lib.KasugaLib;
 import kasuga.lib.core.create.boundary.ResourcePattle;
+import kasuga.lib.core.util.StackTraceUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -20,10 +22,20 @@ public class RailwayData {
     public HashMap<UUID, GraphExtraData> extraDatas = new HashMap<>();
 
     public void createExtraData(UUID graphId){
-        this.extraDatas.computeIfAbsent(graphId, (id)->new GraphExtraData());
+        KasugaLib.STACKS.RAILWAY.debugStream.printf(
+                "G+|RailwayData.createExtraData|%s|%s\n",
+                graphId,
+                StackTraceUtil.writeStackTrace()
+        );
+        this.extraDatas.computeIfAbsent(graphId, (id)->new GraphExtraData(id));
     }
 
     public void removeExtraData(UUID graphId){
+        KasugaLib.STACKS.RAILWAY.debugStream.printf(
+                "G-|RailwayData.removeExtraData|%s|%s\n",
+                graphId,
+                StackTraceUtil.writeStackTrace()
+        );
         this.extraDatas.remove(graphId);
     }
 
@@ -72,8 +84,13 @@ public class RailwayData {
         for(int i=0;i<extraDataTags.size();i++){
             CompoundTag tag = extraDataTags.getCompound(i);
             UUID id = tag.getUUID("Id");
-            GraphExtraData extraData = extraDatas.computeIfAbsent(id, (x)->new GraphExtraData());
+            GraphExtraData extraData = extraDatas.computeIfAbsent(id, (x)->new GraphExtraData(id));
             extraData.read(tag.getCompound("Data"), dimensions, resourcePattle);
+            KasugaLib.STACKS.RAILWAY.debugStream.printf(
+                    "G+|RailwayData.read|%s|%s\n",
+                    id,
+                    StackTraceUtil.writeStackTrace()
+            );
         }
     }
 

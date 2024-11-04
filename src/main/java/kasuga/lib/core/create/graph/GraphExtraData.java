@@ -2,10 +2,13 @@ package kasuga.lib.core.create.graph;
 
 import com.simibubi.create.content.trains.graph.DimensionPalette;
 import com.simibubi.create.content.trains.graph.TrackEdge;
+import com.simibubi.create.content.trains.graph.TrackGraph;
 import com.simibubi.create.content.trains.graph.TrackNode;
+import kasuga.lib.KasugaLib;
 import kasuga.lib.core.create.boundary.BoundarySegmentRegistry;
 import kasuga.lib.core.create.boundary.CustomTrackSegment;
 import kasuga.lib.core.create.boundary.ResourcePattle;
+import kasuga.lib.core.util.StackTraceUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
@@ -14,8 +17,14 @@ import net.minecraft.world.level.LevelAccessor;
 import java.util.*;
 
 public class GraphExtraData {
+    final UUID graphId;
     HashMap<TrackEdgeLocation, EdgeExtraData> edgeExtraData = new HashMap<>();
     HashMap<ResourceLocation, HashMap<UUID, CustomTrackSegment>> segmentInstances = new HashMap<>();
+
+    public GraphExtraData(UUID graphId) {
+        this.graphId = graphId;
+    }
+
     public void transfer(
             LevelAccessor level,
             TrackNode node,
@@ -25,6 +34,13 @@ public class GraphExtraData {
         for (TrackEdge edge : connections.values()) {
             EdgeExtraData data = removeEdge(edge);
             targetExtraData.addEdge(edge, data);
+            KasugaLib.STACKS.RAILWAY.debugStream.printf(
+                    "ET|GraphExtraData.transfer|%s|%s|%s|%s\n",
+                    graphId,
+                    targetExtraData.graphId,
+                    TrackEdgeLocation.fromEdge(edge).toString(),
+                    StackTraceUtil.writeStackTrace()
+            );
         }
     }
 
@@ -38,6 +54,16 @@ public class GraphExtraData {
     }
 
     public void transferAll(GraphExtraData toOtherExtra) {
+        edgeExtraData.forEach((edgeLocation,i)->{
+            KasugaLib.STACKS.RAILWAY.debugStream.printf(
+                    "ET|GraphExtraData.transferAll|%s|%s|%s|%s\n",
+                    graphId,
+                    toOtherExtra.graphId,
+                    edgeLocation.toString(),
+                    StackTraceUtil.writeStackTrace()
+            );
+        });
+
         edgeExtraData.forEach(toOtherExtra::addEdge);
         edgeExtraData.clear();
     }
@@ -69,8 +95,24 @@ public class GraphExtraData {
                 shouldAdd.add(location);
             }
         }
-        shouldAdd.forEach((l)->edgeExtraData.put(l, new EdgeExtraData()));
-        keySet.forEach((l)->edgeExtraData.remove(l));
+        shouldAdd.forEach((l)->{
+            edgeExtraData.put(l, new EdgeExtraData());
+            KasugaLib.STACKS.RAILWAY.debugStream.printf(
+                    "E+|GraphExtraData.syncWithExternal|%s|%s||%s\n",
+                    graphId,
+                    l,
+                    StackTraceUtil.writeStackTrace()
+            );
+        });
+        keySet.forEach((l)->{
+            edgeExtraData.remove(l);
+            KasugaLib.STACKS.RAILWAY.debugStream.printf(
+                    "E-|GraphExtraData.syncWithExternal|%s|%s||%s\n",
+                    graphId,
+                    l,
+                    StackTraceUtil.writeStackTrace()
+            );
+        });
     }
 
     public EdgeExtraData getEdgeData(TrackEdge edge){
@@ -108,6 +150,12 @@ public class GraphExtraData {
             TrackEdgeLocation edgeLocation = TrackEdgeLocation.read(entryTag.getCompound("Location"), dimensions);
             EdgeExtraData extraData = edgeExtraData.computeIfAbsent(edgeLocation, (x)->new EdgeExtraData());
             extraData.read(entryTag.getCompound("Data"), resourcePattle);
+            KasugaLib.STACKS.RAILWAY.debugStream.printf("E+|GraphExtra.read$readExtraData|%s|%s|%s|%s\n",
+                    graphId,
+                    edgeLocation.toString(),
+                    extraData.getCustomBoundariesListString(),
+                    StackTraceUtil.writeStackTrace()
+            );
         }
         ListTag segmentListTag = data.getList("Segments", ListTag.TAG_COMPOUND);
         for(int i=0;i<segmentListTag.size();i++){
@@ -117,6 +165,13 @@ public class GraphExtraData {
             CustomTrackSegment segment = BoundarySegmentRegistry.createSegmentByFeatureName(featureName, featureId);
             segment.read(segmentTag.getCompound("Data"));
             addSegment(featureName, featureId, segment);
+            KasugaLib.STACKS.RAILWAY.debugStream.printf(
+                    "S+|GraphExtra.read$readSegment|%s|%s|%s|%s\n",
+                    graphId,
+                    featureName.toString(),
+                    featureId.toString(),
+                    StackTraceUtil.writeStackTrace()
+            );
         }
     }
 

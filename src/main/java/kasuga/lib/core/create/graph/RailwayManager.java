@@ -4,7 +4,10 @@ import kasuga.lib.core.base.Saved;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.LevelAccessor;
 
+import java.io.PrintStream;
+
 public class RailwayManager {
+    public PrintStream debugStream = System.out;
     public RailwayManager sided(boolean isClient){
         if(isClient){
             return null;

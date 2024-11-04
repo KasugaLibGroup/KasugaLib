@@ -9,6 +9,8 @@ import com.simibubi.create.content.trains.track.TrackPropagator;
 import com.simibubi.create.foundation.utility.Couple;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.create.graph.GraphExtraData;
+import kasuga.lib.core.create.graph.TrackEdgeLocation;
+import kasuga.lib.core.util.StackTraceUtil;
 import net.minecraft.world.level.LevelAccessor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -69,6 +71,19 @@ public abstract class TrackGraphMixin {
         TrackEdge edgeReverse = ((TrackGraph)(Object)this).getConnection(Couple.create(node2, node1));
         KasugaLib.STACKS.RAILWAY.get().withGraph(((TrackGraph)(Object)this)).createEdge(edge);
         KasugaLib.STACKS.RAILWAY.get().withGraph(((TrackGraph)(Object)this)).createEdge(edgeReverse);
+
+        KasugaLib.STACKS.RAILWAY.debugStream.printf(
+                "E+|TrackGraphMixin.onConnectNodes|%s|%s||%s\n",
+                ((TrackGraph)(Object)this).id,
+                TrackEdgeLocation.fromEdge(edge).toString(),
+                StackTraceUtil.writeStackTrace()
+        );
+        KasugaLib.STACKS.RAILWAY.debugStream.printf(
+                "E+|TrackGraphMixin.onConnectNodes|%s|%s||%s\n",
+                ((TrackGraph)(Object)this).id,
+                TrackEdgeLocation.fromEdge(edgeReverse).toString(),
+                StackTraceUtil.writeStackTrace()
+        );
     }
 
     @Inject(method = "removeNode", at = @At("HEAD"))
@@ -84,12 +99,24 @@ public abstract class TrackGraphMixin {
             return;
         Map<TrackNode, TrackEdge> connections = getConnectionsFrom(node);
         connections.forEach((_node,edge)->{
+            KasugaLib.STACKS.RAILWAY.debugStream.printf(
+                    "E-|TrackGraphMixin.removeNode$1|%s|%s|%s\n",
+                    ((TrackGraph)(Object)this).id,
+                    TrackEdgeLocation.fromEdge(edge).toString(),
+                    StackTraceUtil.writeStackTrace()
+            );
             KasugaLib.STACKS.RAILWAY.get().withGraph(((TrackGraph)(Object)this)).removeEdge(edge);
         });
         // @TODO: Create's code, add MIT's LICENSE
         for (TrackNode fromNodes : connections.keySet())
             if (connectionsByNode.containsKey(fromNodes)) {
                 TrackEdge edge = connectionsByNode.get(fromNodes).get(node);
+                KasugaLib.STACKS.RAILWAY.debugStream.printf(
+                        "E-|TrackGraphMixin.removeNode$2|%s|%s|%s\n",
+                        ((TrackGraph)(Object)this).id,
+                        TrackEdgeLocation.fromEdge(edge).toString(),
+                        StackTraceUtil.writeStackTrace()
+                );
                 KasugaLib.STACKS.RAILWAY.get().withGraph(((TrackGraph) (Object) this)).removeEdge(edge);
             }
     }

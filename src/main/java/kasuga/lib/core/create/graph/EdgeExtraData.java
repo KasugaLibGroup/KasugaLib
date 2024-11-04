@@ -1,6 +1,8 @@
 package kasuga.lib.core.create.graph;
 
+import kasuga.lib.KasugaLib;
 import kasuga.lib.core.create.boundary.ResourcePattle;
+import kasuga.lib.core.util.StackTraceUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -67,5 +69,14 @@ public class EdgeExtraData {
 
     public void setBoundaryFeaturePassive(ResourceLocation featureName) {
         customBoundaryGroups.remove(featureName);
+    }
+
+    public String getCustomBoundariesListString() {
+        // minecraft:boundary,<UUID>;minecraft:boundary,<UUID>;...
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry<ResourceLocation, UUID> entry : customBoundaryGroups.entrySet()) {
+            builder.append(entry.getKey().toString()).append(",").append(entry.getValue()).append(";");
+        }
+        return builder.toString();
     }
 }

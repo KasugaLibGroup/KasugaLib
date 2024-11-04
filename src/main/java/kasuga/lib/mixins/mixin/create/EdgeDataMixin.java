@@ -8,6 +8,8 @@ import kasuga.lib.KasugaLib;
 import kasuga.lib.core.create.boundary.BoundarySegmentRegistry;
 import kasuga.lib.core.create.boundary.CustomBoundary;
 import kasuga.lib.core.create.graph.EdgeExtraData;
+import kasuga.lib.core.create.graph.TrackEdgeLocation;
+import kasuga.lib.core.util.StackTraceUtil;
 import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -30,6 +32,16 @@ public class EdgeDataMixin {
 
         if(boundaryFeature == null)
             return;
+        EdgeExtraData edgeData = KasugaLib.STACKS.RAILWAY.get().withGraph(graph).getEdgeData(edge);
+
+
+        KasugaLib.STACKS.RAILWAY.debugStream.printf("F=|EdgeDataMixin.onRemovePoint|%s|%s|%s|%s|%s\n",
+                graph.id,
+                TrackEdgeLocation.fromEdge(edge),
+                edgeData.getBoundaryFeature(boundaryFeature),
+                null,
+                StackTraceUtil.writeStackTrace()
+        );
 
         KasugaLib.STACKS.RAILWAY.get().withGraph(graph).getEdgeData(edge).setBoundaryFeature(boundaryFeature, null);
     }
@@ -48,7 +60,14 @@ public class EdgeDataMixin {
             return;
 
         UUID nextId = self.next(point.getType(), 0) == null ? EdgeExtraData.passiveBoundaryGroup : null;
-
-        KasugaLib.STACKS.RAILWAY.get().withGraph(graph).getEdgeData(edge).setBoundaryFeature(boundaryFeature, nextId);
+        EdgeExtraData edgeData = KasugaLib.STACKS.RAILWAY.get().withGraph(graph).getEdgeData(edge);
+        KasugaLib.STACKS.RAILWAY.debugStream.printf("F=|EdgeDataMixin.onRemovePoint|%s|%s|%s|%s|%s\n",
+                graph.id,
+                TrackEdgeLocation.fromEdge(edge),
+                edgeData.getBoundaryFeature(boundaryFeature),
+                nextId,
+                StackTraceUtil.writeStackTrace()
+        );
+        edgeData.setBoundaryFeature(boundaryFeature, nextId);
     }
 }

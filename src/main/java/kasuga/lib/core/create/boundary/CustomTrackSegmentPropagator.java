@@ -10,16 +10,21 @@ import kasuga.lib.KasugaLib;
 import kasuga.lib.core.create.graph.EdgeExtraData;
 import kasuga.lib.core.create.graph.GraphExtraData;
 import kasuga.lib.core.create.graph.TrackEdgeLocation;
+import kasuga.lib.core.util.StackTraceUtil;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
 import java.util.function.Predicate;
 
-public class CustomTrackSegmentPropagator {
+public class CustomTrackSegmentPropagator{
     public static void propagate(TrackGraph graph, CustomBoundary boundary, boolean direction){
-        // neoPropagate(graph, boundary, direction);
-
+        KasugaLib.STACKS.RAILWAY.debugStream.printf("C|Propagator.propagate|%s|%s|%s|%s\n",
+                graph.id,
+                boundary.id,
+                direction,
+                StackTraceUtil.writeStackTrace()
+        );
         UUID segmentId = UUID.randomUUID();
         CustomTrackSegment segment = BoundarySegmentRegistry.createSegment(boundary, segmentId);
         ResourceLocation featureName = BoundarySegmentRegistry.getFeatureName(boundary);
@@ -39,52 +44,112 @@ public class CustomTrackSegmentPropagator {
                     CustomBoundary newBoundary = (CustomBoundary) val.getSecond();
                     UUID currentGroup = newBoundary.getGroupId(newBoundary.isPrimary(node));
                     if(extraData.hasSegment(featureName, currentGroup)){
+                        KasugaLib.STACKS.RAILWAY.debugStream.printf("S-|Propagator.propagate$B|%s|%s|%s|%s\n",
+                                graph.id,
+                                featureName,
+                                currentGroup,
+                                StackTraceUtil.writeStackTrace()
+                        );
                         extraData.removeSegment(featureName, currentGroup);
                     }
+                    KasugaLib.STACKS.RAILWAY.debugStream.printf("BF+|Propagator.propagate$B|%s|%s|%s|%s\n",
+                            graph.id,
+                            node.getLocation().getLocation(),
+                            segmentId,
+                            StackTraceUtil.writeStackTrace()
+                    );
                     newBoundary.setSegmentAndUpdate(newBoundary.isPrimary(node), segmentId);
                     sync.pointAdded(graph, newBoundary);
                     return true;
                 },
                 (val)->{
                     if(val.hasBoundaryFeature(featureName) && val.getBoundaryFeature(featureName) != EdgeExtraData.passiveBoundaryGroup){
+                        KasugaLib.STACKS.RAILWAY.debugStream.printf("S-|Propagator.propagate$E|%s|%s|%s|%s\n",
+                                graph.id,
+                                featureName,
+                                val.getBoundaryFeature(featureName),
+                                StackTraceUtil.writeStackTrace()
+                        );
                         extraData.removeSegment(featureName ,val.getBoundaryFeature(featureName));
                     }
                     TrackEdgeLocation location = extraData.DEBUG_findLocationOf(val);
+                    KasugaLib.STACKS.RAILWAY.debugStream.printf("F=|Propagator.propagate$E|%s|%s|%s|%s|%s\n",
+                            graph.id,
+                            location,
+                            val.getBoundaryFeature(featureName),
+                            segmentId,
+                            StackTraceUtil.writeStackTrace()
+                    );
                     val.setBoundaryFeature(featureName, segmentId);
                     return true;
                 },
                 false
         );
         extraData.addSegment(featureName, segmentId, segment);
+        KasugaLib.STACKS.RAILWAY.debugStream.printf("S+|Propagator.propagate|%s|%s|%s|%s\n",
+                graph.id,
+                featureName,
+                segmentId,
+                StackTraceUtil.writeStackTrace()
+        );
+        KasugaLib.STACKS.RAILWAY.debugStream.printf("E|Propagator.propagate|%s|%s|%s|%s\n",
+                graph.id,
+                boundary.id,
+                direction,
+                StackTraceUtil.writeStackTrace()
+        );
     }
 
-    // 增加新 Node 时候的写法
     public static void notifyNewNode(TrackGraph graph, TrackNode node){
+        KasugaLib.STACKS.RAILWAY.debugStream.printf("C|Propagator.notifyNewNode|%s|%s|%s\n",
+                graph.id,
+                node.getLocation().getLocation(),
+                StackTraceUtil.writeStackTrace()
+        );
         for (EdgePointType<? extends CustomBoundary> boundary : BoundarySegmentRegistry.getBoundaries()) {
-            // frontier -> 边界
             List<Couple<TrackNode>> frontier = new ArrayList();
             frontier.add(Couple.create(node, (TrackNode) null));
-
-            // 应该是某种信号机的种类名？
             ResourceLocation featureName = BoundarySegmentRegistry.getFeatureName(boundary);
             GraphExtraData extraData = KasugaLib.STACKS.RAILWAY.get().withGraph(graph);
             walk(graph, featureName, frontier, (EdgePointType<? super CustomBoundary>) boundary, (pair)->{
                 TrackNode node1 = pair.getFirst();
                 CustomBoundary customBoundaryInstance = (CustomBoundary) pair.getSecond();
                 customBoundaryInstance.markDirty(customBoundaryInstance.isPrimary(node1));
+                KasugaLib.STACKS.RAILWAY.debugStream.printf("BFD|Propagator.onRemoved|%s|%s|%s|%s\n",
+                        graph.id,
+                        node.getLocation().getLocation(),
+                        customBoundaryInstance.id,
+                        StackTraceUtil.writeStackTrace()
+                );
                 return false;
             }, (edge)->{
                 if(!edge.hasCustomBoundaryInThisEdge(featureName)){
                     edge.setBoundaryFeature(featureName, EdgeExtraData.passiveBoundaryGroup);
+                    TrackEdgeLocation location = extraData.DEBUG_findLocationOf(edge);
+                    KasugaLib.STACKS.RAILWAY.debugStream.printf("F-|Propagator.notifyNewNode|%s|%s|%s|%s\n",
+                            graph.id,
+                            location,
+                            edge.getBoundaryFeature(featureName),
+                            StackTraceUtil.writeStackTrace()
+                    );
                     return true;
                 }
                 return false;
             },false);
         }
+        KasugaLib.STACKS.RAILWAY.debugStream.printf("E|Propagator.notifyNewNode|%s|%s|%s\n",
+                graph.id,
+                node.getLocation().getLocation(),
+                StackTraceUtil.writeStackTrace()
+        );
     }
 
-    // 移除 Node 时候的写法
     public static void onRemoved(TrackGraph graph, CustomBoundary customBoundary) {
+        KasugaLib.STACKS.RAILWAY.debugStream.printf("C|Propagator.notifyNewNode|%s|%s|%s\n",
+                graph.id,
+                customBoundary.id,
+                StackTraceUtil.writeStackTrace()
+        );
         ResourceLocation featureName = BoundarySegmentRegistry.getFeatureName(customBoundary);
         GraphExtraData extraData = KasugaLib.STACKS.RAILWAY.get().withGraph(graph);
         for(boolean front : Iterate.trueAndFalse){
@@ -99,12 +164,25 @@ public class CustomTrackSegmentPropagator {
                     boundaryPair->{
                         CustomBoundary boundary = (CustomBoundary) boundaryPair.getSecond();
                         TrackNode node = boundaryPair.getFirst();
+                        KasugaLib.STACKS.RAILWAY.debugStream.printf("BFD|Propagator.onRemoved|%s|%s|%s|%s\n",
+                                graph.id,
+                                node.getLocation().getLocation(),
+                                boundary.id,
+                                StackTraceUtil.writeStackTrace()
+                        );
                         boundary.markDirty(boundary.isPrimary(node));
                         return false;
                     },edgeData -> {
                         if(!edgeData.hasCustomBoundaryInThisEdge(featureName)){
                             extraData.removeSegment(featureName ,edgeData.getBoundaryFeature(featureName));
                             edgeData.setBoundaryFeature(featureName, EdgeExtraData.passiveBoundaryGroup);
+                            TrackEdgeLocation location = extraData.DEBUG_findLocationOf(edgeData);
+                            KasugaLib.STACKS.RAILWAY.debugStream.printf("F-|Propagator.onRemoved|%s|%s|%s|%s\n",
+                                    graph.id,
+                                    location,
+                                    edgeData.getBoundaryFeature(featureName),
+                                    StackTraceUtil.writeStackTrace()
+                            );
                             return true;
                         }
                         return false;
@@ -112,6 +190,11 @@ public class CustomTrackSegmentPropagator {
                     false
             );
         }
+        KasugaLib.STACKS.RAILWAY.debugStream.printf("E|Propagator.notifyNewNode|%s|%s|%s\n",
+                graph.id,
+                customBoundary.id,
+                StackTraceUtil.writeStackTrace()
+        );
     }
 
     public static void walk(
@@ -174,6 +257,11 @@ public class CustomTrackSegmentPropagator {
             Predicate<EdgeExtraData> nonBoundaryCallback,
             boolean forCollection
     ) {
+        KasugaLib.STACKS.RAILWAY.debugStream.printf("VS|Propagator.walk|%s|%s\n",
+                graph.id,
+                StackTraceUtil.writeStackTrace()
+        );
+
         // This method is copied and edited from Create mod https://github.com/Creators-of-Create/Create/blob/mc1.18/dev/src/main/java/com/simibubi/create/content/trains/signal/SignalPropagator.java#L91
         Set<TrackEdge> visited = new HashSet<>();
 
@@ -206,12 +294,28 @@ public class CustomTrackSegmentPropagator {
                         .get(currentNode);
                 visited.add(oppositeEdge);
 
+                KasugaLib.STACKS.RAILWAY.debugStream.printf("V|Propagator.walk|%s|%s|%s\n",
+                        graph.id,
+                        TrackEdgeLocation.fromEdge(edge),
+                        StackTraceUtil.writeStackTrace()
+                );
+
+
                 for (boolean flip : Iterate.falseAndTrue) {
                     TrackEdge currentEdge = flip ? oppositeEdge : edge;
                     EdgeData signalData = currentEdge.getEdgeData();
                     EdgeExtraData extraData = graphExtraData.getEdgeData(currentEdge);
 
-                    // no boundary- update group of edge
+                    // no boundary- update group of edge\
+
+
+                    KasugaLib.STACKS.RAILWAY.debugStream.printf("VU|Propagator.walk|%s|%s|%s|%s\n",
+                            graph.id,
+                            TrackEdgeLocation.fromEdge(edge),
+                            extraData.getCustomBoundariesListString(),
+                            StackTraceUtil.writeStackTrace()
+                    );
+
                     if (!extraData.hasCustomBoundaryInThisEdge(featureName)) {
                         if (nonBoundaryCallback.test(extraData)) {
                             // Create.RAILWAYS.sync.edgeDataChanged(graph, currentNode, nextNode, edge, oppositeEdge);
@@ -236,5 +340,9 @@ public class CustomTrackSegmentPropagator {
                 frontier.add(Couple.create(nextNode, currentNode));
             }
         }
+        KasugaLib.STACKS.RAILWAY.debugStream.printf("VE|Propagator.walk|%s|%s\n",
+                graph.id,
+                StackTraceUtil.writeStackTrace()
+        );
     }
 }
