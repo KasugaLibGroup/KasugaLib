@@ -34,15 +34,6 @@ public class EdgeDataMixin {
             return;
         EdgeExtraData edgeData = KasugaLib.STACKS.RAILWAY.get().withGraph(graph).getEdgeData(edge);
 
-
-        KasugaLib.STACKS.RAILWAY.debugStream.printf("F=|EdgeDataMixin.onRemovePoint|%s|%s|%s|%s|%s\n",
-                graph.id,
-                TrackEdgeLocation.fromEdge(edge),
-                edgeData.getBoundaryFeature(boundaryFeature),
-                null,
-                StackTraceUtil.writeStackTrace()
-        );
-
         KasugaLib.STACKS.RAILWAY.get().withGraph(graph).getEdgeData(edge).setBoundaryFeature(boundaryFeature, null);
     }
 
@@ -61,13 +52,6 @@ public class EdgeDataMixin {
 
         UUID nextId = self.next(point.getType(), 0) == null ? EdgeExtraData.passiveBoundaryGroup : null;
         EdgeExtraData edgeData = KasugaLib.STACKS.RAILWAY.get().withGraph(graph).getEdgeData(edge);
-        KasugaLib.STACKS.RAILWAY.debugStream.printf("F=|EdgeDataMixin.onRemovePoint|%s|%s|%s|%s|%s\n",
-                graph.id,
-                TrackEdgeLocation.fromEdge(edge),
-                edgeData.getBoundaryFeature(boundaryFeature),
-                nextId,
-                StackTraceUtil.writeStackTrace()
-        );
         edgeData.setBoundaryFeature(boundaryFeature, nextId);
     }
 }

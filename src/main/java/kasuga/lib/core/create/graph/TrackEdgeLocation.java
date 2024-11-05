@@ -37,4 +37,8 @@ public class TrackEdgeLocation extends Pair<TrackNodeLocation,TrackNodeLocation>
     public String toString() {
         return getFirst().getLocation().toString() + "-" + getSecond().getLocation().toString();
     }
+
+    public TrackEdgeLocation reverse() {
+        return new TrackEdgeLocation(getSecond(), getFirst());
+    }
 }

@@ -22,20 +22,10 @@ public class RailwayData {
     public HashMap<UUID, GraphExtraData> extraDatas = new HashMap<>();
 
     public void createExtraData(UUID graphId){
-        KasugaLib.STACKS.RAILWAY.debugStream.printf(
-                "G+|RailwayData.createExtraData|%s|%s\n",
-                graphId,
-                StackTraceUtil.writeStackTrace()
-        );
         this.extraDatas.computeIfAbsent(graphId, (id)->new GraphExtraData(id));
     }
 
     public void removeExtraData(UUID graphId){
-        KasugaLib.STACKS.RAILWAY.debugStream.printf(
-                "G-|RailwayData.removeExtraData|%s|%s\n",
-                graphId,
-                StackTraceUtil.writeStackTrace()
-        );
         this.extraDatas.remove(graphId);
     }
 
@@ -86,11 +76,6 @@ public class RailwayData {
             UUID id = tag.getUUID("Id");
             GraphExtraData extraData = extraDatas.computeIfAbsent(id, (x)->new GraphExtraData(id));
             extraData.read(tag.getCompound("Data"), dimensions, resourcePattle);
-            KasugaLib.STACKS.RAILWAY.debugStream.printf(
-                    "G+|RailwayData.read|%s|%s\n",
-                    id,
-                    StackTraceUtil.writeStackTrace()
-            );
         }
     }
 

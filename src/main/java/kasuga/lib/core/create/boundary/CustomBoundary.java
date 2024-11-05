@@ -2,6 +2,7 @@ package kasuga.lib.core.create.boundary;
 
 import com.simibubi.create.content.trains.graph.DimensionPalette;
 import com.simibubi.create.content.trains.graph.TrackGraph;
+import com.simibubi.create.content.trains.signal.SignalBoundary;
 import com.simibubi.create.content.trains.signal.SingleBlockEntityEdgePoint;
 import com.simibubi.create.foundation.utility.Iterate;
 import net.minecraft.nbt.CompoundTag;
@@ -23,7 +24,6 @@ public abstract class CustomBoundary extends SingleBlockEntityEdgePoint {
     @Override
     public void onRemoved(TrackGraph graph) {
         super.onRemoved(graph);
-        // 删除这个结点的时候, 一并移除这个customBoundary
         CustomTrackSegmentPropagator.onRemoved(graph, this);
     }
 
@@ -49,7 +49,6 @@ public abstract class CustomBoundary extends SingleBlockEntityEdgePoint {
         for (boolean i : Iterate.trueAndFalse){
             if(shouldUpdate(i)){
                 dirty.put(i, false);
-                // 如果是dirty的时候，那么就需要重新 propagate.
                 CustomTrackSegmentPropagator.propagate(graph,this,i);
             }
         }
