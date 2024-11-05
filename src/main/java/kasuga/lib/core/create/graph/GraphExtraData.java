@@ -51,7 +51,11 @@ public class GraphExtraData {
     }
 
     public void createEdge(TrackEdge edge) {
-        edgeExtraData.put(TrackEdgeLocation.fromEdge(edge), new EdgeExtraData());
+        TrackEdgeLocation location = TrackEdgeLocation.fromEdge(edge);
+        if(edgeExtraData.containsKey(location)){
+            return;
+        }
+        edgeExtraData.put(location, new EdgeExtraData());
     }
 
     public void addEdge(TrackEdgeLocation edge, EdgeExtraData data) {

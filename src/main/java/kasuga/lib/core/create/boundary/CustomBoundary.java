@@ -72,6 +72,8 @@ public abstract class CustomBoundary extends SingleBlockEntityEdgePoint {
     @Override
     public void read(CompoundTag nbt, boolean migration, DimensionPalette dimensions) {
         super.read(nbt, migration, dimensions);
+        if(migration)
+            return;
         for (boolean i : Iterate.trueAndFalse){
             this.dirty.put(i,nbt.getBoolean("ShouldUpdate" + (i ? "Front" : "Back")));
             this.sidedSegements.put(i, nbt.getUUID("SignalGroup"+ (i ? "Front" : "Back")));
