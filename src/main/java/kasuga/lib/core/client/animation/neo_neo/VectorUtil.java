@@ -46,6 +46,25 @@ public class VectorUtil {
         return degree ? Quaternion.fromXYZDegrees(vector3f) : Quaternion.fromXYZ(vector3f);
     }
 
+    public static Vector3f offsetToRotation(Vec3 offset) {
+        return new Vector3f((float) offsetToYRotation(offset),
+                (float) offsetToXZRotation(offset), 0);
+    }
+
+    public static double offsetToXZRotation(Vec3 offset) {
+        Vec3 vec = offset.normalize();
+        double degrees = Math.toDegrees(Math.asin(vec.z()));
+        degrees = degrees < 0 ? degrees + 360 : degrees;
+        double result = 0;
+        result = vec.x() < 0 ? 180 + degrees :360 - degrees;
+        return (result > 360 ? result - 360 : result);
+    }
+
+    public static double offsetToYRotation(Vec3 offset) {
+        Vec3 vec = offset.normalize();
+        return Math.toDegrees(Math.asin(vec.y()));
+    }
+
 
     public static Vec3 degToRad(Vec3 deg) {
         return deg.scale(Math.PI / 180);

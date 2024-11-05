@@ -15,8 +15,7 @@ public class TestTrackEdgeOverlay extends TrackEdgeOverlay {
 
     @Override
     public void render(PoseStack pose, MultiBufferSource buffer, int light, int overlay, float partial) {
-        Vec3 vec3 = this.getCurrentPosition();
-        pose.translate(vec3.x(), vec3.y(), vec3.z());
+        super.applyTranslationAndRotation(pose);
 
         Font font = Minecraft.getInstance().font;
         font.drawInBatch("test", 0, 0, 0xff000000, false,
