@@ -6,6 +6,12 @@ import kasuga.lib.core.annos.Optional;
 import kasuga.lib.core.base.CustomBlockRenderer;
 import kasuga.lib.registrations.BlockEntityRendererBuilder;
 import kasuga.lib.registrations.Reg;
+import kasuga.lib.registrations.builders.SelfReferenceItemBuilder;
+import kasuga.lib.registrations.exception.RegistryElementNotPresentException;
+import kasuga.lib.registrations.registry.SimpleRegistry;
+import net.minecraft.CrashReport;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -24,6 +30,7 @@ import kasuga.lib.registrations.registry.SimpleRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 
@@ -252,6 +259,14 @@ public class BlockReg<T extends Block> extends Reg {
     public <R extends Item> BlockReg<T> withItem(ItemReg.ItemBuilder<R> builder, ResourceLocation itemModelLocation) {
         itemReg = new ItemReg<R>(registrationKey, itemModelLocation);
         itemReg.itemType(builder);
+        registerItem = true;
+        return this;
+    }
+
+    @Optional
+    public <R extends Item> BlockReg<T> withItem(SelfReferenceItemBuilder<R,T> builder, ResourceLocation itemModelLocation) {
+        itemReg = new ItemReg<R>(registrationKey, itemModelLocation);
+        itemReg.itemType((p)->builder.build(this.registryObject.get(),p));
         registerItem = true;
         return this;
     }
