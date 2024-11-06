@@ -151,6 +151,22 @@ public class RenderContext {
         this.source = source;
     }
 
+    float increment = 0;
+
+    public void addIncrement(float increment){
+        this.increment += increment;
+    }
+
+    public float getIncrement(){
+        return increment;
+    }
+
+    public float getAndClearIncrement(){
+        float _inc = increment;
+        increment = 0;
+        return _inc;
+    }
+
     public void setGuiGraphics(GuiGraphics guiGraphics) {
         this.guiGraphics = guiGraphics;
     }
