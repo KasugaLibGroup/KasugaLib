@@ -23,6 +23,7 @@ public class CreateRegistry extends SimpleRegistry {
         super(namespace, bus);
         movements = new LinkedList<>();
         createRegistry = CreateRegistrate.create(namespace);
+        bus.addListener(this::onSetup);
     }
 
     public void cacheMovementIn(InteractionMovementReg movementReg) {
