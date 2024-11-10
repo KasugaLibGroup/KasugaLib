@@ -23,7 +23,7 @@ public class FeatureChannelPort extends ChannelPort{
 
     @Override
     public void write(FriendlyByteBuf byteBuf) {
-        byteBuf.writeInt(0);
+        byteBuf.writeByte(0);
         byteBuf.writeResourceLocation(feature);
     }
 

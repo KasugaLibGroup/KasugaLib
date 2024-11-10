@@ -6,6 +6,8 @@ import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgumentInfo;
 import kasuga.lib.core.channel.ChannelNetworkManager;
 import kasuga.lib.core.channel.network.NetworkManager;
+import kasuga.lib.core.channel.network.address.NetworkAddressTypes;
+import kasuga.lib.core.channel.packets.ChannelNetworkPacket;
 import kasuga.lib.core.channel.test.ChannelTest;
 import kasuga.lib.core.client.animation.Constants;
 import kasuga.lib.core.client.frontend.gui.GuiEngine;
@@ -104,6 +106,8 @@ public class KasugaLibStacks {
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStarting);
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStopping);
         MinecraftForge.EVENT_BUS.addListener(ServerConnectionListeners::onClientDisconnect);
+        ChannelNetworkPacket.invoke();
+        NetworkAddressTypes.invoke();
         ChannelTest.invoke();
     }
 

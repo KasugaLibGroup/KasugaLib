@@ -1,6 +1,7 @@
 package kasuga.lib.core.channel.peer;
 
 import com.mojang.datafixers.optics.profunctors.FunctorProfunctor;
+import kasuga.lib.core.channel.NetworkSwitcher;
 import kasuga.lib.core.channel.address.ChannelPort;
 import kasuga.lib.core.channel.address.ConnectionInfo;
 import kasuga.lib.core.channel.address.Label;
@@ -12,7 +13,7 @@ import java.util.UUID;
 
 public class ChannelPeer {
     Label address;
-    private SocketDistributor distributor;
+    private ChannelReciever distributor;
 
     private List<Channel> managedChannels = new ArrayList<>();
     public ChannelPeer(Label address){
@@ -24,7 +25,7 @@ public class ChannelPeer {
         UUIDChannelPort port = new UUIDChannelPort(UUID.randomUUID());
         Channel channel = new Channel(ConnectionInfo.of(address, port),remote, client);
         channel.addOnCloseListener((c)->managedChannels.remove(c));
-        this.distributor.distribute(channel);
+        this.distributor.$onConnect(channel);
         return client;
     }
 
@@ -34,7 +35,7 @@ public class ChannelPeer {
         UUIDChannelPort port = new UUIDChannelPort(UUID.randomUUID());
         Channel channel = new Channel(ConnectionInfo.of(address, port),remote, client);
         channel.addOnCloseListener((c)->managedChannels.remove(c));
-        this.distributor.distribute(channel);
+        this.distributor.$onConnect(channel);
         return client;
     }
 
@@ -60,5 +61,9 @@ public class ChannelPeer {
 
     public Label getAddress() {
         return address;
+    }
+
+    public void setDistributor(ChannelReciever distributor) {
+        this.distributor = distributor;
     }
 }

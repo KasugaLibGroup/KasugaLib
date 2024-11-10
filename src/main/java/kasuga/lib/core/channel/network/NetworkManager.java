@@ -1,6 +1,5 @@
 package kasuga.lib.core.channel.network;
 
-import com.mojang.datafixers.util.Pair;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.channel.NetworkSwitcher;
 import kasuga.lib.core.channel.address.ConnectionInfo;
@@ -9,7 +8,6 @@ import kasuga.lib.core.channel.packets.C2SChannelMessagePacket;
 import kasuga.lib.core.channel.packets.C2SChannelStateChangePacket;
 import kasuga.lib.core.channel.peer.Channel;
 import kasuga.lib.core.channel.peer.ChannelReciever;
-import kasuga.lib.core.channel.peer.ChannelSocket;
 import kasuga.lib.core.channel.peer.ChannelStatus;
 import net.minecraft.nbt.CompoundTag;
 
@@ -18,8 +16,13 @@ public class NetworkManager implements ChannelReciever {
     NetworkDuplexer sender = new NetworkDuplexer();
     ChannelReciever _interface;
 
-    public NetworkManager(ChannelReciever reciever) {
+    public NetworkManager(NetworkSwitcher reciever) {
         this._interface = reciever;
+        registerReciever(reciever);
+    }
+
+    protected void registerReciever(NetworkSwitcher reciever){
+        reciever.defaultReciever = this;
     }
 
     @Override
@@ -77,6 +80,7 @@ public class NetworkManager implements ChannelReciever {
         long networkId = socket.getNetworkId();
         boolean isOwn = socket.isDuplexedBy(sender);
         sendStatePacket(networkId, ChannelStatus.ESTABLISHED, isOwn);
+        socket.getDuplexer().onExistedConnectionEstablished(networkId, socket);
     }
 
     public void sendClose(NetworkChannelSocket socket) {

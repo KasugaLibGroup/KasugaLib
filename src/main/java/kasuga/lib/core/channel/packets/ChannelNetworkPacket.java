@@ -14,4 +14,6 @@ public class ChannelNetworkPacket {
             .loadPacket(C2SChannelStateChangePacket.class, C2SChannelStateChangePacket::new)
             .loadPacket(S2CChannelStateChangePacket.class, S2CChannelStateChangePacket::new)
             .submit(KasugaLib.STACKS.REGISTRY);
+
+    public static void invoke(){}
 }

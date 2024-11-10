@@ -59,4 +59,8 @@ public class NetworkDuplexer {
         sockets.remove(networkId);
         channels.remove(networkId);
     }
+
+    public void onExistedConnectionEstablished(long networkId, NetworkChannelSocket socket) {
+        sockets.put(networkId, socket);
+    }
 }

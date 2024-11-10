@@ -58,4 +58,8 @@ public class NetworkChannelSocket implements ChannelSocket {
     public void internalEstablish() {
         this.internalEstablished = true;
     }
+
+    public NetworkDuplexer getDuplexer() {
+        return duplexer;
+    }
 }

@@ -15,6 +15,7 @@ import net.minecraftforge.api.distmarker.Dist;
 public class ChannelTest {
     public static void runAtClient(){
         ChannelPeer clientPeer = new ChannelPeer(PlainStringAddress.of("client"));
+        KasugaLib.STACKS.CHANNEL.CLIENT_SWITCHER.addPeer(clientPeer);
         ChannelSocket channel = clientPeer.createSocket(
                 ConnectionInfo.of(
                         FeatureChannelPort.of(new ResourceLocation("kasuga_lib", "test")),
@@ -24,12 +25,19 @@ public class ChannelTest {
                 new ChannelHandler(){
                     @Override
                     public void onChannelEstabilished(ChannelHandle channel) {
-                        System.out.println("Channel established");
+                        System.out.println("[Client] Channel Established");
                         channel.sendMessage(new CompoundTag());
                     }
+
+                    @Override
+                    public void onChannelMessage(ChannelHandle channel, CompoundTag payload) {
+                        System.out.println("[Client] Channel Message Recieved");
+                        channel.close();
+                    }
+
                     @Override
                     public void onChannelClose(ChannelHandle channel) {
-                        System.out.println("Channel closed");
+                        System.out.println("[Client] Channel closed");
                     }
                 }
         );
@@ -45,16 +53,22 @@ public class ChannelTest {
         ChannelPeer serverPeer = new ChannelPeer(PlainStringAddress.of("server")){
             @Override
             protected boolean onConnect(ChannelPeerSocketServer server) {
-                System.out.println("A new node connected to the server");
+                System.out.println("[Server] Channel Connected");
                 server.setHandler(new ChannelHandler(){
                     @Override
                     public void onChannelEstabilished(ChannelHandle channel) {
-                        System.out.println("Server Channel established");
+                        System.out.println("[Server] Channel Established");
                     }
 
                     @Override
                     public void onChannelMessage(ChannelHandle channel, CompoundTag payload) {
-                        System.out.println("Received message from client");
+                        System.out.println("[Server] Channel Message");
+                        channel.sendMessage(new CompoundTag());
+                    }
+
+                    @Override
+                    public void onChannelClose(ChannelHandle channel) {
+                        System.out.println("[Server] Channel Closed");
                     }
                 });
                 return true;

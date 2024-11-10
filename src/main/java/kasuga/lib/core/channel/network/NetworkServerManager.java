@@ -17,9 +17,14 @@ import net.minecraft.server.level.ServerPlayer;
 public class NetworkServerManager extends NetworkManager {
     private final ServerPlayer player;
 
-    public NetworkServerManager(ChannelReciever reciever, ServerPlayer player){
+    public NetworkServerManager(NetworkSwitcher reciever, ServerPlayer player){
         super(reciever);
         this.player = player;
+    }
+
+    @Override
+    protected void registerReciever(NetworkSwitcher reciever) {
+        // @TODO
     }
 
     @Override

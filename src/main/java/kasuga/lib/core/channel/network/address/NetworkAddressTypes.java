@@ -21,4 +21,6 @@ public class NetworkAddressTypes {
             KasugaLibStacks.REGISTRY.asResource("string"),
             new LabelType<PlainStringAddress>(PlainStringAddress::new)
     );
+
+    public static void invoke() {}
 }
