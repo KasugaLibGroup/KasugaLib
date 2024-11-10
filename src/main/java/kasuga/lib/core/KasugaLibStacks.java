@@ -4,6 +4,9 @@ import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.CustomBlockRenderer;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgumentInfo;
+import kasuga.lib.core.channel.ChannelNetworkManager;
+import kasuga.lib.core.channel.network.NetworkManager;
+import kasuga.lib.core.channel.test.ChannelTest;
 import kasuga.lib.core.client.animation.Constants;
 import kasuga.lib.core.client.frontend.gui.GuiEngine;
 import kasuga.lib.core.events.both.BothSetupEvent;
@@ -52,7 +55,7 @@ public class KasugaLibStacks {
 
     public Optional<GuiEngine> GUI = Optional.empty();
     public static final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
-
+    public static final ChannelNetworkManager CHANNEL = new ChannelNetworkManager();
     public static HashSet<Minecraft> mcs = new HashSet<>();
 
     public KasugaLibStacks(IEventBus bus) {
@@ -101,6 +104,7 @@ public class KasugaLibStacks {
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStarting);
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStopping);
         MinecraftForge.EVENT_BUS.addListener(ServerConnectionListeners::onClientDisconnect);
+        ChannelTest.invoke();
     }
 
     public void stackIn(SimpleRegistry registry) {
