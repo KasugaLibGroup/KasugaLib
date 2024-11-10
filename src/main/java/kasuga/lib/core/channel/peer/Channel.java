@@ -81,4 +81,35 @@ public class Channel {
     public boolean isClient(Channel channel) {
         return this.client == channel;
     }
+
+    public Channel proxy(ConnectionInfo newSource, ConnectionInfo newDest) {
+        // 创建代理 socket
+        ChannelSocket proxySocket = new ChannelSocket() {
+            private Channel channel;
+            
+            @Override
+            public void onMessage(CompoundTag message) {
+                Channel.this.sendMessage(Channel.this.server == this, message);
+            }
+            
+            @Override
+            public void onEstablished() {
+                if (Channel.this.isEstablished()) {
+                    channel.establish(this);
+                }
+            }
+            
+            @Override
+            public void onClose() {
+                Channel.this.close();
+            }
+            
+            @Override
+            public void setChannel(Channel channel) {
+                this.channel = channel;
+            }
+        };
+        
+        return new Channel(newSource, newDest, proxySocket);
+    }
 }

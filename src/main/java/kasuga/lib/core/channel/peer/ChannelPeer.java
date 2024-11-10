@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ChannelPeer {
+public class ChannelPeer implements ChannelReciever {
     Label address;
     private ChannelReciever distributor;
 
