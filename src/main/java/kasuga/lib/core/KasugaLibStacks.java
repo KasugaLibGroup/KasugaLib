@@ -87,6 +87,7 @@ public class KasugaLibStacks {
 
             MinecraftForge.EVENT_BUS.addListener(PlayLogEvent::playerLogout);
             MinecraftForge.EVENT_BUS.addListener(PlayLogEvent::playerLogin);
+            MinecraftForge.EVENT_BUS.addListener(ClientConnection::onClientDisconnect);
 
             bus.addListener(ModelRegistryEvent::registerAdditionalModels);
             bus.addListener(ModelRegistryEvent::registerStaticImages);

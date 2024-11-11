@@ -63,4 +63,12 @@ public class NetworkDuplexer {
     public void onExistedConnectionEstablished(long networkId, NetworkChannelSocket socket) {
         sockets.put(networkId, socket);
     }
+
+    public void close(){
+        for(Channel channel : channels.values()){
+            channel.close();
+        }
+        channels.clear();
+        sockets.clear();
+    }
 }

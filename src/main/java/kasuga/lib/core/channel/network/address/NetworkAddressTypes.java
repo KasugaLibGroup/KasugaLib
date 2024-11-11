@@ -17,7 +17,7 @@ public class NetworkAddressTypes {
     );
 
 
-    public static final NetworkSeriaizableType<PlainStringAddress> PLAIN_STRING = KasugaLib.STACKS.CHANNEL.labelTypeRegistry.register(
+    public static final LabelType<PlainStringAddress> PLAIN_STRING = KasugaLib.STACKS.CHANNEL.labelTypeRegistry.register(
             KasugaLibStacks.REGISTRY.asResource("string"),
             new LabelType<PlainStringAddress>(PlainStringAddress::new)
     );

@@ -2,20 +2,27 @@ package kasuga.lib.core.channel.test;
 
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.commands.CommandHandler;
+import kasuga.lib.core.channel.NetworkSwitcher;
 import kasuga.lib.core.channel.address.ConnectionInfo;
 import kasuga.lib.core.channel.address.FeatureChannelPort;
 import kasuga.lib.core.channel.network.address.MinecraftServerAddress;
+import kasuga.lib.core.channel.network.address.NetworkAddressTypes;
 import kasuga.lib.core.channel.network.address.PlainStringAddress;
 import kasuga.lib.core.channel.peer.*;
 import kasuga.lib.registrations.common.CommandReg;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import kasuga.lib.core.channel.route.*;
+import kasuga.lib.core.channel.address.LabelType;
 
 public class ChannelTest {
     public static void runAtClient(){
         ChannelPeer clientPeer = new ChannelPeer(PlainStringAddress.of("client"));
-        KasugaLib.STACKS.CHANNEL.CLIENT_SWITCHER.addPeer(clientPeer);
+        SimpleRouter clientRouter = new SimpleRouter();
+        clientRouter.setDefaultReciever(KasugaLib.STACKS.CHANNEL.CLIENT_ROUTER);
+        clientPeer.setDistributor(clientRouter);
+
         ChannelSocket channel = clientPeer.createSocket(
                 ConnectionInfo.of(
                         FeatureChannelPort.of(new ResourceLocation("kasuga_lib", "test")),
@@ -32,7 +39,6 @@ public class ChannelTest {
                     @Override
                     public void onChannelMessage(ChannelHandle channel, CompoundTag payload) {
                         System.out.println("[Client] Channel Message Recieved");
-                        channel.close();
                     }
 
                     @Override
@@ -74,7 +80,16 @@ public class ChannelTest {
                 return true;
             }
         };
-        KasugaLib.STACKS.CHANNEL.SERVER_SWITCHER.addPeer(serverPeer);
+        NetworkSwitcher switcher = new NetworkSwitcher();
+
+        switcher.addPeer(serverPeer);
+
+        KasugaLib.STACKS.CHANNEL.SERVER_ROUTER.addRule(
+                TargetLabelMatchRule.create(
+                        NetworkAddressTypes.PLAIN_STRING,
+                        ForwardRouteTarget.create(switcher)
+                )
+        );
     }
 
     public static final CommandReg NET_CLIENT = new CommandReg("kasugalib")

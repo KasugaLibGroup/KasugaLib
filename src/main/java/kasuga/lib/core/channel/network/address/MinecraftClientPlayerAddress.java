@@ -6,12 +6,16 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
 public class MinecraftClientPlayerAddress extends Label {
+    private ServerPlayer player;
+
     public MinecraftClientPlayerAddress(ServerPlayer player){
         this();
+        this.player = player;
     }
 
     public MinecraftClientPlayerAddress(FriendlyByteBuf byteBuf) {
         this();
+        throw new UnsupportedOperationException();
     }
 
     public MinecraftClientPlayerAddress() {
@@ -19,5 +23,11 @@ public class MinecraftClientPlayerAddress extends Label {
     }
 
     @Override
-    public void write(FriendlyByteBuf byteBuf) {}
+    public void write(FriendlyByteBuf byteBuf) {
+        throw new UnsupportedOperationException();
+    }
+
+    public ServerPlayer getPlayer() {
+        return player;
+    }
 }

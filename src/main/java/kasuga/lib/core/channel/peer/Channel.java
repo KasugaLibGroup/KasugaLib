@@ -10,6 +10,8 @@ import java.util.List;
 public class Channel {
     private final ConnectionInfo clientAddress;
     private final ConnectionInfo serverAddress;
+    private ConnectionInfo proxySource;
+    private ConnectionInfo proxyDest;
     private final ChannelSocket client;
     private final List<ChannelCloseListener> closeListeners = new ArrayList<>();
     private ChannelSocket server;
@@ -67,10 +69,16 @@ public class Channel {
     }
 
     public ConnectionInfo source(){
+        if(proxySource != null){
+            return proxySource;
+        }
         return clientAddress;
     }
 
     public ConnectionInfo destination(){
+        if(proxyDest != null){
+            return proxyDest;
+        }
         return serverAddress;
     }
 
@@ -83,33 +91,8 @@ public class Channel {
     }
 
     public Channel proxy(ConnectionInfo newSource, ConnectionInfo newDest) {
-        // 创建代理 socket
-        ChannelSocket proxySocket = new ChannelSocket() {
-            private Channel channel;
-            
-            @Override
-            public void onMessage(CompoundTag message) {
-                Channel.this.sendMessage(Channel.this.server == this, message);
-            }
-            
-            @Override
-            public void onEstablished() {
-                if (Channel.this.isEstablished()) {
-                    channel.establish(this);
-                }
-            }
-            
-            @Override
-            public void onClose() {
-                Channel.this.close();
-            }
-            
-            @Override
-            public void setChannel(Channel channel) {
-                this.channel = channel;
-            }
-        };
-        
-        return new Channel(newSource, newDest, proxySocket);
+        proxySource = newSource;
+        proxyDest = newDest;
+        return this;
     }
 }

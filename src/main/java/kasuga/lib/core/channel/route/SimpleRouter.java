@@ -6,13 +6,22 @@ import kasuga.lib.core.channel.peer.ChannelPeer;
 import kasuga.lib.core.channel.peer.ChannelReciever;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 public class SimpleRouter extends RouteRuleManager implements ChannelReciever {
     HashMap<Label, ChannelReciever> directPeers = new HashMap<>();
+    private ChannelReciever defaultReciever;
+    private final Set<Channel> activeChannels = new HashSet<>();
 
     @Override
     public void $onConnect(Channel channel) {
+        activeChannels.add(channel);
+        channel.addOnCloseListener((c) -> {
+            activeChannels.remove(channel);
+        });
+        
         Label next = channel.destination().address();
         if(directPeers.containsKey(next)){
             directPeers.get(next).$onConnect(channel);
@@ -26,6 +35,11 @@ public class SimpleRouter extends RouteRuleManager implements ChannelReciever {
                 return;
             }
         }
+
+        if(defaultReciever != null){
+            defaultReciever.$onConnect(channel);
+            return;
+        }
         
         channel.close();
     }
@@ -37,5 +51,35 @@ public class SimpleRouter extends RouteRuleManager implements ChannelReciever {
 
     public void detach(ChannelPeer peer){
         directPeers.remove(peer.getAddress());
+        peer.setDistributor(null);
+    }
+
+    public void setDefaultReciever(ChannelReciever reciever) {
+        this.defaultReciever = reciever;
+    }
+
+    public void addPeer(ChannelPeer clientPeer) {
+        directPeers.put(clientPeer.getAddress(), clientPeer);
+        clientPeer.setDistributor(this);
+    }
+
+    public void removePeer(ChannelPeer clientPeer) {
+        directPeers.remove(clientPeer.getAddress());
+        clientPeer.setDistributor(null);
+    }
+
+    public void close() {
+        for (Channel channel : activeChannels) {
+            channel.close();
+        }
+        activeChannels.clear();
+
+        for (ChannelReciever peer : directPeers.values()) {
+            if (peer instanceof ChannelPeer) {
+                ((ChannelPeer) peer).close();
+            }
+        }
+        directPeers.clear();
+        defaultReciever = null;
     }
 }

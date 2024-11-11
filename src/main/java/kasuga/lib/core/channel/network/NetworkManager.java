@@ -9,20 +9,28 @@ import kasuga.lib.core.channel.packets.C2SChannelStateChangePacket;
 import kasuga.lib.core.channel.peer.Channel;
 import kasuga.lib.core.channel.peer.ChannelReciever;
 import kasuga.lib.core.channel.peer.ChannelStatus;
+import kasuga.lib.core.channel.route.SimpleRouter;
 import net.minecraft.nbt.CompoundTag;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class NetworkManager implements ChannelReciever {
     NetworkDuplexer reciever = new NetworkDuplexer();
     NetworkDuplexer sender = new NetworkDuplexer();
     ChannelReciever _interface;
 
-    public NetworkManager(NetworkSwitcher reciever) {
+    public NetworkManager(SimpleRouter reciever) {
         this._interface = reciever;
         registerReciever(reciever);
     }
 
-    protected void registerReciever(NetworkSwitcher reciever){
-        reciever.defaultReciever = this;
+    protected void registerReciever(SimpleRouter reciever){
+        reciever.setDefaultReciever(this);
+    }
+
+    protected void unregisterReciever(SimpleRouter reciever){
+        reciever.setDefaultReciever(null);
     }
 
     @Override
@@ -107,5 +115,10 @@ public class NetworkManager implements ChannelReciever {
         KasugaLib.STACKS.CHANNEL.packet.channelReg.sendToServer(
                 new C2SChannelStateChangePacket(networkId, state, isOwn)
         );
+    }
+
+    public void close(){
+        reciever.close();
+        sender.close();
     }
 }
