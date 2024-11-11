@@ -12,10 +12,12 @@ import kasuga.lib.core.channel.packets.ChannelNetworkPacket;
 import kasuga.lib.core.channel.test.ChannelTest;
 import kasuga.lib.core.client.animation.Constants;
 import kasuga.lib.core.client.frontend.gui.GuiEngine;
+import kasuga.lib.core.create.graph.RailwayManager;
 import kasuga.lib.core.events.both.BothSetupEvent;
 import kasuga.lib.core.events.both.EntityAttributeEvent;
 import kasuga.lib.core.events.client.*;
 import kasuga.lib.core.events.server.ServerConnectionListeners;
+import kasuga.lib.core.events.server.ServerLevelEvents;
 import kasuga.lib.core.events.server.ServerResourceListener;
 import kasuga.lib.core.events.server.ServerStartingEvents;
 import kasuga.lib.core.client.render.texture.old.SimpleTexture;
@@ -64,6 +66,8 @@ public class KasugaLibStacks {
     public static final ChannelNetworkManager CHANNEL = new ChannelNetworkManager();
     public static HashSet<Minecraft> mcs = new HashSet<>();
 
+    public final RailwayManager RAILWAY = new RailwayManager();
+
     public KasugaLibStacks(IEventBus bus) {
         this.bus = bus;
         this.registries = new HashMap<>();
@@ -80,6 +84,10 @@ public class KasugaLibStacks {
         MinecraftForge.EVENT_BUS.addListener(PacketEvent::onServerPayloadHandleEvent);
         bus.addListener(BothSetupEvent::onFMLCommonSetup);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
+
+        MinecraftForge.EVENT_BUS.addListener(ServerLevelEvents::onLevelLoad);
+        MinecraftForge.EVENT_BUS.addListener(ServerLevelEvents::onLevelSave);
+        MinecraftForge.EVENT_BUS.addListener(ServerLevelEvents::onLevelExit);
 
 
         if(Envs.isClient()) {
