@@ -47,4 +47,8 @@ public class ChannelPeerSocketServer implements ChannelSocket, ChannelHandle {
     public void setHandler(ChannelHandler handler) {
         this.handler = handler;
     }
+
+    public Channel getChannel() {
+        return channel;
+    }
 }

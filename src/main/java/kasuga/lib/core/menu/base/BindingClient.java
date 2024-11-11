@@ -1,12 +1,11 @@
-package kasuga.lib.core.menu;
+package kasuga.lib.core.menu.base;
 
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.common.event.Event;
 import kasuga.lib.core.client.frontend.gui.GuiInstance;
+import kasuga.lib.core.menu.api.GuiMenuOperateProxy;
 import kasuga.lib.core.util.Envs;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -34,8 +33,9 @@ public class BindingClient {
         bindings.put(binding, executor);
     }
 
-    public static void createInstance(UUID id, ResourceLocation location){
-        KasugaLib.STACKS.GUI.orElseThrow().create(id, location);
+    public static void createInstance(GuiMenu guiMenu, UUID id, ResourceLocation location){
+        GuiInstance instance = KasugaLib.STACKS.GUI.orElseThrow().create(id, location);
+        instance.putContextObject("menu", GuiMenuOperateProxy.wrap(guiMenu));
     }
 
     public static void dispatchGuiEvent(UUID id, Event event){
@@ -45,4 +45,11 @@ public class BindingClient {
             });
         });
     }
+
+    public static void closeInstance(UUID id){
+        KasugaLib.STACKS.GUI.orElseThrow().getInstanceById(id).ifPresent((instance)->{
+            instance.close(id);
+        });
+    }
+
 }

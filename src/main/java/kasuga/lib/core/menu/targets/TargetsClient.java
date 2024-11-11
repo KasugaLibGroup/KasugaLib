@@ -1,7 +1,6 @@
 package kasuga.lib.core.menu.targets;
 
-import kasuga.lib.core.menu.BindingClient;
-import kasuga.lib.core.menu.GuiBinding;
+import kasuga.lib.core.menu.base.BindingClient;
 
 public class TargetsClient {
     public static void reigster(){

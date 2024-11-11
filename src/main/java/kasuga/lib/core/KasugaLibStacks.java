@@ -5,7 +5,6 @@ import kasuga.lib.core.base.CustomBlockRenderer;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgumentInfo;
 import kasuga.lib.core.channel.ChannelNetworkManager;
-import kasuga.lib.core.channel.network.NetworkManager;
 import kasuga.lib.core.channel.network.address.NetworkAddressTypes;
 import kasuga.lib.core.channel.packets.ChannelNetworkPacket;
 import kasuga.lib.core.channel.test.ChannelTest;
@@ -19,6 +18,8 @@ import kasuga.lib.core.events.server.ServerResourceListener;
 import kasuga.lib.core.events.server.ServerStartingEvents;
 import kasuga.lib.core.client.render.texture.old.SimpleTexture;
 import kasuga.lib.core.javascript.JavascriptApi;
+import kasuga.lib.core.menu.GuiMenuManager;
+import kasuga.lib.core.menu.base.GuiMenuRegistry;
 import kasuga.lib.core.menu.targets.TargetsClient;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.registrations.client.KeyBindingReg;
@@ -56,8 +57,11 @@ public class KasugaLibStacks {
     public final JavascriptApi JAVASCRIPT = new JavascriptApi();
 
     public Optional<GuiEngine> GUI = Optional.empty();
+
+    public GuiMenuManager MENU_MANAGER = new GuiMenuManager();
+
     public static final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
-    public static final ChannelNetworkManager CHANNEL = new ChannelNetworkManager();
+    public final ChannelNetworkManager CHANNEL = new ChannelNetworkManager();
     public static HashSet<Minecraft> mcs = new HashSet<>();
 
     public KasugaLibStacks(IEventBus bus) {

@@ -30,4 +30,9 @@ public class NetworkSwitcher implements ChannelReciever {
         direct_peers.put(peer.getAddress(), peer);
         peer.setDistributor(this);
     }
+
+    public void removePeer(ChannelPeer peer) {
+        direct_peers.remove(peer.getAddress());
+        peer.setDistributor(null);
+    }
 }

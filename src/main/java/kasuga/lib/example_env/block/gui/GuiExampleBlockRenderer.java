@@ -2,8 +2,6 @@ package kasuga.lib.example_env.block.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
-import kasuga.lib.core.menu.GuiBinding;
-import kasuga.lib.core.menu.GuiBindingTarget;
 import kasuga.lib.core.menu.targets.Target;
 import kasuga.lib.core.menu.targets.WorldRendererTarget;
 import net.minecraft.client.renderer.LightTexture;

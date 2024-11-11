@@ -2,7 +2,7 @@ package kasuga.lib.core.menu.targets;
 
 import kasuga.lib.core.client.frontend.gui.GuiInstance;
 import kasuga.lib.core.client.frontend.gui.GuiScreen;
-import kasuga.lib.core.menu.GuiMenu;
+import kasuga.lib.core.menu.base.GuiMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 

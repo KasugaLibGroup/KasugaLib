@@ -1,21 +1,16 @@
 package kasuga.lib.example_env.block.gui;
 
-import kasuga.lib.core.menu.GuiBinding;
-import kasuga.lib.core.menu.GuiMenu;
-import kasuga.lib.core.menu.GuiMenuUtils;
-import kasuga.lib.core.menu.JavascriptGuiMenu;
-import kasuga.lib.core.menu.targets.Target;
+import kasuga.lib.core.menu.base.GuiBinding;
+import kasuga.lib.core.menu.api.GuiMenuUtils;
+import kasuga.lib.core.menu.base.GuiMenu;
 import kasuga.lib.core.menu.targets.WorldRendererTarget;
 import kasuga.lib.example_env.AllExampleElements;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
@@ -23,42 +18,25 @@ import net.minecraftforge.fml.DistExecutor;
 import java.util.UUID;
 
 public class GuiExampleBlockEntity extends BlockEntity{
-    JavascriptGuiMenu menuEntry;
+    GuiMenu menuEntry;
     UUID serverId;
     public GuiExampleBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(AllExampleElements.guiExampleTile.getType(), pPos, pBlockState);
-        menuEntry = new JavascriptGuiMenu((uuid)->GuiBinding.create(uuid).execute(new ResourceLocation("kasuga_lib","example")));
+        menuEntry = AllExampleElements.MENU_EXAMPLE.create();
     }
 
     @Override
     public void setLevel(Level pLevel) {
         super.setLevel(pLevel);
-        initMenu(pLevel);
-    }
-
-    private void initMenu(Level pLevel) {
-        if(pLevel.isClientSide){
-            menuEntry.createGuiInstance();
-            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()->()-> WorldRendererTarget.attach(menuEntry));
-            if(!menuEntry.hasRemote() && serverId != null){
-                menuEntry.createConnection(serverId);
-            }
+        if(pLevel instanceof ServerLevel serverLevel){
+            menuEntry.asServer();
         }
-
-        menuEntry.listen(pLevel.isClientSide);
-    }
-
-    private void disposeMenu(){
-        if(level.isClientSide())
-            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()->()-> WorldRendererTarget.detach(menuEntry));
-        menuEntry.close();
-        menuEntry.unlisten(level.isClientSide);
     }
 
     @Override
     public CompoundTag getUpdateTag() {
         CompoundTag tag = super.getUpdateTag();
-        tag.putUUID("KasugaMenuEntryId", menuEntry.getID());
+        tag.putUUID("KasugaMenuEntryId", menuEntry.asServer());
         return tag;
     }
 
@@ -67,7 +45,11 @@ public class GuiExampleBlockEntity extends BlockEntity{
         super.handleUpdateTag(tag);
         if(tag.hasUUID("KasugaMenuEntryId")) {
             serverId = tag.getUUID("KasugaMenuEntryId");
-            menuEntry.createConnection(serverId);
+            if(this.menuEntry != null){
+                this.menuEntry.close();
+            }
+            this.menuEntry = AllExampleElements.MENU_EXAMPLE.create();
+            this.menuEntry.asClient(serverId);
         }
     }
 
@@ -76,7 +58,7 @@ public class GuiExampleBlockEntity extends BlockEntity{
     public void incrementData(){
         CompoundTag syncData = new CompoundTag();
         syncData.putInt("click", ++clickCount);
-        menuEntry.send(syncData);
+        menuEntry.broadcast(syncData);
     }
 
     public void openScreen(){
@@ -86,7 +68,7 @@ public class GuiExampleBlockEntity extends BlockEntity{
     @Override
     public void setRemoved() {
         super.setRemoved();
-        disposeMenu();
+        menuEntry.close();
     }
 
     public int i=0;
