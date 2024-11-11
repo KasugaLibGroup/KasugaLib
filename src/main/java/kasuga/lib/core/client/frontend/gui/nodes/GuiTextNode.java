@@ -58,10 +58,8 @@ public class GuiTextNode extends GuiDomNode implements MayMeasurable {
     }
 
     @Override
-    public void render(Object source, RenderContext context) {
-        super.render(source, context);
-        if(!this.getLayoutManager().hasSource(source))
-            return;
+    public float renderNode(Object source, RenderContext context) {
+        super.renderNode(source, context);
         LayoutNode layout = getLayoutManager().getSourceNode(source);
         LayoutBox box = layout.getPosition();
         // FontHelper.draw(Minecraft.getInstance().font, context.pose(), new Vec2(box.x,box.y), fontSize.get(),content,0xff000000);
@@ -91,6 +89,7 @@ public class GuiTextNode extends GuiDomNode implements MayMeasurable {
                 // this.context.renderToWorld(context.pose());
             }
         }
+        return 0.003f;
     }
 
     private void initContext(LayoutBox box, int initalScale) {
