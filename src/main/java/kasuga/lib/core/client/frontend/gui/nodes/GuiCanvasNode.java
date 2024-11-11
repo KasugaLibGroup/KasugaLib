@@ -21,9 +21,9 @@ public class GuiCanvasNode extends GuiDomNode{
     }
 
     @Override
-    public void render(Object source, RenderContext context) {
+    public float renderNode(Object source, RenderContext context) {
         if(!this.getLayoutManager().hasSource(source))
-            return;
+            return 0;
 
         LayoutNode layout = this.getLayoutManager().getSourceNode(source);
         LayoutBox positionBox = layout.getPosition();
@@ -46,9 +46,10 @@ public class GuiCanvasNode extends GuiDomNode{
             );
         }
 
-        super.render(source, context);
+        super.renderNode(source, context);
 
         renderer.renderToScreen(positionBox.x, positionBox.y, positionBox.width, positionBox.height);
+        return 0.003f;
     }
 
     @Override
