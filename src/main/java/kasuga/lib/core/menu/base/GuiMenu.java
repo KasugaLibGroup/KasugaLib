@@ -7,6 +7,7 @@ import kasuga.lib.core.channel.network.address.MinecraftServerAddress;
 import kasuga.lib.core.channel.peer.*;
 import kasuga.lib.core.client.frontend.common.event.MessageEvent;
 import kasuga.lib.core.menu.network.GuiClientMenuAddress;
+import kasuga.lib.core.menu.network.GuiMenuNetworking;
 import kasuga.lib.core.menu.network.GuiServerMenuAddress;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,17 +28,24 @@ public class GuiMenu {
     protected boolean isServer = false;
     private ConnectionInfo remoteInfo;
     private boolean isGuiInstanceCreated = false;
+    private UUID serverId;
+    private boolean connectionFailure = false;
 
-    protected GuiMenu(GuiMenuType<?> type, GuiBinding binding){
+    protected GuiMenu(GuiMenuType<?> type) {
         this.id = UUID.randomUUID();
         this.type = type;
-        this.binding = binding;
+        this.binding = createBinding(this.id);
+    }
+
+    protected GuiBinding createBinding(UUID id) {
+        return new GuiBinding(id);
     }
 
     protected void createGuiInstance(){
         if(isGuiInstanceCreated){
             return;
         }
+        System.out.println("[Notice] GUI Instance Created");
         isGuiInstanceCreated = true;
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
                 ()->()-> BindingClient.createInstance(this,this.id,binding.sourceCodeLocation)
@@ -48,6 +56,7 @@ public class GuiMenu {
         if(!isGuiInstanceCreated){
             return;
         }
+        System.out.println("[Notice] GUI Instance Closed");
         isGuiInstanceCreated = false;
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()->()->BindingClient.closeInstance(this.id));
     }
@@ -67,6 +76,7 @@ public class GuiMenu {
                 (channelPeerSocketServer) -> this.createServerHandler(channelPeerSocketServer.getChannel())
             );
         this.peer = peer;
+        GuiMenuNetworking.getServerSwitcher().addPeer(peer);
         return id;
     }
 
@@ -82,6 +92,8 @@ public class GuiMenu {
             GuiServerMenuAddress.of(serverId),
             MinecraftServerAddress.INSTANCE.get()
         );
+        this.serverId = serverId;
+        GuiMenuNetworking.getClientSwitcher().addPeer(peer);
         this.peer.createSocket(remoteInfo, this.createClientHandler());
     }
 
@@ -101,12 +113,14 @@ public class GuiMenu {
         return new ChannelHandler() {
             @Override
             public void onChannelEstabilished(ChannelHandle channel) {
+                connectionFailure = false;
                 setChannelHandle(channel);
                 createGuiInstance();
             }
 
             @Override
             public void onChannelClose(ChannelHandle channel) {
+                connectionFailure = true;
                 if(isGuiInstanceCreated){
                     closeGuiInstance();
                 }
@@ -166,7 +180,9 @@ public class GuiMenu {
                     handle.close();
                 }
             }else{
-                handle.close();
+                if(handle != null){
+                    handle.close();
+                }
             }
         }
     }
@@ -178,12 +194,36 @@ public class GuiMenu {
                     handle.sendMessage(message);
                 }
             }else{
-                handle.sendMessage(message);
+                if(handle != null){
+                    handle.sendMessage(message);
+                }
             }
         }
     }
 
     public GuiBinding getBinding() {
         return binding;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public UUID getServerId() {
+        return serverId;
+    }
+
+
+    int reconnection = 0;
+    public void tick(){
+        if(isDifferentiated && !isServer){
+            if(connectionFailure){
+                if(reconnection > 0){
+                    reconnection--;
+                    connectionFailure = false;
+                    peer.createSocket(remoteInfo, this.createClientHandler());
+                }
+            }
+        }
     }
 }

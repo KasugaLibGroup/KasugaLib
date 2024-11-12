@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
@@ -28,8 +29,9 @@ public class GuiExampleBlockEntity extends BlockEntity{
     @Override
     public void setLevel(Level pLevel) {
         super.setLevel(pLevel);
-        if(pLevel instanceof ServerLevel serverLevel){
+        if(pLevel != null && pLevel instanceof ServerLevel serverLevel){
             menuEntry.asServer();
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     }
 
@@ -45,6 +47,8 @@ public class GuiExampleBlockEntity extends BlockEntity{
         super.handleUpdateTag(tag);
         if(tag.hasUUID("KasugaMenuEntryId")) {
             serverId = tag.getUUID("KasugaMenuEntryId");
+            if(serverId == this.menuEntry.getServerId())
+                return;
             if(this.menuEntry != null){
                 this.menuEntry.close();
             }
@@ -75,6 +79,8 @@ public class GuiExampleBlockEntity extends BlockEntity{
 
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, BlockEntity block) {
         GuiExampleBlockEntity entity = (GuiExampleBlockEntity)level.getBlockEntity(blockPos);
-        entity.incrementData();
+        if(level instanceof ServerLevel serverLevel){
+            entity.incrementData();
+        }
     }
 }

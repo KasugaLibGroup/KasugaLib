@@ -4,6 +4,7 @@ import kasuga.lib.core.channel.address.Label;
 import kasuga.lib.core.channel.address.LabelType;
 import net.minecraft.network.FriendlyByteBuf;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class GuiServerMenuAddress extends Label {
@@ -32,4 +33,17 @@ public class GuiServerMenuAddress extends Label {
     public LabelType<?> getType() {
         return MenuAddressTypes.SERVER;
     }
-} 
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        GuiServerMenuAddress that = (GuiServerMenuAddress) object;
+        return Objects.equals(menuId, that.menuId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(menuId);
+    }
+}

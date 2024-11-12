@@ -1,6 +1,7 @@
 package kasuga.lib.example_env;
 
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.menu.base.GuiBinding;
 import kasuga.lib.core.menu.base.GuiMenu;
 import kasuga.lib.core.menu.base.GuiMenuRegistry;
 import kasuga.lib.core.menu.base.GuiMenuType;
@@ -140,10 +141,7 @@ public class AllExampleElements {
             .submit(REGISTRY);
 
 
-    public static final GuiMenuType<GuiExampleMenu> MENU_EXAMPLE = new GuiMenuType<>(
-            GuiExampleMenu::new,
-            ()->null
-    );
+    public static final GuiMenuType<GuiExampleMenu> MENU_EXAMPLE = GuiMenuType.createType(GuiExampleMenu::new);
 
 
     /*

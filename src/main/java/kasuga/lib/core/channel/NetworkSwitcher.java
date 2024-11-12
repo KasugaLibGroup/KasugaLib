@@ -5,6 +5,7 @@ import kasuga.lib.core.channel.network.NetworkManager;
 import kasuga.lib.core.channel.peer.Channel;
 import kasuga.lib.core.channel.peer.ChannelPeer;
 import kasuga.lib.core.channel.peer.ChannelReciever;
+import kasuga.lib.core.channel.route.SimpleRouter;
 
 import java.util.HashMap;
 
@@ -34,5 +35,9 @@ public class NetworkSwitcher implements ChannelReciever {
     public void removePeer(ChannelPeer peer) {
         direct_peers.remove(peer.getAddress());
         peer.setDistributor(null);
+    }
+
+    public void setDefaultReciever(ChannelReciever reciever) {
+        this.defaultReciever = reciever;
     }
 }

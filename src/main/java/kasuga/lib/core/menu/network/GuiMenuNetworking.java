@@ -34,11 +34,14 @@ public class GuiMenuNetworking {
             )
         );
 
+        clientSwitcher.setDefaultReciever(KasugaLib.STACKS.CHANNEL.CLIENT_ROUTER);
+
         KasugaLib.STACKS.CHANNEL.SERVER_ROUTER.addRule(
             TargetLabelMatchRule.create(
                 MenuAddressTypes.SERVER,
                 ForwardRouteTarget.create(serverSwitcher)
             )
         );
+        serverSwitcher.setDefaultReciever(KasugaLib.STACKS.CHANNEL.SERVER_ROUTER);
     }
 }

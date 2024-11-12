@@ -1,35 +1,28 @@
 package kasuga.lib.core.menu.base;
 
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class GuiMenuType<T extends GuiMenu> {
-    private Function<GuiBinding, T> factory;
-    private final Supplier<GuiBinding> bindingSupplier;
+    private Function<GuiMenuType<?>, T> factory;
 
-    public GuiMenuType(Function<GuiBinding, T> factory, Supplier<GuiBinding> bindingSupplier) {
+    public GuiMenuType(Function<GuiMenuType<?>, T> factory) {
         this.factory = factory;
-        this.bindingSupplier = bindingSupplier;
     }
 
     public T create() {
-        return factory.apply(bindingSupplier.get());
+        return factory.apply(this);
     }
 
-    protected static <T extends GuiMenu> GuiMenuType<T> createType(
-            Function<GuiBinding, T> factory,
-            Supplier<GuiBinding> bindingSupplier
+    public static <T extends GuiMenu> GuiMenuType<T> createType(
+            Function<GuiMenuType<?>, T> factory
     ) {
-        return new GuiMenuType<>(factory, bindingSupplier);
+        return new GuiMenuType<>(factory);
     }
 
-    protected static <T extends GuiMenu> GuiMenuType<T> createType(
-            BiFunction<GuiMenuType<T>, GuiBinding, T> factory,
-            Supplier<GuiBinding> bindingSupplier
+    public static <T extends GuiMenu> GuiMenuType<T> createType(
+            Supplier<T> factory
     ) {
-        GuiMenuType<T> type = new GuiMenuType<>(null, bindingSupplier);
-        type.factory = binding -> factory.apply(type, binding);
-        return type;
+        return new GuiMenuType<>((t)->factory.get());
     }
 }

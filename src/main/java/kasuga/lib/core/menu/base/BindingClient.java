@@ -19,7 +19,9 @@ public class BindingClient {
             if(instance.isPresent()){
                 return BindingClient.getBindingTarget(binding).apply(instance.get());
             }
+            System.out.println("[Warning] Screen is Null");
         }
+        System.out.println("[Warning] Return value is null");
         return null;
     }
 
@@ -48,8 +50,9 @@ public class BindingClient {
 
     public static void closeInstance(UUID id){
         KasugaLib.STACKS.GUI.orElseThrow().getInstanceById(id).ifPresent((instance)->{
-            instance.close(id);
+            KasugaLib.STACKS.GUI.orElseThrow().closeInstance(instance);
         });
+
     }
 
 }
