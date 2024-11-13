@@ -91,4 +91,16 @@ public abstract class DomContext<P extends DomNode<?>,T extends P> implements Ti
     public void dispatchEvent(String eventName,Object event){
         emitter.dispatchEvent(eventName,event);
     }
+
+    @HostAccess.Export
+    public JavascriptValue getContextModule(String contextModuleName){
+        return
+                renderer.getContext().orElseThrow()
+                        .getRuntimeContext()
+                        .asValue(getContextModuleNative(contextModuleName));
+    }
+
+    public Object getContextModuleNative(String contextModuleName){
+        return null;
+    }
 }

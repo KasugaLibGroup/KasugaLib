@@ -10,12 +10,9 @@ import kasuga.lib.core.client.frontend.gui.nodes.GuiDomNode;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomRoot;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
 import kasuga.lib.core.javascript.JavascriptContext;
-import kasuga.lib.core.javascript.JavascriptThread;
 import kasuga.lib.core.javascript.Tickable;
-import kasuga.lib.core.util.Callback;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantLock;
@@ -23,6 +20,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @V8Convert()
 public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tickable {
 
+    private final GuiInstance guiInstance;
     LayoutEngine<?,GuiDomNode> layoutEngine;
 
     GuiAttachTarget attachedTargets = new GuiAttachTarget();
@@ -30,9 +28,10 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
 
     public volatile boolean isRendering;
 
-    public GuiContext(DOMPriorityRegistry registry, ResourceLocation location) {
+    public GuiContext(GuiInstance guiInstance, DOMPriorityRegistry registry, ResourceLocation location) {
         super(registry, location);
         layoutEngine  = LayoutEngines.YOGA;
+        this.guiInstance = guiInstance;
     }
 
     @Override
@@ -131,5 +130,10 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
         }else{
             context.enqueueAfterRenderTask(task);
         }
+    }
+
+    @Override
+    public Object getContextModuleNative(String contextModuleName) {
+        return this.guiInstance.getModule(contextModuleName);
     }
 }

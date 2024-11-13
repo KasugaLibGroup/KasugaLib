@@ -1,4 +1,4 @@
-package kasuga.lib.core.menu;
+package kasuga.lib.core.menu.base;
 
 import kasuga.lib.core.menu.targets.Target;
 import net.minecraft.resources.ResourceLocation;
@@ -43,7 +43,7 @@ public class GuiBinding {
     public <U> U apply(GuiBindingTarget<U> binding){
         return DistExecutor.unsafeCallWhenOn(
                 Dist.CLIENT,
-                ()->()->BindingClient.applyBinding(binding, localUUID)
+                ()->()-> BindingClient.applyBinding(binding, localUUID)
         );
     }
 }

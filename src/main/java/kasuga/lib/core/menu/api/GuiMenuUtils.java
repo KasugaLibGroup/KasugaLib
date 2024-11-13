@@ -1,5 +1,6 @@
-package kasuga.lib.core.menu;
+package kasuga.lib.core.menu.api;
 
+import kasuga.lib.core.menu.base.GuiMenu;
 import kasuga.lib.core.menu.targets.ClientScreenTarget;
 import kasuga.lib.core.util.Envs;
 import net.minecraftforge.api.distmarker.Dist;

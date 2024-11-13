@@ -14,6 +14,10 @@ public class CompoundTagWrapper {
         this.tag = tag;
     }
 
+    public CompoundTagWrapper(){
+        this(new CompoundTag());
+    }
+
     @HostAccess.Export
     public String getType(String key) {
         return switch (tag.get(key).getId()) {
@@ -81,8 +85,8 @@ public class CompoundTagWrapper {
     }
 
     @HostAccess.Export
-    public CompoundTag getCompound(String key) {
-        return tag.getCompound(key);
+    public CompoundTagWrapper getCompound(String key) {
+        return new CompoundTagWrapper(tag.getCompound(key));
     }
 
     @HostAccess.Export
@@ -140,9 +144,13 @@ public class CompoundTagWrapper {
         tag.put(key, value);
     }
 
-    @HostAccess.Export
     public void putCompound(String key, CompoundTag value) {
         tag.put(key, value);
+    }
+
+    @HostAccess.Export
+    public void putCompound(String key, CompoundTagWrapper wrapper){
+        tag.put(key, wrapper.getNativeTag());
     }
 
     @HostAccess.Export
@@ -153,5 +161,9 @@ public class CompoundTagWrapper {
     @HostAccess.Export
     public void putLongArray(String key, long[] value) {
         tag.putLongArray(key, value);
+    }
+
+    public CompoundTag getNativeTag() {
+        return tag;
     }
 }
