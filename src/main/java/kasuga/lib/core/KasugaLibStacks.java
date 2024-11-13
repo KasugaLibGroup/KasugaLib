@@ -100,6 +100,7 @@ public class KasugaLibStacks {
             bus.addListener(TextureRegistryEvent::onModelRegistry);
             bus.addListener(ClientSetupEvent::onClientSetup);
             MinecraftForge.EVENT_BUS.addListener(RenderTickEvent::onRenderTick);
+            MinecraftForge.EVENT_BUS.addListener(InteractionFovEvent::onComputedFov);
             bus.addListener(GeometryEvent::registerGeometry);
             bus.addListener(GeometryEvent::registerReloadListener);
             bus.addListener(BothSetupEvent::RegisterKeyEvent);
