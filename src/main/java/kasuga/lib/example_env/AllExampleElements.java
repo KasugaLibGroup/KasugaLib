@@ -1,6 +1,10 @@
 package kasuga.lib.example_env;
 
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.menu.base.GuiBinding;
+import kasuga.lib.core.menu.base.GuiMenu;
+import kasuga.lib.core.menu.base.GuiMenuRegistry;
+import kasuga.lib.core.menu.base.GuiMenuType;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.example_env.block.green_apple.GreenAppleBlock;
 import kasuga.lib.example_env.block.green_apple.GreenAppleItem;
@@ -8,6 +12,7 @@ import kasuga.lib.example_env.block.green_apple.GreenAppleTile;
 import kasuga.lib.example_env.block.gui.GuiExampleBlock;
 import kasuga.lib.example_env.block.gui.GuiExampleBlockEntity;
 import kasuga.lib.example_env.block.gui.GuiExampleBlockRenderer;
+import kasuga.lib.example_env.block.gui.GuiExampleMenu;
 import kasuga.lib.example_env.client.block_entity.renderer.GreenAppleTileRenderer;
 import kasuga.lib.example_env.client.screens.GreenAppleMenu;
 import kasuga.lib.example_env.client.screens.GreenAppleScreen;
@@ -20,6 +25,7 @@ import kasuga.lib.registrations.client.KeyBindingReg;
 import kasuga.lib.registrations.client.ModelReg;
 import kasuga.lib.registrations.common.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
@@ -138,6 +144,8 @@ public class AllExampleElements {
             .loadPacket(ExampleS2CPacket.class, ExampleS2CPacket::new)
             .submit(testRegistry);
 
+
+    public static final GuiMenuType<GuiExampleMenu> MENU_EXAMPLE = GuiMenuType.createType(GuiExampleMenu::new);
 
 
     /*

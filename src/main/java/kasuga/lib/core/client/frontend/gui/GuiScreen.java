@@ -74,4 +74,9 @@ public class GuiScreen extends Screen {
         });
         return true;
     }
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
+    }
 }

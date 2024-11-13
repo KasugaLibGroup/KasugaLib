@@ -1,6 +1,6 @@
 package kasuga.lib.core.menu.targets;
 
-import kasuga.lib.core.menu.GuiBindingTarget;
+import kasuga.lib.core.menu.base.GuiBindingTarget;
 import net.minecraft.resources.ResourceLocation;
 
 public class Target<U> implements GuiBindingTarget<U> {

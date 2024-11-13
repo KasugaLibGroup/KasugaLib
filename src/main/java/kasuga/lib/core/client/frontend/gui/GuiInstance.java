@@ -19,6 +19,8 @@ public class GuiInstance {
 
     public Map<Object, SourceInfo> sourceInfos = new HashMap<>();
 
+    public Map<String, Object> contextObject = new HashMap<>();
+
     public GuiInstance(ResourceLocation location){
         this.location = location;
     }
@@ -80,7 +82,7 @@ public class GuiInstance {
 
     public void openInternal(Object target){
         if(this.context == null){
-            this.context = new GuiContext(KasugaLib.STACKS.GUI.orElseThrow(IllegalStateException::new).domRegistry, location);
+            this.context = new GuiContext(this, KasugaLib.STACKS.GUI.orElseThrow(IllegalStateException::new).domRegistry, location);
             this.sourceInfos.forEach((source, info)->{
                 this.context.setSourceInfo(source, info);
             });
@@ -140,5 +142,13 @@ public class GuiInstance {
         this.context.getRenderer().getContext().ifPresent((c)->{
             c.dispatchBeforeRenderTick();
         });
+    }
+
+    public Object getModule(String contextModuleName) {
+        return contextObject.get(contextModuleName);
+    }
+
+    public void putContextObject(String contextModuleName, Object object){
+        contextObject.put(contextModuleName, object);
     }
 }
