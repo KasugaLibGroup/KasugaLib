@@ -1,24 +1,23 @@
 package kasuga.lib.example_env.block.gui;
 
-import kasuga.lib.core.menu.base.GuiBinding;
+import kasuga.lib.core.menu.IBlockEntityMenuHolder;
 import kasuga.lib.core.menu.api.GuiMenuUtils;
 import kasuga.lib.core.menu.base.GuiMenu;
-import kasuga.lib.core.menu.targets.WorldRendererTarget;
+import kasuga.lib.core.menu.network.BlockEntityMenuIdSyncPacket;
+import kasuga.lib.core.packets.AllPackets;
 import kasuga.lib.example_env.AllExampleElements;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.util.UUID;
 
-public class GuiExampleBlockEntity extends BlockEntity{
+public class GuiExampleBlockEntity extends BlockEntity implements IBlockEntityMenuHolder {
     GuiMenu menuEntry;
     UUID serverId;
     public GuiExampleBlockEntity(BlockPos pPos, BlockState pBlockState) {
@@ -31,29 +30,42 @@ public class GuiExampleBlockEntity extends BlockEntity{
         super.setLevel(pLevel);
         if(pLevel != null && pLevel instanceof ServerLevel serverLevel){
             menuEntry.asServer();
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+            sendMenuIdUpdate();
+        }
+    }
+
+    public void sendMenuIdUpdate() {
+        if (level instanceof ServerLevel) {
+            UUID serverId = menuEntry.asServer();
+            BlockEntityMenuIdSyncPacket packet = new BlockEntityMenuIdSyncPacket(
+                serverId, 
+                worldPosition, 
+                level.dimension()
+            );
+            AllPackets.CHANNEL_REG.getChannel().send(
+                    PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)),
+                    packet
+            );
         }
     }
 
     @Override
     public CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
-        tag.putUUID("KasugaMenuEntryId", menuEntry.asServer());
-        return tag;
+        if (level instanceof ServerLevel) {
+            CompoundTag tag = super.getUpdateTag();
+            tag.putUUID("menuId", menuEntry.getServerId());
+            return tag;
+        } else {
+            return super.getUpdateTag();
+        }
     }
 
     @Override
     public void handleUpdateTag(CompoundTag tag) {
         super.handleUpdateTag(tag);
-        if(tag.hasUUID("KasugaMenuEntryId")) {
-            serverId = tag.getUUID("KasugaMenuEntryId");
-            if(serverId == this.menuEntry.getServerId())
-                return;
-            if(this.menuEntry != null){
-                this.menuEntry.close();
-            }
-            this.menuEntry = AllExampleElements.MENU_EXAMPLE.create();
-            this.menuEntry.asClient(serverId);
+        if(tag.hasUUID("menuId")){
+            serverId = tag.getUUID("menuId");
+            notifyMenuId(serverId);
         }
     }
 
@@ -82,5 +94,16 @@ public class GuiExampleBlockEntity extends BlockEntity{
         if(level instanceof ServerLevel serverLevel){
             entity.incrementData();
         }
+    }
+
+    @Override
+    public void notifyMenuId(UUID menuId) {
+        if(menuId.equals(this.menuEntry.getServerId()))
+            return;
+        if(this.menuEntry != null){
+            this.menuEntry.close();
+        }
+        this.menuEntry = AllExampleElements.MENU_EXAMPLE.create();
+        this.menuEntry.asClient(menuId);
     }
 }
