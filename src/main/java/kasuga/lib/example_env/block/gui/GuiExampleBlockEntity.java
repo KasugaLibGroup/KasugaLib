@@ -30,7 +30,6 @@ public class GuiExampleBlockEntity extends BlockEntity implements IBlockEntityMe
         super.setLevel(pLevel);
         if(pLevel != null && pLevel instanceof ServerLevel serverLevel){
             menuEntry.asServer();
-            sendMenuIdUpdate();
         }
     }
 
@@ -42,6 +41,9 @@ public class GuiExampleBlockEntity extends BlockEntity implements IBlockEntityMe
                 worldPosition, 
                 level.dimension()
             );
+            if(!level.hasChunkAt(getBlockPos())){
+                return;
+            }
             AllPackets.CHANNEL_REG.getChannel().send(
                     PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)),
                     packet
@@ -53,7 +55,7 @@ public class GuiExampleBlockEntity extends BlockEntity implements IBlockEntityMe
     public CompoundTag getUpdateTag() {
         if (level instanceof ServerLevel) {
             CompoundTag tag = super.getUpdateTag();
-            tag.putUUID("menuId", menuEntry.getServerId());
+            tag.putUUID("menuId", menuEntry.asServer());
             return tag;
         } else {
             return super.getUpdateTag();
