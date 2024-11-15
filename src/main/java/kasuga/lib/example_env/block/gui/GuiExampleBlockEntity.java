@@ -2,12 +2,12 @@ package kasuga.lib.example_env.block.gui;
 
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import kasuga.lib.core.menu.base.GuiMenu;
 import kasuga.lib.core.menu.behaviour.BlockEntityMenuBehaviour;
 import kasuga.lib.example_env.AllExampleElements;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -43,5 +43,9 @@ public class GuiExampleBlockEntity extends SmartBlockEntity {
         if(level instanceof ServerLevel serverLevel){
             entity.incrementData();
         }
+    }
+
+    public GuiMenu getMenu() {
+        return menuBehaviour.getMenuEntry();
     }
 }
