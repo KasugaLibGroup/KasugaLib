@@ -16,6 +16,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -29,7 +30,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -50,11 +50,10 @@ public class BucketItem extends net.minecraft.world.item.BucketItem {
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pHand) {
         Fluid content = fluidSupplier.get();
         ItemStack itemstack = pPlayer.getItemInHand(pHand);
-        BlockHitResult blockhitresult = getPlayerPOVHitResult(pLevel, pPlayer, content == Fluids.EMPTY ? net.minecraft.world.level.ClipContext.Fluid.SOURCE_ONLY : net.minecraft.world.level.ClipContext.Fluid.NONE);
-        InteractionResultHolder<ItemStack> ret = ForgeEventFactory.onBucketUse(pPlayer, pLevel, itemstack, blockhitresult);
-        if (ret != null) {
-            return ret;
-        } else if (blockhitresult.getType() == HitResult.Type.MISS) {
+        BlockHitResult blockhitresult = getPlayerPOVHitResult(pLevel, pPlayer, content == Fluids.EMPTY ? ClipContext.Fluid.SOURCE_ONLY : ClipContext.Fluid.NONE);
+        InteractionResultHolder<ItemStack> ret = net.minecraftforge.event.ForgeEventFactory.onBucketUse(pPlayer, pLevel, itemstack, blockhitresult);
+        if (ret != null) return ret;
+        if (blockhitresult.getType() == HitResult.Type.MISS) {
             return InteractionResultHolder.pass(itemstack);
         } else if (blockhitresult.getType() != HitResult.Type.BLOCK) {
             return InteractionResultHolder.pass(itemstack);
@@ -63,9 +62,8 @@ public class BucketItem extends net.minecraft.world.item.BucketItem {
             Direction direction = blockhitresult.getDirection();
             BlockPos blockpos1 = blockpos.relative(direction);
             if (pLevel.mayInteract(pPlayer, blockpos) && pPlayer.mayUseItemAt(blockpos1, direction, itemstack)) {
-                BlockState blockstate1;
                 if (content == Fluids.EMPTY) {
-                    blockstate1 = pLevel.getBlockState(blockpos);
+                    BlockState blockstate1 = pLevel.getBlockState(blockpos);
                     if (blockstate1.getBlock() instanceof BucketPickup) {
                         BucketPickup bucketpickup = (BucketPickup)blockstate1.getBlock();
                         ItemStack itemstack1 = bucketpickup.pickupBlock(pLevel, blockpos, blockstate1);
@@ -86,9 +84,9 @@ public class BucketItem extends net.minecraft.world.item.BucketItem {
 
                     return InteractionResultHolder.fail(itemstack);
                 } else {
-                    blockstate1 = pLevel.getBlockState(blockpos);
-                    BlockPos blockpos2 = this.canBlockContainFluid(pLevel, blockpos, blockstate1) ? blockpos : blockpos1;
-                    if (this.emptyContents(pPlayer, pLevel, blockpos2, blockhitresult, itemstack)) {
+                    BlockState blockstate = pLevel.getBlockState(blockpos);
+                    BlockPos blockpos2 = canBlockContainFluid(pLevel, blockpos, blockstate) ? blockpos : blockpos1;
+                    if (this.emptyContents(pPlayer, pLevel, blockpos2, blockhitresult)) {
                         this.checkExtraContent(pPlayer, pLevel, itemstack, blockpos2);
                         if (pPlayer instanceof ServerPlayer) {
                             CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer)pPlayer, blockpos2, itemstack);
@@ -106,46 +104,42 @@ public class BucketItem extends net.minecraft.world.item.BucketItem {
         }
     }
 
-    public boolean emptyContents(@Nullable Player p_150716_, Level p_150717_, BlockPos p_150718_, @Nullable BlockHitResult p_150719_, @Nullable ItemStack container) {
+    public boolean emptyContents(@Nullable Player pPlayer, Level pLevel, BlockPos pPos, @Nullable BlockHitResult pResult) {
         Fluid content = fluidSupplier.get();
         if (!(content instanceof FlowingFluid)) {
             return false;
         } else {
-            BlockState blockstate = p_150717_.getBlockState(p_150718_);
+            BlockState blockstate = pLevel.getBlockState(pPos);
             Block block = blockstate.getBlock();
             Material material = blockstate.getMaterial();
             boolean flag = blockstate.canBeReplaced(content);
-            boolean flag1 = blockstate.isAir() || flag || block instanceof LiquidBlockContainer && ((LiquidBlockContainer)block).canPlaceLiquid(p_150717_, p_150718_, blockstate, content);
-            Optional<FluidStack> containedFluidStack = Optional.ofNullable(container).flatMap(FluidUtil::getFluidContained);
+            boolean flag1 = blockstate.isAir() || flag || block instanceof LiquidBlockContainer && ((LiquidBlockContainer)block).canPlaceLiquid(pLevel, pPos, blockstate, content);
             if (!flag1) {
-                return p_150719_ != null && this.emptyContents(p_150716_, p_150717_, p_150719_.getBlockPos().relative(p_150719_.getDirection()), (BlockHitResult)null, container);
-            } else if (containedFluidStack.isPresent() && content.getFluidType().isVaporizedOnPlacement(p_150717_, p_150718_, (FluidStack)containedFluidStack.get())) {
-                content.getFluidType().onVaporize(p_150716_, p_150717_, p_150718_, (FluidStack)containedFluidStack.get());
-                return true;
-            } else if (p_150717_.dimensionType().ultraWarm() && content.is(FluidTags.WATER)) {
-                int i = p_150718_.getX();
-                int j = p_150718_.getY();
-                int k = p_150718_.getZ();
-                p_150717_.playSound(p_150716_, p_150718_, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + (p_150717_.random.nextFloat() - p_150717_.random.nextFloat()) * 0.8F);
+                return pResult != null && this.emptyContents(pPlayer, pLevel, pResult.getBlockPos().relative(pResult.getDirection()), (BlockHitResult)null);
+            } else if (pLevel.dimensionType().ultraWarm() && content.is(FluidTags.WATER)) {
+                int i = pPos.getX();
+                int j = pPos.getY();
+                int k = pPos.getZ();
+                pLevel.playSound(pPlayer, pPos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + (pLevel.random.nextFloat() - pLevel.random.nextFloat()) * 0.8F);
 
                 for(int l = 0; l < 8; ++l) {
-                    p_150717_.addParticle(ParticleTypes.LARGE_SMOKE, (double)i + Math.random(), (double)j + Math.random(), (double)k + Math.random(), 0.0, 0.0, 0.0);
+                    pLevel.addParticle(ParticleTypes.LARGE_SMOKE, (double)i + Math.random(), (double)j + Math.random(), (double)k + Math.random(), 0.0D, 0.0D, 0.0D);
                 }
 
                 return true;
-            } else if (block instanceof LiquidBlockContainer && ((LiquidBlockContainer)block).canPlaceLiquid(p_150717_, p_150718_, blockstate, content)) {
-                ((LiquidBlockContainer)block).placeLiquid(p_150717_, p_150718_, blockstate, ((FlowingFluid)content).getSource(false));
-                this.playEmptySound(p_150716_, p_150717_, p_150718_);
+            } else if (block instanceof LiquidBlockContainer && ((LiquidBlockContainer)block).canPlaceLiquid(pLevel,pPos,blockstate,content)) {
+                ((LiquidBlockContainer)block).placeLiquid(pLevel, pPos, blockstate, ((FlowingFluid) content).getSource(false));
+                this.playEmptySound(pPlayer, pLevel, pPos);
                 return true;
             } else {
-                if (!p_150717_.isClientSide && flag && !material.isLiquid()) {
-                    p_150717_.destroyBlock(p_150718_, true);
+                if (!pLevel.isClientSide && flag && !material.isLiquid()) {
+                    pLevel.destroyBlock(pPos, true);
                 }
 
-                if (!p_150717_.setBlock(p_150718_, content.defaultFluidState().createLegacyBlock(), 11) && !blockstate.getFluidState().isSource()) {
+                if (!pLevel.setBlock(pPos, content.defaultFluidState().createLegacyBlock(), 11) && !blockstate.getFluidState().isSource()) {
                     return false;
                 } else {
-                    this.playEmptySound(p_150716_, p_150717_, p_150718_);
+                    this.playEmptySound(pPlayer, pLevel, pPos);
                     return true;
                 }
             }
@@ -154,11 +148,8 @@ public class BucketItem extends net.minecraft.world.item.BucketItem {
 
     protected void playEmptySound(@Nullable Player pPlayer, LevelAccessor pLevel, BlockPos pPos) {
         Fluid content = fluidSupplier.get();
-        SoundEvent soundevent = content.getFluidType().getSound(pPlayer, pLevel, pPos, SoundActions.BUCKET_EMPTY);
-        if (soundevent == null) {
-            soundevent = content.is(FluidTags.LAVA) ? SoundEvents.BUCKET_EMPTY_LAVA : SoundEvents.BUCKET_EMPTY;
-        }
-
+        SoundEvent soundevent = content.getAttributes().getEmptySound();
+        if(soundevent == null) soundevent = content.is(FluidTags.LAVA) ? SoundEvents.BUCKET_EMPTY_LAVA : SoundEvents.BUCKET_EMPTY;
         pLevel.playSound(pPlayer, pPos, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
         pLevel.gameEvent(pPlayer, GameEvent.FLUID_PLACE, pPos);
     }

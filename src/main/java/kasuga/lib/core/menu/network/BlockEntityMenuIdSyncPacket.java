@@ -7,6 +7,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -27,13 +28,14 @@ public class BlockEntityMenuIdSyncPacket extends S2CPacket {
     public BlockEntityMenuIdSyncPacket(FriendlyByteBuf byteBuf) {
         this.serverId = byteBuf.readUUID();
         this.position = byteBuf.readBlockPos();
-        this.dimension = byteBuf.readResourceKey(Registry.DIMENSION_REGISTRY);
+        ResourceLocation location = byteBuf.readResourceLocation();
+        this.dimension = ResourceKey.create(Registry.DIMENSION_REGISTRY, location);
     }
 
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeUUID(serverId);
         buffer.writeBlockPos(position);
-        buffer.writeResourceKey(dimension);
+        buffer.writeResourceLocation(dimension.location());
     }
 
     @Override

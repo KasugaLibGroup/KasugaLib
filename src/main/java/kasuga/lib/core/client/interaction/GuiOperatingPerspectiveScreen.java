@@ -3,12 +3,13 @@ package kasuga.lib.core.client.interaction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 public class GuiOperatingPerspectiveScreen extends Screen {
     float fov = 1.0F;
 
     public GuiOperatingPerspectiveScreen() {
-        super(Component.literal(""));
+        super(new TextComponent(""));
     }
 
     public void render(int mouseX, int mouseY, float partialTicks) {}
