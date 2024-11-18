@@ -56,7 +56,7 @@ public class CommandReg extends Reg {
      * @return The Reg itself
      */
     public CommandReg addLiteral(String string, boolean isOptional) {
-        System.out.println(tree.leaves.size());
+        // System.out.println(tree.leaves.size());
         tree.addLiteral(isOptional, string);
         if(this.optionalStartFlag && !isOptional){
             throw new IllegalArgumentException();

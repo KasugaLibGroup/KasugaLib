@@ -1,4 +1,5 @@
 {
   "tips.block": "--------------------------------------=== all blocks ===--------------------------------------",
-  "block.kasuga_lib.green_apple": "Green Apple"
+  "block.kasuga_lib.green_apple": "Green Apple",
+  "item.kasuga_lib.example_fluid_bucket": "Example Fluid Bucket"
 }
