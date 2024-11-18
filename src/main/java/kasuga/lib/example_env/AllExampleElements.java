@@ -137,7 +137,7 @@ public class AllExampleElements {
             .bucketItem(BucketItem::new)
             .blockType(ExampleFluidBlock::new)
             .tab(tab)
-            .submit(REGISTRY);
+            .submit(testRegistry);
 
     public static final MenuReg<GreenAppleMenu, GreenAppleScreen> apple =
             new MenuReg<GreenAppleMenu, GreenAppleScreen>("green_apple_screen")
