@@ -153,7 +153,12 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
      */
     @Mandatory
     public <R extends BucketItem> FluidReg<E> bucketItem(BucketItemReg.BucketBuilder<? extends BucketItem> builder) {
-        itemReg = new BucketItemReg<R>(registrationKey + ".bucket");
+        return bucketItem(registrationKey + "_bucket", builder);
+    }
+
+    public <R extends BucketItem> FluidReg<E> bucketItem(String itemRegistrationKey,
+                                                         BucketItemReg.BucketBuilder<? extends BucketItem> builder) {
+        itemReg = new BucketItemReg<R>(itemRegistrationKey);
         itemReg.itemType(builder);
         itemReg.fluidType(this::stillFluid);
         registerItem = true;
