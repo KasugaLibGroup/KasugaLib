@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class BlockTagReg extends TagReg<Block> {
     TagKey<Block> tag = null;
-    private final String path;
 
     /**
      * Use this to create a new block tag registration.
@@ -23,14 +22,19 @@ public class BlockTagReg extends TagReg<Block> {
      * @param path the path of your tag file. Root folder is namespace:tag (It's usually under the "resource/data" folder)
      */
     public BlockTagReg(String registrationKey, String path) {
-        super(registrationKey);
-        this.path = path;
+        super(registrationKey, path);
+    }
+
+    public BlockTagReg(String namespace, String registrationKey, String path) {
+        super(namespace ,registrationKey, path);
     }
 
     @Override
     @Mandatory
     public BlockTagReg submit(SimpleRegistry registry) {
-        location = new ResourceLocation(registry.namespace, path);
+        location = otherNamespace == null ?
+                new ResourceLocation(registry.namespace, path) :
+                new ResourceLocation(otherNamespace, path);
         tag = BlockTags.create(location);
         return this;
     }

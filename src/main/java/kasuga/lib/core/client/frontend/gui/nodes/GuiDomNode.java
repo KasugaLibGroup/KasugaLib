@@ -71,14 +71,30 @@ public class GuiDomNode extends DomNode<GuiContext> {
 
     @HostAccess.Export
     @Override
-    public boolean addChildAt(int i, DomNode<GuiContext> child) {
+    public boolean addChildBefore(DomNode<GuiContext> child, DomNode<GuiContext> before) {
         this.domContext.queueDuringRender(()->{
-            if(child instanceof GuiDomNode domNode)
-                getLayoutManager().addChild(i,domNode.getLayoutManager());
-            styles.notifyUpdate();
-            super.addChildAt(i,child);
+            int index = children.indexOf(before);
+            if(index == -1)
+                return;
+            addChildInstant(index, child);
         });
         return true;
+    }
+
+    @HostAccess.Export
+    @Override
+    public boolean addChildAt(int i, DomNode<GuiContext> child) {
+        this.domContext.queueDuringRender(()->{
+            addChildInstant(i, child);
+        });
+        return true;
+    }
+
+    protected void addChildInstant(int i, DomNode<GuiContext> child){
+        if(child instanceof GuiDomNode domNode)
+            getLayoutManager().addChild(i,domNode.getLayoutManager());
+        styles.notifyUpdate();
+        super.addChildAt(i,child);
     }
 
     @HostAccess.Export

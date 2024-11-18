@@ -105,7 +105,7 @@ public class BucketItemReg<T extends BucketItem> extends ItemReg<T> {
      * @return self.
      */
     @Mandatory
-    public BucketItemReg<T> itemType(BucketBuilder<? extends Item> builder) {
+    public BucketItemReg<T> itemType(BucketBuilder<? extends BucketItem> builder) {
         this.builder = (BucketBuilder<T>) builder;
         return this;
     }
@@ -130,6 +130,16 @@ public class BucketItemReg<T extends BucketItem> extends ItemReg<T> {
             }
         }
         return this;
+    }
+
+    @Override
+    public T getItem() {
+        return registryObject == null ? null : registryObject.get();
+    }
+
+    @Override
+    public RegistryObject<T> getRegistryObject() {
+        return registryObject;
     }
 
     public String getIdentifier() {

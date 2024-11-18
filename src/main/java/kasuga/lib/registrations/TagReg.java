@@ -13,9 +13,22 @@ import net.minecraft.tags.TagKey;
 public abstract class TagReg<T> extends Reg {
 
     public ResourceLocation location = null;
-    public TagReg(String registrationKey) {
+
+    public final String otherNamespace;
+    public final String path;
+
+    public TagReg(String registrationKey, String path) {
         super(registrationKey);
+        otherNamespace = null;
+        this.path = path;
     }
+
+    public TagReg(String namespace, String registrationKey, String path) {
+        super(registrationKey);
+        otherNamespace = namespace;
+        this.path = path;
+    }
+
     public abstract TagKey<T> tag();
 
     /**

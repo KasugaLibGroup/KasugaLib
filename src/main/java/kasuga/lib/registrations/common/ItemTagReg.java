@@ -16,7 +16,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ItemTagReg extends TagReg<Item> {
     TagKey<Item> tag = null;
-    private final String path;
 
     /**
      * Create a item tag reg.
@@ -24,8 +23,11 @@ public class ItemTagReg extends TagReg<Item> {
      * @param path the resource location path of your item.
      */
     public ItemTagReg(String registrationKey, String path) {
-        super(registrationKey);
-        this.path = path;
+        super(registrationKey, path);
+    }
+
+    public ItemTagReg(String namespace, String registrationKey, String path) {
+        super(namespace, registrationKey, path);
     }
 
     /**
@@ -36,7 +38,9 @@ public class ItemTagReg extends TagReg<Item> {
     @Override
     @Mandatory
     public ItemTagReg submit(SimpleRegistry registry) {
-        location = new ResourceLocation(registry.namespace, path);
+        location = otherNamespace == null ?
+                new ResourceLocation(registry.namespace, path) :
+                new ResourceLocation(otherNamespace, path);
         tag = ItemTags.create(location);
         return this;
     }

@@ -5,6 +5,10 @@ import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.CustomBlockRenderer;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgumentInfo;
+import kasuga.lib.core.channel.ChannelNetworkManager;
+import kasuga.lib.core.channel.network.address.NetworkAddressTypes;
+import kasuga.lib.core.channel.packets.ChannelNetworkPacket;
+import kasuga.lib.core.channel.test.ChannelTest;
 import kasuga.lib.core.client.animation.Constants;
 import kasuga.lib.core.client.frontend.gui.GuiEngine;
 import kasuga.lib.core.events.both.BothSetupEvent;
@@ -15,6 +19,7 @@ import kasuga.lib.core.events.server.ServerResourceListener;
 import kasuga.lib.core.events.server.ServerStartingEvents;
 import kasuga.lib.core.client.render.texture.old.SimpleTexture;
 import kasuga.lib.core.javascript.JavascriptApi;
+import kasuga.lib.core.menu.GuiMenuManager;
 import kasuga.lib.core.menu.targets.TargetsClient;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.registrations.client.KeyBindingReg;
@@ -55,8 +60,11 @@ public class KasugaLibStacks {
     public final JavascriptApi JAVASCRIPT = new JavascriptApi();
 
     public Optional<GuiEngine> GUI = Optional.empty();
-    public static final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
 
+    public static final GuiMenuManager MENU = new GuiMenuManager();
+
+    public static final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
+    public static final ChannelNetworkManager CHANNEL = new ChannelNetworkManager();
     public static HashSet<Minecraft> mcs = new HashSet<>();
 
     public KasugaLibStacks(IEventBus bus) {
@@ -70,6 +78,8 @@ public class KasugaLibStacks {
         ARGUMENT_TYPES.register("base", () -> ArgumentTypeInfos.registerByClass(BaseArgument.class, new BaseArgumentInfo()));
         ARGUMENT_TYPES.register(bus);
         BLOCK_RENDERERS = new HashMap<>();
+        MENU.init();
+
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverAboutToStart);
         MinecraftForge.EVENT_BUS.addListener(PacketEvent::onServerPayloadHandleEvent);
@@ -87,6 +97,7 @@ public class KasugaLibStacks {
 
             MinecraftForge.EVENT_BUS.addListener(PlayLogEvent::playerLogout);
             MinecraftForge.EVENT_BUS.addListener(PlayLogEvent::playerLogin);
+            MinecraftForge.EVENT_BUS.addListener(ClientConnection::onClientDisconnect);
 
             bus.addListener(ModelRegistryEvent::registerAdditionalModels);
             bus.addListener(ModelRegistryEvent::registerStaticImages);
@@ -94,18 +105,22 @@ public class KasugaLibStacks {
             bus.addListener(TextureRegistryEvent::onModelRegistry);
             bus.addListener(ClientSetupEvent::onClientSetup);
             MinecraftForge.EVENT_BUS.addListener(RenderTickEvent::onRenderTick);
+            MinecraftForge.EVENT_BUS.addListener(InteractionFovEvent::onComputedFov);
             bus.addListener(GeometryEvent::registerGeometry);
             bus.addListener(GeometryEvent::registerReloadListener);
             bus.addListener(BothSetupEvent::RegisterKeyEvent);
             GUI = Optional.of(new GuiEngine());
             bus.addListener(AnimationModelRegistryEvent::registerAnimations);
             if (Envs.isDevEnvironment()) KasugaLibClient.invoke();
-            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()-> TargetsClient::reigster);
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()-> TargetsClient::register);
         }
 
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStarting);
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStopping);
         MinecraftForge.EVENT_BUS.addListener(ServerConnectionListeners::onClientDisconnect);
+        ChannelNetworkPacket.invoke();
+        NetworkAddressTypes.invoke();
+        ChannelTest.invoke();
     }
 
     public static void registerNamespace(SimpleRegistry registry) {
