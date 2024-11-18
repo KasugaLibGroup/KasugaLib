@@ -25,7 +25,7 @@ public class MixinBlockModel$Deserializer {
 
     @Inject(method = "deserialize(Lcom/google/gson/JsonElement;Ljava/lang/reflect/Type;Lcom/google/gson/JsonDeserializationContext;)Lnet/minecraft/client/renderer/block/model/BlockModel;",
     at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/model/BlockModel$Deserializer;getAmbientOcclusion(Lcom/google/gson/JsonObject;)Z"))
-    public void doDeserialize(JsonElement json, Type type, JsonDeserializationContext context, CallbackInfoReturnable<BlockModel> callBack) {
+    private void doDeserialize(JsonElement json, Type type, JsonDeserializationContext context, CallbackInfoReturnable<BlockModel> callBack) {
         JsonObject object= json.getAsJsonObject();
         if (!object.has("loader")) return;
         ResourceLocation location = new ResourceLocation(object.get("loader").getAsString());
