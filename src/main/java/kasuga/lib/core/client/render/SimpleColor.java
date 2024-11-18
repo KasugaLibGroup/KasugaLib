@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.color.ColorSpace;
 
 public class SimpleColor {
+    public static final SimpleColor BLACK = SimpleColor.fromRGBInt(0x0);
     Color color;
 
     protected SimpleColor(Color color) {
@@ -287,5 +288,9 @@ public class SimpleColor {
             }
         }catch (NumberFormatException e){}
         return new int[]{0, 0, 0, 0};
+    }
+
+    public String toHexString() {
+        return "";
     }
 }
