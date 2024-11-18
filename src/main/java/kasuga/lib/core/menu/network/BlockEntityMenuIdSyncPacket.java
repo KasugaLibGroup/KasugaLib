@@ -4,6 +4,7 @@ import kasuga.lib.core.menu.IBlockEntityMenuHolder;
 import kasuga.lib.core.network.S2CPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -27,7 +28,7 @@ public class BlockEntityMenuIdSyncPacket extends S2CPacket {
     public BlockEntityMenuIdSyncPacket(FriendlyByteBuf byteBuf) {
         this.serverId = byteBuf.readUUID();
         this.position = byteBuf.readBlockPos();
-        this.dimension = byteBuf.readResourceKey(Registry.DIMENSION_REGISTRY);
+        this.dimension = byteBuf.readResourceKey(Registries.DIMENSION);
     }
 
     public void encode(FriendlyByteBuf buffer) {
