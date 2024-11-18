@@ -19,6 +19,7 @@ import kasuga.lib.core.events.server.ServerStartingEvents;
 import kasuga.lib.core.client.render.texture.old.SimpleTexture;
 import kasuga.lib.core.javascript.JavascriptApi;
 import kasuga.lib.core.menu.GuiMenuManager;
+import kasuga.lib.core.menu.locator.ServerChunkMenuLocatorManager;
 import kasuga.lib.core.menu.targets.TargetsClient;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.registrations.client.KeyBindingReg;
@@ -78,6 +79,8 @@ public class KasugaLibStacks {
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverAboutToStart);
         MinecraftForge.EVENT_BUS.addListener(PacketEvent::onServerPayloadHandleEvent);
+        MinecraftForge.EVENT_BUS.addListener(ServerChunkMenuLocatorManager::onWatch);
+        MinecraftForge.EVENT_BUS.addListener(ServerChunkMenuLocatorManager::onUnWatch);
         bus.addListener(BothSetupEvent::onFMLCommonSetup);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
 

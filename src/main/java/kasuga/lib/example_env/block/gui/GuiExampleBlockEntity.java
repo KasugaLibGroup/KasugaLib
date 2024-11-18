@@ -1,71 +1,38 @@
 package kasuga.lib.example_env.block.gui;
 
-import kasuga.lib.core.menu.IBlockEntityMenuHolder;
-import kasuga.lib.core.menu.api.GuiMenuUtils;
 import kasuga.lib.core.menu.base.GuiMenu;
-import kasuga.lib.core.menu.network.BlockEntityMenuIdSyncPacket;
-import kasuga.lib.core.packets.AllPackets;
+import kasuga.lib.core.menu.locator.BlockMenuLocator;
+import kasuga.lib.core.menu.locator.GuiMenuHolder;
 import kasuga.lib.example_env.AllExampleElements;
+import net.minecraft.CrashReport;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.PacketDistributor;
 
-import java.util.UUID;
+import java.util.Optional;
 
-public class GuiExampleBlockEntity extends BlockEntity implements IBlockEntityMenuHolder {
-    GuiMenu menuEntry;
-    UUID serverId;
+public class GuiExampleBlockEntity extends BlockEntity {
+    private GuiMenuHolder holder;
+    
     public GuiExampleBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(AllExampleElements.guiExampleTile.getType(), pPos, pBlockState);
-        menuEntry = AllExampleElements.MENU_EXAMPLE.create();
     }
 
     @Override
     public void setLevel(Level pLevel) {
         super.setLevel(pLevel);
-        if(pLevel != null && pLevel instanceof ServerLevel serverLevel){
-            menuEntry.asServer();
-            sendMenuIdUpdate();
-        }
-    }
-
-    public void sendMenuIdUpdate() {
-        if (level instanceof ServerLevel) {
-            UUID serverId = menuEntry.asServer();
-            BlockEntityMenuIdSyncPacket packet = new BlockEntityMenuIdSyncPacket(
-                serverId, 
-                worldPosition, 
-                level.dimension()
-            );
-            AllPackets.CHANNEL_REG.getChannel().send(
-                    PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)),
-                    packet
-            );
-        }
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        if (level instanceof ServerLevel) {
-            CompoundTag tag = super.getUpdateTag();
-            tag.putUUID("menuId", menuEntry.getServerId());
-            return tag;
-        } else {
-            return super.getUpdateTag();
-        }
-    }
-
-    @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        super.handleUpdateTag(tag);
-        if(tag.hasUUID("menuId")){
-            serverId = tag.getUUID("menuId");
-            notifyMenuId(serverId);
+        try{
+            holder = new GuiMenuHolder.Builder()
+                    .with(AllExampleElements.MENU_EXAMPLE)
+                    .locatedAt(BlockMenuLocator.of(level, getBlockPos()))
+                    .build();
+            holder.enable(pLevel);
+        }catch (Exception e){
+            Minecraft.crash(new CrashReport("Failed to create GuiMenuHolder", e));
         }
     }
 
@@ -74,36 +41,33 @@ public class GuiExampleBlockEntity extends BlockEntity implements IBlockEntityMe
     public void incrementData(){
         CompoundTag syncData = new CompoundTag();
         syncData.putInt("click", ++clickCount);
-        menuEntry.broadcast(syncData);
+        holder.getMenu(0).ifPresent((menu)->menu.broadcast(syncData));
     }
 
     public void openScreen(){
-        GuiMenuUtils.openScreen(menuEntry);
+        holder.openScreen(0);
     }
 
     @Override
     public void setRemoved() {
         super.setRemoved();
-        menuEntry.close();
+        holder.disable();
     }
 
-    public int i=0;
+    @Override
+    public void clearRemoved() {
+        super.clearRemoved();
+        holder.enable(level);
+    }
 
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, BlockEntity block) {
-        GuiExampleBlockEntity entity = (GuiExampleBlockEntity)level.getBlockEntity(blockPos);
-        if(level instanceof ServerLevel serverLevel){
+        GuiExampleBlockEntity entity = (GuiExampleBlockEntity)block;
+        if(level instanceof ServerLevel) {
             entity.incrementData();
         }
     }
 
-    @Override
-    public void notifyMenuId(UUID menuId) {
-        if(menuId.equals(this.menuEntry.getServerId()))
-            return;
-        if(this.menuEntry != null){
-            this.menuEntry.close();
-        }
-        this.menuEntry = AllExampleElements.MENU_EXAMPLE.create();
-        this.menuEntry.asClient(menuId);
+    public Optional<GuiMenu> getMenu() {
+        return holder.getMenu(0);
     }
 }
