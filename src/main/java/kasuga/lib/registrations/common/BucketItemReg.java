@@ -113,7 +113,7 @@ public class BucketItemReg<T extends BucketItem> extends ItemReg<T> {
      * @return self.
      */
     @Mandatory
-    public BucketItemReg<T> itemType(BucketBuilder<? extends Item> builder) {
+    public BucketItemReg<T> itemType(BucketBuilder<? extends BucketItem> builder) {
         this.builder = (BucketBuilder<T>) builder;
         return this;
     }
