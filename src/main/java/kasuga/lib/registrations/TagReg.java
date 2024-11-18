@@ -15,15 +15,18 @@ public abstract class TagReg<T> extends Reg {
     public ResourceLocation location = null;
 
     public final String otherNamespace;
+    public final String path;
 
-    public TagReg(String registrationKey) {
+    public TagReg(String registrationKey, String path) {
         super(registrationKey);
         otherNamespace = null;
+        this.path = path;
     }
 
-    public TagReg(ResourceLocation location) {
-        super(location.getPath());
-        otherNamespace = location.getNamespace();
+    public TagReg(String namespace, String registrationKey, String path) {
+        super(registrationKey);
+        otherNamespace = namespace;
+        this.path = path;
     }
 
     public abstract TagKey<T> tag();
