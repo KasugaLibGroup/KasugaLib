@@ -16,12 +16,12 @@ public class FluidTagReg extends TagReg<Fluid> {
     private final String path;
 
     public FluidTagReg(String registrationKey, String path) {
-        super(registrationKey);
+        super(registrationKey, path);
         this.path = path;
     }
 
-    public FluidTagReg(ResourceLocation loc, String path) {
-        super(loc);
+    public FluidTagReg(String namespace, String registrationKey, String path) {
+        super(namespace, registrationKey, path);
         this.path = path;
     }
 
