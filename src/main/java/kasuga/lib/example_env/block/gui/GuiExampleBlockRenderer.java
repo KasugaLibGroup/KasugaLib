@@ -2,8 +2,6 @@ package kasuga.lib.example_env.block.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
-import kasuga.lib.core.menu.GuiBinding;
-import kasuga.lib.core.menu.GuiBindingTarget;
 import kasuga.lib.core.menu.targets.Target;
 import kasuga.lib.core.menu.targets.WorldRendererTarget;
 import net.minecraft.client.renderer.LightTexture;
@@ -25,8 +23,11 @@ public class GuiExampleBlockRenderer implements BlockEntityRenderer<GuiExampleBl
         worldContext.pushLight(LightTexture.FULL_BRIGHT);
         worldContext.setSource(WorldRendererTarget.class);
         poseStack.pushPose();
-        poseStack.scale(0.0025f,0.0025f,0.0025f);
-        entity.menuEntry.getBinding().apply(Target.WORLD_RENDERER).render(worldContext);
+        poseStack.scale(0.0025f * 0.6f,0.0025f* 0.6f,0.0025f);
+        WorldRendererTarget binding = entity.menuEntry.getBinding().apply(Target.WORLD_RENDERER);
+        if(binding != null){
+            binding.render(worldContext);
+        }
         poseStack.popPose();
     }
 }

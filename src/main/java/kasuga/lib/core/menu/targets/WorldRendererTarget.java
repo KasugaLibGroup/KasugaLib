@@ -2,7 +2,7 @@ package kasuga.lib.core.menu.targets;
 
 import kasuga.lib.core.client.frontend.gui.GuiInstance;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
-import kasuga.lib.core.menu.GuiMenu;
+import kasuga.lib.core.menu.base.GuiMenu;
 
 
 public class WorldRendererTarget {

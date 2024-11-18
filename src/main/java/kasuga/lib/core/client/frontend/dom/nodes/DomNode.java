@@ -28,6 +28,13 @@ public class DomNode<T extends DomContext<?,?>> {
         this.domContext = context;
     }
 
+    public boolean addChildBefore(DomNode<T> child, DomNode<T> before){
+        int index = children.indexOf(before);
+        if(index == -1)
+            return false;
+        return addChildAt(index,child);
+    }
+
     public boolean addChildAt(int i, DomNode<T> child){
         if(child.parent != null)
             return false;
