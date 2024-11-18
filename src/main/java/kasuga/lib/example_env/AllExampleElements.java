@@ -132,6 +132,7 @@ public class AllExampleElements {
             .overlayTexPath("block/fluid/water_overlay")
             .bucketItem(BucketItem::new)
             .blockType(ExampleFluidBlock::new)
+            .tab(tab)
             .submit(REGISTRY);
 
     public static final MenuReg<GreenAppleMenu, GreenAppleScreen> apple =
