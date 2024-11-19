@@ -11,12 +11,14 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.PacketDistributor;
 
+import java.util.HashSet;
 import java.util.List;
 
 
 public abstract class MenuLocator implements NetworkSerializable {
     private NetworkSeriaizableType<?> type;
     private LocatedMenuManager manager;
+    protected final HashSet<Connection> tracking = new HashSet<>();
 
     public MenuLocator(MenuLocatorType<?> type) {
         this.type = type;
@@ -33,7 +35,9 @@ public abstract class MenuLocator implements NetworkSerializable {
 
     public void disable(LocatedMenuManager manager){
         this.manager = null;
+        broadcastDisable();
     }
+
 
     public void sendUpTo(Connection connection){
         AllPackets.CHANNEL_REG.sendTo(
@@ -41,7 +45,9 @@ public abstract class MenuLocator implements NetworkSerializable {
                 connection,
                 NetworkDirection.PLAY_TO_CLIENT
         );
+        tracking.add(connection);
     }
+
 
     public void sendDownTo(Connection connection){
         AllPackets.CHANNEL_REG.sendTo(
@@ -49,5 +55,15 @@ public abstract class MenuLocator implements NetworkSerializable {
                 connection,
                 NetworkDirection.PLAY_TO_CLIENT
         );
+        tracking.remove(connection);
     }
+
+    protected void broadcastDisable() {
+        for(Connection connection : tracking){
+            sendDownTo(connection);
+        }
+        tracking.clear();
+    }
+
+    public void tick(){}
 }

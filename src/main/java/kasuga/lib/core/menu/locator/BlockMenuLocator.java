@@ -14,13 +14,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
-public class BlockMenuLocator extends MenuLocator{
+public class BlockMenuLocator extends MenuLocator implements IChunkBasedLocator {
     private Level level;
     private ResourceKey<Level> levelResourceKey;
 
     private final BlockPos blockPos;
     private final ChunkPos chunkPos;
-    private final HashSet<Connection> tracking = new HashSet<>();
 
     public BlockMenuLocator(BlockPos blockPos) {
         super(MenuLocatorTypes.CHUNK_MENU);
@@ -74,13 +73,6 @@ public class BlockMenuLocator extends MenuLocator{
     }
 
 
-    private void broadcastDisable() {
-        for(Connection connection : tracking){
-            sendDownTo(connection);
-        }
-        tracking.clear();
-    }
-
     private void listen() {
         ServerChunkMenuLocatorManager.register(this);
     }
@@ -105,18 +97,6 @@ public class BlockMenuLocator extends MenuLocator{
 
     public ChunkPos getPosition() {
         return chunkPos;
-    }
-
-    @Override
-    public void sendUpTo(Connection connection) {
-        super.sendUpTo(connection);
-        tracking.add(connection);
-    }
-
-    @Override
-    public void sendDownTo(Connection connection) {
-        super.sendDownTo(connection);
-        tracking.remove(connection);
     }
 
     public static BlockMenuLocator of(Level level, BlockPos blockPos){
