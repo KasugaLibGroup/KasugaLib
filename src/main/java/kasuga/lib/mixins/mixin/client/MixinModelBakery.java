@@ -15,6 +15,8 @@ public class MixinModelBakery {
 
     @Redirect(method = "processLoading", at = @At(value = "INVOKE", target = "Ljava/util/Set;addAll(Ljava/util/Collection;)Z"), remap = false)
     private boolean addAll(Set<Material> instance, Collection<Material> es) {
+        BedrockModelLoader.registerFired = true;
+        ModelPreloadManager.INSTANCE.scan();
         return instance.addAll(es) & instance.addAll(BedrockModelLoader.ADDITIONAL_MATERIALS);
     }
 }
