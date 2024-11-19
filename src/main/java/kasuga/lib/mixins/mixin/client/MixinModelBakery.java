@@ -1,6 +1,7 @@
 package kasuga.lib.mixins.mixin.client;
 
 import kasuga.lib.core.client.model.BedrockModelLoader;
+import kasuga.lib.core.client.model.ModelPreloadManager;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBakery;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,9 +15,9 @@ import java.util.Set;
 public class MixinModelBakery {
 
     @Redirect(method = "processLoading", at = @At(value = "INVOKE", target = "Ljava/util/Set;addAll(Ljava/util/Collection;)Z"), remap = false)
-    private boolean addAll(Set<Material> instance, Collection<Material> es) {
+    private boolean addAll(Set instance, Collection<? extends Material> es) {
         BedrockModelLoader.registerFired = true;
         ModelPreloadManager.INSTANCE.scan();
-        return instance.addAll(es) & instance.addAll(BedrockModelLoader.ADDITIONAL_MATERIALS);
+        return instance.addAll(BedrockModelLoader.ADDITIONAL_MATERIALS);
     }
 }

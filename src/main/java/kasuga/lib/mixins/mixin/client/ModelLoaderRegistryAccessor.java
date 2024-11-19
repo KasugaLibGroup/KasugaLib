@@ -11,6 +11,6 @@ import java.util.Map;
 @Mixin(ModelLoaderRegistry.class)
 public interface ModelLoaderRegistryAccessor {
 
-    @Accessor(value = "loaders")
+    @Accessor(value = "loaders", remap = false)
     public Map<ResourceLocation, IModelLoader<?>> getLoaders();
 }

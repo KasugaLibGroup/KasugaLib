@@ -2,7 +2,6 @@ package kasuga.lib.core.events.client;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.model.BedrockModelLoader;
 import kasuga.lib.core.client.model.ModelPreloadManager;
 import kasuga.lib.core.client.model.anim_instance.AnimCacheManager;
@@ -14,6 +13,7 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ForgeModelBakery;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import kasuga.lib.KasugaLib;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
