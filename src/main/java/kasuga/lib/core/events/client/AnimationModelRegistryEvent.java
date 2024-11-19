@@ -23,8 +23,6 @@ public class AnimationModelRegistryEvent {
     @SubscribeEvent
     public static void registerAnimations(ModelBakeEvent event) {
         AnimationFile.filesLoaded = true;
-        BedrockModelLoader.registerFired = true;
-        ModelPreloadManager.INSTANCE.scan();
         for (ResourceLocation location : AnimationFile.UNREGISTERED) {
             try {
                 Resource resource = Resources.getResource(location);
