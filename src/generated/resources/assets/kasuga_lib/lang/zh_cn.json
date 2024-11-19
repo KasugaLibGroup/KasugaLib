@@ -1,4 +1,5 @@
 {
   "tips.block": "--------------------------------------=== 方块 ===--------------------------------------",
-  "block.kasuga_lib.green_apple": "绿色林檎"
+  "block.kasuga_lib.green_apple": "绿色林檎",
+  "item.kasuga_lib.example_fluid_bucket": "范例液体桶"
 }

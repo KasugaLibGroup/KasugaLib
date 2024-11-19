@@ -1,11 +1,14 @@
 package kasuga.lib.example_env;
 
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.base.BucketItem;
 import kasuga.lib.core.menu.base.GuiBinding;
 import kasuga.lib.core.menu.base.GuiMenu;
 import kasuga.lib.core.menu.base.GuiMenuRegistry;
 import kasuga.lib.core.menu.base.GuiMenuType;
 import kasuga.lib.core.util.Envs;
+import kasuga.lib.example_env.block.fluid.ExampleFluid;
+import kasuga.lib.example_env.block.fluid.ExampleFluidBlock;
 import kasuga.lib.example_env.block.green_apple.GreenAppleBlock;
 import kasuga.lib.example_env.block.green_apple.GreenAppleItem;
 import kasuga.lib.example_env.block.green_apple.GreenAppleTile;
@@ -117,16 +120,16 @@ public class AllExampleElements {
      */
 
 
-    /*
+
     public static final FluidReg<ExampleFluid> exampleFluid = new FluidReg<ExampleFluid>("example_fluid")
             .still(ExampleFluid::new, "block/fluid/water_still")
-            .flow(ExampleFluid::new, "block/fluid/water_flow")
+            .flow(ExampleFluid.Flowing::new, "block/fluid/water_flow")
+            .numericProperties(1, 8, 3, 10)
             .overlayTexPath("block/fluid/water_overlay")
             .bucketItem(BucketItem::new)
             .blockType(ExampleFluidBlock::new)
-            .submit(testRegistry);
-
-     */
+            .tab(tab)
+            .submit(REGISTRY);
 
     public static final MenuReg<GreenAppleMenu, GreenAppleScreen> apple =
             new MenuReg<GreenAppleMenu, GreenAppleScreen>("green_apple_screen")

@@ -38,7 +38,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     private final FluidType.Properties properties;
     private ForgeFlowingFluid.Properties fluidProp = null;
     private FluidBuilder<E> stillBuilder = null, flowingBuilder = null;
-    private PropertyBuilder propertyBuilder = null;
+    private final ArrayList<PropertyBuilder> propertyBuilders;
     private BucketItemReg<? extends BucketItem> itemReg = null;
     private final ArrayList<FluidPropertyBuilder> builders;
     private FluidBlockReg<? extends LiquidBlock> block;
@@ -49,6 +49,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     private MenuReg<?, ?> menuReg = null;
     private int tintColor = 0xffffff;
     boolean registerItem = false, registerBlock = false, registerMenu = false;
+    private final FluidTagReg tag;
 
     /**
      * Create a fluid registration.
@@ -59,6 +60,8 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         properties = FluidType.Properties.create();
         builders = new ArrayList<>();
         block = new FluidBlockReg<>(registrationKey);
+        propertyBuilders = new ArrayList<>();
+        tag = new FluidTagReg("forge", registrationKey, "fluids/" + registrationKey);
     }
 
     /**
@@ -89,6 +92,29 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         return this;
     }
 
+    public FluidReg<E> decreasePreBlock(int decrease) {
+        return this.fluidProperty(prop -> prop.levelDecreasePerBlock(decrease));
+    }
+
+    public FluidReg<E> slopeFindDistance(int distance) {
+        return this.fluidProperty(prop -> prop.slopeFindDistance(distance));
+    }
+
+    public FluidReg<E> explosionResistance(float resistance) {
+        return this.fluidProperty(prop -> prop.explosionResistance(resistance));
+    }
+
+    public FluidReg<E> tickRate(int tickRate) {
+        return this.fluidProperty(prop -> prop.tickRate(tickRate));
+    }
+
+    public FluidReg<E> numericProperties(int decrease, int distance, int tickRate, float resistance) {
+        return decreasePreBlock(decrease)
+                .slopeFindDistance(distance)
+                .tickRate(tickRate)
+                .explosionResistance(resistance);
+    }
+
     /**
      * Your fluid must has a fluid block, pass your fluid-block's constructor lambda here.
      * @param builder The constructor lambda of your fluid block.
@@ -97,12 +123,14 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     @Mandatory
     public FluidReg<E> blockType(FluidBlockReg.FluidBlockBuilder<? extends LiquidBlock> builder) {
         block.blockType(builder);
+        builders.add(prop -> prop.block(block::getBlock));
         registerBlock = true;
         return this;
     }
 
     public FluidReg<E> blockType(FluidBlockReg<? extends LiquidBlock> reg) {
         block = reg;
+        builders.add(prop -> prop.block(block::getBlock));
         registerBlock = false;
         return this;
     }
@@ -124,9 +152,15 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
      * @return self.
      */
     @Mandatory
-    public <R extends BucketItem> FluidReg<E> bucketItem(BucketBuilder<? extends BucketItem> builder) {
-        itemReg = new BucketItemReg<R>(registrationKey + ".bucket");
-        itemReg.itemType((BucketItemReg.BucketBuilder<R>) builder);
+    public <R extends BucketItem> FluidReg<E> bucketItem(BucketItemReg.BucketBuilder<? extends BucketItem> builder) {
+        return bucketItem(registrationKey + "_bucket", builder);
+    }
+
+    public <R extends BucketItem> FluidReg<E> bucketItem(String itemRegistrationKey,
+                                                         BucketItemReg.BucketBuilder<? extends BucketItem> builder) {
+        itemReg = new BucketItemReg<R>(itemRegistrationKey);
+        itemReg.itemType(builder);
+        itemReg.fluidType(this::stillFluid);
         registerItem = true;
         return this;
     }
@@ -315,7 +349,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
      */
     @Optional
     public FluidReg<E> typeProperty(PropertyBuilder builder) {
-        this.propertyBuilder = builder;
+        this.propertyBuilders.add(builder);
         return this;
     }
 
@@ -339,9 +373,8 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     @Override
     public FluidReg<E> submit(SimpleRegistry registry) {
         properties.descriptionId(registrationKey);
-        if(propertyBuilder != null) {
-            propertyBuilder.build(properties);
-        }
+
+        propertyBuilders.forEach(b -> b.build(properties));
         if (flowingBuilder == null) {
             crashOnNotPresent(ForgeFlowingFluid.class, "flow", "submit");
         }
@@ -364,6 +397,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
             if(!registry.hasMenuCache(this.toString()))
                 registry.cacheMenuIn(menuReg);
         }
+        tag.submit(registry);
         return this;
     }
 
@@ -459,6 +493,6 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     public interface BucketBuilder<T extends BucketItem> {
-        T build(ForgeFlowingFluid fluid, Item.Properties properties);
+        T build(Supplier<ForgeFlowingFluid> fluid, Item.Properties properties);
     }
 }
