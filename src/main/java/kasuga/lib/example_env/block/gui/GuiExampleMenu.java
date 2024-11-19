@@ -1,9 +1,12 @@
 package kasuga.lib.example_env.block.gui;
 
+import kasuga.lib.core.channel.peer.Channel;
+import kasuga.lib.core.channel.peer.ChannelHandle;
 import kasuga.lib.core.menu.base.GuiBinding;
 import kasuga.lib.core.menu.base.GuiMenu;
 import kasuga.lib.core.menu.base.GuiMenuType;
 import kasuga.lib.core.menu.targets.Target;
+import kasuga.lib.core.menu.targets.WorldRendererTarget;
 import kasuga.lib.example_env.AllExampleElements;
 import net.minecraft.resources.ResourceLocation;
 
@@ -18,4 +21,16 @@ public class GuiExampleMenu extends GuiMenu {
     protected GuiBinding createBinding(UUID id) {
         return new GuiBinding(id).execute(ResourceLocation.tryParse("kasuga_lib:example")).with(Target.SCREEN);
      }
+
+    @Override
+    protected void createGuiInstance() {
+        super.createGuiInstance();
+        WorldRendererTarget.attach(this);
+    }
+
+    @Override
+    protected void closeGuiInstance() {
+        WorldRendererTarget.detach(this);
+        super.closeGuiInstance();
+    }
 }
