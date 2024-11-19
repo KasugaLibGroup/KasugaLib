@@ -24,7 +24,8 @@ public class GuiExampleBlockRenderer implements BlockEntityRenderer<GuiExampleBl
         worldContext.setSource(WorldRendererTarget.class);
         poseStack.pushPose();
         poseStack.scale(0.0025f * 0.6f,0.0025f* 0.6f,0.0025f);
-        WorldRendererTarget binding = entity.getMenu().getBinding().apply(Target.WORLD_RENDERER);
+        // WorldRendererTarget binding = entity.getMenu().getBinding().apply(Target.WORLD_RENDERER);
+        WorldRendererTarget binding = null;
         if(binding != null){
             binding.render(worldContext);
         }

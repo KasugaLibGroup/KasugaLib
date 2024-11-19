@@ -389,7 +389,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         for(FluidPropertyBuilder builder : builders)
             builder.build(fluidProp);
         if(stillBuilder != null)
-            stillObject = registry.fluid().register(registrationKey + "_still", () -> stillBuilder.build(fluidProp));
+            stillObject = registry.fluid().register(registrationKey, () -> stillBuilder.build(fluidProp));
         if(flowingBuilder != null)
             flowingObject = registry.fluid().register(registrationKey + "_flow", () -> flowingBuilder.build(fluidProp));
         if (registerItem) itemReg.submit(registry);
