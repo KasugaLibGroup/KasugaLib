@@ -14,9 +14,7 @@ public class YogaFileLocator {
     }
 
     public static String getYogaAssemblyDirectory(){
-        if(Envs.isDevEnvironment()){
-            return getDevYogaAssemblyDirectory();
-        }else if(Envs.isClient()){
+        if(Envs.isClient()){
             try{
                 return YogaFileExtractor.extract() + File.separatorChar + "lwjgl-yoga-3.3.1" + File.separatorChar;
             }catch (Exception e){
