@@ -10,24 +10,27 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
 public class GuiExampleBlockRenderer implements BlockEntityRenderer<GuiExampleBlockEntity> {
-    public GuiExampleBlockRenderer(BlockEntityRendererProvider.Context context) {
-
-    }
+    public GuiExampleBlockRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
     public void render(GuiExampleBlockEntity entity, float v, PoseStack poseStack, MultiBufferSource multiBufferSource, int light, int overlay) {
-        RenderContext worldContext = new RenderContext(RenderContext.RenderContextType.WORLD);
-        worldContext.setBufferSource(multiBufferSource);
-        worldContext.setPoseStack(poseStack);
-        worldContext.pushLight(light);
-        worldContext.pushLight(LightTexture.FULL_BRIGHT);
-        worldContext.setSource(WorldRendererTarget.class);
-        poseStack.pushPose();
-        poseStack.scale(0.0025f * 0.6f,0.0025f* 0.6f,0.0025f);
-        WorldRendererTarget binding = entity.getMenu().getBinding().apply(Target.WORLD_RENDERER);
-        if(binding != null){
-            binding.render(worldContext);
-        }
-        poseStack.popPose();
+        entity.getMenu().ifPresent(menu -> {
+            RenderContext worldContext = new RenderContext(RenderContext.RenderContextType.WORLD);
+            worldContext.setBufferSource(multiBufferSource);
+            worldContext.setPoseStack(poseStack);
+            worldContext.pushLight(light);
+            worldContext.pushLight(LightTexture.FULL_BRIGHT);
+            worldContext.setSource(WorldRendererTarget.class);
+
+            poseStack.pushPose();
+            poseStack.scale(0.0025f * 0.6f, 0.0025f * 0.6f, 0.0025f);
+
+            WorldRendererTarget binding = menu.getBinding().apply(Target.WORLD_RENDERER);
+            if(binding != null) {
+                binding.render(worldContext);
+            }
+
+            poseStack.popPose();
+        });
     }
 }
