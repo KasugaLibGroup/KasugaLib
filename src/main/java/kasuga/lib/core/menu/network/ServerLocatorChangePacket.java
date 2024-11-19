@@ -38,7 +38,7 @@ public class ServerLocatorChangePacket extends S2CPacket {
 
     @Override
     public void encode(FriendlyByteBuf buf) {
-        locator.write(buf);
+        KasugaLib.STACKS.MENU.getLocatorRegistry().write(locator, buf);
         buf.writeVarInt(knownData.size());
         for (UUID uuid : knownData) {
             buf.writeUUID(uuid);
