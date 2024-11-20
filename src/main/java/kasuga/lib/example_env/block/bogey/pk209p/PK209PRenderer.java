@@ -11,6 +11,7 @@ import com.simibubi.create.foundation.utility.NBTHelper;
 import kasuga.lib.core.create.BogeyDataConstants;
 import kasuga.lib.example_env.AllExampleBogey;
 import kasuga.lib.example_env.AllExampleElements;
+import kasuga.lib.example_env.ExampleMain;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -18,7 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 public class PK209PRenderer extends BogeyRenderer {
 
     private static ResourceLocation asBlockModelResource(String path) {
-        return AllExampleElements.REGISTRY.asResource("block/" + path);
+        return ExampleMain.testRegistry.asResource("block/" + path);
     }
 
     public static final PartialModel PK209P_MAIN = new PartialModel(asBlockModelResource("bogey/pk209p/pk209p_main"));

@@ -38,7 +38,7 @@ import net.minecraftforge.common.SoundActions;
 
 public class AllExampleElements {
 
-    public static final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID,KasugaLib.EVENTS);
+    // public static final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID,KasugaLib.EVENTS);
 
     public static final BlockReg<GreenAppleBlock> greenApple =
             new BlockReg<GreenAppleBlock>("green_apple")
@@ -49,14 +49,14 @@ public class AllExampleElements {
             .defaultBlockItem(new ResourceLocation(KasugaLib.MOD_ID, "block/test/green_apple"))
             .stackSize(32)
             .tabTo(CreativeModeTab.TAB_DECORATIONS)
-            .submit(REGISTRY);
+            .submit(ExampleMain.testRegistry);
 
     public static final BlockEntityReg<GreenAppleTile> greenAppleTile =
             new BlockEntityReg<GreenAppleTile>("green_apple_tile")
             .blockEntityType(GreenAppleTile::new)
             .withRenderer(() -> GreenAppleTileRenderer::new)
             .blockPredicates((location, block) -> block instanceof GreenAppleBlock)
-            .submit(REGISTRY);
+            .submit(ExampleMain.testRegistry);
 
     public static final BlockReg<GuiExampleBlock> guiExampleBlock =
             new BlockReg<GuiExampleBlock>("gui_example_block")
@@ -64,14 +64,14 @@ public class AllExampleElements {
                     .material(Material.AIR)
                     .defaultBlockItem()
                     .tabTo(CreativeModeTab.TAB_DECORATIONS)
-                    .submit(REGISTRY);
+                    .submit(ExampleMain.testRegistry);
 
     public static final BlockEntityReg<GuiExampleBlockEntity> guiExampleTile =
             new BlockEntityReg<GuiExampleBlockEntity>("gui_example_tile")
                     .blockEntityType(GuiExampleBlockEntity::new)
                     .blockPredicates((location, block) -> block instanceof GuiExampleBlock)
                     .withRenderer(()-> GuiExampleBlockRenderer::new)
-                    .submit(REGISTRY);
+                    .submit(ExampleMain.testRegistry);
 
 
     /*
@@ -102,10 +102,10 @@ public class AllExampleElements {
             .stackTo(16)
             .shouldCustomRender(true)
             // .tab(tab)
-            .submit(REGISTRY);
+            .submit(ExampleMain.testRegistry);
 
     public static final CreativeTabReg tab = new CreativeTabReg("test")
-            .icon(greenAppleItem).submit(REGISTRY);
+            .icon(greenAppleItem).submit(ExampleMain.testRegistry);
     /*
     public static final AnimReg test_anim =
             new AnimReg("test_anim", REGISTRY.asResource("models/entity/test/wuling/wuling_anim.json"))
@@ -139,19 +139,19 @@ public class AllExampleElements {
             .noLootAndOcclusion()
             .setRenderType(RenderType.translucent())
             .tab(tab)
-            .submit(REGISTRY);
+            .submit(ExampleMain.testRegistry);
 
     public static final MenuReg<GreenAppleMenu, GreenAppleScreen> apple =
             new MenuReg<GreenAppleMenu, GreenAppleScreen>("green_apple_screen")
                     .withMenuAndScreen(GreenAppleMenu::new, () -> GreenAppleScreen::new)
-                    .submit(REGISTRY);
+                    .submit(ExampleMain.testRegistry);
 
 
     public static final ChannelReg Channel = new ChannelReg("example_channel")
             .brand("1.0")
             .loadPacket(ExampleC2SPacket.class, ExampleC2SPacket::new)
             .loadPacket(ExampleS2CPacket.class, ExampleS2CPacket::new)
-            .submit(REGISTRY);
+            .submit(ExampleMain.testRegistry);
 
 
     public static final GuiMenuType<GuiExampleMenu> MENU_EXAMPLE = GuiMenuType.createType(GuiExampleMenu::new);
@@ -169,6 +169,6 @@ public class AllExampleElements {
 
     public static void invoke() {
         if (Envs.isClient()) AllClient.invoke();
-        REGISTRY.submit();
+        // REGISTRY.submit();
     }
 }
