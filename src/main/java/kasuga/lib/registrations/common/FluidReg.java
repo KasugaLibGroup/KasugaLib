@@ -1,5 +1,7 @@
 package kasuga.lib.registrations.common;
 
+import com.mojang.blaze3d.shaders.FogShape;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Vector3f;
 import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.annos.Mandatory;
@@ -11,6 +13,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -61,6 +64,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     boolean registerItem = false, registerBlock = false, registerMenu = false;
     private final FluidTagReg tag;
     private RenderType renderType = null;
+    private Vector3f fogColor = null;
 
     /**
      * Create a fluid registration.
@@ -448,6 +452,18 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         return this;
     }
 
+    @Optional
+    public FluidReg<E> fogColor(Vector3f fogColor) {
+        this.fogColor = fogColor;
+        return this;
+    }
+
+    @Optional
+    public FluidReg<E> fogColor(float r, float g, float b) {
+        this.fogColor = new Vector3f(r / 255f, g / 255f, b / 255f);
+        return this;
+    }
+
     /**
      * Customize your fluid's property.
      * @param builder your fluid's property customizer lambda.
@@ -544,6 +560,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         ResourceLocation overlayLoc = overlayTexturePath == null ? null : new ResourceLocation(registry.namespace, overlayTexturePath);
 
         FluidType type  = new FluidType(properties) {
+
             @Override
             public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
                 consumer.accept(
@@ -572,6 +589,17 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
                                 if(overlayLoc != null)
                                     return overlayLoc;
                                 return IClientFluidTypeExtensions.super.getOverlayTexture();
+                            }
+
+                            @Override
+                            public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
+                                return fogColor;
+                            }
+
+                            @Override
+                            public void modifyFogRender(Camera camera, FogRenderer.FogMode mode, float renderDistance, float partialTick, float nearDistance, float farDistance, FogShape shape) {
+                                RenderSystem.setShaderFogStart(1f);
+                                RenderSystem.setShaderFogEnd(6f);
                             }
                         }
                 );

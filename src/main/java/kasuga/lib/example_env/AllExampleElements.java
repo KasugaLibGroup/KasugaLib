@@ -1,5 +1,6 @@
 package kasuga.lib.example_env;
 
+import com.mojang.math.Vector3f;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.BucketItem;
 import kasuga.lib.core.menu.base.GuiBinding;
@@ -135,6 +136,8 @@ public class AllExampleElements {
             .bucketItem(BucketItem::new)
             .basicFluidProperties(5, 15, 5, true)
             .defaultSounds()
+            .tintColor(0xFFD2691E)
+            .fogColor(210, 105, 30)
             .blockType(ExampleFluidBlock::new)
             .noLootAndOcclusion()
             .setRenderType(RenderType.translucent())
