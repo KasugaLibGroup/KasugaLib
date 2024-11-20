@@ -21,22 +21,24 @@ import kasuga.lib.example_env.client.screens.GreenAppleMenu;
 import kasuga.lib.example_env.client.screens.GreenAppleScreen;
 import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
-import kasuga.lib.registrations.client.AnimReg;
-import kasuga.lib.registrations.registry.CreateRegistry;
-import kasuga.lib.registrations.registry.SimpleRegistry;
-import kasuga.lib.registrations.client.KeyBindingReg;
-import kasuga.lib.registrations.client.ModelReg;
 import kasuga.lib.registrations.common.*;
+import kasuga.lib.registrations.registry.SimpleRegistry;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
+import net.minecraftforge.common.SoundAction;
+import net.minecraftforge.common.SoundActions;
 
 public class AllExampleElements {
 
-    public static final SimpleRegistry testRegistry = ExampleMain.testRegistry;
+    public static final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID,KasugaLib.EVENTS);
 
     public static final BlockReg<GreenAppleBlock> greenApple =
             new BlockReg<GreenAppleBlock>("green_apple")
@@ -47,14 +49,14 @@ public class AllExampleElements {
             .defaultBlockItem(new ResourceLocation(KasugaLib.MOD_ID, "block/test/green_apple"))
             .stackSize(32)
             .tabTo(CreativeModeTab.TAB_DECORATIONS)
-            .submit(testRegistry);
+            .submit(REGISTRY);
 
     public static final BlockEntityReg<GreenAppleTile> greenAppleTile =
             new BlockEntityReg<GreenAppleTile>("green_apple_tile")
             .blockEntityType(GreenAppleTile::new)
             .withRenderer(() -> GreenAppleTileRenderer::new)
             .blockPredicates((location, block) -> block instanceof GreenAppleBlock)
-            .submit(testRegistry);
+            .submit(REGISTRY);
 
     public static final BlockReg<GuiExampleBlock> guiExampleBlock =
             new BlockReg<GuiExampleBlock>("gui_example_block")
@@ -62,14 +64,14 @@ public class AllExampleElements {
                     .material(Material.AIR)
                     .defaultBlockItem()
                     .tabTo(CreativeModeTab.TAB_DECORATIONS)
-                    .submit(testRegistry);
+                    .submit(REGISTRY);
 
     public static final BlockEntityReg<GuiExampleBlockEntity> guiExampleTile =
             new BlockEntityReg<GuiExampleBlockEntity>("gui_example_tile")
                     .blockEntityType(GuiExampleBlockEntity::new)
                     .blockPredicates((location, block) -> block instanceof GuiExampleBlock)
                     .withRenderer(()-> GuiExampleBlockRenderer::new)
-                    .submit(testRegistry);
+                    .submit(REGISTRY);
 
 
     /*
@@ -78,19 +80,19 @@ public class AllExampleElements {
             .size(3, 3)
             .attribute(WuLingEntity::createAttributes)
             .withRenderer(() -> (WuLingRenderer::new))
-            .submit(testRegistry);
+            .submit(REGISTRY);
      */
 
     /*
     public static final ModelReg greenAppleModel = new ModelReg("green_apple", new ResourceLocation(KasugaLib.MOD_ID, "block/test/green_apple"))
-            .submit(testRegistry);
+            .submit(REGISTRY);
 
      */
 
     /*
     public static final ModelReg wuLingVans = new
             ModelReg("wuling_vans", new ResourceLocation(KasugaLib.MOD_ID, "entity/test/wuling/wuling_base"))
-            .submit(testRegistry);
+            .submit(REGISTRY);
 
      */
 
@@ -100,14 +102,14 @@ public class AllExampleElements {
             .stackTo(16)
             .shouldCustomRender(true)
             // .tab(tab)
-            .submit(testRegistry);
+            .submit(REGISTRY);
 
     public static final CreativeTabReg tab = new CreativeTabReg("test")
-            .icon(greenAppleItem).submit(testRegistry);
+            .icon(greenAppleItem).submit(REGISTRY);
     /*
     public static final AnimReg test_anim =
-            new AnimReg("test_anim", testRegistry.asResource("models/entity/test/wuling/wuling_anim.json"))
-            .submit(testRegistry);
+            new AnimReg("test_anim", REGISTRY.asResource("models/entity/test/wuling/wuling_anim.json"))
+            .submit(REGISTRY);
 
      */
 
@@ -131,21 +133,25 @@ public class AllExampleElements {
             .numericProperties(1, 8, 3, 10)
             .overlayTexPath("block/fluid/water_overlay")
             .bucketItem(BucketItem::new)
+            .basicFluidProperties(5, 15, 5, true)
+            .defaultSounds()
             .blockType(ExampleFluidBlock::new)
+            .noLootAndOcclusion()
+            .setRenderType(RenderType.translucent())
             .tab(tab)
-            .submit(testRegistry);
+            .submit(REGISTRY);
 
     public static final MenuReg<GreenAppleMenu, GreenAppleScreen> apple =
             new MenuReg<GreenAppleMenu, GreenAppleScreen>("green_apple_screen")
                     .withMenuAndScreen(GreenAppleMenu::new, () -> GreenAppleScreen::new)
-                    .submit(testRegistry);
+                    .submit(REGISTRY);
 
 
     public static final ChannelReg Channel = new ChannelReg("example_channel")
             .brand("1.0")
             .loadPacket(ExampleC2SPacket.class, ExampleC2SPacket::new)
             .loadPacket(ExampleS2CPacket.class, ExampleS2CPacket::new)
-            .submit(testRegistry);
+            .submit(REGISTRY);
 
 
     public static final GuiMenuType<GuiExampleMenu> MENU_EXAMPLE = GuiMenuType.createType(GuiExampleMenu::new);
@@ -158,12 +164,11 @@ public class AllExampleElements {
             .setEnvironment(KeyBindingReg.Environment.IN_GUI)
             .setClientHandler(System.out::println)
             .setServerHandler(System.out::println)
-            .submit(testRegistry);
+            .submit(REGISTRY);
      */
 
-
     public static void invoke() {
-        // if (Envs.isClient()) AllClient.invoke();
-        // testRegistry.submit();
+        if (Envs.isClient()) AllClient.invoke();
+        REGISTRY.submit();
     }
 }
