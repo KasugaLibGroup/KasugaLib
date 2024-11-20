@@ -30,6 +30,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
@@ -138,7 +139,8 @@ public class AllExampleElements {
             .defaultSounds()
             .tintColor(0xFFD2691E)
             .fogColor(210, 105, 30)
-            .blockType(ExampleFluidBlock::new)
+            .blockType((fluid, properties) ->
+                    new ExampleFluidBlock(fluid, BlockBehaviour.Properties.copy(Blocks.WATER)))
             .noLootAndOcclusion()
             .setRenderType(RenderType.translucent())
             .tab(tab)
