@@ -23,12 +23,18 @@ import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
 import kasuga.lib.registrations.common.*;
 import kasuga.lib.registrations.registry.SimpleRegistry;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
+import net.minecraftforge.common.SoundAction;
+import net.minecraftforge.common.SoundActions;
 
 public class AllExampleElements {
 
@@ -127,7 +133,11 @@ public class AllExampleElements {
             .numericProperties(1, 8, 3, 10)
             .overlayTexPath("block/fluid/water_overlay")
             .bucketItem(BucketItem::new)
+            .basicFluidProperties(5, 15, 5, true)
+            .defaultSounds()
             .blockType(ExampleFluidBlock::new)
+            .noLootAndOcclusion()
+            .setRenderType(RenderType.translucent())
             .tab(tab)
             .submit(REGISTRY);
 

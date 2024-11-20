@@ -23,10 +23,12 @@ import kasuga.lib.core.menu.locator.ServerChunkMenuLocatorManager;
 import kasuga.lib.core.menu.targets.TargetsClient;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.registrations.client.KeyBindingReg;
+import kasuga.lib.registrations.common.FluidReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.registry.FontRegistry;
 import kasuga.lib.registrations.registry.TextureRegistry;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.util.RandomSource;
@@ -53,6 +55,7 @@ public class KasugaLibStacks {
     private final FontRegistry FONTS;
     private final RandomSource random = RandomSource.create();
     private final HashMap<Block, CustomBlockRenderer> BLOCK_RENDERERS;
+    public static final HashMap<FluidReg<?>, RenderType> FLUID_RENDERS = new HashMap<>();
 
     public final JavascriptApi JAVASCRIPT = new JavascriptApi();
 
@@ -111,6 +114,7 @@ public class KasugaLibStacks {
             bus.addListener(AnimationModelRegistryEvent::registerAnimations);
             if (Envs.isDevEnvironment()) KasugaLibClient.invoke();
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()-> TargetsClient::register);
+            bus.addListener(REGISTRY::hookFluidAndRenders);
         }
 
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStarting);
