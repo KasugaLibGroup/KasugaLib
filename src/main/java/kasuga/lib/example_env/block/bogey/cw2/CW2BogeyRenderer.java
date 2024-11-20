@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 public class CW2BogeyRenderer extends BogeyRenderer {
 
     private static ResourceLocation asBlockModelResource(String path) {
-        return AllExampleElements.testRegistry.asResource("block/" + path);
+        return AllExampleElements.REGISTRY.asResource("block/" + path);
     }
 
     /**
