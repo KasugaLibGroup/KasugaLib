@@ -7,6 +7,7 @@ import kasuga.lib.core.client.model.anim_instance.AnimationInstance;
 import kasuga.lib.core.client.model.anim_model.AnimModel;
 import kasuga.lib.core.util.LazyRecomputable;
 import kasuga.lib.example_env.AllExampleElements;
+import kasuga.lib.example_env.ExampleMain;
 import kasuga.lib.example_env.block.green_apple.GreenAppleTile;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -19,8 +20,8 @@ public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTil
     // private static final WorldTexture texture = new WorldTexture(new ResourceLocation(KasugaLib.MOD_ID, "textures/common/test/green_apple_bubble.png"));
 
     LazyRecomputable<AnimateTicker> ticker = AnimateTicker.getTickerInstance(
-            AllExampleElements.REGISTRY.asResource("block/test/test_model_complicate"),
-            AllExampleElements.REGISTRY.asResource("model"),
+            ExampleMain.testRegistry.asResource("block/test/test_model_complicate"),
+            ExampleMain.testRegistry.asResource("model"),
             RenderType.solid(), "transform", AnimateTicker.TickerType.RENDER, 60, 100);
 
     public GreenAppleTileRenderer(BlockEntityRendererProvider.Context context) {}
