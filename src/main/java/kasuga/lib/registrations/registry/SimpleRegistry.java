@@ -13,6 +13,8 @@ import kasuga.lib.registrations.BlockEntityRendererBuilder;
 import kasuga.lib.registrations.client.AnimReg;
 import kasuga.lib.registrations.client.KeyBindingReg;
 import kasuga.lib.registrations.common.*;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -30,8 +32,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -351,6 +358,12 @@ public class SimpleRegistry {
         return CACHE_OF_MENUS.getOrDefault(registrationKey, null);
     }
 
+    @Inner
+    public void cacheFluidRenderIn(FluidReg<?> reg) {
+        if (reg.getRenderType() == null) return;
+        KasugaLibStacks.FLUID_RENDERS.put(reg, reg.getRenderType());
+    }
+
     public HashMap<String, MenuReg<?, ?>> getCahcedMenus() {
         return CACHE_OF_MENUS;
     }
@@ -424,6 +437,16 @@ public class SimpleRegistry {
             registry.put(location, model);
         }
         CUSTOM_RENDERED_ITEMS.clear();
+    }
+
+    @Inner
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public void hookFluidAndRenders(ModelEvent.RegisterAdditional event) {
+        for (Map.Entry<FluidReg<?>, RenderType> entry : KasugaLibStacks.FLUID_RENDERS.entrySet()) {
+            ItemBlockRenderTypes.setRenderLayer(entry.getKey().stillFluid(), entry.getValue());
+            ItemBlockRenderTypes.setRenderLayer(entry.getKey().flowingFluid(), entry.getValue());
+        }
     }
 
     public void onAnimationReg() {

@@ -1,5 +1,6 @@
 package kasuga.lib.example_env;
 
+import com.mojang.math.Vector3f;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.BucketItem;
 import kasuga.lib.core.menu.base.GuiBinding;
@@ -23,12 +24,19 @@ import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
 import kasuga.lib.registrations.common.*;
 import kasuga.lib.registrations.registry.SimpleRegistry;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
+import net.minecraftforge.common.SoundAction;
+import net.minecraftforge.common.SoundActions;
 
 public class AllExampleElements {
 
@@ -127,7 +135,14 @@ public class AllExampleElements {
             .numericProperties(1, 8, 3, 10)
             .overlayTexPath("block/fluid/water_overlay")
             .bucketItem(BucketItem::new)
-            .blockType(ExampleFluidBlock::new)
+            .basicFluidProperties(5, 15, 5, true)
+            .defaultSounds()
+            .tintColor(0xFFD2691E)
+            .fogColor(210, 105, 30)
+            .blockType((fluid, properties) ->
+                    new ExampleFluidBlock(fluid, BlockBehaviour.Properties.copy(Blocks.WATER)))
+            .noLootAndOcclusion()
+            .setRenderType(RenderType.translucent())
             .tab(tab)
             .submit(REGISTRY);
 
