@@ -89,8 +89,8 @@ public class JavetContext implements JavascriptEngineContext {
             return new JavetJavascriptModule(
                     module,
                     packageTarget,
-                    dirName,
                     fileName,
+                    dirName,
                     this.context
             );
         }catch (JavetException e){
