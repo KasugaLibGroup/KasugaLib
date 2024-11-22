@@ -210,7 +210,7 @@ dependencies {
     minecraftLibrary ('org.lwjgl:lwjgl-yoga:3.3.1') {
         exclude group: 'org.lwjgl',module: 'lwjgl'
     };
-    shadedLib(group: "org.lwjgl", name: "lwjgl-yoga", version: "[3.3.1, 4.0.0)"){
+    shadedLib('org.lwjgl:lwjgl-yoga:3.3.1'){
         exclude group: 'org.lwjgl',module: 'lwjgl'
     };
 
@@ -309,7 +309,7 @@ shadowJar{
     relocate ('io.netty.handler.codec.spdy', 'kasuga.lib.vendor_modules.io.netty.handler.codec.spdy');
     relocate('interpreter','kasuga.lib.vendor_modules.interpreter');
     relocate('org.apache', 'kasuga.lib.vendor_modules.org.apache');
-    relocate ('com.caoccao.javet', 'kasuga.lib.vendor_modules.com.caoccao.javet');
+    // relocate ('com.caoccao.javet', 'kasuga.lib.vendor_modules.com.caoccao.javet');
     finalizedBy 'reobfShadowJar'
 }
 
