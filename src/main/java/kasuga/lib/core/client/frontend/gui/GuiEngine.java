@@ -64,4 +64,8 @@ public class GuiEngine {
     public Optional<GuiInstance> getInstanceById(UUID id) {
         return Optional.ofNullable(localInstances.get(id));
     }
+
+    public HashMap<UUID, GuiInstance> getAllInstances() {
+        return localInstances;
+    }
 }

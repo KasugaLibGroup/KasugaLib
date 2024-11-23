@@ -152,4 +152,8 @@ public class GuiInstance {
     public void putContextObject(String contextModuleName, Object object){
         contextObject.put(contextModuleName, object);
     }
+
+    public ResourceLocation getLocation() {
+        return location;
+    }
 }
