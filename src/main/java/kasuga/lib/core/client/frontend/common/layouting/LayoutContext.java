@@ -34,6 +34,11 @@ public class LayoutContext<T extends LayoutNode,N extends DomNode> {
 
     public LayoutNode removeSource(Object source){
         LayoutNode node = this.sources.remove(source);
+        if(node == null){
+            if(Envs.isDevEnvironment()){
+                KasugaLib.MAIN_LOGGER.error("Source "+source.toString()+ "has not found in layout context, it may caused by multithread problems. If this still happends, please check.");
+            }
+        }
         for (LayoutContext<?,N> child : children) {
             node.removeChild(child.removeSource(source));
         }

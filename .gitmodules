@@ -4,3 +4,6 @@
 [submodule "src/main/java/kasuga/lib/codes"]
 	path = src/main/java/kasuga/lib/codes
 	url = https://github.com/MegumiKasuga/Mixed-Arithmetic-Logic-Interpreter.git
+[submodule "javascript/core"]
+	path = javascript/core
+	url = https://github.com/KasugaLibGroup/KasugaJavascript.git

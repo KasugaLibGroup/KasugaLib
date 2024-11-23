@@ -115,16 +115,20 @@ public class GuiInstance {
 
     public void updateSourceInfo(Object source, SourceInfo sourceInfo){
         this.sourceInfos.put(source, sourceInfo);
+        beforeRender();
         getContext().ifPresent((c)->{
             c.setSourceInfo(source, sourceInfo);
         });
+        afterRender();
     }
 
     public void removeSourceInfo(Object source){
         this.sourceInfos.remove(source);
+        beforeRender();
         getContext().ifPresent((c)->{
             c.removeSourceInfo(source);
         });
+        afterRender();
     }
 
     public void beforeRender(){
@@ -139,9 +143,6 @@ public class GuiInstance {
             return;
         this.context.renderLock.unlock();
         this.context.isRendering = false;
-        this.context.getRenderer().getContext().ifPresent((c)->{
-            c.dispatchBeforeRenderTick();
-        });
     }
 
     public Object getModule(String contextModuleName) {
@@ -150,5 +151,9 @@ public class GuiInstance {
 
     public void putContextObject(String contextModuleName, Object object){
         contextObject.put(contextModuleName, object);
+    }
+
+    public ResourceLocation getLocation() {
+        return location;
     }
 }

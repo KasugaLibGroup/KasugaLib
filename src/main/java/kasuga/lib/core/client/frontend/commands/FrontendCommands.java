@@ -5,11 +5,15 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.addons.node.NodePackage;
 import kasuga.lib.core.base.commands.CommandHandler;
+import kasuga.lib.core.client.frontend.gui.GuiInstance;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.JavascriptThread;
 import kasuga.lib.registrations.common.CommandReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -83,6 +87,60 @@ public class FrontendCommands {
                     });
                 }
             }).submit(REGISTRY);
+
+    public static final CommandReg GUI_INSTANCES_LIST = new CommandReg("kasugalib")
+            .addLiteral("gui", false)
+            .addLiteral("instances", false)
+            .addLiteral("list", false)
+            .onlyIn(Dist.CLIENT)
+            .setHandler(new CommandHandler(){
+                @Override
+                public void run() {
+                    Minecraft.getInstance().player.sendSystemMessage(Component.literal("-------- GUI Instances --------"));
+                    KasugaLib.STACKS.GUI.ifPresent((gui)->{
+                        gui.getAllInstances().forEach((id, instance)->{
+                            Minecraft.getInstance().player.sendSystemMessage(
+                                    Component.literal(id.toString().substring(0,8))
+                                            .append(" ")
+                                            .append(Component.literal(instance.getLocation().toString()))
+                                            .append(" ")
+                                            .append(Component.literal("[Inspect]")
+                                                    .withStyle((s)->
+                                                            s.withBold(true)
+                                                                    .withClickEvent(
+                                                                            new ClickEvent(
+                                                                                    ClickEvent.Action.RUN_COMMAND,
+                                                                                    "/kasugalib gui instances inspect "+id
+                                                                            )
+                                                                    )
+                                                    )
+                                            ).withStyle((s)->s.withColor(TextColor.parseColor("#ffff00")))
+                            );
+                        });
+                    });
+
+                }
+            }).submit(REGISTRY);
+
+    public static final CommandReg GUI_INSPECT = new CommandReg("kasugalib")
+            .addLiteral("gui", false)
+            .addLiteral("instances", false)
+            .addLiteral("inspect", false)
+            .addResourceLocation("id", false)
+            .onlyIn(Dist.CLIENT)
+            .setHandler(new CommandHandler(){
+                @Override
+                public void run() {
+                    if(KasugaLib.STACKS.GUI.isEmpty()){
+                        return;
+                    }
+                    ResourceLocation id = getParameter("id", ResourceLocation.class);
+                    RenderSystem.recordRenderCall(()->{
+                        Minecraft.getInstance().setScreen(KasugaLib.STACKS.GUI.get().create(id).createScreen());
+                    });
+                }
+            }).submit(REGISTRY);
+
     public static void invoke(){
         REGISTRY.submit();
     }
