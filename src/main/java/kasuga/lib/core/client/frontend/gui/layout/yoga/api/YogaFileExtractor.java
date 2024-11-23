@@ -25,7 +25,9 @@ public class YogaFileExtractor {
             return librariesFolder.getAbsolutePath();
         }
         URI path = YogaFileExtractor.class.getProtectionDomain().getCodeSource().getLocation().toURI();
-        if (!path.getPath().contains(".jar")) return null;
+        if (!path.getPath().contains(".jar")) {
+            return YogaFileLocator.getDevelopmentLibrariesDirectory();
+        }
         String jarPath = path.getPath().substring(0, path.getPath().indexOf(".jar") + 4);
         JarFile jarFile = new JarFile(jarPath);
 

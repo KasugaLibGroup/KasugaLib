@@ -27,3 +27,6 @@ forge*changelog.txt
 node_modules
 yarn.lock
 package-lock.json
+
+# Javascript Build
+javascript/**/lib
