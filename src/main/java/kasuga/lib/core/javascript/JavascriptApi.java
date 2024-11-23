@@ -20,7 +20,7 @@ public class JavascriptApi {
 
     public NodePackageLoader CLIENT_LOADER;
     public NodePackageLoader SERVER_LOADER;
-    public RegistrationRegistry registry;
+    public RegistrationRegistry registry = new RegistrationRegistry();
     public Optional<HashMap<UUID, Object>> ASSETS = Optional.empty();
 
     public void setupClient(){
@@ -31,7 +31,6 @@ public class JavascriptApi {
         CLIENT_LOADER.bindRuntime(GROUP_CLIENT, EntryType.CLIENT);
         GROUP_CLIENT.getModuleLoader().getLoader().register(new NodeModuleResolver());
         GROUP_CLIENT.getModuleLoader().getLoader().register(new PrebuiltModuleLoader());
-        registry = new RegistrationRegistry();
     }
 
     public void setupServer(){

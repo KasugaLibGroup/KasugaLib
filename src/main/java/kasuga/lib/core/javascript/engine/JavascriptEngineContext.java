@@ -11,6 +11,8 @@ import java.util.List;
 public interface JavascriptEngineContext {
     void loadModule(String moduleName);
 
+    void loadModule(JavascriptEngineModule module);
+
     JavascriptValue asValue(Object object);
 
     JavascriptModuleScope getModuleScope();

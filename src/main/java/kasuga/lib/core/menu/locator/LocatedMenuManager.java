@@ -28,7 +28,6 @@ public class LocatedMenuManager {
     }
 
     public ArrayList<UUID> asServer(){
-        reset();
         ArrayList<UUID> uuids = new ArrayList<>();
         for(GuiMenu menu : menus){
             uuids.add(menu.asServer());
@@ -102,6 +101,7 @@ public class LocatedMenuManager {
                     manager.register(menu);
                 }
                 manager.init();
+                manager.reset();
                 return manager;
             };
         }

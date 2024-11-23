@@ -1,6 +1,7 @@
 package kasuga.lib.core.javascript.registration;
 
 import kasuga.lib.core.javascript.JavascriptContext;
+import kasuga.lib.core.javascript.engine.JavascriptEngineContext;
 import kasuga.lib.core.javascript.engine.JavascriptValue;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.resources.ResourceLocation;
@@ -46,6 +47,11 @@ public abstract class JavascriptPriorityRegistry<T> {
         return Lazy.of(()->get(location));
     }
 
-    public abstract T fromValue(JavascriptValue value);
+    public T fromValue(JavascriptValue value){
+        throw new RuntimeException("Not Implemented");
+    }
 
+    public T fromValue(JavascriptContext context, JavascriptValue item) {
+        return fromValue(item);
+    }
 }

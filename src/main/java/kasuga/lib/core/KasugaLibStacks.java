@@ -86,6 +86,7 @@ public class KasugaLibStacks {
         MinecraftForge.EVENT_BUS.addListener(ServerChunkMenuLocatorManager::onUnWatch);
         bus.addListener(BothSetupEvent::onFMLCommonSetup);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
+        MinecraftForge.EVENT_BUS.addListener(ServerTickEvent::onServerTick);
 
 
         if(Envs.isClient()) {

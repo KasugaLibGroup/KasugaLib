@@ -77,10 +77,16 @@ public class GuiMenu {
             );
         this.peer = peer;
         GuiMenuNetworking.getServerSwitcher().addPeer(peer);
+        this.initServer();
         return id;
     }
 
+    protected void initServer() {}
+
     public void asClient(UUID serverId){
+        if(this.serverId == serverId){
+            return;
+        }
         if(isDifferentiated) {
             throw new IllegalStateException("This instance is already differentiated");
         }
@@ -95,7 +101,11 @@ public class GuiMenu {
         this.serverId = serverId;
         GuiMenuNetworking.getClientSwitcher().addPeer(peer);
         this.peer.createSocket(remoteInfo, this.createClientHandler());
+        this.initClient();
+        KasugaLib.STACKS.MENU.addMenuTickInstance(this);
     }
+
+    protected void initClient() {}
 
     private void clientForwardMessageToGuiInstance(CompoundTag message){
         if(isGuiInstanceCreated){
@@ -174,6 +184,7 @@ public class GuiMenu {
     public void onMesssage(Channel channel, ChannelHandle handle, CompoundTag payload){}
 
     public void close(){
+        KasugaLib.STACKS.MENU.removeMenuTickInstance(this);
         if(isDifferentiated){
             if(isServer){
                 for(ChannelHandle handle : handles.values()){
@@ -215,7 +226,7 @@ public class GuiMenu {
 
 
     int reconnection = 0;
-    public void tick(){
+    public void clientTick(){
         if(isDifferentiated && !isServer){
             if(connectionFailure){
                 if(reconnection > 0){
