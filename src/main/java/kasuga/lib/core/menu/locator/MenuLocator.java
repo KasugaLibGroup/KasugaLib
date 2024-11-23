@@ -40,6 +40,8 @@ public abstract class MenuLocator implements NetworkSerializable {
 
 
     public void sendUpTo(Connection connection){
+        if(!connection.isConnected())
+            return;
         AllPackets.CHANNEL_REG.sendTo(
                 new ServerLocatorChangePacket(this, manager.asServer()),
                 connection,
@@ -50,6 +52,8 @@ public abstract class MenuLocator implements NetworkSerializable {
 
 
     public void sendDownTo(Connection connection){
+        if(!connection.isConnected())
+            return;
         AllPackets.CHANNEL_REG.sendTo(
                 new ServerLocatorChangePacket(this, manager.asServer()),
                 connection,
