@@ -45,6 +45,9 @@ public class GuiEngine {
 
     public void closeInstance(GuiInstance instance){
         this.instances.remove(instance);
+        if(localInstances.containsValue(instance)){
+            localInstances.entrySet().removeIf(entry -> entry.getValue().equals(instance));
+        }
     }
 
     public void renderTick() {
