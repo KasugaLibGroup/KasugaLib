@@ -27,7 +27,6 @@ public class KasugaLib {
     public static final Gson GSON = new GsonBuilder().enableComplexMapKeySerialization().create();
 
     public KasugaLib() {
-        E2EIntergration.invoke();
         EVENTS.register(this);
         AllPackets.init();
         // YogaExample.example();
@@ -37,7 +36,6 @@ public class KasugaLib {
         KasugaLibConfig.invoke();
         if (Envs.isDevEnvironment())
             AllExampleElements.invoke();
-
     }
 
     public static Logger createLogger(String name) {
