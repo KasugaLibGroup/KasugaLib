@@ -10,6 +10,7 @@ import kasuga.lib.core.menu.targets.Target;
 import kasuga.lib.core.menu.targets.WorldRendererTarget;
 import kasuga.lib.example_env.AllExampleElements;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.UUID;
 
@@ -38,5 +39,11 @@ public class GuiExampleMenu extends JavascriptMenu {
     protected void closeGuiInstance() {
         WorldRendererTarget.detach(this);
         super.closeGuiInstance();
+    }
+
+    public void setBlockEntity(GuiExampleBlockEntity blockEntity){
+        if(hasProvide("example"))
+            return;
+        provide("example", new GuiExampleBlockApi(blockEntity));
     }
 }

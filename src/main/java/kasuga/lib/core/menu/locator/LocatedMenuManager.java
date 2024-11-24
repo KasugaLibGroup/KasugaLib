@@ -8,12 +8,16 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class LocatedMenuManager {
     private ArrayList<GuiMenuType<?>> menuSuppliers = new ArrayList<>();
     private ArrayList<GuiMenu> menus = new ArrayList<>();
+
+    private ArrayList<Consumer<GuiMenu>> menuInitializers = new ArrayList<>();
 
     public void close() {
         for (GuiMenu menu : menus) {
@@ -23,8 +27,9 @@ public class LocatedMenuManager {
         }
     }
 
-    public void register(GuiMenuType<?> menuType) {
+    public void register(GuiMenuType<?> menuType, Consumer<GuiMenu> initializer) {
         this.menuSuppliers.add(menuType);
+        this.menuInitializers.add(initializer);
     }
 
     public ArrayList<UUID> asServer(){
@@ -56,7 +61,9 @@ public class LocatedMenuManager {
             if(i >=0 && i < menus.size() && menus.get(i) != null){
                 menus.get(i).close();
             }
-            menus.set(i, menuSuppliers.get(i).create());
+            GuiMenu menu = menuSuppliers.get(i).create();
+            menuInitializers.get(i).accept(menu);
+            menus.set(i, menu);
         }
     }
 
@@ -89,16 +96,25 @@ public class LocatedMenuManager {
 
     public static class Builder {
         private List<GuiMenuType<?>> menuSuppliers = new ArrayList<>();
+        private List<Consumer<GuiMenu>> menuInitializers = new ArrayList<>();
 
         public Builder with(GuiMenuType<?> menu){
             this.menuSuppliers.add(menu);
+            this.menuInitializers.add((m)->{});
             return this;
         }
+
+        public Builder with(GuiMenuType<?> menu, Consumer<GuiMenu> initializer){
+            this.menuSuppliers.add(menu);
+            this.menuInitializers.add(initializer);
+            return this;
+        }
+
         public Type build() {
             return ()->{
                 LocatedMenuManager manager =  new LocatedMenuManager();
-                for(GuiMenuType<?> menu : menuSuppliers){
-                    manager.register(menu);
+                for(int i=0;i<menuSuppliers.size();i++){
+                    manager.register(menuSuppliers.get(i), menuInitializers.get(i));
                 }
                 manager.init();
                 manager.reset();

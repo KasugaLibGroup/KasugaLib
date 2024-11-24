@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class GuiMenuHolder {
     private final List<GuiMenu> menus = new ArrayList<>();
@@ -90,6 +91,12 @@ public class GuiMenuHolder {
 
         public Builder with(GuiMenuType<?> menuType) {
             managerBuilder.with(menuType);
+
+            return this;
+        }
+
+        public <T extends GuiMenu> Builder with(GuiMenuType<T> menuType, Consumer<T> initialParameter) {
+            managerBuilder.with(menuType, (Consumer<GuiMenu>) initialParameter);
             return this;
         }
 

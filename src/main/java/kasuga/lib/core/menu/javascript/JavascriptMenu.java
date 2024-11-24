@@ -2,10 +2,8 @@ package kasuga.lib.core.menu.javascript;
 
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.javascript.JavascriptContext;
-import kasuga.lib.core.javascript.engine.JavascriptValue;
 import kasuga.lib.core.menu.base.GuiMenu;
 import kasuga.lib.core.menu.base.GuiMenuType;
-import kasuga.lib.core.util.Callback;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.resources.ResourceLocation;
 
@@ -84,5 +82,13 @@ public abstract class JavascriptMenu extends GuiMenu {
         } else {
             openJavascriptServer();
         }
+    }
+
+    protected void provide(String key, Object value){
+        handle.nativeObjects.put(key, value);
+    }
+
+    protected boolean hasProvide(String key){
+        return handle.nativeObjects.containsKey(key);
     }
 }
