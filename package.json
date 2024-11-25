@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "kasugalib",
   "version": "0.1.0",
   "description": "The javascript part of KasugaLib",
@@ -6,13 +7,15 @@
   "repository": "https://github.com/KasugaLibGroup/KasugaLib",
   "author": "TimeBather <open-source@timebather.cn>",
   "license": "MIT",
-  "private": true,
-  "scripts": {
-    "build": "tsx ./lib/build.ts"
-  },
+  "workspaces": [
+    "javascript/**"
+  ],
   "devDependencies": {
-    "tsx": "^4.15.7",
-    "@types/node": "^20.14.9",
-    "esbuild": "^0.21.3"
+    "esbuild": "^0.24.0",
+    "glob": "^11.0.0",
+    "tsx": "^4.19.2"
+  },
+  "scripts": {
+    "build": "tsx javascript/build.ts"
   }
 }

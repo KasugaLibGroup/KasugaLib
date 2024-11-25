@@ -30,7 +30,7 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
 
     public GuiContext(GuiInstance guiInstance, DOMPriorityRegistry registry, ResourceLocation location) {
         super(registry, location);
-        layoutEngine  = LayoutEngines.YOGA;
+        layoutEngine = LayoutEngines.YOGA;
         this.guiInstance = guiInstance;
     }
 

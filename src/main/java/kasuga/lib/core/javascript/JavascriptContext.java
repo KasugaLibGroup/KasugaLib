@@ -38,14 +38,7 @@ public class JavascriptContext {
 
     Set<Tickable> tickables = new HashSet<>();
 
-    Queue<CompletableFuture> futures = new ArrayDeque<>();
-
     public void tick(){
-        if(!this.futures.isEmpty()){
-            beforeRenderTick();
-            CompletableFuture future;
-            while((future = this.futures.poll()) != null) future.complete(null);
-        }
         tickables.forEach(Tickable::tick);
     }
 
@@ -84,13 +77,6 @@ public class JavascriptContext {
             task.run();
         }
     }
-
-    public CompletableFuture dispatchBeforeRenderTick(){
-        CompletableFuture future = new CompletableFuture();
-        this.futures.add(future);
-        return future;
-    }
-
 
     public void enqueueAfterRenderTask(Runnable runnable) {
         this.afterRenderTickTasks.add(runnable);

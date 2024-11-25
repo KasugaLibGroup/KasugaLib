@@ -83,9 +83,9 @@ public class BlockMenuLocator extends MenuLocator implements IChunkBasedLocator 
 
     @Override
     public void disable(LocatedMenuManager manager) {
+        this.broadcastDisable();
         super.disable(manager);
         this.unlisten();
-        this.broadcastDisable();
     }
 
     @Override

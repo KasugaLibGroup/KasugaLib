@@ -24,7 +24,7 @@ public class YogaFileLocator {
         throw new IllegalStateException("Illegal environment");
     }
 
-    public static String getDevYogaAssemblyDirectory(){
-        return "../src/generated/resources/libraries/lwjgl-yoga-3.3.1/";
+    public static String getDevelopmentLibrariesDirectory(){
+        return "../src/generated/resources/libraries/";
     }
 }

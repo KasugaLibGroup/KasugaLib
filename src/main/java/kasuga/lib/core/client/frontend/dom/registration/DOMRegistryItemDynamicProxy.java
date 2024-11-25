@@ -60,10 +60,13 @@ public class DOMRegistryItemDynamicProxy {
             return;
         this.context.getRootNode().clear();
         this.closed = true;
-        context.appendTask(()->sideEffectContext.close());
+        SideEffectContext _closingContext = this.sideEffectContext;
+        context.appendTask(()->{
+            _closingContext.close();
+        });
         context.setNotReady();
-        this.registryContext = null;
         this.sideEffectContext = null;
+        this.registryContext = null;
     }
 
     public void enable() {
