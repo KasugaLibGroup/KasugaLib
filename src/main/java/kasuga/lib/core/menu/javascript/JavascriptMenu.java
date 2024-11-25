@@ -1,17 +1,22 @@
 package kasuga.lib.core.menu.javascript;
 
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.channel.peer.Channel;
+import kasuga.lib.core.channel.peer.ChannelHandle;
 import kasuga.lib.core.javascript.JavascriptContext;
+import kasuga.lib.core.menu.api.ChannelHandlerProxy;
+import kasuga.lib.core.menu.api.ChannelProxy;
 import kasuga.lib.core.menu.base.GuiMenu;
 import kasuga.lib.core.menu.base.GuiMenuType;
 import kasuga.lib.core.util.data_type.Pair;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.concurrent.CompletableFuture;
 
 public abstract class JavascriptMenu extends GuiMenu {
     private final ResourceLocation location;
-    JavascriptMenuHandle handle = new JavascriptMenuHandle();
+    JavascriptMenuHandle handle = new JavascriptMenuHandle(this);
     private Runnable sideEffect;
     private JavascriptContext context;
 
@@ -90,5 +95,35 @@ public abstract class JavascriptMenu extends GuiMenu {
 
     protected boolean hasProvide(String key){
         return handle.nativeObjects.containsKey(key);
+    }
+
+    @Override
+    public void onInit(Channel channel, ChannelHandle socketHandle) {
+        super.onInit(channel, socketHandle);
+        if(context!= null){
+            context.runTask(()->{
+                handle.dispatchEvent("connection", ChannelProxy.wrap(channel, false), ChannelHandlerProxy.wrap(socketHandle));
+            });
+        }
+    }
+
+    @Override
+    public void onMesssage(Channel channel, ChannelHandle socketHandle, CompoundTag payload) {
+        super.onMesssage(channel, socketHandle, payload);
+        if(context != null){
+            context.runTask(()->{
+                handle.dispatchEvent("message", payload, ChannelProxy.wrap(channel, false), ChannelHandlerProxy.wrap(socketHandle));
+            });
+        }
+    }
+
+    @Override
+    public void onClose(Channel channel, ChannelHandle socketHandle) {
+        super.onClose(channel, socketHandle);
+        if(context != null){
+            context.runTask(()->{
+                handle.dispatchEvent("disconnection", ChannelProxy.wrap(channel, false), ChannelHandlerProxy.wrap(socketHandle));
+            });
+        }
     }
 }

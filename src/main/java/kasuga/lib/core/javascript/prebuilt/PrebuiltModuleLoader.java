@@ -4,6 +4,7 @@ import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.engine.JavascriptEngineContext;
 import kasuga.lib.core.javascript.engine.JavascriptEngineModule;
 import kasuga.lib.core.javascript.engine.JavascriptModuleLoader;
+import kasuga.lib.core.javascript.prebuilt.nbt.NBTModule;
 import kasuga.lib.core.javascript.prebuilt.process.ProcessModule;
 import kasuga.lib.core.javascript.prebuilt.registry.RegistryPrebuiltModule;
 import kasuga.lib.core.javascript.prebuilt.timer.TimerPrebuiltModule;
@@ -22,6 +23,8 @@ public class PrebuiltModuleLoader implements JavascriptModuleLoader {
                 return Optional.of(new ProcessModule(source));
             case "kasuga:registry":
                 return Optional.of(new RegistryPrebuiltModule(source));
+            case "kasuga:nbt":
+                return Optional.of(NBTModule.getInstance());
         }
 
         return Optional.empty();

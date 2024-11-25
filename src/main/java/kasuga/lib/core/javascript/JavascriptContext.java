@@ -60,8 +60,12 @@ public class JavascriptContext {
     }
 
     public Callback runTask(Callback task) {
-        return effect.effect(()->{
-            Runnable finalTask = task::execute;
+        Callback[] callback = new Callback[1];
+        return callback[0] = effect.effect(()->{
+            Runnable finalTask = ()->{
+                effect.remove(callback[0]);
+                task.execute();
+            };
             thread.recordCall(finalTask);
             return ()->{
                 thread.revokeCall(finalTask);

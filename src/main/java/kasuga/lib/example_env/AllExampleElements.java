@@ -1,8 +1,11 @@
 package kasuga.lib.example_env;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Vector3f;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.BucketItem;
+import kasuga.lib.core.base.commands.CommandHandler;
+import kasuga.lib.core.client.interaction.GuiOperatingPerspectiveScreen;
 import kasuga.lib.core.menu.base.GuiBinding;
 import kasuga.lib.core.menu.base.GuiMenu;
 import kasuga.lib.core.menu.base.GuiMenuRegistry;
@@ -24,6 +27,7 @@ import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
 import kasuga.lib.registrations.common.*;
 import kasuga.lib.registrations.registry.SimpleRegistry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -35,6 +39,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.SoundAction;
 import net.minecraftforge.common.SoundActions;
 
@@ -171,6 +176,18 @@ public class AllExampleElements {
             .setServerHandler(System.out::println)
             .submit(REGISTRY);
      */
+
+    public static final CommandReg OPERATE_COMMAND = new CommandReg("operate")
+            .onlyIn(Dist.CLIENT)
+            .setHandler(new CommandHandler() {
+                @Override
+                public void run() {
+                    RenderSystem.recordRenderCall(()->{
+                        Minecraft.getInstance().setScreen(new GuiOperatingPerspectiveScreen());
+                    });
+                }
+            })
+            .submit(REGISTRY);
 
     public static void invoke() {
         if (Envs.isClient()) AllClient.invoke();

@@ -1,15 +1,21 @@
 package kasuga.lib.core.menu.javascript;
 
 import kasuga.lib.core.client.frontend.dom.event.EventEmitter;
+import kasuga.lib.core.javascript.CompoundTagWrapper;
 import kasuga.lib.core.javascript.engine.HostAccess;
 import kasuga.lib.core.javascript.engine.JavascriptValue;
 
 import java.util.HashMap;
 
 public class JavascriptMenuHandle {
+    private final JavascriptMenu menu;
     EventEmitter emitter = new EventEmitter();
 
     HashMap<String, Object> nativeObjects = new HashMap<>();
+
+    public JavascriptMenuHandle(JavascriptMenu menu){
+        this.menu = menu;
+    }
 
     @HostAccess.Export
     public void addEventListener(String eventName, JavascriptValue callback){
@@ -30,5 +36,9 @@ public class JavascriptMenuHandle {
     @HostAccess.Export
     public Object inject(String key){
         return nativeObjects.get(key);
+    }
+
+    public void broadcast(CompoundTagWrapper message){
+        menu.broadcast(message.getNativeTag());
     }
 }
