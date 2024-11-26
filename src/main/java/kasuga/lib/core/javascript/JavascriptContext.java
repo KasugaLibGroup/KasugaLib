@@ -3,6 +3,7 @@ package kasuga.lib.core.javascript;
 import kasuga.lib.core.client.animation.neo_neo.base.Movement;
 import kasuga.lib.core.client.frontend.commands.MetroModuleInfo;
 import kasuga.lib.core.javascript.engine.*;
+import kasuga.lib.core.javascript.registration.RegistrationRegistry;
 import kasuga.lib.core.util.Callback;
 import net.minecraft.Util;
 import org.mozilla.javascript.commonjs.module.ModuleScope;
@@ -100,5 +101,9 @@ public class JavascriptContext {
 
     public JavascriptModuleLoader getModuleLoader() {
         return this.contextModuleLoader.getLoader();
+    }
+
+    public RegistrationRegistry getSidedRegistry() {
+        return this.thread.sidedRegistry;
     }
 }

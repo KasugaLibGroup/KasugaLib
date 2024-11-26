@@ -30,7 +30,7 @@ public class GuiMenuManager {
     }
 
     public void initRegistry(){
-        KasugaLib.STACKS.JAVASCRIPT.registry.register(
+        KasugaLib.STACKS.JAVASCRIPT.SERVER_REGISTRY.register(
                 KasugaLib.STACKS.REGISTRY.asResource("menu"),
                 javascriptRegistry
         );
