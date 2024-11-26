@@ -25,11 +25,6 @@ public class GuiInstance {
         this.location = location;
     }
 
-    public void open(Object object){
-        this.openInternal(object);
-        this.context.createSource(object);
-        this.context.getAttachedTargets().attach(object);
-    }
 
     public void open(Entity entity){
         this.openInternal(entity);
@@ -50,33 +45,44 @@ public class GuiInstance {
         return screen;
     }
 
-    protected void open(GuiScreen screen){
+    public void open(GuiScreen screen){
         this.openInternal(screen);
         this.context.createSource(screen);
         this.context.getAttachedTargets().attach(screen);
     }
 
+    public void open(Object object){
+        this.openInternal(object);
+        this.context.createSource(object);
+        this.context.getAttachedTargets().attach(object);
+    }
+
     public void close(Screen screen){
-        this.context.removeSource(screen);
-        this.context.getAttachedTargets().detach(screen);
+        if(this.context.getAttachedTargets().detach(screen)){
+            this.context.removeSource(screen);
+        }
         this.closeInternal(screen);
+        
     }
 
     public void close(Entity entity){
-        this.context.getAttachedTargets().detach(entity);
-        this.context.removeSource(entity);
+        if(this.context.getAttachedTargets().detach(entity)){
+            this.context.removeSource(entity);
+        }
         this.closeInternal(entity);
     }
 
     public void close(BlockEntity block){
-        this.context.getAttachedTargets().detach(block);
-        this.context.removeSource(block);
+        if(this.context.getAttachedTargets().detach(block)){
+            this.context.removeSource(block);
+        }
         this.closeInternal(block);
     }
 
     public void close(Object object){
-        this.context.getAttachedTargets().detach(object);
-        this.context.removeSource(object);
+        if(this.context.getAttachedTargets().detach(object)){
+            this.context.removeSource(object);
+        }
         this.closeInternal(object);
     }
 

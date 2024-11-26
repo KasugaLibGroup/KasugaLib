@@ -2,6 +2,7 @@ package kasuga.lib.core.javascript;
 
 import kasuga.lib.core.util.Callback;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -16,20 +17,25 @@ public class SideEffectContext {
 
     public Callback collect(Callback callback){
         Callback[] callbackRef = new Callback[1];
-        callbackRef[0] = callback;
         Callback actualCallback = ()->{
             try{
-                callbackRef[0].execute();
+                callback.execute();
             }catch (Exception e){
                 e.printStackTrace();
             }
-            effectCallbacks.remove(callbackRef[0]);
+            remove(callbackRef[0]);
         };
+        callbackRef[0] = actualCallback;
         effectCallbacks.add(actualCallback);
         return actualCallback;
     }
 
+    public void remove(Callback callback){
+        effectCallbacks.remove(callback);
+    }
     public void close(){
-        effectCallbacks.forEach(Callback::execute);
+        ArrayList<Callback> callbacks = new ArrayList<>(effectCallbacks);
+
+        callbacks.forEach(Callback::execute);
     }
 }

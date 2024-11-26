@@ -18,6 +18,8 @@ public class ClientTickEvent {
             AnimateTickerManager.INSTANCE.tickGui();
         }
 
+        KasugaLib.STACKS.MENU.clientTick();
+
         // deal with world ticker;
     }
 

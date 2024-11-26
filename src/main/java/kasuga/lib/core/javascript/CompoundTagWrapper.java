@@ -5,6 +5,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class CompoundTagWrapper {
@@ -161,6 +163,11 @@ public class CompoundTagWrapper {
     @HostAccess.Export
     public void putLongArray(String key, long[] value) {
         tag.putLongArray(key, value);
+    }
+
+    @HostAccess.Export
+    public Collection getAllKeys(){
+        return Arrays.asList(tag.getAllKeys().toArray());
     }
 
     public CompoundTag getNativeTag() {

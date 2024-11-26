@@ -3,6 +3,7 @@ package kasuga.lib.core.javascript;
 import kasuga.lib.core.client.animation.neo_neo.base.Movement;
 import kasuga.lib.core.client.frontend.commands.MetroModuleInfo;
 import kasuga.lib.core.javascript.engine.*;
+import kasuga.lib.core.javascript.registration.RegistrationRegistry;
 import kasuga.lib.core.util.Callback;
 import net.minecraft.Util;
 import org.mozilla.javascript.commonjs.module.ModuleScope;
@@ -60,8 +61,12 @@ public class JavascriptContext {
     }
 
     public Callback runTask(Callback task) {
-        return effect.effect(()->{
-            Runnable finalTask = task::execute;
+        Callback[] callback = new Callback[1];
+        return callback[0] = effect.effect(()->{
+            Runnable finalTask = ()->{
+                effect.remove(callback[0]);
+                task.execute();
+            };
             thread.recordCall(finalTask);
             return ()->{
                 thread.revokeCall(finalTask);
@@ -96,5 +101,9 @@ public class JavascriptContext {
 
     public JavascriptModuleLoader getModuleLoader() {
         return this.contextModuleLoader.getLoader();
+    }
+
+    public RegistrationRegistry getSidedRegistry() {
+        return this.thread.sidedRegistry;
     }
 }

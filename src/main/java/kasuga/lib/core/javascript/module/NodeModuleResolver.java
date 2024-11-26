@@ -42,6 +42,10 @@ public class NodeModuleResolver implements JavascriptModuleLoader {
 
             PackageReader reader = packageTarget.reader;
 
+            if(reader == null){
+                continue;
+            }
+
             moduleLike = first(
                     List.of(
                             realName,

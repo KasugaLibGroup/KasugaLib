@@ -1,289 +1,132 @@
 package kasuga.lib.core.javascript.commands;
 
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.addons.node.NodePackage;
+import kasuga.lib.core.addons.node.PackageMinecraftField;
 import kasuga.lib.core.base.commands.CommandHandler;
+import kasuga.lib.core.javascript.JavascriptContext;
+import kasuga.lib.core.javascript.JavascriptThread;
+import kasuga.lib.core.javascript.engine.JavascriptEngineModule;
 import kasuga.lib.registrations.common.ArgumentTypeReg;
 import kasuga.lib.registrations.common.CommandReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
+import java.util.UUID;
+import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
+import java.io.IOException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 @SuppressWarnings("Unused")
 public class JavascriptModuleCommands {
+    private static final HashMap<UUID, String> serverUrls = new HashMap<>();
+    private static final CloseableHttpClient client = HttpClients.createDefault();
+
     public static final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
 
     public static final ArgumentTypeReg type = ArgumentTypeReg.INSTANCE.registerType(File.class, File::new)
             .submit(REGISTRY);
 
+    public static final NodePackage PACKAGE =
+            new NodePackage(
+                    "@kasugalib/debugging",
+                    "1.0.0",
+                    "",
+                    List.of(),
+                    null,
+                    PackageMinecraftField.empty()
+            );
+
     public static final CommandReg JS_OPEN = new CommandReg("kasugalib")
             .addLiteral("js", false)
-            .addLiteral("open", false)
-            .addResourceLocation("ImageLocation", false)
-            .addString("ContainerID", true)
+            .addLiteral("debug", false)
+            .addString("server", false)
             .setHandler(new CommandHandler(){
                 @Override
                 public void run() {
-                    //kasugalib js open <ImageLocation> [ContainerID]
-                    ResourceLocation image = getParameter("ImageLocation", ResourceLocation.class);
-                    String containerID;
-                    try{
-                        containerID = getParameter("ContainerID", String.class);
-                    }catch (IllegalArgumentException e){
-                        //Known, ignore
-                    }
-                    //TODO Handle me!
-                }
-            }).submit(REGISTRY);
-
-    public static final CommandReg command11 = new CommandReg("kasugalib")
-            .addLiteral("js", false)
-            .addLiteral("stop", false)
-            .addString("ContextID",  false)
-            .setHandler(new CommandHandler(){
-                @Override
-                public void run() {
-                    //kasugalib js stop <ContextID>
-                    String contextID = getParameter("ContextID", String.class);
-                    //TODO Handle me!
-                }
-            }).submit(REGISTRY);
-
-    public static final CommandReg command12 = new CommandReg("kasugalib")
-            .addLiteral("js", false)
-            .addLiteral("require", false)
-            .addString("ContextID",  false)
-            .addString("ModuleID",  false)
-            .setHandler(new CommandHandler(){
-                @Override
-                public void run() {
-                    //kasugalib js require <ContextID> <ModuleID>
-                    String contextID = getParameter("ContextID", String.class);
-                    String moduleID = getParameter("ModuleID", String.class);
-                    //TODO Handle me!
-                }
-            }).submit(REGISTRY);
-
-    public static final CommandReg command20 = new CommandReg("kasugalib")
-            .addLiteral("js", false)
-            .addLiteral("client", false)
-            .addLiteral("open", false)
-            .addResourceLocation("ImageLocation",  false)
-            .addString("ContainerID",  true)
-            .onlyIn(Dist.CLIENT)
-            .setHandler(new CommandHandler(){
-                @Override
-                public void run() {
-                    //kasugalib js client open <ImageLocation> [ContainerID]
-                    ResourceLocation image = getParameter("ImageLocation", ResourceLocation.class);
-                    String containerID;
-                    try{
-                        containerID = getParameter("ContainerID", String.class);
-                    }catch (IllegalArgumentException e){
-                        //Known, ignore
-                    }
-                    //TODO Handle me!
-                }
-            }).submit(REGISTRY);
-
-    public static final CommandReg command21 = new CommandReg("kasugalib")
-            .addLiteral("js", false)
-            .addLiteral("client", false)
-            .addLiteral("stop", false)
-            .addString("ContextID",  false)
-            .onlyIn(Dist.CLIENT)
-            .setHandler(new CommandHandler(){
-                @Override
-                public void run() {
-                    //kasugalib js client stop <ContextID>
-                    String contextID = getParameter("ContextID", String.class);
-                    //TODO Handle me!
-                }
-            }).submit(REGISTRY);
-
-    public static final CommandReg command22 = new CommandReg("kasugalib")
-            .addLiteral("js", false)
-            .addLiteral("client", false)
-            .addLiteral("require", false)
-            .addString("ContextID",  false)
-            .addString("ModuleID",  false)
-            .onlyIn(Dist.CLIENT)
-            .setHandler(new CommandHandler(){
-                @Override
-                public void run() {
-                    //kasugalib js client require <ContextID> <ModuleID>
-                    String contextID = getParameter("ContextID", String.class);
-                    String moduleID = getParameter("ModuleID", String.class);
-                    //TODO Handle me!
-                }
-            }).submit(REGISTRY);
-
-    public static final CommandReg command30 = new CommandReg("kasugalib")
-            .addLiteral("js", false)
-            .addLiteral("channel", false)
-            .addLiteral("info",  false)
-            .addString("ChannelID",  true)
-            .setHandler(new CommandHandler(){
-                @Override
-                public void run() {
-                    //kasugalib js channel info [ChannelID]
-                    String channelID;
+                    String serverUrl = getParameter("server", String.class);
                     try {
-                        channelID = getParameter("ChannelID", String.class);
-                    }catch (IllegalArgumentException e){
-                        //Known,ignore
+                        HttpGet request = new HttpGet(serverUrl);
+                        CloseableHttpResponse response = client.execute(request);
+                        
+                        if (response.getStatusLine().getStatusCode() == 200) {
+                            String jsContent = EntityUtils.toString(response.getEntity());
+                            JavascriptThread thread = KasugaLib
+                                    .STACKS
+                                    .JAVASCRIPT
+                                    .GROUP_SERVER
+                                    .getOrCreate(JavascriptModuleCommands.class, "Server Script Debugger");
+
+                            thread.recordCall(() -> {
+                                // 创建新的Context
+                                UUID contextId = UUID.randomUUID();
+                                JavascriptContext context = thread.createContext(
+                                         contextId,
+                                        "Debugger Context - " + contextId
+                                );
+
+                                serverUrls.put(contextId, serverUrl);
+
+                                InputStream stringInput = new ByteArrayInputStream(jsContent.getBytes());
+                                JavascriptEngineModule module = context.getRuntimeContext().compileModuleFromSource(
+                                        PACKAGE,
+                                        contextId.toString() + ".js",
+                                        ".",
+                                        stringInput
+                                );
+                                context.getRuntimeContext().loadModule(module);
+
+                                this.ctx.getSource().sendSystemMessage(
+                                        Component.literal("[KasugaLib] Debugging session started  ")
+                                                .append(Component.literal("[CLOSE]")
+                                                        .withStyle(style ->
+                                                                style.withColor(ChatFormatting.RED)
+                                                                        .withClickEvent(
+                                                                                new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/kasugalib js close "+ contextId.toString()))
+                                                )));
+                            });
+                        }
+                        response.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    //TODO Handle me!
                 }
             }).submit(REGISTRY);
 
-    public static final CommandReg command31 = new CommandReg("kasugalib")
+    public static final CommandReg JS_CLOSE = new CommandReg("kasugalib")
             .addLiteral("js", false)
-            .addLiteral("channel", false)
-            .addLiteral("monitor",  false)
-            .addLiteral("start",  false)
-            .addString("ChannelID",  false)
+            .addLiteral("close", false)
+            .addString("context", false)
             .setHandler(new CommandHandler(){
                 @Override
                 public void run() {
-                    //kasugalib js channel monitor start <ChannelID>
-                    String channelID = getParameter("ChannelID", String.class);
-                    //TODO Handle me!
+                    String contextId = getParameter("context", String.class);
+                    UUID uuid = UUID.fromString(contextId);
+                    JavascriptThread thread = KasugaLib
+                            .STACKS
+                            .JAVASCRIPT
+                            .GROUP_SERVER
+                            .getOrCreate(JavascriptModuleCommands.class, "Server Script Debugger");
+                    thread.closeContext(uuid);
+                    serverUrls.remove(uuid);
                 }
             }).submit(REGISTRY);
 
-    public static final CommandReg command32 = new CommandReg("kasugalib")
-            .addLiteral("js", false)
-            .addLiteral("channel", false)
-            .addLiteral("monitor",  false)
-            .addLiteral("stop",  false)
-            .addString("ChannelID",  false)
-            .setHandler(new CommandHandler(){
-                @Override
-                public void run() {
-                    //kasugalib js channel monitor stop <ChannelID>
-                    String channelID = getParameter("ChannelID", String.class);
-                    //TODO Handle me!
-                }
-            }).submit(REGISTRY);
-
-    public static final CommandReg command33 = new CommandReg("kasugalib")
-            .addLiteral("js", false)
-            .addLiteral("channel", false)
-            .addLiteral("mock",  false)
-            .addLiteral("start",  false)
-            .setHandler(new CommandHandler(){
-                @Override
-                public void run() {
-                    //kasugalib js channel mock start
-                    //TODO Handle me!
-                }
-            }).submit(REGISTRY);
-
-    public static final CommandReg command34 = new CommandReg("kasugalib")
-            .addLiteral("js", false)
-            .addLiteral("channel", false)
-            .addLiteral("mock",  false)
-            .addLiteral("accept",  false)
-            .addString("ChannelID",  false)
-            .setHandler(new CommandHandler(){
-                @Override
-                public void run() {
-                    //kasugalib js channel mock accept <ChannelID>
-                    String channelID = getParameter("ChannelID", String.class);
-                    //TODO Handle me!
-                }
-            }).submit(REGISTRY);
-
-    public static final CommandReg command35 = new CommandReg("kasugalib")
-            .addLiteral("js", false)
-            .addLiteral("channel", false)
-            .addLiteral("mock",  false)
-            .addLiteral("next",  false)
-            .addString("ChannelID",  false)
-            .setHandler(new CommandHandler(){
-                @Override
-                public void run() {
-                    //kasugalib js channel mock next <ChannelID>
-                    String channelID = getParameter("ChannelID", String.class);
-                    //TODO Handle me!
-                }
-            }).submit(REGISTRY);
-
-    public static final CommandReg command36 = new CommandReg("kasugalib")
-            .addLiteral("js", false)
-            .addLiteral("channel", false)
-            .addLiteral("mock",  false)
-            .addLiteral("active",  false)
-            .addString("ChannelID",  false)
-            .setHandler(new CommandHandler(){
-                @Override
-                public void run() {
-                    //kasugalib js channel mock active <ChannelID>
-                    String channelID = getParameter("ChannelID", String.class);
-                    //TODO Handle me!
-                }
-            }).submit(REGISTRY);
-
-    public static final CommandReg command37 = new CommandReg("kasugalib")
-            .addLiteral("js", false)
-            .addLiteral("channel", false)
-            .addLiteral("mock",  false)
-            .addLiteral("send",  false)
-            .addString("Content",  false)
-            .setHandler(new CommandHandler(){
-                @Override
-                public void run() {
-                    //kasugalib js channel mock send <Content>
-                    String content = getParameter("Content", String.class);
-                    //TODO Handle me!
-                }
-            }).submit(REGISTRY);
-
-    public static final CommandReg command38 = new CommandReg("kasugalib")
-            .addLiteral("js", false)
-            .addLiteral("channel", false)
-            .addLiteral("mock",  false)
-            .addLiteral("stop",  false)
-            .setHandler(new CommandHandler(){
-                @Override
-                public void run() {
-                    //kasugalib js channel mock stop
-                    //TODO Handle me!
-                }
-            }).submit(REGISTRY);
-
-    public static final CommandReg command40 = new CommandReg("kasuga")
-            .addLiteral("gui-debug", false)
-            .addLiteral("load-metro", false)
-            .addString("Bundle", false)
-            .addURL("Server-Address", true)
-            .setHandler(new CommandHandler(){
-                @Override
-                public void run() {
-                    //kasuga gui-debug load-metro <Bundle> [Server-Address]
-                    String bundle = getParameter("Bundle", String.class);
-                    URL containerID;
-                    try{
-                        containerID = getParameter("Server-Address", URL.class);
-                    }catch (IllegalArgumentException e){
-                        //Known, ignore
-                    }
-                    //TODO Handle me!
-                }
-            }).submit(REGISTRY);
-
-    public static final CommandReg command42 = new CommandReg("kasuga")
-            .addLiteral("list", false)
-            .setHandler(new CommandHandler(){
-                @Override
-                public void run() {
-                    //kasuga list
-                    //TODO Handle me!
-                }
-            }).submit(REGISTRY);
 
     public static void invoke(){
         REGISTRY.submit();
