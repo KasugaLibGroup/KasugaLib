@@ -3,6 +3,9 @@ package kasuga.lib.core.menu.javascript;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.channel.peer.Channel;
 import kasuga.lib.core.channel.peer.ChannelHandle;
+import kasuga.lib.core.channel.peer.ChannelPeer;
+import kasuga.lib.core.client.animation.neo_neo.base.Movement;
+import kasuga.lib.core.client.animation.neo_neo.key_frame.KeyFrameHolder;
 import kasuga.lib.core.javascript.CompoundTagWrapper;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.menu.api.ChannelHandlerProxy;
@@ -13,6 +16,9 @@ import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class JavascriptMenu extends GuiMenu {
@@ -20,6 +26,7 @@ public abstract class JavascriptMenu extends GuiMenu {
     JavascriptMenuHandle handle = new JavascriptMenuHandle(this);
     private Runnable sideEffect;
     private JavascriptContext context;
+    private HashMap<Channel, ChannelHandle> connections = new HashMap<>();
 
     protected JavascriptMenu(GuiMenuType<?> type) {
         super(type);
@@ -54,8 +61,12 @@ public abstract class JavascriptMenu extends GuiMenu {
             return;
         }
         this.context = handler.getSecond();
+        ArrayList<Map.Entry<Channel, ChannelHandle>> connections = new ArrayList<>(this.connections.entrySet());
         handler.getSecond().runTask(()->{
             this.sideEffect = handler.getFirst().open(handle);
+            connections.forEach((entry)->{
+                handle.dispatchEvent("connection", ChannelProxy.wrap(entry.getKey(), false), ChannelHandlerProxy.wrap(entry.getValue()));
+            });
         });
     }
 
@@ -71,6 +82,9 @@ public abstract class JavascriptMenu extends GuiMenu {
         } else {
             if(context != null){
                 this.context.runTask(()->{
+                    connections.forEach((channel, socketHandle)->{
+                        handle.dispatchEvent("disconnection", ChannelProxy.wrap(channel, false), ChannelHandlerProxy.wrap(socketHandle));
+                    });
                     closeJavascriptServer().thenRun(()->future.complete(new Object()));
                 });
             }else {
@@ -106,6 +120,7 @@ public abstract class JavascriptMenu extends GuiMenu {
                 handle.dispatchEvent("connection", ChannelProxy.wrap(channel, false), ChannelHandlerProxy.wrap(socketHandle));
             });
         }
+        this.connections.put(channel, socketHandle);
     }
 
     @Override
@@ -126,5 +141,6 @@ public abstract class JavascriptMenu extends GuiMenu {
                 handle.dispatchEvent("disconnection", ChannelProxy.wrap(channel, false), ChannelHandlerProxy.wrap(socketHandle));
             });
         }
+        this.connections.remove(channel);
     }
 }
