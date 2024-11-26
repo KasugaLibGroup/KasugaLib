@@ -30,6 +30,7 @@ public class KasugaTimer {
             this.id = timerId;
             this.type = type;
             this.callback = callback;
+            this.durations = durations;
             this.nextTicks = ticks;
         }
 
