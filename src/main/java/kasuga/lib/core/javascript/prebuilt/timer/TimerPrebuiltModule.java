@@ -39,6 +39,7 @@ public class TimerPrebuiltModule extends PrebuiltModule {
 
     @HostAccess.Export
     public int requestInterval(JavascriptValue callback, JavascriptValue interval){
+        callback.pin();
         return requestScheduled(KasugaTimer.TimerType.INTERVAL,()->callback.executeVoid(), ()->callback.unpin(), interval);
     }
 

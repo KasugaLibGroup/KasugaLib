@@ -21,7 +21,7 @@ public class RegistryPrebuiltModule extends PrebuiltModule {
 
     public RegistryPrebuiltModule(JavascriptContext runtime) {
         super(runtime);
-        this.registry = KasugaLib.STACKS.JAVASCRIPT.registry;
+        this.registry = runtime.getSidedRegistry();
         this.context = runtime;
     }
 

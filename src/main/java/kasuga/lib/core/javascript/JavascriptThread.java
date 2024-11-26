@@ -3,6 +3,7 @@ package kasuga.lib.core.javascript;
 import kasuga.lib.core.client.animation.neo_neo.base.Movement;
 import kasuga.lib.core.client.animation.neo_neo.key_frame.KeyFrameHolder;
 import kasuga.lib.core.javascript.engine.ScriptEngine;
+import kasuga.lib.core.javascript.registration.RegistrationRegistry;
 import org.apache.commons.compress.changes.ChangeSet;
 import org.mozilla.javascript.commonjs.module.ModuleScope;
 
@@ -18,6 +19,7 @@ public class JavascriptThread extends SynchronizedThread{
     public ScriptEngine scriptEngine;
 
     public ContextModuleLoader contextModuleLoader;
+    public RegistrationRegistry sidedRegistry;
     private Set<CompletableFuture> afterTerminate = new HashSet<>();
     private Object target;
 
@@ -27,6 +29,7 @@ public class JavascriptThread extends SynchronizedThread{
         this.scriptEngine = javascriptThreadGroup.getScriptEngine();
         this.contextModuleLoader = new ContextModuleLoader(javascriptThreadGroup.getModuleLoader());
         this.target = target;
+        this.sidedRegistry = javascriptThreadGroup.getRegistry();
     }
 
     @Override

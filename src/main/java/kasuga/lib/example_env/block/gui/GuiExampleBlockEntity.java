@@ -27,7 +27,7 @@ public class GuiExampleBlockEntity extends BlockEntity {
         super.setLevel(pLevel);
         try{
             holder = new GuiMenuHolder.Builder()
-                    .with(AllExampleElements.MENU_EXAMPLE)
+                    .with(AllExampleElements.MENU_EXAMPLE, (menu)->menu.setBlockEntity(this))
                     .locatedAt(BlockMenuLocator.of(level, getBlockPos()))
                     .build();
             holder.enable(pLevel);
@@ -63,11 +63,11 @@ public class GuiExampleBlockEntity extends BlockEntity {
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, BlockEntity block) {
         GuiExampleBlockEntity entity = (GuiExampleBlockEntity)block;
         if(level instanceof ServerLevel) {
-            entity.incrementData();
+            // entity.incrementData();
         }
     }
 
-    public Optional<GuiMenu> getMenu() {
-        return holder.getMenu(0);
+    public Optional<GuiExampleMenu> getMenu() {
+        return holder.getMenu(0).map((t)->(t instanceof GuiExampleMenu menu) ? menu : null);
     }
 }

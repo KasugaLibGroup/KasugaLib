@@ -65,21 +65,21 @@ public class GuiAttachTarget implements Iterable<Object> {
         this.entity.add(entity);
     }
 
-    public void detach(BlockEntity block){
-        this.block.remove(block);
+    public boolean detach(BlockEntity block){
+        return this.block.remove(block);
     }
 
-    public void detach(Screen screen){
-        this.screen.remove(null);
+    public boolean detach(Screen screen){
+        return this.screen.remove(screen);
     }
 
-    public void detach(Entity entity){
-        this.entity.remove(entity);
+    public boolean detach(Entity entity){
+        return this.entity.remove(entity);
     }
 
     public void attach(Object object){this.objects.add(object);}
 
-    public void detach(Object object){this.objects.remove(object);}
+    public boolean detach(Object object){return this.objects.remove(object);}
 
     @NotNull
     @Override

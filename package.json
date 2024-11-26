@@ -7,11 +7,10 @@
   "repository": "https://github.com/KasugaLibGroup/KasugaLib",
   "author": "TimeBather <open-source@timebather.cn>",
   "license": "MIT",
-  "workspaces": [
-    "javascript/**"
-  ],
   "devDependencies": {
+    "@types/node": "^22.9.3",
     "esbuild": "^0.24.0",
+    "execa": "^5.5.1",
     "glob": "^11.0.0",
     "tsx": "^4.19.2"
   },

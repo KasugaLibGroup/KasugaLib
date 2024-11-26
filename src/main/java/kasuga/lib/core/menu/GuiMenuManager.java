@@ -1,17 +1,18 @@
 package kasuga.lib.core.menu;
 
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.menu.base.GuiMenu;
 import kasuga.lib.core.menu.base.GuiMenuRegistry;
+import kasuga.lib.core.menu.javascript.JavascriptMenuRegistry;
 import kasuga.lib.core.menu.locator.*;
 import kasuga.lib.core.menu.network.GuiMenuNetworking;
 import kasuga.lib.core.menu.targets.TargetsClient;
-import kasuga.lib.core.packets.AllPackets;
-import net.minecraft.client.Minecraft;
 
 import java.util.*;
 
 public class GuiMenuManager {
     GuiMenuRegistry registry = new GuiMenuRegistry();
+    JavascriptMenuRegistry javascriptRegistry = new JavascriptMenuRegistry();
     MenuLocatorRegistry locatorRegistry = new MenuLocatorRegistry();
 
     HashMap<MenuLocator, List<UUID>> serverKnownData = new HashMap<>();
@@ -25,6 +26,13 @@ public class GuiMenuManager {
         locatorRegistry.register(
                 KasugaLib.STACKS.REGISTRY.asResource("block"),
                 MenuLocatorTypes.CHUNK_MENU
+        );
+    }
+
+    public void initRegistry(){
+        KasugaLib.STACKS.JAVASCRIPT.SERVER_REGISTRY.register(
+                KasugaLib.STACKS.REGISTRY.asResource("menu"),
+                javascriptRegistry
         );
     }
 
@@ -79,6 +87,26 @@ public class GuiMenuManager {
         }else{
             clientKnownData.remove(locator);
             removeClientLocator(locator);
+        }
+    }
+
+    public JavascriptMenuRegistry getJavascriptRegistry() {
+        return javascriptRegistry;
+    }
+
+    protected List<GuiMenu> tickables = new ArrayList<>();
+
+    public void addMenuTickInstance(GuiMenu guiMenu) {
+        this.tickables.add(guiMenu);
+    }
+
+    public void removeMenuTickInstance(GuiMenu guiMenu) {
+        this.tickables.remove(guiMenu);
+    }
+
+    public void clientTick(){
+        for(GuiMenu menu : tickables){
+            menu.clientTick();
         }
     }
 }
