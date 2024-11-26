@@ -13,6 +13,7 @@ public class JavascriptMenuRegistry extends JavascriptPriorityRegistry<Javascrip
     @Override
     public JavascriptMenuHandler fromValue(JavascriptContext context, JavascriptValue value) {
         if(value.canExecute()){
+            value.pin();
             return JavascriptMenuHandler.ofExecutable(context.getRuntimeContext() ,value);
         }
         throw new IllegalStateException("Value is not executable");

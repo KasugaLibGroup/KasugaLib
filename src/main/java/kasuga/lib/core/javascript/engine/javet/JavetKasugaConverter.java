@@ -36,8 +36,6 @@ public class JavetKasugaConverter extends JavetObjectConverter {
     private final V8ValueSymbol SYMBOL_NATIVE_OBJECT;
     HashMap<Integer, WeakReference<Object>> cachedObjects = new HashMap<>();
 
-    WeakCache<Object, V8ValueObject> cachedNativeObjects = new WeakCache<>();
-
     JavetKasugaConverter(V8Runtime runtime){
         this.runtime = runtime;
         try{
@@ -55,9 +53,6 @@ public class JavetKasugaConverter extends JavetObjectConverter {
         }
         if(object instanceof JavetJavascriptValue value){
             return (T) value.getValue().toClone();
-        }
-        if(cachedNativeObjects.containsKey(object)){
-            return (T) cachedNativeObjects.getCache(object);
         }
         if(
                 object instanceof int[] ||
@@ -87,7 +82,6 @@ public class JavetKasugaConverter extends JavetObjectConverter {
                 int hashCode = System.identityHashCode(object);
                 v8ValueObject.setInteger(SYMBOL_NATIVE_OBJECT, hashCode);
                 cachedObjects.put(hashCode, new WeakReference<>(object));
-                cachedNativeObjects.putCache(object, v8ValueObject);
             }
             return v8Value;
         }
@@ -99,7 +93,6 @@ public class JavetKasugaConverter extends JavetObjectConverter {
                 int hashCode = System.identityHashCode(object);
                 v8ValueObject.setProperty(SYMBOL_NATIVE_OBJECT,hashCode);
                 cachedObjects.put(hashCode, new WeakReference<>(object));
-                cachedNativeObjects.putCache(object, v8ValueObject);
             }
 
             return (T) v8ValueConverted;

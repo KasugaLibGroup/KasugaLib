@@ -38,6 +38,7 @@ public class JavascriptMenuHandle {
         return nativeObjects.get(key);
     }
 
+    @HostAccess.Export
     public void broadcast(CompoundTagWrapper message){
         menu.broadcast(message.getNativeTag());
     }
