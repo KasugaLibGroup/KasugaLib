@@ -3,6 +3,7 @@ package kasuga.lib.core.menu.javascript;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.channel.peer.Channel;
 import kasuga.lib.core.channel.peer.ChannelHandle;
+import kasuga.lib.core.javascript.CompoundTagWrapper;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.menu.api.ChannelHandlerProxy;
 import kasuga.lib.core.menu.api.ChannelProxy;
@@ -112,7 +113,7 @@ public abstract class JavascriptMenu extends GuiMenu {
         super.onMesssage(channel, socketHandle, payload);
         if(context != null){
             context.runTask(()->{
-                handle.dispatchEvent("message", payload, ChannelProxy.wrap(channel, false), ChannelHandlerProxy.wrap(socketHandle));
+                handle.dispatchEvent("message", new CompoundTagWrapper(payload), ChannelProxy.wrap(channel, false), ChannelHandlerProxy.wrap(socketHandle));
             });
         }
     }
