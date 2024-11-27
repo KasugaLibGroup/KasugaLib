@@ -113,6 +113,7 @@ public class KasugaLibStacks {
             bus.addListener(GeometryEvent::registerReloadListener);
             bus.addListener(BothSetupEvent::RegisterKeyEvent);
             GUI = Optional.of(new GuiEngine());
+            MENU.initClient();
             bus.addListener(AnimationModelRegistryEvent::registerAnimations);
             if (Envs.isDevEnvironment()) KasugaLibClient.invoke();
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()-> TargetsClient::register);
