@@ -8,6 +8,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.UUID;
@@ -38,11 +40,6 @@ public class BlockEntityMenuIdSyncPacket extends S2CPacket {
 
     @Override
     public void handle(Minecraft minecraft) {
-        Level world = minecraft.level;
-        if (world != null && world.dimension() == dimension) {
-            if (world.getBlockEntity(position) instanceof IBlockEntityMenuHolder menuHolder) {
-                menuHolder.notifyMenuId(serverId);
-            }
-        }
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()->()->BlockEntityMenuIdSyncHandler.handle(minecraft, serverId, dimension, position));
     }
 }
