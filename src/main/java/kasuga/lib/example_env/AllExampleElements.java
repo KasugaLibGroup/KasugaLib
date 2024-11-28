@@ -42,6 +42,7 @@ import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.SoundAction;
 import net.minecraftforge.common.SoundActions;
+import net.minecraftforge.fml.DistExecutor;
 
 public class AllExampleElements {
 
@@ -182,9 +183,7 @@ public class AllExampleElements {
             .setHandler(new CommandHandler() {
                 @Override
                 public void run() {
-                    RenderSystem.recordRenderCall(()->{
-                        Minecraft.getInstance().setScreen(new GuiOperatingPerspectiveScreen());
-                    });
+                    DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()->OperateScreenCommand::invoke);
                 }
             })
             .submit(REGISTRY);
