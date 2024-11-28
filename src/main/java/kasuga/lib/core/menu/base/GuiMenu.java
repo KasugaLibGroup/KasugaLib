@@ -229,11 +229,11 @@ public class GuiMenu {
     public void clientTick(){
         if(isDifferentiated && !isServer){
             if(connectionFailure){
-                if(reconnection > 0){
-                    reconnection--;
-                    connectionFailure = false;
-                    peer.createSocket(remoteInfo, this.createClientHandler());
+                if(--reconnection > 0){
+                    return;
                 }
+                connectionFailure = false;
+                peer.createSocket(remoteInfo, this.createClientHandler());
             }
         }
     }

@@ -21,12 +21,15 @@ public class GuiMenuManager {
     Map<MenuLocator, LocatedMenuManager> serverLocators = new HashMap<>();
 
     public void init(){
-        TargetsClient.register();
         GuiMenuNetworking.invoke();
         locatorRegistry.register(
                 KasugaLib.STACKS.REGISTRY.asResource("block"),
                 MenuLocatorTypes.CHUNK_MENU
         );
+    }
+
+    public void initClient(){
+        TargetsClient.register();
     }
 
     public void initRegistry(){

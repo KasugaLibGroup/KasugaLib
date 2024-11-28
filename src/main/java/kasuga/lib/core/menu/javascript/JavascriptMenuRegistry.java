@@ -1,13 +1,17 @@
 package kasuga.lib.core.menu.javascript;
 
+import kasuga.lib.core.channel.peer.ChannelHandle;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.engine.JavascriptEngineContext;
 import kasuga.lib.core.javascript.engine.JavascriptValue;
 import kasuga.lib.core.javascript.registration.JavascriptPriorityRegistry;
 import net.minecraft.resources.ResourceLocation;
 
+import javax.swing.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class JavascriptMenuRegistry extends JavascriptPriorityRegistry<JavascriptMenuHandler> {
     @Override
@@ -51,7 +55,8 @@ public class JavascriptMenuRegistry extends JavascriptPriorityRegistry<Javascrip
         if(!menus.containsKey(id)){
             return;
         }
-        for(JavascriptMenu menu : menus.get(id)){
+        ArrayList<JavascriptMenu> pendingUpdateMenus = new ArrayList<>(menus.get(id));
+        for(JavascriptMenu menu : pendingUpdateMenus){
             menu.reload();
         }
     }

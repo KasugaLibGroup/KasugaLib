@@ -1,7 +1,6 @@
 package kasuga.lib.core.menu.network;
 
 import kasuga.lib.core.menu.IBlockEntityMenuHolder;
-import kasuga.lib.core.menu.behaviour.BlockEntityMenuBehaviour;
 import kasuga.lib.core.network.S2CPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
@@ -9,9 +8,12 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class BlockEntityMenuIdSyncPacket extends S2CPacket {
     private final UUID serverId;
@@ -38,17 +40,6 @@ public class BlockEntityMenuIdSyncPacket extends S2CPacket {
 
     @Override
     public void handle(Minecraft minecraft) {
-        Level world = minecraft.level;
-        if (world != null && world.dimension() == dimension) {
-            BlockEntity blockEntity = world.getBlockEntity(position);
-            BlockEntityMenuBehaviour behaviour = BlockEntityMenuBehaviour.get(blockEntity, BlockEntityMenuBehaviour.TYPE);
-            if (behaviour != null) {
-                behaviour.notifyMenuId(serverId);
-                return;
-            }
-            if (world.getBlockEntity(position) instanceof IBlockEntityMenuHolder menuHolder) {
-                menuHolder.notifyMenuId(serverId);
-            }
-        }
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()->()->BlockEntityMenuIdSyncHandler.handle(minecraft, serverId, dimension, position));
     }
 }
