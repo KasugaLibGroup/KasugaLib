@@ -21,6 +21,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -36,7 +37,7 @@ public class ChannelReg extends Reg {
     private SimpleChannel channel = null;
     private String brand = registrationKey;
     private int id = 0;
-    private final HashSet<PacketBuilder<? extends Packet>> packetBuilders;
+    private final LinkedList<PacketBuilder<? extends Packet>> packetBuilders;
     Predicate<String> clientVersions = ((input) -> true), serverVersions = ((input) -> true);
 
     /**
@@ -45,7 +46,7 @@ public class ChannelReg extends Reg {
      */
     public ChannelReg(String registrationKey) {
         super(registrationKey);
-        this.packetBuilders = new HashSet<>();
+        this.packetBuilders = new LinkedList<>();
     }
 
     /**

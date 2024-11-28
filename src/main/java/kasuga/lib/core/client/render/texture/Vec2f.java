@@ -164,6 +164,19 @@ public class Vec2f {
         return (float) Math.sqrt(distanceSqr(vec2f));
     }
 
+    public float getRotation() {
+        float pi = (float) Math.PI;
+        float len = length();
+        if (len == 0) return 0;
+        float asin = (float) Math.asin(y / len);
+        if (x > 0 && y >= 0) return - asin;
+        if (x < 0) {
+            return pi + asin;
+        } else {
+            return 2 * pi - asin;
+        }
+    }
+
     @Util
     public static Vec2f average(Vec2f... vectors) {
         if (vectors.length < 1) return Vec2f.ZERO;
