@@ -97,6 +97,9 @@ public abstract class JavascriptMenu extends GuiMenu {
     public void reload() {
         if(context != null){
             closeJavascriptServer().thenRun(()->{
+                for(ChannelHandle handle : handles.values()){
+                    handle.close();
+                }
                 openJavascriptServer();
             });
         } else {
