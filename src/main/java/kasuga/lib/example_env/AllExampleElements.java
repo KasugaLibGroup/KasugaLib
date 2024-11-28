@@ -186,7 +186,7 @@ public class AllExampleElements {
                     DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()->OperateScreenCommand::invoke);
                 }
             })
-            .submit(REGISTRY);
+            .submit(ExampleMain.testRegistry);
 
     public static void invoke() {
         if (Envs.isClient()) AllClient.invoke();
