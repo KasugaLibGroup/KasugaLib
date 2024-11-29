@@ -13,8 +13,10 @@ import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.Tickable;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.concurrent.locks.ReentrantLock;
 
 @V8Convert()
@@ -77,6 +79,11 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
 
     @Override
     public void tick() {
+        if(!isRendering){
+            this.renderLock.lock();
+            beforeRenderTick();
+            this.isRendering = true;
+        }
         super.tick();
         this.getRootNode().getLayoutManager().tick();
     }
@@ -93,6 +100,19 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
     }
 
 
+    Queue<Runnable> afterRenderTickTasks = new ArrayDeque<>(32);
+
+    public void beforeRenderTick(){
+        Runnable task;
+        while((task = afterRenderTickTasks.poll()) != null){
+            task.run();
+        }
+    }
+
+    public void enqueueAfterRenderTask(Runnable runnable) {
+        this.afterRenderTickTasks.add(runnable);
+    }
+
     public void queueDuringRender(Runnable task) {
         Optional<JavascriptContext> threadContext = this.getRenderer().getContext();
         if(threadContext.isEmpty()){
@@ -102,7 +122,7 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
         JavascriptContext context = threadContext.get();
         if(!this.isRendering){
             this.renderLock.lock();
-            context.beforeRenderTick();
+            beforeRenderTick();
             RuntimeException _e = null;
             try{
                 task.run();
@@ -112,7 +132,7 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
             this.renderLock.unlock();
             if(_e!=null) throw _e;
         }else{
-            context.enqueueAfterRenderTask(task);
+            enqueueAfterRenderTask(task);
         }
     }
 
@@ -124,11 +144,11 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
         }
         JavascriptContext context = threadContext.get();
         if(!this.isRendering){
-            context.beforeRenderTick();
+            beforeRenderTick();
             task.run();
             this.renderLock.unlock();
         }else{
-            context.enqueueAfterRenderTask(task);
+            enqueueAfterRenderTask(task);
         }
     }
 
