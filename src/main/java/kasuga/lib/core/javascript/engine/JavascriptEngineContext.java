@@ -22,4 +22,6 @@ public interface JavascriptEngineContext {
     JavascriptEngineModule compileNativeModule(Object target, String moduleName);
 
     JavascriptContext getContext();
+
+    void tick();
 }

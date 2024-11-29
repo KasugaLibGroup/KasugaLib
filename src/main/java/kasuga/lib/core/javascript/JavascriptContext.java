@@ -41,6 +41,7 @@ public class JavascriptContext {
 
     public void tick(){
         tickables.forEach(Tickable::tick);
+        this.context.tick();
     }
 
     public Callback registerTickable(Tickable tickable){
