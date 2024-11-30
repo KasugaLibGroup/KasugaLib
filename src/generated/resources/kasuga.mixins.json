@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "priority": 65535,
+  "package": "kasuga.lib.mixins.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "kasuga.refmap.json",
+  "mixins": [
+    "MixinNbtUtils",
+    "resources.DelegatingPackResourcesMixin",
+    "resources.FilePackResourceMixin",
+    "resources.PathPackResourceMixin"
+  ],
+  "client": [
+    "client.MixinBlockModel$Deserializer",
+    "client.MixinBlockModelBinding",
+    "client.MixinBlockModelShaper",
+    "client.MixinLevelRenderer",
+    "client.MixinModelBakery",
+    "client.MixinTextureManager"
+  ],
+  "minVersion": "0.8"
+}

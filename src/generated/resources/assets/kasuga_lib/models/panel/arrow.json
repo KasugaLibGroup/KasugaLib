@@ -1,0 +1,6 @@
+{
+  "loader": "kasuga_lib:bedrock_model",
+  "model": "kasuga_lib:panel/arrow",
+  "texture": "kasuga_lib:panel/arrow_texture",
+  "render_type": "translucent"
+}
