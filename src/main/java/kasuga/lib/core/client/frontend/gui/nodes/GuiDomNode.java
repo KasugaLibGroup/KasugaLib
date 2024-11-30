@@ -115,7 +115,7 @@ public class GuiDomNode extends DomNode<GuiContext> {
     @Override
     public boolean addChild(DomNode<GuiContext> child) {
         this.domContext.queueDuringRender(()-> {
-            super.addChild(child);
+            addChildInstant(children.size(), child);
         });
         return true;
     }

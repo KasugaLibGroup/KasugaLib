@@ -82,7 +82,7 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
         if(!isRendering){
             this.renderLock.lock();
             beforeRenderTick();
-            this.isRendering = true;
+            this.renderLock.unlock();
         }
         super.tick();
         this.getRootNode().getLayoutManager().tick();
@@ -127,10 +127,9 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
             try{
                 task.run();
             }catch (RuntimeException e){
-                _e = e;
+                e.printStackTrace();
             }
             this.renderLock.unlock();
-            if(_e!=null) throw _e;
         }else{
             enqueueAfterRenderTask(task);
         }
