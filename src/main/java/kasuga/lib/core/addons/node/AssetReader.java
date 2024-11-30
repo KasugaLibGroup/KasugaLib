@@ -47,16 +47,18 @@ public class AssetReader implements BiFunction<String, String, String> {
                     )
             );
         }
-        path = PackageScanner.joinPath(
-                PackageScanner.resolve(
-                        PackageScanner.splitPath(
-                                assetRoot
-                        ),
-                        PackageScanner.splitPath(
-                                path
-                        )
-                )
-        );
+        if(assetRoot != null && !assetRoot.equals("")){
+            path = PackageScanner.joinPath(
+                    PackageScanner.resolve(
+                            PackageScanner.splitPath(
+                                    assetRoot
+                            ),
+                            PackageScanner.splitPath(
+                                    path
+                            )
+                    )
+            );
+        }
         UUID uuid;
         do{
             uuid = UUID.randomUUID();

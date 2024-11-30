@@ -38,7 +38,7 @@ public class JavetJavascriptModule extends AbstractJavascriptEngineModule {
               context,
               nodePackage.reader,
               KasugaLib.STACKS.JAVASCRIPT.ASSETS.get(),
-              nodePackage.minecraft.assetsFolder()
+              nodePackage.minecraft != null ? nodePackage.minecraft.assetsFolder() : ""
       ): null, absolutePath, directoryName, context);
     }
     public JavetJavascriptModule(
