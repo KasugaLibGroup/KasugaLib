@@ -54,6 +54,7 @@ public class JavetJavascriptModule extends AbstractJavascriptEngineModule {
         this.nodePackage = nodePackage;
         this.directoryName = directoryName;
         this.context = context;
+        this.assetReader = reader;
     }
 
     public JavetJavascriptModule(
