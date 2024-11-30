@@ -17,14 +17,16 @@ public class AssetReader implements BiFunction<String, String, String> {
     private final HashMap<UUID, Object> assets;
     private final JavascriptContext context;
     private final String dirname;
+    private final String assetRoot;
 
     ResourceProvider provider;
 
-    public AssetReader(String dirname, JavascriptContext context, ResourceProvider provider, HashMap<UUID, Object> assets) {
+    public AssetReader(String dirname, JavascriptContext context, ResourceProvider provider, HashMap<UUID, Object> assets, String assetRoot) {
         this.provider = provider;
         this.context = context;
         this.assets = assets;
         this.dirname = dirname;
+        this.assetRoot = assetRoot == null ? "/" : assetRoot;
     }
 
     @HostAccess.Export
@@ -45,6 +47,16 @@ public class AssetReader implements BiFunction<String, String, String> {
                     )
             );
         }
+        path = PackageScanner.joinPath(
+                PackageScanner.resolve(
+                        PackageScanner.splitPath(
+                                assetRoot
+                        ),
+                        PackageScanner.splitPath(
+                                path
+                        )
+                )
+        );
         UUID uuid;
         do{
             uuid = UUID.randomUUID();
