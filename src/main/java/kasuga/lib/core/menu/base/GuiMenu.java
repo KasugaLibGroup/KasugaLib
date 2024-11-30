@@ -14,7 +14,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class GuiMenu {
@@ -187,7 +189,8 @@ public class GuiMenu {
         KasugaLib.STACKS.MENU.removeMenuTickInstance(this);
         if(isDifferentiated){
             if(isServer){
-                for(ChannelHandle handle : handles.values()){
+                List<ChannelHandle> handles$value = List.copyOf(handles.values());
+                for(ChannelHandle handle : handles$value){
                     handle.close();
                 }
             }else{
