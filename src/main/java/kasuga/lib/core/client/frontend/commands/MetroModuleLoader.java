@@ -107,7 +107,7 @@ public class MetroModuleLoader implements JavascriptModuleLoader {
                     javascriptContext,
                     moduleInfo.getProvider(),
                     KasugaLib.STACKS.JAVASCRIPT.ASSETS.get(),
-                    "/"));
+                    ""));
             return module;
 
         }catch (IOException e){

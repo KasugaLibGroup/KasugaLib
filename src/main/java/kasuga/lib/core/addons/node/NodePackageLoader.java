@@ -55,6 +55,9 @@ public class NodePackageLoader {
             case CLIENT:
                 createRuntimeForEntryType(nodePackage, nodePackage.minecraft.commonEntries());
                 createRuntimeForEntryType(nodePackage, nodePackage.minecraft.clientEntries());
+            case SERVER:
+                createRuntimeForEntryType(nodePackage, nodePackage.minecraft.commonEntries());
+                createRuntimeForEntryType(nodePackage, nodePackage.minecraft.serverEntries());
         }
     }
 

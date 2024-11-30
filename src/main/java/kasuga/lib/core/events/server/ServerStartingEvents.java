@@ -1,5 +1,7 @@
 package kasuga.lib.core.events.server;
 
+import kasuga.lib.KasugaLib;
+import kasuga.lib.core.addons.minecraft.ServerAddon;
 import kasuga.lib.core.util.Start;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
@@ -17,6 +19,8 @@ public class ServerStartingEvents {
     public static void serverStarting(ServerStartingEvent event) {
         MinecraftServer server = event.getServer();
         CloseableResourceManager manager = server.getServerResources().resourceManager();
+        KasugaLib.STACKS.JAVASCRIPT.setupServer();
+        ServerAddon.init(event.getServer());
     }
 
     @SubscribeEvent
@@ -25,5 +29,10 @@ public class ServerStartingEvents {
         if(server instanceof DedicatedServer) {
             Start.printLogo();
         }
+    }
+
+    public static void serverStopping(ServerStoppingEvent event) {
+        ServerAddon.unload();
+        KasugaLib.STACKS.JAVASCRIPT.destoryServer();
     }
 }

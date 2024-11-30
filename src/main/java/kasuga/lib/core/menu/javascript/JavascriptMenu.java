@@ -103,6 +103,9 @@ public abstract class JavascriptMenu extends GuiMenu {
                 openJavascriptServer();
             });
         } else {
+            for(ChannelHandle handle : handles.values()){
+                handle.close();
+            }
             openJavascriptServer();
         }
     }
