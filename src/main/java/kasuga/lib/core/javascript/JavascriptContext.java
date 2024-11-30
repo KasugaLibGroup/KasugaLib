@@ -41,6 +41,7 @@ public class JavascriptContext {
 
     public void tick(){
         tickables.forEach(Tickable::tick);
+        this.context.tick();
     }
 
     public Callback registerTickable(Tickable tickable){
@@ -72,19 +73,6 @@ public class JavascriptContext {
                 thread.revokeCall(finalTask);
             };
         });
-    }
-
-    Queue<Runnable> afterRenderTickTasks = new ArrayDeque<>(32);
-
-    public void beforeRenderTick(){
-        Runnable task;
-        while((task = afterRenderTickTasks.poll()) != null){
-            task.run();
-        }
-    }
-
-    public void enqueueAfterRenderTask(Runnable runnable) {
-        this.afterRenderTickTasks.add(runnable);
     }
 
     public JavascriptEngineContext getRuntimeContext() {

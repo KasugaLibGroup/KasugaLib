@@ -116,4 +116,12 @@ public class JavetContext implements JavascriptEngineContext {
     public JavascriptContext getContext() {
         return context;
     }
+
+    private int gcTicks = 0;
+    @Override
+    public void tick() {
+        if(gcTicks ++ > 20){
+            runtime.lowMemoryNotification();
+        }
+    }
 }
