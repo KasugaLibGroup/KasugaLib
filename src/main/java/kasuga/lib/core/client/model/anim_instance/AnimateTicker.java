@@ -1,6 +1,7 @@
 package kasuga.lib.core.client.model.anim_instance;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import kasuga.lib.core.client.model.AnimModelLoader;
 import kasuga.lib.core.client.model.BedrockModelLoader;
 import kasuga.lib.core.client.model.anim_json.Animation;
 import kasuga.lib.core.client.model.anim_json.AnimationFile;
@@ -143,10 +144,10 @@ public class AnimateTicker implements Ticker {
 
     public static LazyRecomputable<AnimateTicker> getTickerInstance(
             ResourceLocation modelLoc, ResourceLocation animFile,
-            RenderType type, String animName, TickerType ticker,
+            String animName, TickerType ticker,
             int frameRate, float playSpeed) {
         return new LazyRecomputable<>(() -> {
-            AnimModel model = BedrockModelLoader.getModel(modelLoc, type);
+            AnimModel model = AnimModelLoader.INSTANCE.getModel(modelLoc);
             if (model == null) return null;
             AnimationFile file = AnimationFile.fromFile(animFile).get();
             if (file == null) return null;
