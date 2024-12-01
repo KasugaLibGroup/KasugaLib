@@ -126,6 +126,10 @@ public class GuiMenu {
             @Override
             public void onChannelEstabilished(ChannelHandle channel) {
                 connectionFailure = false;
+                if(!isDifferentiated){
+                    channel.close();
+                    return;
+                }
                 setChannelHandle(channel);
                 createGuiInstance();
             }
@@ -141,6 +145,10 @@ public class GuiMenu {
 
             @Override
             public void onChannelMessage(ChannelHandle channel, CompoundTag payload) {
+                if(!isDifferentiated){
+                    channel.close();
+                    return;
+                }
                 clientForwardMessageToGuiInstance(payload);
             }
         };
@@ -150,6 +158,10 @@ public class GuiMenu {
         return new ChannelHandler() {
             @Override
             public void onChannelEstabilished(ChannelHandle handle) {
+                if(!isDifferentiated || !isServer){
+                    channel.close();
+                    return;
+                }
                 handles.put(channel, handle);
                 onInit(channel, handle);
             }
@@ -188,15 +200,24 @@ public class GuiMenu {
     public void close(){
         KasugaLib.STACKS.MENU.removeMenuTickInstance(this);
         if(isDifferentiated){
+            isDifferentiated = false;
+            isServer = false;
             if(isServer){
                 List<ChannelHandle> handles$value = List.copyOf(handles.values());
                 for(ChannelHandle handle : handles$value){
                     handle.close();
                 }
+                GuiMenuNetworking.getServerSwitcher().removePeer(peer);
             }else{
+                connectionFailure = false;
+                reconnection = 20;
+                if(isGuiInstanceCreated){
+                    closeGuiInstance();
+                }
                 if(handle != null){
                     handle.close();
                 }
+                GuiMenuNetworking.getClientSwitcher().removePeer(peer);
             }
         }
     }
@@ -227,7 +248,6 @@ public class GuiMenu {
         return serverId;
     }
 
-
     int reconnection = 0;
     public void clientTick(){
         if(isDifferentiated && !isServer){
@@ -235,8 +255,11 @@ public class GuiMenu {
                 if(--reconnection > 0){
                     return;
                 }
+                reconnection = 20;
                 connectionFailure = false;
                 peer.createSocket(remoteInfo, this.createClientHandler());
+            } else {
+                reconnection = 20;
             }
         }
     }

@@ -47,6 +47,8 @@ public class GuiMenuHolder {
     }
 
     public void enable(LevelAccessor level) {
+        if(isEnabled)
+            return;
         if(level.isClientSide()) {
             enableClient(locator);
         } else {
