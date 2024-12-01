@@ -1,8 +1,8 @@
 {
   "loader": "kasuga_lib:bedrock_animated",
-  "model": "kasuga_lib:panel/arrow",
+  "model": "kasuga_lib:panel/arrow_2",
   "texture": "kasuga_lib:panel/arrow_texture",
   "geometry": "geometry.unknown",
   "render_type": "translucent",
-  "identifier": "kasuga_lib:arrow"
+  "identifier": "kasuga_lib:arrow_2"
 }

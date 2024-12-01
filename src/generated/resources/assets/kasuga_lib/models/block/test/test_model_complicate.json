@@ -2,5 +2,6 @@
   "loader": "kasuga_lib:bedrock_model",
   "model": "kasuga_lib:block/test/test_model_complicate",
   "texture": "kasuga_lib:common/test/test_model_complicate",
-  "render_type": "translucent"
+  "render_type": "translucent",
+  "identifier": "kasuga_lib:test_model_complicate"
 }

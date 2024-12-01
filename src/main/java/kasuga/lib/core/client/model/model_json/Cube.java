@@ -146,7 +146,7 @@ public class Cube implements Rotationable {
     public void addQuads(IGeometryBakingContext owner, IModelBuilder<?> modelBuilder, ModelBakery bakery,
                          Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
 
-        TextureAtlasSprite sprite = spriteGetter.apply(model.getModel().getMaterial());
+        TextureAtlasSprite sprite = spriteGetter.apply(model.getModel().getTextureMaterial());
         float u0 = sprite.getU0();
         float v0 = sprite.getV0();
         float u1 = sprite.getU1();

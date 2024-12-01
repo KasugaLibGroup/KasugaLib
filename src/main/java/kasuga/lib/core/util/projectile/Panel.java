@@ -9,6 +9,7 @@ import lombok.Setter;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
+import java.util.Stack;
 
 @Getter
 public class Panel {
@@ -225,13 +226,21 @@ public class Panel {
     }
 
     public Quaternion getQuaternion() {
-        Vec2f pitchAndYaw = getPitchAndYaw(this.normal);
+        return getQuaternion(this.normal);
+    }
+
+    public static Quaternion getQuaternion(Vec3 vec) {
+        Vec2f pitchAndYaw = getPitchAndYaw(vec);
         Quaternion result = Quaternion.ONE.copy();
         Quaternion yaw = Quaternion.fromXYZ(0, pitchAndYaw.y(), 0);
         Quaternion pitch = Quaternion.fromXYZ(0, 0, pitchAndYaw.x());
         result.mul(yaw);
         result.mul(pitch);
         return result;
+    }
+
+    public static Quaternion getQuaternion(Vector3f vector3f) {
+        return getQuaternion(new Vec3(vector3f));
     }
 
     public Vector3f getRotationVector() {

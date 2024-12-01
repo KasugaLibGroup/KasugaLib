@@ -4,6 +4,7 @@ import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.animation.neo_neo.VectorUtil;
 import kasuga.lib.core.client.render.texture.Vec2f;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
@@ -13,9 +14,11 @@ public class Grid {
 
     private final Panel panel;
 
-    private final Vector3f o, xAxis, yAxis;
+    private Vector3f xAxis, yAxis;
 
-    private final Vec2f xAxis2d, yAxis2d;
+    private Vector3f o;
+
+    private Vec2f xAxis2d, yAxis2d;
 
     public Grid(final Panel panel, Vector3f o, final Vec2f xAxis, final Vec2f yAxis) {
         this.panel = panel;
@@ -24,6 +27,10 @@ public class Grid {
         this.yAxis2d = yAxis;
         this.xAxis = panel.map(xAxis);
         this.yAxis = panel.map(yAxis);
+    }
+
+    public Grid(Panel panel, Vector3f o) {
+        this(panel, o, new Vec2f(1, 0), new Vec2f(0, 1));
     }
 
     private Grid(final Panel panel, Vector3f o, Vector3f xAxis, Vector3f yAxis, Vec2f xAxis2d, Vec2f yAxis2d) {
@@ -35,6 +42,10 @@ public class Grid {
         this.yAxis2d = yAxis2d;
     }
 
+    public void setO(Vector3f o) {
+        this.o = o;
+    }
+
     public Grid copy() {
         return new Grid(this.panel, this.o, this.xAxis, this.yAxis, xAxis2d, yAxis2d);
     }
@@ -44,7 +55,7 @@ public class Grid {
     }
 
     public Vector3f get(float x, float y) {
-        Vector3f result = o.copy();
+        Vector3f result = this.o.copy();
         Vector3f x3d = xAxis.copy();
         x3d.mul(x);
         result.add(x3d);
@@ -57,7 +68,7 @@ public class Grid {
     public Vec2f get(Vector3f vec) {
         float pi = (float) Math.PI;
         Vector3f offset = vec.copy();
-        offset.sub(o);
+        offset.sub(this.o);
         Vec2f offset2d = panel.map(offset);
         Function<Float, Float> mapper =
                 angle -> angle > pi ? 2 * pi - angle : angle;
@@ -90,18 +101,11 @@ public class Grid {
     }
 
     public void rot(float rad) {
-        Vec2f xRot = xAxis2d.rotate(rad);
-        Vec2f yRot = yAxis2d.rotate(rad);
-        xAxis2d.set(xRot.x(), xRot.y());
-        yAxis2d.set(yRot.x(), yRot.y());
-        Vector3f neoXAxis = panel.map(xRot);
-        Vector3f neoYAxis = panel.map(yRot);
-        Vector3f offsetX = neoXAxis.copy();
-        Vector3f offsetY = neoYAxis.copy();
-        offsetX.sub(xAxis);
-        offsetY.sub(yAxis);
-        xAxis.add(offsetX);
-        yAxis.add(offsetY);
+        xAxis2d = xAxis2d.rotate(rad);
+        yAxis2d = yAxis2d.rotate(rad);
+
+        xAxis = panel.map(xAxis2d);
+        yAxis = panel.map(yAxis2d);
     }
 
     public void rotDeg(float deg) {
@@ -113,9 +117,21 @@ public class Grid {
         return new Ray(new Vector3f(panel.normal), source);
     }
 
+    public Ray getNormalRay(Vec2f pos) {
+        return getNormalRay(pos.x(), pos.y());
+    }
+
     public @Nullable Vec2f rayToPoint(Ray ray) {
         Vector3f hitPoint = ray.getHitPoint(this.panel);
         if (!ray.pointOnRay(hitPoint)) return null;
         return get(hitPoint);
+    }
+
+    public static void main(String[] args) {
+        Vec2f vec2f = new Vec2f(1, 0);
+        for (int i = 0; i < 24; i++) {
+            vec2f = vec2f.rotateDeg(Vec2f.ZERO, 15);
+            System.out.println(vec2f.toString() + " deg:" + (vec2f.getRotation() * 180f / (float) Math.PI));
+        }
     }
 }

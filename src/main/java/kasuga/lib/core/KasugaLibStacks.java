@@ -10,6 +10,7 @@ import kasuga.lib.core.channel.packets.ChannelNetworkPacket;
 import kasuga.lib.core.channel.test.ChannelTest;
 import kasuga.lib.core.client.animation.Constants;
 import kasuga.lib.core.client.frontend.gui.GuiEngine;
+import kasuga.lib.core.client.model.ModelPreloadManager;
 import kasuga.lib.core.events.both.BothSetupEvent;
 import kasuga.lib.core.events.both.EntityAttributeEvent;
 import kasuga.lib.core.events.client.*;
@@ -118,6 +119,7 @@ public class KasugaLibStacks {
             if (Envs.isDevEnvironment()) KasugaLibClient.invoke();
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()-> TargetsClient::register);
             bus.addListener(REGISTRY::hookFluidAndRenders);
+            bus.addListener(ModelPreloadManager.INSTANCE::registerPreloadedModel);
         }
 
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStarting);
