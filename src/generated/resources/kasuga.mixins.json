@@ -21,7 +21,7 @@
     "client.MixinBlockModelBinding",
     "client.MixinBlockModelShaper",
     "client.MixinLevelRenderer",
-    "client.MixinModelBakery",
+
     "client.MixinTextureManager",
     "client.MixinBezierConnection",
     "client.MixinBlockRenderDispatcher",
