@@ -28,9 +28,9 @@ import java.util.function.Function;
 public class Geometry {
     private final GeometryDescription description;
     private final HashMap<String, Bone> bones;
-    private final UnbakedBedrockModel model;
+    private final BedrockModel model;
 
-    public Geometry(JsonObject json, UnbakedBedrockModel model) {
+    public Geometry(JsonObject json, BedrockModel model) {
         this.model = model;
         description = new GeometryDescription(json.getAsJsonObject("description"));
         bones = Maps.newHashMap();
@@ -93,7 +93,7 @@ public class Geometry {
         return bones;
     }
 
-    public UnbakedBedrockModel getModel() {
+    public BedrockModel getModel() {
         return model;
     }
 
@@ -102,6 +102,6 @@ public class Geometry {
     }
 
     public AnimModel getAnimationModel(RenderType renderType) {
-        return new AnimModel(this, this.model.getMaterial(), renderType);
+        return new AnimModel(this, this.model.getMaterials(), renderType);
     }
 }

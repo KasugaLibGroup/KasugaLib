@@ -140,7 +140,7 @@ public class Vec2f {
         Vec2f offset = subtract(pivot);
         float x0 = offset.x(), y0 = offset.y();
         offset.setX((float) (x0 * Math.cos(rad) - y0 * Math.sin(rad)));
-        offset.setY((float) (y0 * Math.cos(rad) - x0 * Math.sin(rad)));
+        offset.setY((float) (y0 * Math.cos(rad) + x0 * Math.sin(rad)));
         return pivot.add(offset);
     }
 
