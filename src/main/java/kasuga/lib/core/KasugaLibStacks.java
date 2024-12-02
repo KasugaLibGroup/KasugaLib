@@ -57,7 +57,7 @@ public class KasugaLibStacks {
     private final FontRegistry FONTS;
     private final RandomSource random = RandomSource.create();
     private final HashMap<Block, CustomBlockRenderer> BLOCK_RENDERERS;
-    public static final HashMap<FluidReg<?>, RenderType> FLUID_RENDERS = new HashMap<>();
+    public static final HashMap<FluidReg<?>, String> FLUID_RENDERS = new HashMap<>();
 
     public final JavascriptApi JAVASCRIPT = new JavascriptApi();
 
