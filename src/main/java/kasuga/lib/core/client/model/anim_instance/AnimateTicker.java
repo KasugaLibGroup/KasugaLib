@@ -149,6 +149,7 @@ public class AnimateTicker implements Ticker {
         return new LazyRecomputable<>(() -> {
             AnimModel model = AnimModelLoader.INSTANCE.getModel(modelLoc);
             if (model == null) return null;
+            model.init();
             AnimationFile file = AnimationFile.fromFile(animFile).get();
             if (file == null) return null;
             Animation anim = file.getAnimation(animName);

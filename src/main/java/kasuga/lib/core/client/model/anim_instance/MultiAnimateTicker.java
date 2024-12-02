@@ -157,6 +157,7 @@ public class MultiAnimateTicker implements Ticker {
             int counter = 0;
             AnimModel model = AnimModelLoader.INSTANCE.getModel(modelLoc);
             if (model == null) return null;
+            model.init();
             for (Pair<ResourceLocation, String> a : anims) {
                 AnimationFile file = AnimationFile.fromFile(a.getFirst()).get();
                 if (file == null) return null;

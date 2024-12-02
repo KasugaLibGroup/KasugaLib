@@ -20,7 +20,7 @@ public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTil
     // private static final WorldTexture texture = new WorldTexture(new ResourceLocation(KasugaLib.MOD_ID, "textures/common/test/green_apple_bubble.png"));
 
     LazyRecomputable<AnimateTicker> ticker = AnimateTicker.getTickerInstance(
-            AllExampleElements.REGISTRY.asResource("block/test/test_model_complicate"),
+            AllExampleElements.REGISTRY.asResource("test_model_complicate"),
             AllExampleElements.REGISTRY.asResource("model"),
             "transform", AnimateTicker.TickerType.RENDER, 60, 100);
 
