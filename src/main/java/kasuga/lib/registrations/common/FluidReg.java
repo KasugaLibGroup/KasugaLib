@@ -391,7 +391,6 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     @Mandatory
     public FluidReg<E> basicFluidProperties(int lightLevel, int density, int viscosity, boolean canSupportBoating) {
         return lightLevel(lightLevel).canSupportBoating(canSupportBoating).density(density).viscosity(viscosity);
-
     }
 
     public FluidReg<E> lightLevel(int lightLevel) {
