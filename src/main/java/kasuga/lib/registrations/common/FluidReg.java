@@ -23,8 +23,12 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.NamedRenderTypeManager;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.SoundAction;
 import net.minecraftforge.common.SoundActions;
@@ -63,7 +67,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     private int tintColor = 0xffffff;
     boolean registerItem = false, registerBlock = false, registerMenu = false;
     private final FluidTagReg tag;
-    private RenderType renderType = null;
+    private String renderType = "solid";
     private Vector3f fogColor = null;
 
     /**
@@ -435,19 +439,25 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     @Optional
+    public FluidReg<E> blockSound(SoundType sound) {
+        block.withSound(sound);
+        return this;
+    }
+
+    @Optional
     public FluidReg<E> defaultSounds() {
         return sound(SoundEvents.BUCKET_FILL, SoundEvents.BUCKET_EMPTY, SoundEvents.FIRE_EXTINGUISH);
     }
 
     @Optional
-    public FluidReg<E> setRenderType(RenderType type) {
+    public FluidReg<E> setRenderType(String type) {
         this.renderType = type;
         return this;
     }
 
     @Optional
     public FluidReg<E> setTranslucentRenderType() {
-        this.renderType = RenderType.translucent();
+        this.renderType = "translucent";
         return this;
     }
 
@@ -543,8 +553,13 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         return block.getBlock();
     }
 
-    public RenderType getRenderType() {
+    public String getRenderType() {
         return renderType;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public RenderType genRenderType() {
+        return NamedRenderTypeManager.get(new ResourceLocation(renderType)).block();
     }
 
     @Override

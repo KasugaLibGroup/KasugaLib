@@ -35,11 +35,13 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.NamedRenderTypeManager;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
@@ -443,10 +445,11 @@ public class SimpleRegistry {
     @Inner
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
-    public void hookFluidAndRenders(FMLLoadCompleteEvent event) {
-        for (Map.Entry<FluidReg<?>, RenderType> entry : KasugaLibStacks.FLUID_RENDERS.entrySet()) {
-            ItemBlockRenderTypes.setRenderLayer(entry.getKey().stillFluid(), entry.getValue());
-            ItemBlockRenderTypes.setRenderLayer(entry.getKey().flowingFluid(), entry.getValue());
+    public void hookFluidAndRenders(FMLCommonSetupEvent event) {
+        for (Map.Entry<FluidReg<?>, String> entry : KasugaLibStacks.FLUID_RENDERS.entrySet()) {
+            RenderType type = NamedRenderTypeManager.get(new ResourceLocation(entry.getValue())).block();
+            ItemBlockRenderTypes.setRenderLayer(entry.getKey().stillFluid(), type);
+            ItemBlockRenderTypes.setRenderLayer(entry.getKey().flowingFluid(), type);
         }
     }
 

@@ -157,7 +157,7 @@ public class AllExampleElements {
             .blockType((fluid, properties) ->
                     new ExampleFluidBlock(fluid, BlockBehaviour.Properties.copy(Blocks.WATER)))
             .noLootAndOcclusion()
-            .setRenderType(RenderType.translucent())
+            .setRenderType("translucent")
             .tab(tab)
             .submit(ExampleMain.testRegistry);
 
