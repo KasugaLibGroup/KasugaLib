@@ -9,6 +9,8 @@ import com.google.gson.stream.JsonReader;
 import com.mojang.datafixers.util.Pair;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.util.Resources;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
@@ -24,6 +26,7 @@ import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometryPart;
 import net.minecraftforge.client.model.geometry.IMultipartModelGeometry;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,41 +34,51 @@ import java.util.*;
 import java.util.function.Function;
 
 @OnlyIn(Dist.CLIENT)
-public class UnbakedBedrockModel implements IMultipartModelGeometry<UnbakedBedrockModel> {
-    public final ResourceLocation modelLocation, textureLocation;
-    private Material material;
-    private ArrayList<Geometry> geometries;
+public class BedrockModel extends SimpleUnbakedGeometry<BedrockModel> {
+    public final ResourceLocation modelLocation;
+    private final List<Material> materials;
+
+    @Getter
+    @Setter
+    private Material textureMaterial;
+    private final ArrayList<Geometry> geometries;
     private final boolean flipV;
     private String formatVersion;
     private boolean legacy;
 
 
-    public UnbakedBedrockModel(ResourceLocation modelLocation, ResourceLocation textureLocation, boolean flipV) {
+    public BedrockModel(ResourceLocation modelLocation, boolean flipV) {
         this.flipV = flipV;
         this.modelLocation = modelLocation;
-        this.textureLocation = textureLocation;
         geometries = Lists.newArrayList();
+        materials = Lists.newArrayList();
         legacy = false;
-        parse(null);
+        parse();
     }
 
-    public UnbakedBedrockModel(ResourceLocation modelLocation, Material material, boolean flipV) {
+    public BedrockModel(ResourceLocation modelLocation, boolean flipV, Material textureMaterial, List<Material> materials) {
+        this(modelLocation, flipV, textureMaterial, materials.toArray(new Material[0]));
+    }
+
+    public BedrockModel(ResourceLocation modelLocation, boolean flipV, Material textureMaterial, @Nonnull Material... material) {
         this.flipV = flipV;
         this.modelLocation = modelLocation;
-        this.textureLocation = material.texture();
+        this.textureMaterial = textureMaterial;
         this.geometries = new ArrayList<>();
         legacy = false;
-        parse(material);
+        materials = Lists.newArrayList();
+        parse();
+        materials.addAll(List.of(material));
     }
 
-    public void parse(@Nullable Material material) {
+    public void parse() {
         JsonObject model = readModel();
         if (model == null) {
             KasugaLib.MAIN_LOGGER.warn("Unable to open animated model: " + this.modelLocation.toString());
             return;
         }
         formatVersion = model.get("format_version").getAsString();
-        this.material = material == null ? new Material(TextureAtlas.LOCATION_BLOCKS, textureLocation) : material;
+
 
         JsonArray geos;
         if (model.has("minecraft:geometry")) {
@@ -101,8 +114,8 @@ public class UnbakedBedrockModel implements IMultipartModelGeometry<UnbakedBedro
         return formatVersion;
     }
 
-    public Material getMaterial() {
-        return material;
+    public List<Material> getMaterials() {
+        return materials;
     }
 
     public boolean isFlipV() {
@@ -143,8 +156,7 @@ public class UnbakedBedrockModel implements IMultipartModelGeometry<UnbakedBedro
 
     @Override
     public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-        Set<Material> materials = new HashSet<>();
-        materials.add(this.material);
+        Set<Material> materials = new HashSet<>(this.materials);
         return materials;
     }
 }

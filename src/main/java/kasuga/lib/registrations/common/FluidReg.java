@@ -1,24 +1,43 @@
 package kasuga.lib.registrations.common;
 
+import com.mojang.blaze3d.shaders.FogShape;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.math.Vector3f;
 import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Optional;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
+import net.minecraft.client.Camera;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.FogRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.NamedRenderTypeManager;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.common.SoundAction;
+import net.minecraftforge.common.SoundActions;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -52,6 +71,8 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     private int tintColor = 0xffffff;
     boolean registerItem = false, registerBlock = false, registerMenu = false;
     private final FluidTagReg tag;
+    private String renderType = "solid";
+    private Vector3f fogColor = null;
 
     /**
      * Create a fluid registration.
@@ -308,6 +329,26 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         return this;
     }
 
+    @Optional
+    public FluidReg<E> noOcclusion() {
+        return withBlockProperty(BlockBehaviour.Properties::noOcclusion);
+    }
+
+    @Optional
+    public FluidReg<E> noCollision() {
+        return withBlockProperty(BlockBehaviour.Properties::noCollission);
+    }
+
+    @Optional
+    public FluidReg<E> noLoot() {
+        return withBlockProperty(BlockBehaviour.Properties::noLootTable);
+    }
+
+    @Optional
+    public FluidReg<E> noLootAndOcclusion() {
+        return noLoot().noOcclusion();
+    }
+
     /**
      * What color your fluid texture would be, 0xffffff(white) in default.
      * @param r red.
@@ -354,6 +395,87 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         return this;
     }
 
+    @Mandatory
+    public FluidReg<E> basicFluidProperties(int lightLevel, int density, int viscosity, boolean canSupportBoating) {
+        return lightLevel(lightLevel).canSupportBoating(canSupportBoating).density(density).viscosity(viscosity);
+    }
+
+    public FluidReg<E> lightLevel(int lightLevel) {
+        return this.typeProperty(prop -> prop.lightLevel(lightLevel));
+    }
+
+    public FluidReg<E> canSupportBoating(boolean flag) {
+        return this.typeProperty(prop -> prop.supportsBoating(flag));
+    }
+
+    public FluidReg<E> density(int density) {
+        return this.typeProperty(prop -> prop.density(density));
+    }
+
+    public FluidReg<E> viscosity(int viscosity) {
+        return this.typeProperty(prop -> prop.viscosity(viscosity));
+    }
+
+    @Optional
+    public FluidReg<E> bucketFillSound(SoundEvent sound) {
+        return this.typeProperty(prop -> prop.sound(SoundActions.BUCKET_FILL, sound));
+    }
+
+    @Optional
+    public FluidReg<E> bucketEmptySound(SoundEvent sound) {
+        return this.typeProperty(prop -> prop.sound(SoundActions.BUCKET_EMPTY, sound));
+    }
+
+    @Optional
+    public FluidReg<E> vaporizeSound(SoundEvent sound) {
+        return this.typeProperty(prop -> prop.sound(SoundActions.FLUID_VAPORIZE, sound));
+    }
+
+    @Optional
+    public FluidReg<E> sound(SoundAction action, SoundEvent sound) {
+        return this.typeProperty(prop -> prop.sound(action, sound));
+    }
+
+    @Optional
+    public FluidReg<E> sound(SoundEvent fillSound, SoundEvent emptySound, SoundEvent vaporizeSound) {
+        return bucketFillSound(fillSound).bucketEmptySound(emptySound).vaporizeSound(vaporizeSound);
+    }
+
+    @Optional
+    public FluidReg<E> blockSound(SoundType sound) {
+        block.withSound(sound);
+        return this;
+    }
+
+    @Optional
+    public FluidReg<E> defaultSounds() {
+        return sound(SoundEvents.BUCKET_FILL, SoundEvents.BUCKET_EMPTY, SoundEvents.FIRE_EXTINGUISH);
+    }
+
+    @Optional
+    public FluidReg<E> setRenderType(String type) {
+        this.renderType = type;
+        return this;
+    }
+
+    @Optional
+    public FluidReg<E> setTranslucentRenderType() {
+        this.renderType = "translucent";
+        return this;
+    }
+
+    @Optional
+    public FluidReg<E> fogColor(Vector3f fogColor) {
+        this.fogColor = fogColor;
+        return this;
+    }
+
+    @Optional
+    public FluidReg<E> fogColor(float r, float g, float b) {
+        this.fogColor = new Vector3f(r / 255f, g / 255f, b / 255f);
+        return this;
+    }
+
     /**
      * Customize your fluid's property.
      * @param builder your fluid's property customizer lambda.
@@ -375,6 +497,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     public FluidReg<E> submit(SimpleRegistry registry) {
         initDefaultType(registry);
         properties.translationKey(registrationKey);
+        registry.cacheFluidRenderIn(this);
         propertyBuilders.forEach(b -> b.build(properties));
         if (flowingBuilder == null) {
             crashOnNotPresent(ForgeFlowingFluid.class, "flow", "submit");
@@ -390,7 +513,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         for(FluidPropertyBuilder builder : builders)
             builder.build(fluidProp);
         if(stillBuilder != null)
-            stillObject = registry.fluid().register(registrationKey + "_still", () -> stillBuilder.build(fluidProp));
+            stillObject = registry.fluid().register(registrationKey, () -> stillBuilder.build(fluidProp));
         if(flowingBuilder != null)
             flowingObject = registry.fluid().register(registrationKey + "_flow", () -> flowingBuilder.build(fluidProp));
         if (registerItem) itemReg.submit(registry);
@@ -422,7 +545,6 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     public FluidAttributes FluidAttributes() {
-
         return type;
     }
 
@@ -446,6 +568,14 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         return block.getBlock();
     }
 
+    public String getRenderType() {
+        return renderType;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public RenderType genRenderType() {
+        return NamedRenderTypeManager.get(new ResourceLocation(renderType)).block();
+    }
 
     @Override
     public String getIdentifier() {

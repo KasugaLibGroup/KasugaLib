@@ -24,4 +24,8 @@ public record PackageMinecraftField(
                 NodePackage.optionalRead(sourceObject, "assets", JsonElement::getAsString)
         );
     }
+
+    public static PackageMinecraftField empty(){
+        return new PackageMinecraftField(null, null, null, null, null, null);
+    }
 }

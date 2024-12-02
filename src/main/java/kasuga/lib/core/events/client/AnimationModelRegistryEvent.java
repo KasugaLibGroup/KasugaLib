@@ -23,6 +23,8 @@ public class AnimationModelRegistryEvent {
     @SubscribeEvent
     public static void registerAnimations(ModelBakeEvent event) {
         AnimationFile.filesLoaded = true;
+        ModelPreloadManager.INSTANCE.scan();
+        ModelPreloadManager.INSTANCE.applyAnimPreload();
         for (ResourceLocation location : AnimationFile.UNREGISTERED) {
             try {
                 Resource resource = Resources.getResource(location);
@@ -37,8 +39,5 @@ public class AnimationModelRegistryEvent {
         }
         AnimCacheManager.INSTANCE.scanFolder();
         ForgeModelBakery.addSpecialModel(BedrockModelLoader.MISSING_MODEL_LOCATION);
-        for (ResourceLocation location : BedrockModelLoader.UNREGISTERED) {
-            BedrockModelLoader.fromFile(location);
-        }
     }
 }

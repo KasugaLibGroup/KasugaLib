@@ -17,6 +17,7 @@ public class ChannelNetworkManager {
     public HashMap<ServerPlayer, NetworkServerManager> SERVER = new HashMap<>();
     public SimpleRouter CLIENT_ROUTER = new SimpleRouter();
     public NetworkManager CLIENT = new NetworkManager(CLIENT_ROUTER);
+    private boolean clientConnectionExisted = false;
 
     public NetworkManager server(ServerPlayer player){
         return SERVER.computeIfAbsent(player, k -> new NetworkServerManager(SERVER_ROUTER, player));
@@ -40,5 +41,17 @@ public class ChannelNetworkManager {
 
     public NetworkManager client(){
         return CLIENT;
+    }
+
+    public void disableClient() {
+        this.clientConnectionExisted = false;
+    }
+
+    public void enableClient() {
+        this.clientConnectionExisted = true;
+    }
+
+    public boolean clientIsEnabled() {
+        return clientConnectionExisted;
     }
 }

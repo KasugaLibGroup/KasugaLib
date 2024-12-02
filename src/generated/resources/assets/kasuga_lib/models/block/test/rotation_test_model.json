@@ -1,0 +1,7 @@
+{
+  "loader": "kasuga_lib:bedrock_model",
+  "model": "kasuga_lib:block/test/rotation_test_model",
+  "texture": "kasuga_lib:block/test/rotation_test_model",
+  "identifier": "kasuga_lib:rotation_test_model",
+  "render_type": "solid"
+}

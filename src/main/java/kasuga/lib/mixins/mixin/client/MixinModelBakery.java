@@ -13,10 +13,8 @@ import java.util.Set;
 @Mixin(ModelBakery.class)
 public class MixinModelBakery {
 
-    @Redirect(method = "processLoading", at = @At(value = "INVOKE", target = "Ljava/util/Set;addAll(Ljava/util/Collection;)Z"), remap = false)
-    private boolean addAll(Set<Material> instance, Collection<Material> es) {
-        BedrockModelLoader.registerFired = true;
-        ModelPreloadManager.INSTANCE.scan();
-        return instance.addAll(es) & instance.addAll(BedrockModelLoader.ADDITIONAL_MATERIALS);
-    }
+//    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/Set;addAll(Ljava/util/Collection;)Z"))
+//    private boolean addAll(Set<Material> instance, Collection<Material> es) {
+//        return instance.addAll(es) & instance.addAll(BedrockModelLoader.ADDITIONAL_MATERIALS);
+//    }
 }

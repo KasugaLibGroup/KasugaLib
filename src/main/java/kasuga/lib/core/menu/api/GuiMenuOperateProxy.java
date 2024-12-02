@@ -1,6 +1,7 @@
 package kasuga.lib.core.menu.api;
 
 import com.caoccao.javet.annotations.V8Convert;
+import kasuga.lib.core.javascript.engine.HostAccess;
 import kasuga.lib.core.menu.base.GuiMenu;
 
 @V8Convert()
@@ -15,6 +16,7 @@ public class GuiMenuOperateProxy {
         return new GuiMenuOperateProxy(guiMenu);
     }
 
+    @HostAccess.Export
     public ChannelHandlerProxy getChannel(){
         return ChannelHandlerProxy.wrap(guiMenu.getChannel());
     }

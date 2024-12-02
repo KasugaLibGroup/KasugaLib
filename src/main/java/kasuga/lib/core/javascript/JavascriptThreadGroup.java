@@ -1,6 +1,7 @@
 package kasuga.lib.core.javascript;
 
 import kasuga.lib.core.javascript.engine.ScriptEngine;
+import kasuga.lib.core.javascript.registration.RegistrationRegistry;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +23,7 @@ public class JavascriptThreadGroup {
 
     ContextModuleLoader moduleLoader;
     private ScriptEngine scriptEngine;
+    private RegistrationRegistry registry;
 
     public JavascriptThreadGroup(String name){
         this.threadGroup = new ThreadGroup(name);
@@ -103,5 +105,15 @@ public class JavascriptThreadGroup {
 
     public JavascriptThread getThread(Object target) {
         return threads.get(target);
+    }
+
+    public RegistrationRegistry getRegistry() {
+        if(this.registry == null && this.parent != null)
+            return this.parent.getRegistry();
+        return registry;
+    }
+
+    public void setRegistry(RegistrationRegistry registry) {
+        this.registry = registry;
     }
 }

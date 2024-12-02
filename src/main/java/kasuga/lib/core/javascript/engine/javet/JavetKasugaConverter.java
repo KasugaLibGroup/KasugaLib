@@ -16,10 +16,12 @@ import com.caoccao.javet.values.reference.V8ValueReference;
 import com.caoccao.javet.values.reference.V8ValueSymbol;
 import kasuga.lib.core.javascript.engine.HostAccess;
 import kasuga.lib.core.javascript.engine.JavascriptValue;
+import kasuga.lib.core.util.WeakCache;
 import kasuga.lib.core.util.data_type.Pair;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.*;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -51,6 +53,27 @@ public class JavetKasugaConverter extends JavetObjectConverter {
         }
         if(object instanceof JavetJavascriptValue value){
             return (T) value.getValue().toClone();
+        }
+        if(
+                object instanceof int[] ||
+                object instanceof float[] ||
+                object instanceof double[] ||
+                object instanceof long[] ||
+                object instanceof short[] ||
+                object instanceof byte[] ||
+                object instanceof String ||
+                object instanceof Boolean ||
+                object instanceof Byte ||
+                object instanceof Short ||
+                object instanceof Integer ||
+                object instanceof Long ||
+                object instanceof Float ||
+                object instanceof Double ||
+                object instanceof Character ||
+                object instanceof BigInteger
+        ){
+            // Directly convert to V8Value, no need to process
+            return (T) super.toV8Value(v8Runtime, object, depth);
         }
         T v8Value = super.toV8Value(v8Runtime, object, depth);
 

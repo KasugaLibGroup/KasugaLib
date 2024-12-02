@@ -55,4 +55,9 @@ public class BindingClient {
 
     }
 
+    public static void provideObject(UUID id, String key, Object value){
+        KasugaLib.STACKS.GUI.orElseThrow().getInstanceById(id).ifPresent((instance)->{
+            instance.putContextObject(key, value);
+        });
+    }
 }

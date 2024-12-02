@@ -14,9 +14,7 @@ public class YogaFileLocator {
     }
 
     public static String getYogaAssemblyDirectory(){
-        if(Envs.isDevEnvironment()){
-            return getDevYogaAssemblyDirectory();
-        }else if(Envs.isClient()){
+        if(Envs.isClient()){
             try{
                 return YogaFileExtractor.extract() + File.separatorChar + "lwjgl-yoga-3.3.1" + File.separatorChar;
             }catch (Exception e){
@@ -26,7 +24,7 @@ public class YogaFileLocator {
         throw new IllegalStateException("Illegal environment");
     }
 
-    public static String getDevYogaAssemblyDirectory(){
-        return "../src/generated/resources/libraries/lwjgl-yoga-3.3.1/";
+    public static String getDevelopmentLibrariesDirectory(){
+        return "../src/generated/resources/libraries/";
     }
 }
