@@ -35,6 +35,7 @@ public class AnimModelLoader implements IGeometryLoader<AnimModel>, ResourceMana
     @Override
     public AnimModel read(JsonObject jsonObject, JsonDeserializationContext deserializationContext) throws JsonParseException {
         BedrockModel model = BedrockModelLoader.readModel(jsonObject, deserializationContext);
+        if (model == null) return null;
         ResourceLocation renderTypeHint;
         if (jsonObject.has("render_type")) {
             renderTypeHint = new ResourceLocation(jsonObject.get("render_type").getAsString());
