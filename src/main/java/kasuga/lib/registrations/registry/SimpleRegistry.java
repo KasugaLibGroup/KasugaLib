@@ -39,6 +39,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -442,7 +443,7 @@ public class SimpleRegistry {
     @Inner
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
-    public void hookFluidAndRenders(ModelEvent.RegisterAdditional event) {
+    public void hookFluidAndRenders(FMLLoadCompleteEvent event) {
         for (Map.Entry<FluidReg<?>, RenderType> entry : KasugaLibStacks.FLUID_RENDERS.entrySet()) {
             ItemBlockRenderTypes.setRenderLayer(entry.getKey().stillFluid(), entry.getValue());
             ItemBlockRenderTypes.setRenderLayer(entry.getKey().flowingFluid(), entry.getValue());

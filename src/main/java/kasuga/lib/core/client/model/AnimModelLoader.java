@@ -65,6 +65,9 @@ public class AnimModelLoader implements IGeometryLoader<AnimModel>, ResourceMana
     }
 
     public @Nullable AnimModel getModel(ResourceLocation location) {
-        return MODELS.get(location);
+        AnimModel model = MODELS.get(location);
+        if (model == null) return null;
+        model.init();
+        return model;
     }
 }

@@ -11,6 +11,7 @@ import kasuga.lib.core.menu.base.GuiMenu;
 import kasuga.lib.core.menu.base.GuiMenuRegistry;
 import kasuga.lib.core.menu.base.GuiMenuType;
 import kasuga.lib.core.util.Envs;
+import kasuga.lib.example_env.block.RotationTestBlock;
 import kasuga.lib.example_env.block.fluid.ExampleFluid;
 import kasuga.lib.example_env.block.fluid.ExampleFluidBlock;
 import kasuga.lib.example_env.block.green_apple.GreenAppleBlock;
@@ -114,6 +115,14 @@ public class AllExampleElements {
 
     public static final CreativeTabReg tab = new CreativeTabReg("test")
             .icon(greenAppleItem).submit(REGISTRY);
+
+    public static final BlockReg<RotationTestBlock> rotationTest =
+            new BlockReg<RotationTestBlock>("rotation_test")
+                    .blockType(RotationTestBlock::new)
+                    .defaultBlockItem()
+                    .tabTo(tab)
+                    .addProperty(BlockBehaviour.Properties::noCollission)
+                    .submit(REGISTRY);
     /*
     public static final AnimReg test_anim =
             new AnimReg("test_anim", REGISTRY.asResource("models/entity/test/wuling/wuling_anim.json"))

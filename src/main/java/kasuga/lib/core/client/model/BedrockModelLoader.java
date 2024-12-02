@@ -58,11 +58,12 @@ public class BedrockModelLoader implements IGeometryLoader<BedrockModel>, Resour
         Material texture = new Material(TextureAtlas.LOCATION_BLOCKS,
                 new ResourceLocation(jsonObject.get("texture").getAsString()));
         materials.add(texture);
-        if (jsonObject.has("particle")) {
-            String particleStr = jsonObject.get("particle").getAsString();
-            ResourceLocation location = new ResourceLocation(particleStr);
-            materials.add(new Material(TextureAtlas.LOCATION_PARTICLES, location));
-        }
+//        if (jsonObject.has("particle")) {
+//            String particleStr = jsonObject.get("particle").getAsString();
+//            ResourceLocation location = new ResourceLocation(particleStr);
+//            // could not read particles? why?
+//            materials.add(new Material(TextureAtlas.LOCATION_PARTICLES, location));
+//        }
         BedrockModel model = new BedrockModel(
                 new ResourceLocation(ml.getNamespace(), "models/" + ml.getPath() + ".geo.json"),
                 flipV, texture, materials);

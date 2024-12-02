@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "kasuga_lib:block/test/test_model_complicate"
+    },
+    "facing=south": {
+      "model": "kasuga_lib:block/test/test_model_complicate",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "kasuga_lib:block/test/test_model_complicate",
+      "y": 270
+    },
+    "facing=west": {
+      "model": "kasuga_lib:block/test/test_model_complicate",
+      "y": 90
+    }
+  },
+  "model": "kasuga_lib:block/test/rotation_test_model"
+}
