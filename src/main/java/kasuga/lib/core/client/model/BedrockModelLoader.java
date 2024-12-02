@@ -53,7 +53,7 @@ public class BedrockModelLoader implements IGeometryLoader<BedrockModel>, Resour
 
         ArrayList<Material> materials = new ArrayList<>();
         Material texture = null;
-        if (jsonObject.get("textures").isJsonObject()) {
+        if (jsonObject.has("textures") && jsonObject.get("textures").isJsonObject()) {
             for (Map.Entry<String, JsonElement> entry : jsonObject.get("textures")
                     .getAsJsonObject().entrySet()) {
                 if (!entry.getValue().isJsonPrimitive()) continue;
