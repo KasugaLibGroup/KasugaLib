@@ -10,6 +10,7 @@ import org.mozilla.javascript.commonjs.module.ModuleScope;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.FutureTask;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -37,9 +38,10 @@ public class JavascriptContext {
         effect.close();
     }
 
-    Set<Tickable> tickables = new HashSet<>();
+    Set<Tickable> tickables = new CopyOnWriteArraySet<>();
 
     public void tick(){
+        List<Tickable> tickables = List.copyOf(this.tickables); // @TODO: Improve performance
         tickables.forEach(Tickable::tick);
         this.context.tick();
     }

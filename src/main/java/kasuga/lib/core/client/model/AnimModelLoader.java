@@ -50,12 +50,17 @@ public class AnimModelLoader implements IGeometryLoader<AnimModel>, ResourceMana
             }
         }
         if (geo == null) return null;
-        ResourceLocation identifier = new ResourceLocation(jsonObject.get("identifier").getAsString());
         AnimModel animModel = new AnimModel(geo, model.getMaterials(), renderTypeHint);
-        if (MODELS.containsKey(identifier)) {
-            KasugaLib.MAIN_LOGGER.warn("Anim Model: " + identifier + " already exists, COVERED!");
+        if (jsonObject.has("identifier")) {
+            ResourceLocation identifier = new ResourceLocation(jsonObject.get("identifier").getAsString());
+            if (MODELS.containsKey(identifier)) {
+                KasugaLib.MAIN_LOGGER.warn("Anim Model: " + identifier + " already exists, COVERED!");
+            }
+            MODELS.put(identifier, animModel);
+        } else {
+            KasugaLib.MAIN_LOGGER.warn("Anim Model: " + model.modelLocation + " has no identifier, " +
+                    "and it WOULD NOT BE ABLE TO USE IN RENDERERS!");
         }
-        MODELS.put(identifier, animModel);
         return animModel;
     }
 

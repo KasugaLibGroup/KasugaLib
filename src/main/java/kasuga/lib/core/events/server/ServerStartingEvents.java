@@ -16,12 +16,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class ServerStartingEvents {
 
     @SubscribeEvent
-    public static void serverStarting(ServerStartingEvent event) {
-        MinecraftServer server = event.getServer();
-        CloseableResourceManager manager = server.getServerResources().resourceManager();
-        KasugaLib.STACKS.JAVASCRIPT.setupServer();
-        ServerAddon.init(event.getServer());
-    }
+    public static void serverStarting(ServerStartingEvent event) {}
 
     @SubscribeEvent
     public static void serverAboutToStart(ServerAboutToStartEvent event) {
@@ -29,10 +24,5 @@ public class ServerStartingEvents {
         if(server instanceof DedicatedServer) {
             Start.printLogo();
         }
-    }
-
-    public static void serverStopping(ServerStoppingEvent event) {
-        ServerAddon.unload();
-        KasugaLib.STACKS.JAVASCRIPT.destoryServer();
     }
 }

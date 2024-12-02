@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class NetworkDuplexer {
@@ -66,7 +67,7 @@ public class NetworkDuplexer {
     }
 
     public void close(){
-        ArrayList<Channel> currentChannels = new ArrayList<>(channels.values());
+        List<Channel> currentChannels = List.copyOf(channels.values());
         for(Channel channel : currentChannels){
             channel.close();
         }
