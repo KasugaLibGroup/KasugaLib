@@ -1,0 +1,7 @@
+{
+  "loader": "kasuga_lib:bedrock_model",
+  "model": "kasuga_lib:block/test/c70",
+  "texture": "kasuga_lib:block/test/c70",
+  "identifier": "kasuga_lib:c70",
+  "render_type": "solid"
+}

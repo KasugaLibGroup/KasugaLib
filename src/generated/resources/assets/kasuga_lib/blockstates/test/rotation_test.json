@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=north": {
-      "model": "kasuga_lib:block/test/test_model_complicate"
+      "model": "kasuga_lib:block/test/c70"
     },
     "facing=south": {
-      "model": "kasuga_lib:block/test/test_model_complicate",
+      "model": "kasuga_lib:block/test/c70",
       "y": 180
     },
     "facing=east": {
-      "model": "kasuga_lib:block/test/test_model_complicate",
+      "model": "kasuga_lib:block/test/c70",
       "y": 270
     },
     "facing=west": {
-      "model": "kasuga_lib:block/test/test_model_complicate",
+      "model": "kasuga_lib:block/test/c70",
       "y": 90
     }
   },
