@@ -66,8 +66,10 @@ public class BedrockModelLoader implements IGeometryLoader<BedrockModel>, Resour
         BedrockModel model = new BedrockModel(
                 new ResourceLocation(ml.getNamespace(), "models/" + ml.getPath() + ".geo.json"),
                 flipV, texture, materials);
-        ResourceLocation identifier = new ResourceLocation(jsonObject.get("identifier").getAsString());
-        MODELS.put(identifier, model);
+        if (jsonObject.has("identifier")) {
+            ResourceLocation identifier = new ResourceLocation(jsonObject.get("identifier").getAsString());
+            MODELS.put(identifier, model);
+        }
         return model;
     }
 
