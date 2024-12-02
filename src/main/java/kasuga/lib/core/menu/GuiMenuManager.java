@@ -112,4 +112,12 @@ public class GuiMenuManager {
             menu.clientTick();
         }
     }
+
+    public void reset(){
+        List<GuiMenu> menus = List.copyOf(tickables);
+        for(GuiMenu menu : menus){
+            menu.close();
+        }
+        tickables.clear();
+    }
 }

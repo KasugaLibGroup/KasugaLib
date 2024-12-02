@@ -98,6 +98,10 @@ public class NetworkManager implements ChannelReciever {
     }
 
     protected void sendNetworkConnecitonPacket(Channel channel, long networkId) {
+        if(!KasugaLib.STACKS.CHANNEL.clientIsEnabled()){
+            channel.close();
+            return;
+        }
         KasugaLib.STACKS.CHANNEL.packet.channelReg.sendToServer(new C2SChannelConnectionPacket(
                 channel.source(),
                 channel.destination(),
@@ -106,12 +110,16 @@ public class NetworkManager implements ChannelReciever {
     }
 
     protected void sendMessagePacket(long networkId, CompoundTag message, boolean isOwn){
+        if(!KasugaLib.STACKS.CHANNEL.clientIsEnabled())
+            return;
         KasugaLib.STACKS.CHANNEL.packet.channelReg.sendToServer(
                 new C2SChannelMessagePacket(networkId, message, isOwn)
         );
     }
 
     protected void sendStatePacket(long networkId, ChannelStatus state, boolean isOwn){
+        if(!KasugaLib.STACKS.CHANNEL.clientIsEnabled())
+            return;
         KasugaLib.STACKS.CHANNEL.packet.channelReg.sendToServer(
                 new C2SChannelStateChangePacket(networkId, state, isOwn)
         );
