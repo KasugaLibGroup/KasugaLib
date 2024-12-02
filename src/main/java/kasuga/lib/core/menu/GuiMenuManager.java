@@ -26,6 +26,14 @@ public class GuiMenuManager {
                 KasugaLib.STACKS.REGISTRY.asResource("block"),
                 MenuLocatorTypes.CHUNK_MENU
         );
+        locatorRegistry.register(
+                KasugaLib.STACKS.REGISTRY.asResource("entity"),
+                MenuLocatorTypes.ENTITY
+        );
+        locatorRegistry.register(
+                KasugaLib.STACKS.REGISTRY.asResource("contraption"),
+                MenuLocatorTypes.CONTRAPTION
+        );
     }
 
     public void initClient(){
