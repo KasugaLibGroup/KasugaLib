@@ -14,10 +14,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Supplier;
 
 public class GuiMenu {
     UUID id;
@@ -32,6 +30,7 @@ public class GuiMenu {
     private boolean isGuiInstanceCreated = false;
     private UUID serverId;
     private boolean connectionFailure = false;
+    private HashMap<String, Supplier<Object>> providers = new HashMap<>();
 
     protected GuiMenu(GuiMenuType<?> type) {
         this.id = UUID.randomUUID();
@@ -50,8 +49,15 @@ public class GuiMenu {
         System.out.println("[Notice] GUI Instance Created");
         isGuiInstanceCreated = true;
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
-                ()->()-> BindingClient.createInstance(this,this.id,binding.sourceCodeLocation)
+                ()->()-> {
+                    BindingClient.createInstance(this,this.id,binding.sourceCodeLocation);
+                    providers.forEach((key,value)->{
+                        BindingClient.provideObject(this.id, key, value.get());
+                    });
+                }
         );
+
+
     }
 
     protected void closeGuiInstance(){
