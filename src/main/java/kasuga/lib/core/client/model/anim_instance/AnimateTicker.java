@@ -7,6 +7,8 @@ import kasuga.lib.core.client.model.anim_json.Animation;
 import kasuga.lib.core.client.model.anim_json.AnimationFile;
 import kasuga.lib.core.client.model.anim_model.AnimModel;
 import kasuga.lib.core.util.LazyRecomputable;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -17,6 +19,7 @@ import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 public class AnimateTicker implements Ticker {
+    @Getter
     private float playSpeed;
 
     public final AnimationInstance animation;
@@ -24,6 +27,9 @@ public class AnimateTicker implements Ticker {
     public final TickerType type;
     private float recent;
     private int starterTick, tick, endTick;
+
+    @Setter
+    @Getter
     private boolean moving, paused;
 
     public AnimateTicker(AnimationInstance instance, TickerType type, float playSpeed) {
@@ -94,22 +100,6 @@ public class AnimateTicker implements Ticker {
         this.moving = false;
     }
 
-    public float getPlaySpeed() {
-        return playSpeed;
-    }
-
-    public boolean isMoving() {
-        return moving;
-    }
-
-    public boolean isPaused() {
-        return paused;
-    }
-
-    public void setMoving(boolean moving) {
-        this.moving = moving;
-    }
-
     public float tickToSec(float partial) {
         float offset = (float) tick - (float) starterTick + partial;
         float percentage = offset / (float) (endTick - starterTick);
@@ -149,7 +139,7 @@ public class AnimateTicker implements Ticker {
         return new LazyRecomputable<>(() -> {
             AnimModel model = AnimModelLoader.INSTANCE.getModel(modelLoc);
             if (model == null) return null;
-            model.init();
+            if (!model.isValidForRender()) model.init();
             AnimationFile file = AnimationFile.fromFile(animFile).get();
             if (file == null) return null;
             Animation anim = file.getAnimation(animName);

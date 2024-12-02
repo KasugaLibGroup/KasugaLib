@@ -24,10 +24,7 @@ import net.minecraftforge.client.model.geometry.IGeometryLoader;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @OnlyIn(Dist.CLIENT)
 public class BedrockModelLoader implements IGeometryLoader<BedrockModel>, ResourceManagerReloadListener, ItemTransformProvider {
@@ -55,14 +52,29 @@ public class BedrockModelLoader implements IGeometryLoader<BedrockModel>, Resour
         boolean flipV = jsonObject.has("flip_v") && jsonObject.get("flip_v").getAsBoolean();
 
         ArrayList<Material> materials = new ArrayList<>();
-        Material texture = new Material(TextureAtlas.LOCATION_BLOCKS,
-                new ResourceLocation(jsonObject.get("texture").getAsString()));
-        materials.add(texture);
-        if (jsonObject.has("particle")) {
-            String particleStr = jsonObject.get("particle").getAsString();
-            ResourceLocation location = new ResourceLocation(particleStr);
-            materials.add(new Material(TextureAtlas.LOCATION_PARTICLES, location));
+        Material texture = null;
+        if (jsonObject.has("textures") && jsonObject.get("textures").isJsonObject()) {
+            for (Map.Entry<String, JsonElement> entry : jsonObject.get("textures")
+                    .getAsJsonObject().entrySet()) {
+                if (!entry.getValue().isJsonPrimitive()) continue;
+                if (entry.getKey().equals("particle")) continue;
+                Material mat = new Material(TextureAtlas.LOCATION_BLOCKS,
+                        new ResourceLocation(entry.getValue().getAsString()));
+                materials.add(mat);
+                if (entry.getKey().equals("texture")) texture = mat;
+            }
+        } else {
+            texture = new Material(TextureAtlas.LOCATION_BLOCKS,
+                    new ResourceLocation(jsonObject.get("texture").getAsString()));
+            materials.add(texture);
         }
+//        if (jsonObject.has("particle")) {
+//            String particleStr = jsonObject.get("particle").getAsString();
+//            ResourceLocation location = new ResourceLocation(particleStr);
+//            // could not read particles? why?
+//            materials.add(new Material(TextureAtlas.LOCATION_PARTICLES, location));
+//        }
+        if (texture == null) return null;
         BedrockModel model = new BedrockModel(
                 new ResourceLocation(ml.getNamespace(), "models/" + ml.getPath() + ".geo.json"),
                 flipV, texture, materials);
