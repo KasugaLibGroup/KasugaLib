@@ -1,6 +1,7 @@
 package kasuga.lib.registrations.common;
 
 import kasuga.lib.core.annos.Mandatory;
+import kasuga.lib.core.annos.Optional;
 import kasuga.lib.core.base.item_helper.ExternalProperties;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
@@ -107,6 +108,40 @@ public class BucketItemReg<T extends BucketItem> extends ItemReg<T> {
     @Mandatory
     public BucketItemReg<T> itemType(BucketBuilder<? extends BucketItem> builder) {
         this.builder = (BucketBuilder<T>) builder;
+        return this;
+    }
+
+    @Optional
+    public ItemReg<T> tab(CreativeTabReg tab) {
+        tab.item(this::getItem);
+        return this;
+    }
+
+    /**
+     * Dont use
+     * @param tab dont use
+     * @return self
+     */
+    @Deprecated
+    @Optional
+    public ItemReg<T> tab(CreativeModeTab tab) {
+        return this;
+    }
+
+    @Optional
+    public ItemReg<T> stackTo(int size) {
+        properties.stacksTo(size);
+        return this;
+    }
+
+    /**
+     * Customize your item's property.
+     * @param identifier Item property customizer.
+     * @return self.
+     */
+    @Optional
+    public ItemReg<T> withProperty(PropertyIdentifier identifier) {
+        identifier.apply(properties);
         return this;
     }
 

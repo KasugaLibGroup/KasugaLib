@@ -3,11 +3,13 @@ package kasuga.lib.core.javascript;
 import kasuga.lib.core.client.animation.neo_neo.base.Movement;
 import kasuga.lib.core.client.frontend.commands.MetroModuleInfo;
 import kasuga.lib.core.javascript.engine.*;
+import kasuga.lib.core.javascript.registration.RegistrationRegistry;
 import kasuga.lib.core.util.Callback;
 import net.minecraft.Util;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.FutureTask;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -35,17 +37,12 @@ public class JavascriptContext {
         effect.close();
     }
 
-    Set<Tickable> tickables = new HashSet<>();
-
-    Queue<CompletableFuture> futures = new ArrayDeque<>();
+    Set<Tickable> tickables = new CopyOnWriteArraySet<>();
 
     public void tick(){
-        if(!this.futures.isEmpty()){
-            beforeRenderTick();
-            CompletableFuture future;
-            while((future = this.futures.poll()) != null) future.complete(null);
-        }
+        List<Tickable> tickables = List.copyOf(this.tickables); // @TODO: Improve performance
         tickables.forEach(Tickable::tick);
+        this.context.tick();
     }
 
     public Callback registerTickable(Tickable tickable){
@@ -66,33 +63,17 @@ public class JavascriptContext {
     }
 
     public Callback runTask(Callback task) {
-        return effect.effect(()->{
-            Runnable finalTask = task::execute;
+        Callback[] callback = new Callback[1];
+        return callback[0] = effect.effect(()->{
+            Runnable finalTask = ()->{
+                effect.remove(callback[0]);
+                task.execute();
+            };
             thread.recordCall(finalTask);
             return ()->{
                 thread.revokeCall(finalTask);
             };
         });
-    }
-
-    Queue<Runnable> afterRenderTickTasks = new ArrayDeque<>(32);
-
-    public void beforeRenderTick(){
-        Runnable task;
-        while((task = afterRenderTickTasks.poll()) != null){
-            task.run();
-        }
-    }
-
-    public CompletableFuture dispatchBeforeRenderTick(){
-        CompletableFuture future = new CompletableFuture();
-        this.futures.add(future);
-        return future;
-    }
-
-
-    public void enqueueAfterRenderTask(Runnable runnable) {
-        this.afterRenderTickTasks.add(runnable);
     }
 
     public JavascriptEngineContext getRuntimeContext() {
@@ -109,5 +90,9 @@ public class JavascriptContext {
 
     public JavascriptModuleLoader getModuleLoader() {
         return this.contextModuleLoader.getLoader();
+    }
+
+    public RegistrationRegistry getSidedRegistry() {
+        return this.thread.sidedRegistry;
     }
 }

@@ -5,7 +5,9 @@ import kasuga.lib.core.channel.peer.ChannelSocket;
 import kasuga.lib.core.channel.peer.ChannelStatus;
 import net.minecraft.nbt.CompoundTag;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class NetworkDuplexer {
@@ -65,7 +67,8 @@ public class NetworkDuplexer {
     }
 
     public void close(){
-        for(Channel channel : channels.values()){
+        List<Channel> currentChannels = List.copyOf(channels.values());
+        for(Channel channel : currentChannels){
             channel.close();
         }
         channels.clear();

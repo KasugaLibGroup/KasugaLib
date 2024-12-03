@@ -41,7 +41,7 @@ public class RegistryProxy<T> implements Closeable {
     @HostAccess.Export
     public void register(JavascriptValue location, JavascriptValue item){
         ResourceLocation resourceLocation = ResourceLocationFFIHelper.fromValue(location);
-        T localItem = target.fromValue(item);
+        T localItem = target.fromValue(context, item);
 
         register(resourceLocation, localItem);
     }

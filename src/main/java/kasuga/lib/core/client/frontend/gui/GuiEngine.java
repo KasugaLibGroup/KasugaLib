@@ -6,7 +6,6 @@ import kasuga.lib.core.client.frontend.dom.nodes.NodeTypeRegistry;
 import kasuga.lib.core.client.frontend.dom.registration.DOMPriorityRegistry;
 import kasuga.lib.core.client.frontend.gui.canvas.CanvasManager;
 import kasuga.lib.core.client.frontend.gui.nodes.AllGuiNodes;
-import kasuga.lib.core.client.frontend.gui.nodes.GuiCanvasNode;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomNode;
 import kasuga.lib.core.client.frontend.gui.styles.AllGuiStyles;
 import kasuga.lib.core.client.frontend.gui.styles.GuiStyleRegistry;
@@ -28,7 +27,7 @@ public class GuiEngine {
     public final CanvasManager canvasManager = new CanvasManager();
 
     public void init(){
-        KasugaLib.STACKS.JAVASCRIPT.registry.register(new ResourceLocation("kasuga_lib","gui"),domRegistry);
+        KasugaLib.STACKS.JAVASCRIPT.CLIENT_REGISTRY.register(new ResourceLocation("kasuga_lib","gui"),domRegistry);
         TextureAssetProvider.init();
         AllGuiStyles.register(styleRegistry);
         AllGuiNodes.register(nodeTypeRegistry);
@@ -45,6 +44,9 @@ public class GuiEngine {
 
     public void closeInstance(GuiInstance instance){
         this.instances.remove(instance);
+        if(localInstances.containsValue(instance)){
+            localInstances.entrySet().removeIf(entry -> entry.getValue().equals(instance));
+        }
     }
 
     public void renderTick() {
@@ -63,5 +65,9 @@ public class GuiEngine {
 
     public Optional<GuiInstance> getInstanceById(UUID id) {
         return Optional.ofNullable(localInstances.get(id));
+    }
+
+    public HashMap<UUID, GuiInstance> getAllInstances() {
+        return localInstances;
     }
 }

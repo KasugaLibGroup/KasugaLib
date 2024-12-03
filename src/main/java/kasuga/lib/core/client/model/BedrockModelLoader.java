@@ -3,12 +3,11 @@ package kasuga.lib.core.client.model;
 import com.google.common.collect.Maps;
 import com.google.gson.*;
 import kasuga.lib.KasugaLib;
-import kasuga.lib.core.client.model.model_json.UnbakedBedrockModel;
+import kasuga.lib.core.client.model.model_json.BedrockModel;
 import kasuga.lib.core.client.model.anim_model.AnimModel;
 import kasuga.lib.core.client.model.model_json.Geometry;
 import kasuga.lib.core.util.LazyRecomputable;
 import kasuga.lib.core.util.Resources;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -26,22 +25,16 @@ import net.minecraftforge.client.model.geometry.IGeometryLoader;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @OnlyIn(Dist.CLIENT)
-public class BedrockModelLoader implements IGeometryLoader<UnbakedBedrockModel>, ResourceManagerReloadListener, ItemTransformProvider {
+public class BedrockModelLoader implements IGeometryLoader<BedrockModel>, ResourceManagerReloadListener, ItemTransformProvider {
 
     public static BedrockModelLoader INSTANCE = new BedrockModelLoader();
     private ResourceManager manager;
-    public static final HashSet<ResourceLocation> UNREGISTERED = new HashSet<>();
-    public static final HashSet<Material> ADDITIONAL_MATERIALS = new HashSet<>();
-    public static boolean registerFired = false;
-    public static final HashMap<ResourceLocation, UnbakedBedrockModel> MODELS = new HashMap<>();
+    public static final HashMap<ResourceLocation, BedrockModel> MODELS = new HashMap<>();
     public static final ResourceLocation MISSING_MODEL_LOCATION = new ResourceLocation(KasugaLib.MOD_ID, "default/missing_model");
-    private static final LazyRecomputable<UnbakedBedrockModel> MISSING = new LazyRecomputable<>(() -> MODELS.get(MISSING_MODEL_LOCATION));
+    private static final LazyRecomputable<BedrockModel> MISSING = new LazyRecomputable<>(() -> MODELS.get(MISSING_MODEL_LOCATION));
 
     public BedrockModelLoader() {}
     @Override
@@ -51,50 +44,51 @@ public class BedrockModelLoader implements IGeometryLoader<UnbakedBedrockModel>,
     }
 
     @Override
-    public UnbakedBedrockModel read(JsonObject jsonObject, @Nullable JsonDeserializationContext deserializationContext) throws JsonParseException {
+    public BedrockModel read(JsonObject jsonObject, @Nullable JsonDeserializationContext deserializationContext) throws JsonParseException {
+        return readModel(jsonObject, deserializationContext);
+    }
+
+    public static BedrockModel readModel(JsonObject jsonObject, @Nullable JsonDeserializationContext context) {
         ResourceLocation ml = new ResourceLocation(jsonObject.get("model").getAsString());
         boolean flipV = jsonObject.has("flip_v") && jsonObject.get("flip_v").getAsBoolean();
 
-        UnbakedBedrockModel model = new UnbakedBedrockModel(new ResourceLocation(ml.getNamespace(), "models/" + ml.getPath() + ".geo.json"),
-                new ResourceLocation(jsonObject.get("texture").getAsString()), flipV);
-        if (jsonObject.has("particle")) {
-            String particleStr = jsonObject.get("particle").getAsString();
-            ResourceLocation location = new ResourceLocation(particleStr);
-            Material material = new Material(TextureAtlas.LOCATION_PARTICLES, location);
-            ADDITIONAL_MATERIALS.add(material);
+        ArrayList<Material> materials = new ArrayList<>();
+        Material texture = null;
+        if (jsonObject.has("textures") && jsonObject.get("textures").isJsonObject()) {
+            for (Map.Entry<String, JsonElement> entry : jsonObject.get("textures")
+                    .getAsJsonObject().entrySet()) {
+                if (!entry.getValue().isJsonPrimitive()) continue;
+                if (entry.getKey().equals("particle")) continue;
+                Material mat = new Material(TextureAtlas.LOCATION_BLOCKS,
+                        new ResourceLocation(entry.getValue().getAsString()));
+                materials.add(mat);
+                if (entry.getKey().equals("texture")) texture = mat;
+            }
+        } else {
+            texture = new Material(TextureAtlas.LOCATION_BLOCKS,
+                    new ResourceLocation(jsonObject.get("texture").getAsString()));
+            materials.add(texture);
         }
-        if (deserializationContext == null) {
-            ADDITIONAL_MATERIALS.add(model.getMaterial());
+//        if (jsonObject.has("particle")) {
+//            String particleStr = jsonObject.get("particle").getAsString();
+//            ResourceLocation location = new ResourceLocation(particleStr);
+//            // could not read particles? why?
+//            materials.add(new Material(TextureAtlas.LOCATION_PARTICLES, location));
+//        }
+        if (texture == null) return null;
+        BedrockModel model = new BedrockModel(
+                new ResourceLocation(ml.getNamespace(), "models/" + ml.getPath() + ".geo.json"),
+                flipV, texture, materials);
+        if (jsonObject.has("identifier")) {
+            ResourceLocation identifier = new ResourceLocation(jsonObject.get("identifier").getAsString());
+            MODELS.put(identifier, model);
         }
         return model;
     }
 
-    @Override
-    public HashMap<ItemDisplayContext, ItemTransform> generate(JsonObject jsonObject, Type type, JsonDeserializationContext context) {
-        ResourceLocation ml = new ResourceLocation(jsonObject.get("model").getAsString());
-        JsonArray geoJson;
-        try {
-            Resource resource = Resources.getResource(new ResourceLocation(ml.getNamespace(), "models/" + ml.getPath() + ".geo.json"));
-            JsonObject geo = JsonParser.parseReader(resource.openAsReader()).getAsJsonObject();
-            geoJson = geo.getAsJsonArray("minecraft:geometry");
-        } catch (IOException e) {
-            KasugaLib.MAIN_LOGGER.error("Failed to read Model: ", e);
-            return null;
-        }
-        if (geoJson == null) {
-            KasugaLib.MAIN_LOGGER.error("Failed to parse Model: " + ml);
-            return null;
-        }
-        HashMap<ItemDisplayContext, ItemTransform> result = Maps.newHashMap();
-        for (JsonElement geometry : geoJson.getAsJsonArray()) {
-            result.putAll(Geometry.parseTransforms(geometry.getAsJsonObject()));
-        }
-        return result;
-    }
-
     public static List<AnimModel> getModels(ResourceLocation location, RenderType type) {
-        UnbakedBedrockModel unbaked = MODELS.getOrDefault(location, null);
-        if (unbaked == null) return null;
+        BedrockModel unbaked = MODELS.getOrDefault(location, null);
+        if (unbaked == null) return List.of();
         List<Geometry> geometry = unbaked.getGeometries();
         ArrayList<AnimModel> result = new ArrayList<>(geometry.size());
         geometry.forEach(g -> result.add(g.getAnimationModel(type)));
@@ -102,38 +96,11 @@ public class BedrockModelLoader implements IGeometryLoader<UnbakedBedrockModel>,
     }
 
     public static AnimModel getModel(ResourceLocation location, RenderType type) {
-        UnbakedBedrockModel unbaked = MODELS.getOrDefault(location, null);
+        BedrockModel unbaked = MODELS.getOrDefault(location, null);
         if (unbaked == null) return null;
         List<Geometry> geometries = unbaked.getGeometries();
         if (geometries.isEmpty()) return null;
         Geometry geometry = geometries.get(0);
         return geometry.getAnimationModel(type);
-    }
-
-    public static LazyRecomputable<UnbakedBedrockModel> fromFile(ResourceLocation location) {
-        ResourceLocation location1 =
-                new ResourceLocation(location.getNamespace(), "models/" + location.getPath() + ".json");
-        if (!registerFired) {
-            UNREGISTERED.add(location);
-            return LazyRecomputable.of(() -> MODELS.getOrDefault(location, null));
-        } else if (MODELS.containsKey(location)) {
-            MODELS.get(location);
-        }
-        try {
-            Resource resource = Resources.getResource(location1);
-            JsonElement element = JsonParser.parseReader(resource.openAsReader());
-            if (!element.isJsonObject()) {
-                KasugaLib.MAIN_LOGGER.error(location + " is not a JsonObject");
-                return MISSING;
-            }
-            JsonObject jsObj = element.getAsJsonObject();
-            UnbakedBedrockModel model = INSTANCE.read(jsObj, null);
-            MODELS.put(location, model);
-            return LazyRecomputable.of(() -> model);
-        } catch (IOException e) {
-            KasugaLib.MAIN_LOGGER.error("Failed to load model file" + location, e);
-            return MISSING;
-        }
-
     }
 }
