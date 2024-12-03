@@ -111,7 +111,7 @@ public class KasugaLibStacks {
             if (Envs.isDevEnvironment()) KasugaLibClient.invoke();
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()-> TargetsClient::register);
             bus.addListener(REGISTRY::hookFluidAndRenders);
-            bus.addListener(ModelPreloadManager.INSTANCE::registerPreloadedModel);
+            // bus.addListener(ModelPreloadManager.INSTANCE::registerPreloadedModel);
         }
 
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStarting);

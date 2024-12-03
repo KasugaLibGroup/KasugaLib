@@ -21,9 +21,10 @@ import java.io.InputStreamReader;
 public class AnimationModelRegistryEvent {
 
     @SubscribeEvent
-    public static void registerAnimations(ModelBakeEvent event) {
+    public static void registerAnimations(ModelRegistryEvent event) {
         AnimationFile.filesLoaded = true;
         ModelPreloadManager.INSTANCE.scan();
+        ModelPreloadManager.INSTANCE.registerPreloadedModel(event);
         ModelPreloadManager.INSTANCE.applyAnimPreload();
         for (ResourceLocation location : AnimationFile.UNREGISTERED) {
             try {
