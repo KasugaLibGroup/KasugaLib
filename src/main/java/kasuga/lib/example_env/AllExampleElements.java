@@ -43,8 +43,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.SoundAction;
-import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.fml.DistExecutor;
 
 import java.io.File;

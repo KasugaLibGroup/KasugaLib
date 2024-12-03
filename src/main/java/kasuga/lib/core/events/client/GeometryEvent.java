@@ -13,7 +13,7 @@ public class GeometryEvent {
     @SubscribeEvent
     public static void registerGeometry(ModelRegistryEvent event) {
         ModelLoaderRegistry.registerLoader(new ResourceLocation("kasuga_lib", "bedrock_model"), BedrockModelLoader.INSTANCE);
-        ModelLoaderRegistry.registerLoader(new ResourceLocation("kasuga_lib", "bedrock_animated", AnimModelLoader.INSTANCE));
+        ModelLoaderRegistry.registerLoader(new ResourceLocation("kasuga_lib", "bedrock_animated"), AnimModelLoader.INSTANCE);
     }
 
     @SubscribeEvent

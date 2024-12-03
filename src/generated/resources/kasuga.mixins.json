@@ -14,14 +14,13 @@
   "client": [
     "client.MixinBlockModel$Deserializer",
     "client.MixinBlockModelBinding",
-    "client.MixinTextureManager",
-    "client.MixinBlockModelBinding",
     "client.MixinBlockModelShaper",
+    "client.MixinBlockRenderDispatcher",
     "client.MixinLevelRenderer",
     "client.MixinModelBakery",
-    "client.MixinTextureManager",
     "client.MixinObjLoader",
-    "client.MixinBlockRenderDispatcher"
+    "client.MixinRenderType",
+    "client.MixinTextureManager"
   ],
   "minVersion": "0.8"
 }

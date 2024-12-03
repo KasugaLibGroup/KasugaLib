@@ -10,7 +10,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ForgeModelBakery;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.io.IOException;
@@ -76,7 +77,7 @@ public class ModelPreloadManager {
     }
 
     @SubscribeEvent
-    public void registerPreloadedModel(ModelEvent.RegisterAdditional event) {
-        this.modelPreloaded.forEach(event::register);
+    public void registerPreloadedModel(ModelRegistryEvent event) {
+        this.modelPreloaded.forEach(ForgeModelBakery::addSpecialModel);
     }
 }

@@ -30,17 +30,11 @@ import kasuga.lib.registrations.registry.FontRegistry;
 import kasuga.lib.registrations.registry.TextureRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.synchronization.ArgumentTypes;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.commands.synchronization.ArgumentTypeInfo;
-import net.minecraft.commands.synchronization.ArgumentTypeInfos;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
 import java.util.Random;

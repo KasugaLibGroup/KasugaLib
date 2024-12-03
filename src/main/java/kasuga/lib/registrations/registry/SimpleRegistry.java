@@ -9,6 +9,7 @@ import kasuga.lib.core.annos.Util;
 import kasuga.lib.core.base.SimpleCreativeTab;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.client.ModelMappings;
+import kasuga.lib.core.client.model.NamedRenderTypeManager;
 import kasuga.lib.core.client.render.model.CustomRenderedItemModel;
 import kasuga.lib.registrations.BlockEntityRendererBuilder;
 import kasuga.lib.registrations.client.AnimReg;
@@ -37,12 +38,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.NamedRenderTypeManager;
-import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -445,7 +443,7 @@ public class SimpleRegistry {
     @OnlyIn(Dist.CLIENT)
     public void hookFluidAndRenders(FMLCommonSetupEvent event) {
         for (Map.Entry<FluidReg<?>, String> entry : KasugaLibStacks.FLUID_RENDERS.entrySet()) {
-            RenderType type = NamedRenderTypeManager.get(new ResourceLocation(entry.getValue())).block();
+            RenderType type = NamedRenderTypeManager.get(new ResourceLocation(entry.getValue()));
             ItemBlockRenderTypes.setRenderLayer(entry.getKey().stillFluid(), type);
             ItemBlockRenderTypes.setRenderLayer(entry.getKey().flowingFluid(), type);
         }

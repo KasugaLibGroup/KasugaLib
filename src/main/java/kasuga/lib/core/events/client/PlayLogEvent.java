@@ -15,7 +15,7 @@ public class PlayLogEvent {
     @SubscribeEvent
     public static void playerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         AnimateTickerManager.INSTANCE.resetTicks();
-        Player player = event.getEntity();
+        Player player = (Player) event.getEntity();
         if (!Envs.isDevEnvironment()) return;
         Panel.test = new PanelRenderer(player.getForward(), Vec3.ZERO);
         // TODO: deal with this

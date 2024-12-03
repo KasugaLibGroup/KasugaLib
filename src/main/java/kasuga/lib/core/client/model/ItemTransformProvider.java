@@ -14,6 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 
@@ -25,7 +26,8 @@ public interface ItemTransformProvider {
         JsonArray geoJson;
         try {
             Resource resource = Resources.getResource(new ResourceLocation(ml.getNamespace(), "models/" + ml.getPath() + ".geo.json"));
-            JsonObject geo = JsonParser.parseReader(resource.openAsReader()).getAsJsonObject();
+            JsonObject geo = JsonParser.parseReader(new InputStreamReader(resource.getInputStream())).getAsJsonObject();
+
             geoJson = geo.getAsJsonArray("minecraft:geometry");
         } catch (IOException e) {
             KasugaLib.MAIN_LOGGER.error("Failed to read Model: ", e);

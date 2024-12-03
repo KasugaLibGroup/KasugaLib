@@ -11,18 +11,17 @@ import kasuga.lib.KasugaLib;
 import kasuga.lib.core.util.Resources;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.client.model.geometry.IModelGeometryPart;
 import net.minecraftforge.client.model.geometry.IMultipartModelGeometry;
 
@@ -34,7 +33,7 @@ import java.util.*;
 import java.util.function.Function;
 
 @OnlyIn(Dist.CLIENT)
-public class BedrockModel extends SimpleUnbakedGeometry<BedrockModel> {
+public class BedrockModel implements IMultipartModelGeometry<BedrockModel> {
     public final ResourceLocation modelLocation;
     private final List<Material> materials;
 
@@ -130,7 +129,6 @@ public class BedrockModel extends SimpleUnbakedGeometry<BedrockModel> {
         return legacy;
     }
 
-    @Override
     public void addQuads(IModelConfiguration owner, IModelBuilder<?> modelBuilder, ModelBakery bakery,
                          Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
         geometries.forEach(geometry -> geometry.addQuads(

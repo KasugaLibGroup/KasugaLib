@@ -10,13 +10,13 @@ import kasuga.lib.core.client.model.model_json.Geometry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraftforge.client.model.geometry.IGeometryLoader;
+import net.minecraftforge.client.model.IModelLoader;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 
-public class AnimModelLoader implements IGeometryLoader<AnimModel>, ResourceManagerReloadListener, ItemTransformProvider {
+public class AnimModelLoader implements IModelLoader<AnimModel>, ResourceManagerReloadListener, ItemTransformProvider {
 
     private ResourceManager manager;
     private final HashMap<ResourceLocation, AnimModel> MODELS;
@@ -33,7 +33,7 @@ public class AnimModelLoader implements IGeometryLoader<AnimModel>, ResourceMana
     }
 
     @Override
-    public AnimModel read(JsonObject jsonObject, JsonDeserializationContext deserializationContext) throws JsonParseException {
+    public AnimModel read(JsonDeserializationContext deserializationContext, JsonObject jsonObject) throws JsonParseException {
         BedrockModel model = BedrockModelLoader.readModel(jsonObject, deserializationContext);
         if (model == null) return null;
         ResourceLocation renderTypeHint;

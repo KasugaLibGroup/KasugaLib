@@ -6,6 +6,7 @@ import com.mojang.math.Vector3f;
 import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Optional;
+import kasuga.lib.core.client.model.NamedRenderTypeManager;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.client.Camera;
@@ -22,6 +23,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -29,11 +31,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.NamedRenderTypeManager;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.common.SoundAction;
-import net.minecraftforge.common.SoundActions;
-import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.RegistryObject;
@@ -341,7 +338,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
 
     @Optional
     public FluidReg<E> noLoot() {
-        return withBlockProperty(BlockBehaviour.Properties::noLootTable);
+        return withBlockProperty(prop -> prop.lootFrom(() -> Blocks.AIR));
     }
 
     @Optional
@@ -401,11 +398,18 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     public FluidReg<E> lightLevel(int lightLevel) {
-        return this.typeProperty(prop -> prop.lightLevel(lightLevel));
+        return this.typeProperty(prop -> prop.luminosity(lightLevel));
     }
 
+    /**
+     * This method has no corresponding inner function in 1.18.2.
+     * @param flag dont use.
+     * @return self.
+     */
+    @Deprecated
     public FluidReg<E> canSupportBoating(boolean flag) {
-        return this.typeProperty(prop -> prop.supportsBoating(flag));
+        // return this.typeProperty(prop -> prop.supportsBoating(flag));
+        return this;
     }
 
     public FluidReg<E> density(int density) {
@@ -417,28 +421,8 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     @Optional
-    public FluidReg<E> bucketFillSound(SoundEvent sound) {
-        return this.typeProperty(prop -> prop.sound(SoundActions.BUCKET_FILL, sound));
-    }
-
-    @Optional
-    public FluidReg<E> bucketEmptySound(SoundEvent sound) {
-        return this.typeProperty(prop -> prop.sound(SoundActions.BUCKET_EMPTY, sound));
-    }
-
-    @Optional
-    public FluidReg<E> vaporizeSound(SoundEvent sound) {
-        return this.typeProperty(prop -> prop.sound(SoundActions.FLUID_VAPORIZE, sound));
-    }
-
-    @Optional
-    public FluidReg<E> sound(SoundAction action, SoundEvent sound) {
-        return this.typeProperty(prop -> prop.sound(action, sound));
-    }
-
-    @Optional
     public FluidReg<E> sound(SoundEvent fillSound, SoundEvent emptySound, SoundEvent vaporizeSound) {
-        return bucketFillSound(fillSound).bucketEmptySound(emptySound).vaporizeSound(vaporizeSound);
+        return this.typeProperty(prop -> prop.sound(fillSound, emptySound));
     }
 
     @Optional
@@ -574,7 +558,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
 
     @OnlyIn(Dist.CLIENT)
     public RenderType genRenderType() {
-        return NamedRenderTypeManager.get(new ResourceLocation(renderType)).block();
+        return NamedRenderTypeManager.get(new ResourceLocation(renderType));
     }
 
     @Override

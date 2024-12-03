@@ -2,7 +2,7 @@ package kasuga.lib.core.menu.locator;
 
 import net.minecraft.network.Connection;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraftforge.event.level.ChunkWatchEvent;
+import net.minecraftforge.event.world.ChunkWatchEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;

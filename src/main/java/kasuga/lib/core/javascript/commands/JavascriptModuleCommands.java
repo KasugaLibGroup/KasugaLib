@@ -13,6 +13,7 @@ import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -91,9 +92,9 @@ public class JavascriptModuleCommands {
                                 );
                                 context.getRuntimeContext().loadModule(module);
 
-                                this.ctx.getSource().sendSystemMessage(
-                                        Component.literal("[KasugaLib] Debugging session started  ")
-                                                .append(Component.literal("[CLOSE]")
+                                this.ctx.getSource().sendFailure(
+                                        new TextComponent("[KasugaLib] Debugging session started  ")
+                                                .append(new TextComponent("[CLOSE]")
                                                         .withStyle(style ->
                                                                 style.withColor(ChatFormatting.RED)
                                                                         .withClickEvent(

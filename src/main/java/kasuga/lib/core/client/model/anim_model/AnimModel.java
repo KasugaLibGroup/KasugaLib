@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Vector3f;
+import kasuga.lib.core.client.model.NamedRenderTypeManager;
 import kasuga.lib.core.client.model.model_json.Geometry;
 import kasuga.lib.core.client.render.SimpleColor;
 import kasuga.lib.core.client.model.BedrockRenderable;
@@ -21,10 +22,10 @@ import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.NamedRenderTypeManager;
 import net.minecraftforge.client.model.IModelBuilder;
-import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
-import net.minecraftforge.client.model.geometry.SimpleUnbakedGeometry;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.geometry.IModelGeometryPart;
+import net.minecraftforge.client.model.geometry.IMultipartModelGeometry;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.*;
@@ -32,7 +33,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 @OnlyIn(Dist.CLIENT)
-public class AnimModel extends SimpleUnbakedGeometry<AnimModel> implements Animable {
+public class AnimModel implements IMultipartModelGeometry<AnimModel>, Animable {
 
     public final Map<String, BedrockRenderable> children;
     public final List<BedrockRenderable> roots;
@@ -51,7 +52,7 @@ public class AnimModel extends SimpleUnbakedGeometry<AnimModel> implements Anima
         this.geometry = geometry;
         this.children = Maps.newHashMap();
         this.materials = new ArrayList<>(material);
-        this.renderType = () -> NamedRenderTypeManager.get(renderTypeHint).block();
+        this.renderType = () -> NamedRenderTypeManager.get(renderTypeHint);
         position = Cube.BASE_OFFSET.copy();
         rotation = Vector3f.ZERO.copy();
         color = SimpleColor.fromRGBInt(0xffffff);
@@ -250,12 +251,20 @@ public class AnimModel extends SimpleUnbakedGeometry<AnimModel> implements Anima
     }
 
     @Override
-    protected void addQuads(IGeometryBakingContext owner, IModelBuilder<?> modelBuilder, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
-        geometry.addQuads(owner, modelBuilder, bakery, spriteGetter, modelTransform, modelLocation);
+    public Collection<? extends IModelGeometryPart> getParts() {
+        return this.geometry.getModel().getParts();
     }
 
     @Override
-    public Collection<Material> getMaterials(IGeometryBakingContext context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-        return geometry.getModel().getMaterials(context, modelGetter, missingTextureErrors);
+    public Optional<? extends IModelGeometryPart> getPart(String name) {
+        return this.geometry.getModel().getPart(name);
+    }
+
+    public void addQuads(IModelConfiguration owner, IModelBuilder<?> modelBuilder, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
+        geometry.addQuads(owner, modelBuilder, bakery, spriteGetter, modelTransform, modelLocation);
+    }
+
+    public Collection<Material> getMaterials(IModelConfiguration context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+        return geometry.getModel().getTextures(context, modelGetter, missingTextureErrors);
     }
 }

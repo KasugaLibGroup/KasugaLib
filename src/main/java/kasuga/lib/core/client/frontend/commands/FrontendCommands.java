@@ -11,9 +11,11 @@ import kasuga.lib.core.javascript.JavascriptThread;
 import kasuga.lib.registrations.common.CommandReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
@@ -95,15 +97,17 @@ public class FrontendCommands {
             .setHandler(new CommandHandler(){
                 @Override
                 public void run() {
-                    Minecraft.getInstance().player.sendSystemMessage(Component.literal("-------- GUI Instances --------"));
+                    LocalPlayer player = Minecraft.getInstance().player;
+                    if (player == null) return;
+                    player.sendMessage(new TextComponent("-------- GUI Instances --------"), player.getUUID());
                     KasugaLib.STACKS.GUI.ifPresent((gui)->{
                         gui.getAllInstances().forEach((id, instance)->{
-                            Minecraft.getInstance().player.sendSystemMessage(
-                                    Component.literal(id.toString().substring(0,8))
+                            player.sendMessage(
+                                    new TextComponent(id.toString().substring(0,8))
                                             .append(" ")
-                                            .append(Component.literal(instance.getLocation().toString()))
+                                            .append(new TextComponent(instance.getLocation().toString()))
                                             .append(" ")
-                                            .append(Component.literal("[Inspect]")
+                                            .append(new TextComponent("[Inspect]")
                                                     .withStyle((s)->
                                                             s.withBold(true)
                                                                     .withClickEvent(
@@ -114,6 +118,7 @@ public class FrontendCommands {
                                                                     )
                                                     )
                                             ).withStyle((s)->s.withColor(TextColor.parseColor("#ffff00")))
+                                            , player.getUUID()
                             );
                         });
                     });

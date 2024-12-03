@@ -5,6 +5,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
@@ -31,7 +32,8 @@ public class BlockMenuLocator extends MenuLocator implements IChunkBasedLocator 
         super(MenuLocatorTypes.CHUNK_MENU);
         this.blockPos = byteBuf.readBlockPos();
         this.chunkPos = new ChunkPos(byteBuf.readLong());
-        this.levelResourceKey = byteBuf.readResourceKey(Registry.DIMENSION_REGISTRY);
+        ResourceLocation location = byteBuf.readResourceLocation();
+        this.levelResourceKey = ResourceKey.create(Registry.DIMENSION_REGISTRY, location);
     }
 
     public BlockMenuLocator(Level level, BlockPos blockPos) {
@@ -92,7 +94,7 @@ public class BlockMenuLocator extends MenuLocator implements IChunkBasedLocator 
     public void write(FriendlyByteBuf byteBuf) {
         byteBuf.writeLong(blockPos.asLong());
         byteBuf.writeLong(chunkPos.toLong());
-        byteBuf.writeResourceKey(levelResourceKey);
+        byteBuf.writeResourceLocation(levelResourceKey.location());
     }
 
     public ChunkPos getPosition() {
