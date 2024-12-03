@@ -9,7 +9,7 @@ import net.minecraft.world.entity.Entity;
 
 import java.util.Objects;
 
-public class ContraptionBlockMenuLocator extends EntityMenuLocator{
+public class ContraptionBlockMenuLocator extends EntityMenuLocator {
     BlockPos blockPos;
 
     public ContraptionBlockMenuLocator(AbstractContraptionEntity entity, BlockPos blockPos) {
