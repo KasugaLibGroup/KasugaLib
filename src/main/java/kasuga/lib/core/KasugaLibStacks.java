@@ -116,8 +116,8 @@ public class KasugaLibStacks {
             bus.addListener(AnimationModelRegistryEvent::registerAnimations);
             if (Envs.isDevEnvironment()) KasugaLibClient.invoke();
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()-> TargetsClient::register);
-            bus.addListener(REGISTRY::hookFluidAndRenders);
-            // bus.addListener(ModelPreloadManager.INSTANCE::registerPreloadedModel);
+            // bus.addListener(REGISTRY::hookFluidAndRenders);
+            bus.addListener(ModelPreloadManager.INSTANCE::registerPreloadedModel);
         }
 
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStarting);
