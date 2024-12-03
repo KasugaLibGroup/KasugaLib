@@ -37,7 +37,8 @@ public class JavetJavascriptModule extends AbstractJavascriptEngineModule {
               directoryName,
               context,
               nodePackage.reader,
-              KasugaLib.STACKS.JAVASCRIPT.ASSETS.get()
+              KasugaLib.STACKS.JAVASCRIPT.ASSETS.get(),
+              nodePackage.minecraft != null ? nodePackage.minecraft.assetsFolder() : ""
       ): null, absolutePath, directoryName, context);
     }
     public JavetJavascriptModule(
@@ -53,6 +54,7 @@ public class JavetJavascriptModule extends AbstractJavascriptEngineModule {
         this.nodePackage = nodePackage;
         this.directoryName = directoryName;
         this.context = context;
+        this.assetReader = reader;
     }
 
     public JavetJavascriptModule(

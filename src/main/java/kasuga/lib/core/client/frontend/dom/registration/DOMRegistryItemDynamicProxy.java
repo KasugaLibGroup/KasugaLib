@@ -1,12 +1,15 @@
 package kasuga.lib.core.client.frontend.dom.registration;
 
+import kasuga.lib.core.client.animation.neo_neo.key_frame.KeyFrameHolder;
 import kasuga.lib.core.client.frontend.dom.DomContext;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.SideEffectContext;
 import kasuga.lib.core.javascript.engine.JavascriptValue;
+import kasuga.lib.core.util.Callback;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -17,6 +20,7 @@ public class DOMRegistryItemDynamicProxy {
     private boolean closed = true;
     private JavascriptContext registryContext;
     private SideEffectContext sideEffectContext;
+    private HashSet<Callback> pendingTasks = new HashSet<>();
 
     public DOMRegistryItemDynamicProxy(DOMPriorityRegistry registry, ResourceLocation resourceLocation, DomContext context){
         this.context = context;
@@ -42,14 +46,13 @@ public class DOMRegistryItemDynamicProxy {
         }
         DOMRegistryItem item = registryItemPair.getFirst();
         JavascriptContext registryContext = registryItemPair.getSecond();
-        registryContext.runTask(()->{
+        this.pendingTasks.add(registryContext.runTask(()->{
             JavascriptValue unload = item.render(context);
             if(unload.canExecute())
                 sideEffectContext.collect(unload::executeVoid);
-        });
+        }));
         this.registryContext = registryContext;
-
-        registryContext.registerTickable(context);
+        sideEffectContext.collect(registryContext.registerTickable(context));
 
         context.setReady();
 
@@ -60,10 +63,17 @@ public class DOMRegistryItemDynamicProxy {
             return;
         this.context.getRootNode().clear();
         this.closed = true;
-        context.appendTask(()->sideEffectContext.close());
+        SideEffectContext _closingContext = this.sideEffectContext;
+        for (Callback pendingTask : this.pendingTasks) {
+            pendingTask.execute(); // Cancel pending tasks
+        }
+        pendingTasks.clear();
+        context.appendTask(()->{
+            _closingContext.close();
+        });
         context.setNotReady();
-        this.registryContext = null;
         this.sideEffectContext = null;
+        this.registryContext = null;
     }
 
     public void enable() {

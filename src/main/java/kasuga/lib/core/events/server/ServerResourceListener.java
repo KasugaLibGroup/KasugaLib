@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 public class ServerResourceListener {
     public static void onServerStarting(ServerStartingEvent event){
         KasugaLib.STACKS.JAVASCRIPT.setupServer();
+        KasugaLib.STACKS.MENU.initRegistry();
         ServerAddon.load(event.getServer());
     }
 

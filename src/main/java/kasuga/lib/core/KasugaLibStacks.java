@@ -9,6 +9,7 @@ import kasuga.lib.core.channel.packets.ChannelNetworkPacket;
 import kasuga.lib.core.channel.test.ChannelTest;
 import kasuga.lib.core.client.animation.Constants;
 import kasuga.lib.core.client.frontend.gui.GuiEngine;
+import kasuga.lib.core.client.model.ModelPreloadManager;
 import kasuga.lib.core.events.both.BothSetupEvent;
 import kasuga.lib.core.events.both.EntityAttributeEvent;
 import kasuga.lib.core.events.client.*;
@@ -16,12 +17,15 @@ import kasuga.lib.core.events.server.ServerConnectionListeners;
 import kasuga.lib.core.events.server.ServerResourceListener;
 import kasuga.lib.core.events.server.ServerStartingEvents;
 import kasuga.lib.core.client.render.texture.old.SimpleTexture;
+import kasuga.lib.core.events.server.ServerTickEvent;
 import kasuga.lib.core.javascript.JavascriptApi;
 import kasuga.lib.core.menu.GuiMenuManager;
+import kasuga.lib.core.menu.locator.ServerChunkMenuLocatorManager;
 import kasuga.lib.core.menu.targets.TargetsClient;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.registrations.create.TrackMaterialReg;
 import kasuga.lib.registrations.client.KeyBindingReg;
+import kasuga.lib.registrations.common.FluidReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.registry.FontRegistry;
 import kasuga.lib.registrations.registry.TextureRegistry;
@@ -33,8 +37,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import kasuga.lib.KasugaLib;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -53,6 +55,7 @@ public class KasugaLibStacks {
     private final FontRegistry FONTS;
     private final Random random = new Random();
     private final HashMap<Block, CustomBlockRenderer> BLOCK_RENDERERS;
+    public static final HashMap<FluidReg<?>, String> FLUID_RENDERS = new HashMap<>();
 
     public final JavascriptApi JAVASCRIPT = new JavascriptApi();
 
@@ -77,8 +80,11 @@ public class KasugaLibStacks {
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverAboutToStart);
         MinecraftForge.EVENT_BUS.addListener(PacketEvent::onServerPayloadHandleEvent);
+        MinecraftForge.EVENT_BUS.addListener(ServerChunkMenuLocatorManager::onWatch);
+        MinecraftForge.EVENT_BUS.addListener(ServerChunkMenuLocatorManager::onUnWatch);
         bus.addListener(BothSetupEvent::onFMLCommonSetup);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
+        MinecraftForge.EVENT_BUS.addListener(ServerTickEvent::onServerTick);
         ArgumentTypes.register("base", BaseArgument.class, new BaseArgument.Serializer());
         KeyBindingReg.invoke();
 
@@ -93,6 +99,7 @@ public class KasugaLibStacks {
 
             MinecraftForge.EVENT_BUS.addListener(PlayLogEvent::playerLogout);
             MinecraftForge.EVENT_BUS.addListener(PlayLogEvent::playerLogin);
+            MinecraftForge.EVENT_BUS.addListener(ClientConnection::onClientConnect);
             MinecraftForge.EVENT_BUS.addListener(ClientConnection::onClientDisconnect);
 
             bus.addListener(ModelRegistryEvent::registerAdditionalModels);
@@ -105,9 +112,12 @@ public class KasugaLibStacks {
             bus.addListener(GeometryEvent::registerGeometry);
             bus.addListener(GeometryEvent::registerReloadListener);
             GUI = Optional.of(new GuiEngine());
+            MENU.initClient();
             bus.addListener(AnimationModelRegistryEvent::registerAnimations);
             if (Envs.isDevEnvironment()) KasugaLibClient.invoke();
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()-> TargetsClient::register);
+            bus.addListener(REGISTRY::hookFluidAndRenders);
+            bus.addListener(ModelPreloadManager.INSTANCE::registerPreloadedModel);
         }
 
         MinecraftForge.EVENT_BUS.addListener(ServerResourceListener::onServerStarting);

@@ -1,5 +1,6 @@
 package kasuga.lib.core.events.client;
 
+import kasuga.lib.core.client.model.AnimModelLoader;
 import kasuga.lib.core.client.model.BedrockModelLoader;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -12,10 +13,12 @@ public class GeometryEvent {
     @SubscribeEvent
     public static void registerGeometry(ModelRegistryEvent event) {
         ModelLoaderRegistry.registerLoader(new ResourceLocation("kasuga_lib", "bedrock_model"), BedrockModelLoader.INSTANCE);
+        ModelLoaderRegistry.registerLoader(new ResourceLocation("kasuga_lib", "bedrock_animated"), AnimModelLoader.INSTANCE);
     }
 
     @SubscribeEvent
     public static void registerReloadListener(RegisterClientReloadListenersEvent event) {
         event.registerReloadListener(BedrockModelLoader.INSTANCE);
+        event.registerReloadListener(AnimModelLoader.INSTANCE);
     }
 }

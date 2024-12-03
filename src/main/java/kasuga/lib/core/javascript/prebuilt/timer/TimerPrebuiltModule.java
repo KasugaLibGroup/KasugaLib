@@ -39,6 +39,7 @@ public class TimerPrebuiltModule extends PrebuiltModule {
 
     @HostAccess.Export
     public int requestInterval(JavascriptValue callback, JavascriptValue interval){
+        callback.pin();
         return requestScheduled(KasugaTimer.TimerType.INTERVAL,()->callback.executeVoid(), ()->callback.unpin(), interval);
     }
 
@@ -46,7 +47,7 @@ public class TimerPrebuiltModule extends PrebuiltModule {
     public int requestScheduled(KasugaTimer.TimerType type, KasugaTimer.Callback callback, Runnable cancelHandler, JavascriptValue interval){
         if(!interval.isNumber())
             return -1;
-        int cancelId = timer.register(type, callback,Math.max(50,interval.asInt() / 50));
+        int cancelId = timer.register(type, callback,Math.max(1,interval.asInt() / 50));
         this.cancelHandler.put(cancelId, cancelHandler);
         return cancelId;
     }

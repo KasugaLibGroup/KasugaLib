@@ -140,7 +140,7 @@ public class Vec2f {
         Vec2f offset = subtract(pivot);
         float x0 = offset.x(), y0 = offset.y();
         offset.setX((float) (x0 * Math.cos(rad) - y0 * Math.sin(rad)));
-        offset.setY((float) (y0 * Math.cos(rad) - x0 * Math.sin(rad)));
+        offset.setY((float) (y0 * Math.cos(rad) + x0 * Math.sin(rad)));
         return pivot.add(offset);
     }
 
@@ -162,6 +162,19 @@ public class Vec2f {
 
     public float distance(Vec2f vec2f) {
         return (float) Math.sqrt(distanceSqr(vec2f));
+    }
+
+    public float getRotation() {
+        float pi = (float) Math.PI;
+        float len = length();
+        if (len == 0) return 0;
+        float asin = (float) Math.asin(y / len);
+        if (x > 0 && y >= 0) return - asin;
+        if (x < 0) {
+            return pi + asin;
+        } else {
+            return 2 * pi - asin;
+        }
     }
 
     @Util

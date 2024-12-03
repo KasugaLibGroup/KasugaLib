@@ -10,16 +10,25 @@ import kasuga.lib.core.client.model.model_json.Bone;
 import kasuga.lib.core.client.model.model_json.Cube;
 import kasuga.lib.core.client.model.model_json.Locator;
 import kasuga.lib.core.client.render.SimpleColor;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.IModelBuilder;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.geometry.IModelGeometryPart;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 @OnlyIn(Dist.CLIENT)
-public class AnimBone implements BedrockRenderable, Animable {
+public class AnimBone implements BedrockRenderable, Animable, IModelGeometryPart {
 
     public final Bone bone;
     private final Vector3f pivot, rotation;
@@ -175,5 +184,15 @@ public class AnimBone implements BedrockRenderable, Animable {
 
     public AnimBone copy(Bone bone, AnimModel model) {
         return new AnimBone(bone, model, this.cubes, this.locators);
+    }
+
+    @Override
+    public String name() {
+        return this.bone.name;
+    }
+
+    @Override
+    public void addQuads(IModelConfiguration owner, IModelBuilder<?> modelBuilder, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
+        this.bone.addQuads(owner, modelBuilder, bakery, spriteGetter, modelTransform, modelLocation);
     }
 }

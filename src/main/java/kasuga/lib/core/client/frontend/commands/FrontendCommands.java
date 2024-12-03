@@ -5,13 +5,20 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.addons.node.NodePackage;
 import kasuga.lib.core.base.commands.CommandHandler;
+import kasuga.lib.core.client.frontend.gui.GuiInstance;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.JavascriptThread;
 import kasuga.lib.registrations.common.CommandReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
@@ -78,11 +85,64 @@ public class FrontendCommands {
                         return;
                     }
                     ResourceLocation id = getParameter("id", ResourceLocation.class);
-                    RenderSystem.recordRenderCall(()->{
-                        Minecraft.getInstance().setScreen(KasugaLib.STACKS.GUI.get().create(id).createScreen());
-                    });
+                    DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()->()->GuiScreenHelper.createAndAttach(id));
                 }
             }).submit(REGISTRY);
+
+    public static final CommandReg GUI_INSTANCES_LIST = new CommandReg("kasugalib")
+            .addLiteral("gui", false)
+            .addLiteral("instances", false)
+            .addLiteral("list", false)
+            .onlyIn(Dist.CLIENT)
+            .setHandler(new CommandHandler(){
+                @Override
+                public void run() {
+                    LocalPlayer player = Minecraft.getInstance().player;
+                    if (player == null) return;
+                    player.sendMessage(new TextComponent("-------- GUI Instances --------"), player.getUUID());
+                    KasugaLib.STACKS.GUI.ifPresent((gui)->{
+                        gui.getAllInstances().forEach((id, instance)->{
+                            player.sendMessage(
+                                    new TextComponent(id.toString().substring(0,8))
+                                            .append(" ")
+                                            .append(new TextComponent(instance.getLocation().toString()))
+                                            .append(" ")
+                                            .append(new TextComponent("[Inspect]")
+                                                    .withStyle((s)->
+                                                            s.withBold(true)
+                                                                    .withClickEvent(
+                                                                            new ClickEvent(
+                                                                                    ClickEvent.Action.RUN_COMMAND,
+                                                                                    "/kasugalib gui instances inspect "+id
+                                                                            )
+                                                                    )
+                                                    )
+                                            ).withStyle((s)->s.withColor(TextColor.parseColor("#ffff00")))
+                                            , player.getUUID()
+                            );
+                        });
+                    });
+
+                }
+            }).submit(REGISTRY);
+
+    public static final CommandReg GUI_INSPECT = new CommandReg("kasugalib")
+            .addLiteral("gui", false)
+            .addLiteral("instances", false)
+            .addLiteral("inspect", false)
+            .addString("id", false)
+            .onlyIn(Dist.CLIENT)
+            .setHandler(new CommandHandler(){
+                @Override
+                public void run() {
+                    if(KasugaLib.STACKS.GUI.isEmpty()){
+                        return;
+                    }
+                    UUID id = UUID.fromString(getParameter("id", String.class));
+                    DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()->()->GuiScreenHelper.attach(id));
+                }
+            }).submit(REGISTRY);
+
     public static void invoke(){
         REGISTRY.submit();
     }

@@ -9,11 +9,14 @@ import kasuga.lib.core.annos.Util;
 import kasuga.lib.core.base.SimpleCreativeTab;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.client.ModelMappings;
+import kasuga.lib.core.client.model.NamedRenderTypeManager;
 import kasuga.lib.core.client.render.model.CustomRenderedItemModel;
 import kasuga.lib.registrations.BlockEntityRendererBuilder;
 import kasuga.lib.registrations.client.AnimReg;
 import kasuga.lib.registrations.client.KeyBindingReg;
 import kasuga.lib.registrations.common.*;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -34,8 +37,15 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
@@ -348,6 +358,12 @@ public class SimpleRegistry {
         return CACHE_OF_MENUS.getOrDefault(registrationKey, null);
     }
 
+    @Inner
+    public void cacheFluidRenderIn(FluidReg<?> reg) {
+        if (reg.getRenderType() == null) return;
+        KasugaLibStacks.FLUID_RENDERS.put(reg, reg.getRenderType());
+    }
+
     public HashMap<String, MenuReg<?, ?>> getCahcedMenus() {
         return CACHE_OF_MENUS;
     }
@@ -421,6 +437,17 @@ public class SimpleRegistry {
             registry.put(location, model);
         }
         CUSTOM_RENDERED_ITEMS.clear();
+    }
+
+    @Inner
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public void hookFluidAndRenders(FMLCommonSetupEvent event) {
+        for (Map.Entry<FluidReg<?>, String> entry : KasugaLibStacks.FLUID_RENDERS.entrySet()) {
+            RenderType type = NamedRenderTypeManager.get(new ResourceLocation(entry.getValue()));
+            ItemBlockRenderTypes.setRenderLayer(entry.getKey().stillFluid(), type);
+            ItemBlockRenderTypes.setRenderLayer(entry.getKey().flowingFluid(), type);
+        }
     }
 
     public void onAnimationReg() {

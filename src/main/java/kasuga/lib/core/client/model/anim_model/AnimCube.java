@@ -30,7 +30,7 @@ public class AnimCube implements BedrockRenderable {
 
         Vector3f pos = cube.getPivot().copy();
         pos.mul(-1 / 16f);
-        quads = cube.getBaked(model.material.sprite(), pos);
+        quads = cube.getBaked(model.geometry.getModel().getTextureMaterial().sprite(), pos);
 
         this.pivot = cube.getPivot().copy();
         pivot.mul(1 / 16f);

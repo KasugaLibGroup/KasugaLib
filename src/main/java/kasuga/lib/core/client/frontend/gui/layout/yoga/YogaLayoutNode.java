@@ -68,7 +68,6 @@ public class YogaLayoutNode implements LayoutNode {
         if(domNode instanceof GuiDomRoot root){
             LayoutBox size = root.getDomContext().getSourceInfo(source).size;
             node.calculateLayout(size.getWidth(), size.getHeight());
-
         }
     }
 
