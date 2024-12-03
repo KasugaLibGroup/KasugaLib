@@ -14,6 +14,7 @@ import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.client.ModelMappings;
 import kasuga.lib.core.client.model.NamedRenderTypeManager;
 import kasuga.lib.core.client.render.model.CustomRenderedItemModel;
+import kasuga.lib.core.util.Envs;
 import kasuga.lib.core.util.Resources;
 import kasuga.lib.registrations.BlockEntityRendererBuilder;
 import kasuga.lib.registrations.client.AnimReg;
@@ -134,6 +135,9 @@ public class SimpleRegistry {
         COMMANDS = new HashMap<>();
         KEY_BINDINGS = new HashMap<>();
         ANIMS = new HashMap<>();
+        if (Envs.isClient()) {
+            bus.addListener(this::hookFluidAndRenders);
+        }
     }
 
     /**
