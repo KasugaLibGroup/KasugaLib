@@ -26,6 +26,7 @@ public class ModelRegistryEvent {
     public static void registerAdditionalModels(net.minecraftforge.client.event.ModelRegistryEvent event) {
         for(String key : KasugaLib.STACKS.getRegistries().keySet()) {
             SimpleRegistry registry = KasugaLib.STACKS.getRegistries().get(key);
+            registry.hookRenderTypes();
             for(ResourceLocation location : registry.model().UNBAKED.keySet()) {
                 ModelReg reg = registry.model().UNBAKED.get(location);
                 try {

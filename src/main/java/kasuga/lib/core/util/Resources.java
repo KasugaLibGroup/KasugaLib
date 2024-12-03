@@ -100,13 +100,14 @@ public class Resources {
         HashMap<String, net.minecraft.server.packs.resources.Resource> result = new HashMap<>();
         for(ResourceLocation location1 : resources) {
             if(!location1.getPath().contains(".") || !location1.getNamespace().equals(location.getNamespace())) continue;
-            if(fullyPath)
-                if(location1.getPath().contains("."))
+            if(fullyPath) {
+                if (location1.getPath().contains("."))
                     result.put(location1.getPath(), getResource(location1));
-            else
-                if(location1.getPath().contains("."))
+            } else {
+                if (location1.getPath().contains("."))
                     result.put(location1.getPath().replaceAll(location.getPath() + "/", ""),
                             getResource(location1));
+            }
         }
         return result;
     }

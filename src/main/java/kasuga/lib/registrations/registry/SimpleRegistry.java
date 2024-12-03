@@ -1,5 +1,8 @@
 package kasuga.lib.registrations.registry;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.KasugaLibStacks;
 import kasuga.lib.core.annos.Beta;
@@ -11,6 +14,7 @@ import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.client.ModelMappings;
 import kasuga.lib.core.client.model.NamedRenderTypeManager;
 import kasuga.lib.core.client.render.model.CustomRenderedItemModel;
+import kasuga.lib.core.util.Resources;
 import kasuga.lib.registrations.BlockEntityRendererBuilder;
 import kasuga.lib.registrations.client.AnimReg;
 import kasuga.lib.registrations.client.KeyBindingReg;
@@ -23,6 +27,7 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.commands.synchronization.ArgumentTypes;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
@@ -33,6 +38,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
@@ -50,9 +57,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -446,6 +453,67 @@ public class SimpleRegistry {
             RenderType type = NamedRenderTypeManager.get(new ResourceLocation(entry.getValue()));
             ItemBlockRenderTypes.setRenderLayer(entry.getKey().stillFluid(), type);
             ItemBlockRenderTypes.setRenderLayer(entry.getKey().flowingFluid(), type);
+        }
+    }
+
+    @Inner
+    @OnlyIn(Dist.CLIENT)
+    public void hookRenderTypes() {
+        long startMs = System.currentTimeMillis();
+        int counter = 0;
+        try {
+            ArrayList<String> modelLoc = new ArrayList<>();
+            Map<String, Resource> resources = Resources.getResources(asResource("blockstates/"), false);
+            for (Map.Entry<String, Resource> entry : resources.entrySet()) {
+                Block block = ForgeRegistries.BLOCKS.getValue(getBlockKeyFromBlockStates(asResource(entry.getKey())));
+                if (block == null || block.equals(Blocks.AIR)) continue;
+                Resource resource = entry.getValue();
+                JsonElement json = JsonParser.parseReader(new InputStreamReader(resource.getInputStream()));
+                if (!json.isJsonObject()) continue;
+                JsonObject obj = json.getAsJsonObject();
+                collectModels(modelLoc, obj, true);
+                if (modelLoc.isEmpty()) continue;
+                for (String model : modelLoc) {
+                    Optional<Resource> modelResource = Resources.attemptGetResource(getModelLocation(new ResourceLocation(model)));
+                    if (modelResource.isEmpty()) continue;
+                    JsonElement modelJson = JsonParser.parseReader(new InputStreamReader(modelResource.get().getInputStream()));
+                    if (!modelJson.isJsonObject()) continue;
+                    JsonObject modelObj = modelJson.getAsJsonObject();
+                    if (!modelObj.has("render_type")) continue;
+                    String renderTypeHint = modelObj.get("render_type").getAsString();
+                    if (renderTypeHint.equals("solid")) continue;
+                    RenderType type = NamedRenderTypeManager.get(new ResourceLocation(renderTypeHint));
+                    if (type.equals(RenderType.solid())) continue;
+                    ItemBlockRenderTypes.setRenderLayer(block, type);
+                    counter++;
+                }
+                modelLoc.clear();
+            }
+        } catch (Exception e) {
+            KasugaLib.MAIN_LOGGER.error("Failed to load renderTypes", e);
+        }
+        long ms = System.currentTimeMillis() - startMs;
+        KasugaLib.MAIN_LOGGER.info("Loaded render types for " + counter + " blocks, using " + ms + " ms.");
+    }
+
+    private static ResourceLocation getBlockKeyFromBlockStates(ResourceLocation rl) {
+        String[] paths = rl.getPath().replace(".json", "").split("/");
+        return new ResourceLocation(rl.getNamespace(), paths[paths.length - 1]);
+    }
+
+    private static ResourceLocation getModelLocation(ResourceLocation rl) {
+        return new ResourceLocation(rl.getNamespace(), "models/" + rl.getPath() + ".json");
+    }
+
+    private void collectModels(List<String> list, JsonObject jsonObject, boolean greed) {
+        for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+            if (entry.getKey().equals("model")) {
+                String str = entry.getValue().getAsString();
+                if (!list.contains(str)) list.add(str);
+                if (!greed) return;
+            } else if (entry.getValue().isJsonObject()) {
+                collectModels(list, entry.getValue().getAsJsonObject(), greed);
+            }
         }
     }
 
