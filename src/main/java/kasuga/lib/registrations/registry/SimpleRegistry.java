@@ -9,6 +9,7 @@ import kasuga.lib.core.annos.Util;
 import kasuga.lib.core.base.SimpleCreativeTab;
 import kasuga.lib.core.client.ModelMappings;
 import kasuga.lib.core.client.render.model.CustomRenderedItemModel;
+import kasuga.lib.core.util.Envs;
 import kasuga.lib.registrations.BlockEntityRendererBuilder;
 import kasuga.lib.registrations.client.AnimReg;
 import kasuga.lib.registrations.client.KeyBindingReg;
@@ -125,6 +126,9 @@ public class SimpleRegistry {
         COMMANDS = new HashMap<>();
         KEY_BINDINGS = new HashMap<>();
         ANIMS = new HashMap<>();
+        if (Envs.isClient()) {
+            bus.addListener(this::hookFluidAndRenders);
+        }
     }
 
     /**
