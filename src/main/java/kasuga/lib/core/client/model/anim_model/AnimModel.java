@@ -264,7 +264,8 @@ public class AnimModel implements IMultipartModelGeometry<AnimModel>, Animable {
         geometry.addQuads(owner, modelBuilder, bakery, spriteGetter, modelTransform, modelLocation);
     }
 
-    public Collection<Material> getMaterials(IModelConfiguration context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+    @Override
+    public Collection<Material> getTextures(IModelConfiguration context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         return geometry.getModel().getTextures(context, modelGetter, missingTextureErrors);
     }
 }
