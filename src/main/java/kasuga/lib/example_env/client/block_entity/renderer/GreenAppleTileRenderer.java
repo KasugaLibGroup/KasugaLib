@@ -22,7 +22,7 @@ public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTil
     LazyRecomputable<AnimateTicker> ticker = AnimateTicker.getTickerInstance(
             AllExampleElements.testRegistry.asResource("test_model_complicate"),
             AllExampleElements.testRegistry.asResource("model"),
-            RenderType.solid(), "transform", AnimateTicker.TickerType.RENDER, 60, 100);
+            "transform", AnimateTicker.TickerType.RENDER, 60, 100);
 
     public GreenAppleTileRenderer(BlockEntityRendererProvider.Context context) {}
     // private WorldTexture TEXTURE = new WorldTexture(new ResourceLocation("kasuga_lib","textures/gui/pixel.png"));
