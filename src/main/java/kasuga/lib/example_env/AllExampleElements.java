@@ -1,14 +1,19 @@
 package kasuga.lib.example_env;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.math.Vector3f;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.commands.CommandHandler;
 import kasuga.lib.core.config.SimpleConfig;
 import kasuga.lib.core.base.BucketItem;
+import kasuga.lib.core.base.commands.CommandHandler;
+import kasuga.lib.core.client.interaction.GuiOperatingPerspectiveScreen;
 import kasuga.lib.core.menu.base.GuiBinding;
 import kasuga.lib.core.menu.base.GuiMenu;
 import kasuga.lib.core.menu.base.GuiMenuRegistry;
 import kasuga.lib.core.menu.base.GuiMenuType;
 import kasuga.lib.core.util.Envs;
+import kasuga.lib.example_env.block.RotationTestBlock;
 import kasuga.lib.example_env.block.fluid.ExampleFluid;
 import kasuga.lib.example_env.block.fluid.ExampleFluidBlock;
 import kasuga.lib.example_env.block.green_apple.GreenAppleBlock;
@@ -25,14 +30,24 @@ import kasuga.lib.example_env.network.ExampleC2SPacket;
 import kasuga.lib.example_env.network.ExampleS2CPacket;
 import kasuga.lib.registrations.common.*;
 import kasuga.lib.registrations.registry.SimpleRegistry;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 
 import java.io.File;
 import java.net.URL;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.SoundAction;
+import net.minecraftforge.common.SoundActions;
+import net.minecraftforge.fml.DistExecutor;
 
 public class AllExampleElements {
 
@@ -104,6 +119,13 @@ public class AllExampleElements {
     public static final CreativeTabReg tab = new CreativeTabReg("test")
             .icon(greenAppleItem).submit(testRegistry);
 
+    public static final BlockReg<RotationTestBlock> rotationTest =
+            new BlockReg<RotationTestBlock>("rotation_test")
+                    .blockType(RotationTestBlock::new)
+                    .defaultBlockItem()
+                    .tabTo(tab)
+                    .addProperty(BlockBehaviour.Properties::noCollission)
+                    .submit(REGISTRY);
     /*
     public static final AnimReg test_anim =
             new AnimReg("test_anim", testRegistry.asResource("models/entity/test/wuling/wuling_anim.json"))
@@ -131,7 +153,14 @@ public class AllExampleElements {
             .numericProperties(1, 8, 3, 10)
             .overlayTexPath("block/fluid/water_overlay")
             .bucketItem(BucketItem::new)
-            .blockType(ExampleFluidBlock::new)
+            .basicFluidProperties(5, 15, 5, true)
+            .defaultSounds()
+            .tintColor(0xFFD2691E)
+            .fogColor(210, 105, 30)
+            .blockType((fluid, properties) ->
+                    new ExampleFluidBlock(fluid, BlockBehaviour.Properties.copy(Blocks.WATER)))
+            .noLootAndOcclusion()
+            .setRenderType("translucent")
             .tab(tab)
             .submit(testRegistry);
 
@@ -160,6 +189,16 @@ public class AllExampleElements {
             .setServerHandler(System.out::println)
             .submit(REGISTRY);
      */
+
+    public static final CommandReg OPERATE_COMMAND = new CommandReg("operate")
+            .onlyIn(Dist.CLIENT)
+            .setHandler(new CommandHandler() {
+                @Override
+                public void run() {
+                    DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()->OperateScreenCommand::invoke);
+                }
+            })
+            .submit(testRegistry);
 
     public static void invoke() {
         if (Envs.isClient()) AllClient.invoke();

@@ -3,6 +3,7 @@ package kasuga.lib.core.client.model.anim_instance;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
 import kasuga.lib.core.annos.Beta;
+import kasuga.lib.core.client.model.AnimModelLoader;
 import kasuga.lib.core.client.model.BedrockModelLoader;
 import kasuga.lib.core.client.model.anim_json.Animation;
 import kasuga.lib.core.client.model.anim_json.AnimationFile;
@@ -149,13 +150,14 @@ public class MultiAnimateTicker implements Ticker {
     }
 
     public static LazyRecomputable<MultiAnimateTicker> getTickerInstance(
-            ResourceLocation modelLoc, RenderType type, AnimateTicker.TickerType ticker,
+            ResourceLocation modelLoc, AnimateTicker.TickerType ticker,
             int frameRate, float playSpeed, Pair<ResourceLocation, String>... anims) {
         return new LazyRecomputable<>(() -> {
             AnimationInstance[] instances = new AnimationInstance[anims.length];
             int counter = 0;
-            AnimModel model = BedrockModelLoader.getModel(modelLoc, type);
+            AnimModel model = AnimModelLoader.INSTANCE.getModel(modelLoc);
             if (model == null) return null;
+            if (!model.isValidForRender()) model.init();
             for (Pair<ResourceLocation, String> a : anims) {
                 AnimationFile file = AnimationFile.fromFile(a.getFirst()).get();
                 if (file == null) return null;

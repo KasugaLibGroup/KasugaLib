@@ -1,26 +1,18 @@
 package kasuga.lib.core.javascript.engine.javet;
 
-import com.caoccao.javet.annotations.V8Function;
-import com.caoccao.javet.enums.JavetPromiseRejectEvent;
 import com.caoccao.javet.exceptions.JavetException;
-import com.caoccao.javet.interception.BaseJavetDirectCallableInterceptor;
 import com.caoccao.javet.interception.logging.JavetStandardConsoleInterceptor;
-import com.caoccao.javet.interop.IV8Native;
 import com.caoccao.javet.interop.V8Host;
 import com.caoccao.javet.interop.V8Runtime;
 import com.caoccao.javet.values.V8Value;
-import com.caoccao.javet.values.reference.V8Module;
 import com.caoccao.javet.values.reference.V8ValueFunction;
-import com.caoccao.javet.values.reference.V8ValuePromise;
 import kasuga.lib.core.addons.node.NodePackage;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.engine.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.UUID;
-import java.util.function.Function;
 
 public class JavetContext implements JavascriptEngineContext {
     private final JavascriptContext context;
@@ -45,6 +37,14 @@ public class JavetContext implements JavascriptEngineContext {
     public void loadModule(String moduleName) {
         // this.moduleAPI.requireModule(runtime,moduleName, null);
         this.moduleAPI.getRequireFunction(null).execute(moduleName);
+    }
+
+    @Override
+    public void loadModule(JavascriptEngineModule module){
+        if(!(module instanceof JavetJavascriptModule javetJavascriptModule)){
+            throw new RuntimeException("Invalid Module.");
+        }
+        javetJavascriptModule.getModule(runtime, this.moduleAPI.getRequireFunction(module));
     }
 
     @Override
@@ -89,8 +89,8 @@ public class JavetContext implements JavascriptEngineContext {
             return new JavetJavascriptModule(
                     module,
                     packageTarget,
-                    dirName,
                     fileName,
+                    dirName,
                     this.context
             );
         }catch (JavetException e){
@@ -115,5 +115,13 @@ public class JavetContext implements JavascriptEngineContext {
     @Override
     public JavascriptContext getContext() {
         return context;
+    }
+
+    private int gcTicks = 0;
+    @Override
+    public void tick() {
+        if(gcTicks ++ > 20){
+            runtime.lowMemoryNotification();
+        }
     }
 }

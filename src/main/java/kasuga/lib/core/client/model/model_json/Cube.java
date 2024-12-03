@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import kasuga.lib.core.client.model.Rotationable;
 import kasuga.lib.core.client.render.texture.Vec2f;
+import lombok.Getter;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
@@ -25,6 +26,8 @@ import java.util.function.Function;
 
 @OnlyIn(Dist.CLIENT)
 public class Cube implements Rotationable {
+
+    @Getter
     private final Vector3f origin, size, pivot, rotation;
     private final ArrayList<UnbakedUV> uvs;
 
@@ -32,6 +35,7 @@ public class Cube implements Rotationable {
 
     public final Bone bone;
     public final boolean mirror, visible, emissive;
+    @Getter
     private final float inflate;
     public static final Vector3f BASE_OFFSET = new Vector3f(.5f, 0, .5f),
                                 BASE_SCALE = new Vector3f(1, 1, 1);
@@ -112,18 +116,6 @@ public class Cube implements Rotationable {
         return result;
     }
 
-    public Vector3f getOrigin() {
-        return origin;
-    }
-
-    public Vector3f getSize() {
-        return size;
-    }
-
-    public Vector3f getRotation() {
-        return rotation;
-    }
-
     @Override
     public boolean hasParent() {
         return true;
@@ -139,14 +131,10 @@ public class Cube implements Rotationable {
         return pivot;
     }
 
-    public float getInflate() {
-        return inflate;
-    }
-
     public void addQuads(IGeometryBakingContext owner, IModelBuilder<?> modelBuilder, ModelBakery bakery,
                          Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
 
-        TextureAtlasSprite sprite = spriteGetter.apply(model.getModel().getMaterial());
+        TextureAtlasSprite sprite = spriteGetter.apply(model.getModel().getTextureMaterial());
         float u0 = sprite.getU0();
         float v0 = sprite.getV0();
         float u1 = sprite.getU1();
@@ -167,8 +155,8 @@ public class Cube implements Rotationable {
         quads = rotQuads(quads, pivot, position, context.quaternions());
         if (!modelTransform.getRotation().getLeftRotation().equals(new Quaternionf()))
             quads = rotQuads(quads, Rotationable.ZERO, modelTransform.getRotation().getLeftRotation());
-        if (!universalOffset.equals(BASE_OFFSET))
-            quads = translateQuads(quads, universalOffset);
+        // if (!universalOffset.equals(BASE_OFFSET))
+        quads = translateQuads(quads, universalOffset);
         if (!universalScale.equals(BASE_SCALE))
             quads = scaleQuads(quads, Rotationable.ZERO, universalScale);
         HashMap<Direction, int[]> aint = fillVertices(quads, u0, v0, width, height);
