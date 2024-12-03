@@ -86,7 +86,11 @@ public class GuiMenuHolder {
         }
         manager.openScreen(index);
     }
-    
+
+    public MenuLocator getLocator() {
+        return locator;
+    }
+
     public static class Builder {
         private final LocatedMenuManager.Builder managerBuilder = new LocatedMenuManager.Builder();
         private MenuLocator locator;
