@@ -133,12 +133,11 @@ public class BedrockModel extends SimpleUnbakedGeometry<BedrockModel> {
     @Override
     protected void addQuads(IGeometryBakingContext owner, IModelBuilder<?> modelBuilder, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {
         geometries.forEach(geometry -> geometry.addQuads(
-                owner, modelBuilder, Minecraft.getInstance().getModelManager().getModelBakery(),
+                owner, modelBuilder, baker,
                 spriteGetter, modelTransform, modelLocation
         ));
     }
 
-    @Override
     public Collection<Material> getMaterials(IGeometryBakingContext context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         Set<Material> materials = new HashSet<>(this.materials);
         return materials;

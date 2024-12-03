@@ -1,7 +1,6 @@
 package kasuga.lib.example_env;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.math.Vector3f;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.commands.CommandHandler;
 import kasuga.lib.core.config.SimpleConfig;
@@ -125,7 +124,7 @@ public class AllExampleElements {
                     .defaultBlockItem()
                     .tabTo(tab)
                     .addProperty(BlockBehaviour.Properties::noCollission)
-                    .submit(REGISTRY);
+                    .submit(testRegistry);
     /*
     public static final AnimReg test_anim =
             new AnimReg("test_anim", testRegistry.asResource("models/entity/test/wuling/wuling_anim.json"))

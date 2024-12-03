@@ -1,10 +1,10 @@
 package kasuga.lib.core.util.projectile;
 
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.animation.neo_neo.VectorUtil;
 import kasuga.lib.core.client.render.texture.Vec2f;
 import lombok.Getter;
 import lombok.Setter;
+import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
@@ -55,11 +55,11 @@ public class Grid {
     }
 
     public Vector3f get(float x, float y) {
-        Vector3f result = this.o.copy();
-        Vector3f x3d = xAxis.copy();
+        Vector3f result = new Vector3f(this.o);
+        Vector3f x3d = new Vector3f(xAxis);
         x3d.mul(x);
         result.add(x3d);
-        Vector3f y3d = yAxis.copy();
+        Vector3f y3d = new Vector3f(yAxis);
         y3d.mul(y);
         result.add(y3d);
         return result;
@@ -67,7 +67,7 @@ public class Grid {
 
     public Vec2f get(Vector3f vec) {
         float pi = (float) Math.PI;
-        Vector3f offset = vec.copy();
+        Vector3f offset = new Vector3f(vec);
         offset.sub(this.o);
         Vec2f offset2d = panel.map(offset);
         Function<Float, Float> mapper =
@@ -114,7 +114,7 @@ public class Grid {
 
     public Ray getNormalRay(float x, float y) {
         Vector3f source = get(x, y);
-        return new Ray(new Vector3f(panel.normal), source);
+        return new Ray(VectorUtil.vec3ToVec3f(panel.normal), source);
     }
 
     public Ray getNormalRay(Vec2f pos) {

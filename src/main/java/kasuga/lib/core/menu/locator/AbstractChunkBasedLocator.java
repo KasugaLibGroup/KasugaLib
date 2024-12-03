@@ -1,6 +1,7 @@
 package kasuga.lib.core.menu.locator;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerChunkCache;
@@ -23,7 +24,7 @@ public abstract class AbstractChunkBasedLocator extends MenuLocator implements I
     protected AbstractChunkBasedLocator(MenuLocatorType<?> type, FriendlyByteBuf byteBuf) {
         super(type);
         this.chunkPos = byteBuf.readChunkPos();
-        this.levelResourceKey = byteBuf.readResourceKey(Registry.DIMENSION_REGISTRY);
+        this.levelResourceKey = byteBuf.readResourceKey(Registries.DIMENSION);
     }
 
     @Override
@@ -61,7 +62,7 @@ public abstract class AbstractChunkBasedLocator extends MenuLocator implements I
             return;
 
         for (ServerPlayer player : players) {
-            sendUpTo(player.connection.getConnection());
+            sendUpTo(player.connection.connection);
         }
     }
 

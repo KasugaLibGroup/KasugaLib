@@ -7,6 +7,10 @@ import kasuga.lib.core.client.render.texture.Vec2f;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import javax.annotation.Nullable;
 import java.util.Stack;
@@ -64,19 +68,19 @@ public class Panel {
         return new Panel(this.normal.add(offset), this.constant + offsetConst);
     }
 
-    public Panel rotate(Quaternion quaternion, Vec3 referencePoint) {
+    public Panel rotate(Quaternionf quaternion, Vec3 referencePoint) {
         assert isPointOnPanel(referencePoint);
-        Vector3f neoNormal = new Vector3f(normal);
-        neoNormal.transform(quaternion);
+        Vector3f neoNormal = VectorUtil.vec3ToVec3f(normal);
+        quaternion.transform(neoNormal);
         return new Panel(referencePoint, new Vec3(neoNormal));
     }
 
     public Panel rotateDeg(Vector3f rotationDeg, Vec3 referencePoint) {
-        return rotate(Quaternion.fromXYZDegrees(rotationDeg), referencePoint);
+        return rotate(VectorUtil.fromXYZDegrees(rotationDeg), referencePoint);
     }
 
     public Panel rotate(Vector3f rotation, Vec3 referencePoint) {
-        return rotate(Quaternion.fromXYZ(rotation), referencePoint);
+        return rotate(VectorUtil.fromXYZ(rotation), referencePoint);
     }
 
     public Panel transform(Matrix4f matrix) {
@@ -84,7 +88,7 @@ public class Panel {
                 (float) this.normal.y(),
                 (float) this.normal.z(),
                 (float) this.constant);
-        vector4f.transform(matrix);
+        matrix.transform(vector4f);
         return new Panel(new Vec3(vector4f.x(), vector4f.y(), vector4f.z()), vector4f.w());
     }
 
@@ -93,7 +97,7 @@ public class Panel {
     }
 
     public Vector3f getNormal() {
-        return new Vector3f(normal);
+        return VectorUtil.vec3ToVec3f(normal);
     }
 
     public boolean isPointOnPanel(Vec3 point) {
@@ -123,7 +127,7 @@ public class Panel {
     }
 
     public Vector3f getHitPoint(Vector3f pos, Vector3f forward) {
-        return new Vector3f(getHitPoint(new Vec3(pos), new Vec3(forward)));
+        return VectorUtil.vec3ToVec3f(getHitPoint(VectorUtil.vec3fToVec3(pos), VectorUtil.vec3fToVec3(forward)));
     }
 
     public Vector3f getHitPoint(Ray ray) {
@@ -195,18 +199,18 @@ public class Panel {
 
     public Vector3f map(Vec2f vec) {
         Vec2f pitchAndYaw = getPitchAndYaw(this.normal);
-        Quaternion quaternion = Quaternion.fromXYZ(0, pitchAndYaw.y(), pitchAndYaw.x());
+        Quaternionf quaternion = VectorUtil.fromXYZ(0, pitchAndYaw.y(), pitchAndYaw.x());
         Vector3f vector3f = new Vector3f(vec.x(), 0, vec.y());
-        vector3f.transform(quaternion);
+        quaternion.transform(vector3f);
         return vector3f;
     }
 
     public Vec2f map(Vector3f vec) {
         assert parallel(vec);
         Vec2f pitchAndYaw = getPitchAndYaw(this.normal).invert();
-        Quaternion quaternion = Quaternion.fromXYZ(0, pitchAndYaw.y(), pitchAndYaw.x());
-        Vector3f vec3f = vec.copy();
-        vec3f.transform(quaternion);
+        Quaternionf quaternion = VectorUtil.fromXYZ(0, pitchAndYaw.y(), pitchAndYaw.x());
+        Vector3f vec3f = new Vector3f(vec);
+        quaternion.transform(vec);
         return new Vec2f(vec3f.x(), vec3f.z());
     }
 
@@ -225,30 +229,30 @@ public class Panel {
         return new Vec2f(- pitch, yaw);
     }
 
-    public Quaternion getQuaternion() {
+    public Quaternionf getQuaternion() {
         return getQuaternion(this.normal);
     }
 
-    public static Quaternion getQuaternion(Vec3 vec) {
+    public static Quaternionf getQuaternion(Vec3 vec) {
         Vec2f pitchAndYaw = getPitchAndYaw(vec);
-        Quaternion result = Quaternion.ONE.copy();
-        Quaternion yaw = Quaternion.fromXYZ(0, pitchAndYaw.y(), 0);
-        Quaternion pitch = Quaternion.fromXYZ(0, 0, pitchAndYaw.x());
+        Quaternionf result = new Quaternionf();
+        Quaternionf yaw = VectorUtil.fromXYZ(0, pitchAndYaw.y(), 0);
+        Quaternionf pitch = VectorUtil.fromXYZ(0, 0, pitchAndYaw.x());
         result.mul(yaw);
         result.mul(pitch);
         return result;
     }
 
-    public static Quaternion getQuaternion(Vector3f vector3f) {
+    public static Quaternionf getQuaternion(Vector3f vector3f) {
         return getQuaternion(new Vec3(vector3f));
     }
 
     public Vector3f getRotationVector() {
-        return getQuaternion().toXYZ();
+        return VectorUtil.toXYZ(getQuaternion());
     }
 
     public Vector3f getRotationDegVector() {
-        return getQuaternion().toXYZDegrees();
+        return VectorUtil.toXYZDegrees(getQuaternion());
     }
 
     @Override

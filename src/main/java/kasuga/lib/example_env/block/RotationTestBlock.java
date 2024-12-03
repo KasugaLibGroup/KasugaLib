@@ -1,7 +1,5 @@
 package kasuga.lib.example_env.block;
 
-import com.sk89q.worldedit.registry.state.EnumProperty;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;

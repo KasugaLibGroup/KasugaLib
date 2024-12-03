@@ -49,7 +49,7 @@ public class ServerChunkMenuLocatorManager {
 
     public static void onWatch(ChunkWatchEvent.Watch watchEvent){
         players.computeIfAbsent(watchEvent.getPos(), k -> new ArrayList<>()).add(watchEvent.getPlayer());
-        notifyLoad(watchEvent.getPos(), watchEvent.getPlayer().connection.getConnection());
+        notifyLoad(watchEvent.getPos(), watchEvent.getPlayer().connection.connection);
     }
 
     public static void onUnWatch(ChunkWatchEvent.UnWatch unwatchEvent){
@@ -60,7 +60,7 @@ public class ServerChunkMenuLocatorManager {
                 players.remove(unwatchEvent.getPos());
             }
         }
-        notifyUnload(unwatchEvent.getPos(), unwatchEvent.getPlayer().connection.getConnection());
+        notifyUnload(unwatchEvent.getPos(), unwatchEvent.getPlayer().connection.connection);
     }
 
     public static void transfer(IChunkBasedLocator menuLocator, ChunkPos oldChunk, ChunkPos newChunk) {
@@ -75,11 +75,11 @@ public class ServerChunkMenuLocatorManager {
         oldPlayers
                 .stream()
                 .filter(player -> !newPlayers.contains(player))
-                .forEach(player -> menuLocator.sendDownTo(player.connection.getConnection()));
+                .forEach(player -> menuLocator.sendDownTo(player.connection.connection));
 
         newPlayers
                 .stream()
                 .filter(player -> !oldPlayers.contains(player))
-                .forEach(player -> menuLocator.sendUpTo(player.connection.getConnection()));
+                .forEach(player -> menuLocator.sendUpTo(player.connection.connection));
     }
 }

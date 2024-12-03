@@ -2,7 +2,6 @@ package kasuga.lib.registrations.common;
 
 import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Optional;
-import kasuga.lib.core.base.SimpleCreativeTab;
 import kasuga.lib.core.base.item_helper.ExternalProperties;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
@@ -122,13 +121,18 @@ public class BucketItemReg<T extends BucketItem> extends ItemReg<T> {
 
     @Optional
     public ItemReg<T> tab(CreativeTabReg tab) {
-        properties.tab(tab.getTab());
+        tab.item(this::getItem);
         return this;
     }
 
+    /**
+     * Dont use
+     * @param tab dont use
+     * @return self
+     */
+    @Deprecated
     @Optional
-    public ItemReg<T> tab(SimpleCreativeTab tab) {
-        properties.tab(tab);
+    public ItemReg<T> tab(CreativeModeTab tab) {
         return this;
     }
 
