@@ -42,6 +42,7 @@ public class LocatedMenuManager {
 
     public void asClient(List<UUID> uuids){
         reset();
+        List<UUID> newUuids = new ArrayList<>(uuids);
         for(GuiMenu menu : menus){
             if(uuids.isEmpty()){
                 break;
