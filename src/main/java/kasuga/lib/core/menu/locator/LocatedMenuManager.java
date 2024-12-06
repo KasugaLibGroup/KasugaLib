@@ -47,7 +47,7 @@ public class LocatedMenuManager {
             if(uuids.isEmpty()){
                 break;
             }
-            menu.asClient(uuids.remove(0));
+            menu.asClient(newUuids.remove(0));
         }
     }
 
