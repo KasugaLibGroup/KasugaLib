@@ -5,6 +5,8 @@ import kasuga.lib.core.client.animation.neo_neo.VectorUtil;
 import kasuga.lib.core.client.render.texture.Vec2f;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
@@ -46,6 +48,10 @@ public class Grid {
         this.o = o;
     }
 
+    public Vector3f getO() {
+        return o;
+    }
+
     public Grid copy() {
         return new Grid(this.panel, this.o, this.xAxis, this.yAxis, xAxis2d, yAxis2d);
     }
@@ -73,20 +79,31 @@ public class Grid {
         Function<Float, Float> mapper =
                 angle -> angle > pi ? 2 * pi - angle : angle;
 
-        float angleX = mapper.apply(xAxis2d.getRotation());
-        float angleY = mapper.apply(yAxis2d.getRotation());
-        float angleO = mapper.apply(offset2d.getRotation());
+        // use the law of sine.
+        // vector a, b and c; ua + vb = c;
+        float sina = vecSine(vec, yAxis);
+        float sinb = vecSine(vec, xAxis);
+        float sinc = vecSine(xAxis, yAxis);
 
-        // offset2d = u * xAxis2d + v * yAxis2d
-        // use law of sines.
-        float angleXY = pi - angleX - angleY;
-        float angleXO = angleO + angleX;
-        float angleYO = pi - angleXY - angleXO;
-        float k = offset2d.length() / (float) Math.sin(angleXY);
-        float u = k * (float) Math.sin(angleYO);
-        float v = k * (float) Math.sin(angleXO);
+        float cLen = len(vec);
+        float bLen = cLen / sinc * sinb;
+        float aLen = cLen / sinc * sina;
+        return new Vec2f(aLen / this.xAxis2d.length(), bLen / this.yAxis2d.length());
+    }
 
-        return new Vec2f(u, v);
+    public float vecSine(Vector3f vec1, Vector3f vec2) {
+        Vector3f a = vec1.copy();
+        a.normalize();
+        Vector3f b = vec2.copy();
+        b.normalize();
+        a.cross(b);
+        return len(a);
+    }
+
+    public float len(Vector3f vector3f) {
+        return (float) Math.sqrt(vector3f.x() * vector3f.x() +
+                vector3f.y() * vector3f.y() +
+                vector3f.z() * vector3f.z());
     }
 
     public void flex(float xScale, float yScale) {
@@ -114,7 +131,7 @@ public class Grid {
 
     public Ray getNormalRay(float x, float y) {
         Vector3f source = get(x, y);
-        return new Ray(new Vector3f(panel.normal), source);
+        return new Ray(source, new Vector3f(panel.normal));
     }
 
     public Ray getNormalRay(Vec2f pos) {
@@ -127,11 +144,24 @@ public class Grid {
         return get(hitPoint);
     }
 
+    @Override
+    public String toString() {
+        return "Grid<\n    " + panel + ", \n    " +
+               o + ", \n    " + xAxis2d + ", " + yAxis2d + ",\n    "
+                + xAxis + ", " + yAxis + "\n>";
+    }
+
     public static void main(String[] args) {
-        Vec2f vec2f = new Vec2f(1, 0);
-        for (int i = 0; i < 24; i++) {
-            vec2f = vec2f.rotateDeg(Vec2f.ZERO, 15);
-            System.out.println(vec2f.toString() + " deg:" + (vec2f.getRotation() * 180f / (float) Math.PI));
-        }
+        Vec3 normal = new Vec3(1, 1, 1);
+        Panel panel = new Panel(Vec3.ZERO, normal);
+        Vec2f xo2f = new Vec2f(1, 0);
+        Vec2f yo2f = new Vec2f(0, 1);
+        Grid grid = new Grid(panel, Vector3f.ZERO, xo2f, yo2f);
+        grid.rotDeg(80);
+        Vector3f vector3f = grid.get(new Vec2f(0.5f, 0.5f));
+        Vec2f vec2f = grid.get(vector3f);
+        System.out.println(grid);
+        System.out.println(vector3f);
+        System.out.println(vec2f);
     }
 }
