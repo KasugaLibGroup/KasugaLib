@@ -2,6 +2,7 @@ package kasuga.lib.mixins.mixin.create;
 
 import com.simibubi.create.Create;
 import com.simibubi.create.content.trains.GlobalRailwayManager;
+import com.simibubi.create.content.trains.entity.Train;
 import com.simibubi.create.content.trains.graph.TrackEdge;
 import com.simibubi.create.content.trains.graph.TrackGraph;
 import com.simibubi.create.content.trains.graph.TrackNode;
@@ -49,5 +50,19 @@ public class GlobalRailwayManagerMixin {
         if(!((GlobalRailwayManager)(Object)(this) == Create.RAILWAYS))
             return;
         KasugaLib.STACKS.RAILWAY.get().removeExtraData(graph.id);
+    }
+
+    @Inject(method = "addTrain", at = @At("TAIL"))
+    public void onAddTrain(Train train, CallbackInfo ci){
+        if(!((GlobalRailwayManager)(Object)(this) == Create.RAILWAYS))
+            return;
+        KasugaLib.STACKS.RAILWAY.get().putTrainExtraData(train);
+    }
+
+    @Inject(method = "removeTrain", at = @At("TAIL"))
+    public void onRemoveTrain(UUID id, CallbackInfo ci){
+        if(!((GlobalRailwayManager)(Object)(this) == Create.RAILWAYS))
+            return;
+        KasugaLib.STACKS.RAILWAY.get().removeTrainExtraData(id);
     }
 }

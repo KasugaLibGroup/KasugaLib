@@ -14,7 +14,8 @@
     "create.TrackGraphMixin",
     "create.TrackGraphAccessor",
     "create.SignalPropagatorMixin",
-    "create.EdgeDataMixin"
+    "create.EdgeDataMixin",
+    "create.TrainMixin"
   ],
   "client": [
     "client.MixinBlockModel$Deserializer",

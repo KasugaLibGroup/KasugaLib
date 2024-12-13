@@ -19,4 +19,8 @@ public class ExampleBoundaryBlockEntity extends SmartBlockEntity {
     public void addBehaviours(List<BlockEntityBehaviour> list) {
         list.add(edgePoint = new TrackTargetingBehaviour<>(this, ExampleBoundaryModule.EXAMPLE_BOUNDARY));
     }
+
+    public int getBogeyCount() {
+        return edgePoint.getEdgePoint().getBogeyCount();
+    }
 }
