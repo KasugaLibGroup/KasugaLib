@@ -16,7 +16,7 @@ public class GuiCanvasNode extends GuiDomNode{
 
     CanvasRenderer renderer;
 
-    GuiCanvasNode(GuiContext context) {
+    public GuiCanvasNode(GuiContext context) {
         super(context);
     }
 
