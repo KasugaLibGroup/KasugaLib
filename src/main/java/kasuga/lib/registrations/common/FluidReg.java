@@ -502,7 +502,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     @Mandatory
     @Override
     public FluidReg<E> submit(SimpleRegistry registry) {
-        properties.descriptionId(registrationKey);
+        properties.descriptionId("fluid_type." + registry.namespace + "." + registrationKey);
         registry.cacheFluidRenderIn(this);
         propertyBuilders.forEach(b -> b.build(properties));
         if (flowingBuilder == null) {
