@@ -54,7 +54,7 @@ public class GuiMenuManager {
         }
         this.clientLocators.put(locator, manager);
         if(clientKnownData.containsKey(locator)){
-            manager.asClient(clientKnownData.get(locator));
+            manager.asClient(List.copyOf(clientKnownData.get(locator)));
         }
     }
 
@@ -93,7 +93,7 @@ public class GuiMenuManager {
         if(knownData.size() != 0){
             clientKnownData.put(locator, knownData);
             if(clientLocators.containsKey(locator)){
-                clientLocators.get(locator).asClient(knownData);
+                clientLocators.get(locator).asClient(List.copyOf(knownData));
             }
         }else{
             clientKnownData.remove(locator);

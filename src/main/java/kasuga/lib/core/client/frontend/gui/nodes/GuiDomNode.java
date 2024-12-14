@@ -45,7 +45,7 @@ public class GuiDomNode extends DomNode<GuiContext> {
 
     }
 
-    GuiDomNode(GuiContext context){
+    public GuiDomNode(GuiContext context){
         super(context);
         attributes.registerProxy("style",new StyleAttributeProxy(styles));
         styles.setCallback(this::onStyleUpdate);
