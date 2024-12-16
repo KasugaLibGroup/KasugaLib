@@ -2,6 +2,7 @@ package kasuga.lib.example_env;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Vector3f;
+import com.simibubi.create.content.materials.ExperienceBlock;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.BucketItem;
 import kasuga.lib.core.base.commands.CommandHandler;
@@ -33,9 +34,12 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
@@ -160,6 +164,26 @@ public class AllExampleElements {
             .setRenderType("translucent")
             .tab(tab)
             .submit(REGISTRY);
+
+    public static final BlockReg<DropExperienceBlock> SALT_ORE =
+            new BlockReg<DropExperienceBlock>("salt_ore")
+                    .blockType(props ->
+                            new DropExperienceBlock(props, UniformInt.of(3, 7)))
+                    .material(Material.STONE)
+                    .materialColor(MaterialColor.STONE)
+                    .addProperty(properties -> properties.strength(1.5f, 6.0F))
+                    .addProperty(BlockBehaviour.Properties::requiresCorrectToolForDrops)
+                    .defaultBlockItem()
+                    .tabTo(tab)
+                    .submit(ExampleMain.testRegistry);
+
+    public static final OreReg<DropExperienceBlock> exampleOreConfig = new OreReg<DropExperienceBlock>("salt_ore")
+            .setOreBlock(SALT_ORE::getBlock)
+            .setOreCountPerChunk(20)
+            .setOreQuantityPerGroup(100)
+            .setOreDistributionType(PlacedFeatureReg.DistributionType.TRIANGLE)
+            .setOreAnchorAbsolute(80, -80)
+            .submit(ExampleMain.testRegistry);
 
     public static final MenuReg<GreenAppleMenu, GreenAppleScreen> apple =
             new MenuReg<GreenAppleMenu, GreenAppleScreen>("green_apple_screen")

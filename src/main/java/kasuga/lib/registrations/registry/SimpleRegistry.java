@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
@@ -32,6 +33,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -53,6 +56,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import static net.minecraft.core.Registry.CONFIGURED_FEATURE_REGISTRY;
 
 /**
  * SimpleRegistry is the core registry of KasugaLib provide Registration.
@@ -77,6 +82,8 @@ public class SimpleRegistry {
     private final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS;
     private final DeferredRegister<FluidType> FLUID_TYPE;
     private final DeferredRegister<Fluid> FLUID;
+    private final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURE;
+    private final DeferredRegister<PlacedFeature> PLACED_FEATURE;
     private final ModelRegistry MODELS;
     private final HashMap<String, BlockEntityReg<?>> CACHE_OF_BLOCK_ENTITIES;
     private final HashMap<String, MenuReg<?, ?>> CACHE_OF_MENUS;
@@ -114,6 +121,8 @@ public class SimpleRegistry {
         ATTRIBUTES = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, namespace);
         FLUID_TYPE = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, namespace);
         FLUID = DeferredRegister.create(ForgeRegistries.Keys.FLUIDS, namespace);
+        CONFIGURED_FEATURE = DeferredRegister.create(CONFIGURED_FEATURE_REGISTRY, namespace);
+        PLACED_FEATURE = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, namespace);
         MODELS = new ModelRegistry(namespace, this);
         CACHE_OF_BLOCK_ENTITIES = new HashMap<>();
         CUSTOM_RENDERED_ITEMS = new HashSet<>();
@@ -226,6 +235,10 @@ public class SimpleRegistry {
      */
     public DeferredRegister<Fluid> fluid() {return FLUID;}
 
+    public DeferredRegister<ConfiguredFeature<?, ?>> configuredFeature() { return CONFIGURED_FEATURE; }
+
+    public DeferredRegister<PlacedFeature> placedFeature() { return PLACED_FEATURE; }
+
     /**
      * retrun the registry of kasuga lib style models. See {@link kasuga.lib.registrations.client.ModelReg}
      * @return the registry of kasuga lib style models.
@@ -272,6 +285,8 @@ public class SimpleRegistry {
         ITEMS.register(eventBus);
         FLUID_TYPE.register(eventBus);
         FLUID.register(eventBus);
+        CONFIGURED_FEATURE.register(eventBus);
+        PLACED_FEATURE.register(eventBus);
         ATTRIBUTES.register(eventBus);
         for (String key : CACHE_OF_BLOCK_ENTITIES.keySet()) {
             try {
