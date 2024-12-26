@@ -171,6 +171,16 @@ public class BucketItemReg<T extends BucketItem> extends ItemReg<T> {
         return this;
     }
 
+    @Override
+    public T getItem() {
+        return registryObject.get();
+    }
+
+    @Override
+    public RegistryObject<T> getRegistryObject() {
+        return registryObject;
+    }
+
     public String getIdentifier() {
         return "bucket_item";
     }
