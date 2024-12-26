@@ -83,7 +83,9 @@ public class RailwayData {
     }
 
     public void markDirty(){
-        manager.setDirty();
+        if(manager != null){
+            manager.setDirty();
+        }
     }
 
     public void putTrainExtraData(Train train) {
@@ -95,5 +97,13 @@ public class RailwayData {
 
     public void removeTrainExtraData(UUID id) {
         trainExtraDatas.remove(id);
+    }
+
+    public TrainExtraData withTrainExtraData(Train train) {
+        if(trainExtraDatas.containsKey(train.id)){
+            return trainExtraDatas.get(train.id);
+        }
+        putTrainExtraData(train);
+        return trainExtraDatas.get(train.id);
     }
 }

@@ -76,7 +76,7 @@ public class KasugaLibStacks {
     public static final ChannelNetworkManager CHANNEL = new ChannelNetworkManager();
     public static HashSet<Minecraft> mcs = new HashSet<>();
 
-    public final RailwayManager RAILWAY = new RailwayManager();
+    public final RailwayManager RAILWAY = RailwayManager.createServer();
 
     public KasugaLibStacks(IEventBus bus) {
         this.bus = bus;

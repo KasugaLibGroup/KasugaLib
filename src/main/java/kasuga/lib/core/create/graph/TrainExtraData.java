@@ -1,27 +1,22 @@
 package kasuga.lib.core.create.graph;
 
-import com.simibubi.create.content.contraptions.behaviour.MovementContext;
 import com.simibubi.create.content.trains.entity.Carriage;
-import com.simibubi.create.content.trains.entity.CarriageContraption;
-import com.simibubi.create.content.trains.entity.CarriageContraptionEntity;
 import com.simibubi.create.content.trains.entity.Train;
-import kasuga.lib.core.create.device.carriage.CarriageDeviceManager;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class TrainExtraData {
     private final Train train;
-    HashMap<Integer, CarriageDeviceManager> carriageDevices = new HashMap<>();
 
     TrainExtraData(Train train){
         this.train = train;
     }
 
-    public void getCarriageDeviceManager(Carriage carriage){
-        getCarriageDeviceManager(train.carriages.indexOf(carriage));
-    }
 
-    public void getCarriageDeviceManager(int index){
-        carriageDevices.computeIfAbsent(index, (i)->new CarriageDeviceManager());
+    public CompoundTag write() {
+        return new CompoundTag();
     }
 }

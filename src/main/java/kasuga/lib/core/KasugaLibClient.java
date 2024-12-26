@@ -3,6 +3,7 @@ package kasuga.lib.core;
 import kasuga.lib.core.client.model.BedrockModelLoader;
 import kasuga.lib.core.client.model.model_json.BedrockModel;
 import kasuga.lib.core.client.render.texture.StaticImageHolder;
+import kasuga.lib.core.create.graph.RailwayManager;
 import kasuga.lib.core.util.LazyRecomputable;
 import kasuga.lib.core.util.projectile.PanelRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -22,4 +23,6 @@ public class KasugaLibClient {
     public static final HashSet<PanelRenderer> PANEL_RENDERERS = new HashSet<>();
 
     public static void invoke() {}
+
+    public static final RailwayManager RAILWAY = RailwayManager.createClient();
 }
