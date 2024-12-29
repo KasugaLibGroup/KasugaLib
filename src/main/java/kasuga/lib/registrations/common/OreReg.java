@@ -14,6 +14,8 @@ import java.util.function.Supplier;
 
 public class OreReg<T extends Block> extends Reg {
 
+    private Supplier<T> oreBlockSupplier;
+
     private ConfiguredFeatureReg<T> configuredFeatureObject = null;
 
     private PlacedFeatureReg placedFeatureObject = null;
@@ -24,8 +26,8 @@ public class OreReg<T extends Block> extends Reg {
         this.placedFeatureObject = new PlacedFeatureReg(registrationKey + "_placed");
     }
 
-    public OreReg<T> setOreBlock(Supplier<T> oreBlock) {
-        this.configuredFeatureObject.addOreConfigTarget(oreBlock);
+    public OreReg<T> setOreBlock(Supplier<T> oreBlockSupplier) {
+        this.oreBlockSupplier = oreBlockSupplier;
         return this;
     }
 
@@ -72,7 +74,8 @@ public class OreReg<T extends Block> extends Reg {
     @Override
     public OreReg<T> submit(SimpleRegistry registry) {
         if (configuredFeatureObject == null || placedFeatureObject == null)
-            throw new NullPointerException("ConfiguredFeature or placedFeature is null in OreReg!");
+            throw new NullPointerException("Either ConfiguredFeature or PlacedFeature is null in OreReg!");
+        configuredFeatureObject.addOreConfigTarget(oreBlockSupplier.get());
         configuredFeatureObject.submit(registry);
         placedFeatureObject.setConfiguredFeatureObject(configuredFeatureObject.getRegistryObject());
         placedFeatureObject.submit(registry);

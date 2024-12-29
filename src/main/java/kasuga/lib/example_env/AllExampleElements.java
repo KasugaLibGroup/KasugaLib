@@ -177,13 +177,13 @@ public class AllExampleElements {
                     .tabTo(tab)
                     .submit(ExampleMain.testRegistry);
 
-    public static final OreReg<DropExperienceBlock> exampleOreConfig = new OreReg<DropExperienceBlock>("salt_ore")
+/*    public static final OreReg<DropExperienceBlock> exampleOreConfig = new OreReg<DropExperienceBlock>("salt_ore")
             .setOreBlock(SALT_ORE::getBlock)
             .setOreCountPerChunk(20)
             .setOreQuantityPerGroup(100)
             .setOreDistributionType(PlacedFeatureReg.DistributionType.TRIANGLE)
             .setOreAnchorAbsolute(80, -80)
-            .submit(ExampleMain.testRegistry);
+            .submit(ExampleMain.testRegistry);*/
 
     public static final MenuReg<GreenAppleMenu, GreenAppleScreen> apple =
             new MenuReg<GreenAppleMenu, GreenAppleScreen>("green_apple_screen")
