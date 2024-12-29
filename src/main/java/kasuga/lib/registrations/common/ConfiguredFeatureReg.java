@@ -32,10 +32,10 @@ public class ConfiguredFeatureReg<T extends Block> extends Reg {
         super(registrationKey);
     }
 
-    public ConfiguredFeatureReg<T> addOreConfigTarget(Supplier<T> ore) {
+    public ConfiguredFeatureReg<T> addOreConfigTarget(T ore) {
         oreConfigTargetList.add(OreConfiguration.target(
                 OreFeatures.STONE_ORE_REPLACEABLES,
-                ore.get().defaultBlockState()));
+                ore.defaultBlockState()));
         return this;
     }
 
