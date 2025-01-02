@@ -65,6 +65,7 @@ public abstract class DomContext<P extends DomNode<?>,T extends P> implements Ti
         while(!queue.isEmpty() && (++taskNumebr)<64){
             queue.poll().execute();
         }
+        rootNode.dispatchRenderTick();
     }
 
     public void setReady() {
