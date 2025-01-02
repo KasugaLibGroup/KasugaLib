@@ -3,6 +3,7 @@ package kasuga.lib.core.create.graph;
 import com.simibubi.create.content.trains.entity.Train;
 import kasuga.lib.core.KasugaLibClient;
 import kasuga.lib.core.base.Saved;
+import kasuga.lib.core.create.graph.sync.RailwayDataSyncManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.api.distmarker.Dist;
@@ -14,6 +15,7 @@ import java.util.WeakHashMap;
 
 public class RailwayManager {
 
+
     public static RailwayManager createServer(){
         return new RailwayManager(new Saved("kasuga_railway_data", ()->new KasugaRailwayDataManager(), KasugaRailwayDataManager::load));
     }
@@ -21,6 +23,7 @@ public class RailwayManager {
 
     public RailwayManager(Saved<KasugaRailwayDataManager> dataSaved) {
         this.dataSaved = dataSaved;
+        this.sync = new RailwayDataSyncManager();
     }
 
     public RailwayManager(RailwayData data) {
@@ -44,9 +47,10 @@ public class RailwayManager {
         return sided(accessor.isClientSide());
     }
 
+    public RailwayDataSyncManager sync;
+
     protected Saved<KasugaRailwayDataManager> dataSaved;
     protected Map<Train, TrainDistanceIntegrator> integrators = Collections.synchronizedMap(new WeakHashMap<>());
-
 
     public RailwayData data;
 
