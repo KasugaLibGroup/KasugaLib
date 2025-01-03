@@ -2,7 +2,7 @@ package kasuga.lib.core.menu.javascript;
 
 import kasuga.lib.core.client.frontend.dom.event.EventEmitter;
 import kasuga.lib.core.javascript.CompoundTagWrapper;
-import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 import kasuga.lib.core.javascript.engine.JavascriptValue;
 
 import java.util.HashMap;

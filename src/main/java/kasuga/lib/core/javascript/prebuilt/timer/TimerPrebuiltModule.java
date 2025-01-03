@@ -1,9 +1,8 @@
 package kasuga.lib.core.javascript.prebuilt.timer;
 
 import kasuga.lib.core.javascript.JavascriptContext;
-import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 import kasuga.lib.core.javascript.engine.JavascriptValue;
-import kasuga.lib.core.javascript.engine.javet.JavetClassConverter;
 import kasuga.lib.core.javascript.prebuilt.PrebuiltModule;
 
 import java.util.HashMap;

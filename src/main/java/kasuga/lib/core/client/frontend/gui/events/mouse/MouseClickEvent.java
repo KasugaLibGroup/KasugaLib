@@ -1,4 +1,4 @@
-package kasuga.lib.core.client.frontend.gui.events;
+package kasuga.lib.core.client.frontend.gui.events.mouse;
 
 import kasuga.lib.core.client.frontend.dom.nodes.DomNode;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomNode;

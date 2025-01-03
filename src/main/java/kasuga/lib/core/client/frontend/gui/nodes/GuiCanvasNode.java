@@ -2,13 +2,12 @@ package kasuga.lib.core.client.frontend.gui.nodes;
 
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutBox;
-import kasuga.lib.core.client.frontend.common.layouting.LayoutContext;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutNode;
 import kasuga.lib.core.client.frontend.gui.GuiContext;
 import kasuga.lib.core.client.frontend.gui.canvas.CanvasRenderingContext2D;
 import kasuga.lib.core.client.frontend.gui.canvas.glfw.CanvasRenderer;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
-import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 
 import java.util.Map;
 
