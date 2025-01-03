@@ -2,7 +2,9 @@ package kasuga.lib.core.javascript.engine.javet.converter;
 
 import com.caoccao.javet.exceptions.JavetException;
 import com.caoccao.javet.interop.V8Runtime;
+import com.caoccao.javet.interop.callback.IJavetDirectCallable;
 import com.caoccao.javet.interop.callback.JavetCallbackContext;
+import com.caoccao.javet.interop.callback.JavetCallbackType;
 import com.caoccao.javet.interop.converters.IJavetConverter;
 import com.caoccao.javet.values.V8Value;
 import com.caoccao.javet.values.reference.V8ValueObject;
@@ -22,6 +24,9 @@ public class ClassAccessor {
     Map<String, MethodOverrideMap> methods = new HashMap<>();
     Map<String, Field> fields = new HashMap<>();
 
+    boolean isFunctionalInterface = false;
+    String functionalMethodName;
+
     public ClassAccessor(
             V8Runtime runtime,
             IJavetConverter provider,
@@ -38,8 +43,6 @@ public class ClassAccessor {
             String name,
             V8Value ...value
     ) throws InvocationTargetException, IllegalAccessException, JavetException {
-        System.gc();
-        runtime.lowMemoryNotification();
         if(quickAccessors.containsKey(name)) {
             return quickAccessors.get(name).apply(value);
         }
@@ -62,7 +65,7 @@ public class ClassAccessor {
 
         for(int i = 0; i < valueSize ; i++) {
             if(!convertMask.get(i)){
-                arrayParameters[i] = value[i];
+                arrayParameters[i] = new JavetJavascriptValue(value[i], runtime);
                 continue;
             }
             Object nativeObject = provider.toObject(value[i]);
@@ -83,7 +86,7 @@ public class ClassAccessor {
                     if(values[parameterIndex] == null){
                         values[parameterIndex] = new JavetJavascriptValue(value[parameterIndex], runtime);
                     }
-                    parameters[parameterIndex] = value[parameterIndex];
+                    parameters[parameterIndex] = values[parameterIndex];
                     continue;
                 }
 
@@ -98,11 +101,9 @@ public class ClassAccessor {
                 isSignatureMatch = false;
                 break;
             }
-
             if(!isSignatureMatch){
                 continue;
             }
-
             return localMethod.invoke(target, parameters);
         }
         throw new RuntimeException("Illegal invocation");
@@ -174,6 +175,8 @@ public class ClassAccessor {
                                         method.getReturnType() == interfaceMethod.getReturnType()
                         ){
                             filteredMethods.add(method);
+                            accessor.isFunctionalInterface = true;
+                            accessor.functionalMethodName = method.getName();
                         }
                     }
                 }
@@ -261,5 +264,22 @@ public class ClassAccessor {
                 NativeProxyAccessor.AccessorType.FIELD_WRITE
         );
         value.bindProperty(readContext, writeContext);
+    }
+
+    public V8ValueObject createObject(
+            Object object,
+            IJavetConverter converter,
+            V8Runtime v8Runtime
+    ) throws JavetException {
+        if(isFunctionalInterface){
+            return v8Runtime.createV8ValueFunction(new JavetCallbackContext(
+                    "apply",
+                    JavetCallbackType.DirectCallNoThisAndResult,
+                    (IJavetDirectCallable.NoThisAndResult) (V8Value ...values)->{
+                        return converter.toV8Value(v8Runtime, invoke(object, functionalMethodName, values));
+                    }
+            ));
+        }
+        return v8Runtime.createV8ValueObject();
     }
 }

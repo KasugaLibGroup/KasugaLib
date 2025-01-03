@@ -35,6 +35,8 @@ public class FastJavetClassConverter extends JavetObjectConverter {
     }
     public HashMap<Class, V8ValueObject> classTypeCache = new HashMap<>();
 
+    public HashMap<Class, ClassAccessor> accessors = new HashMap<>();
+
 
     public V8ValueObject getClassPrototype(Class<?> prototype) throws JavetException {
         if(classTypeCache.containsKey(prototype))
@@ -42,6 +44,7 @@ public class FastJavetClassConverter extends JavetObjectConverter {
         V8ValueObject prototypeObject = v8Runtime.createV8ValueObject();
 
         ClassAccessor accessor = ClassAccessor.collect(v8Runtime, this, prototype);
+        accessors.put(prototype, accessor);
 
         accessor.bindPrototypeTo(v8Runtime, this, prototypeObject);
 
@@ -62,6 +65,9 @@ public class FastJavetClassConverter extends JavetObjectConverter {
         }
         if(object instanceof JavetJavascriptValue value){
             return (T) value.getValue().toClone();
+        }
+        if(object instanceof V8Value value){
+            return (T) value.toClone();
         }
         if(
                 object instanceof int[] ||
@@ -102,14 +108,14 @@ public class FastJavetClassConverter extends JavetObjectConverter {
                             // Reference to object to prevent the GCs
                         }
                 ));
+                v8ValueObject.setWeak();
             }
             return v8Value;
         }
 
         V8ValueObject proto = this.getClassPrototype(object.getClass());
 
-
-        V8ValueObject childObject = v8Runtime.createV8ValueObject();
+        V8ValueObject childObject = this.accessors.get(object.getClass()).createObject(object, this, v8Runtime);
         int hashCode = System.identityHashCode(object);
         cachedObjects.put(hashCode, new WeakReference<>(object));
         childObject.setPrivateProperty("KasugaLib#Address", hashCode);
@@ -121,7 +127,7 @@ public class FastJavetClassConverter extends JavetObjectConverter {
                 }
         ));
         childObject.set("__proto__",proto);
-
+        childObject.setWeak();
         return (T) childObject;
     }
 

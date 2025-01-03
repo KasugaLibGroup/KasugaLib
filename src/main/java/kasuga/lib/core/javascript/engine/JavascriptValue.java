@@ -26,4 +26,6 @@ public interface JavascriptValue {
     boolean isNumber();
 
     int asInt();
+
+    JavascriptValue cloneValue();
 }

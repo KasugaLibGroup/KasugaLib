@@ -41,7 +41,7 @@ public class NativeProxyAccessor {
                             }
 
                             if(!className.isAssignableFrom(targetObject.getClass())) {
-                                throw new RuntimeException("Illegal invocation");
+                                throw new RuntimeException("Illegal invocation: "+className.getName() + "/" + targetObject.getClass().getName());
                             }
 
                             return converter.toV8Value(runtime ,accessor.invoke(targetObject, name, args));
