@@ -1,29 +1,15 @@
 package kasuga.lib.core.javascript.engine.javet;
 
-import com.caoccao.javet.annotations.V8Convert;
-import com.caoccao.javet.annotations.V8Function;
 import com.caoccao.javet.exceptions.JavetException;
-import com.caoccao.javet.interfaces.IJavetEntityFunction;
 import com.caoccao.javet.interop.V8Runtime;
-import com.caoccao.javet.interop.callback.JavetCallbackContext;
 import com.caoccao.javet.interop.converters.JavetObjectConverter;
-import com.caoccao.javet.interop.converters.JavetProxyConverter;
-import com.caoccao.javet.utils.receivers.JavetCallbackReceiver;
 import com.caoccao.javet.values.V8Value;
-import com.caoccao.javet.values.reference.V8ValueFunction;
 import com.caoccao.javet.values.reference.V8ValueObject;
-import com.caoccao.javet.values.reference.V8ValueReference;
 import com.caoccao.javet.values.reference.V8ValueSymbol;
-import kasuga.lib.core.javascript.engine.HostAccess;
-import kasuga.lib.core.javascript.engine.JavascriptValue;
-import kasuga.lib.core.util.WeakCache;
-import kasuga.lib.core.util.data_type.Pair;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.*;
 import java.math.BigInteger;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 /*
  THIS FILE WAS MODIFIED FROM https://www.caoccao.com/Javet/reference/converters/custom_converter.html
@@ -36,7 +22,7 @@ public class JavetKasugaConverter extends JavetObjectConverter {
     private final V8ValueSymbol SYMBOL_NATIVE_OBJECT;
     HashMap<Integer, WeakReference<Object>> cachedObjects = new HashMap<>();
 
-    JavetKasugaConverter(V8Runtime runtime){
+    public JavetKasugaConverter(V8Runtime runtime){
         this.runtime = runtime;
         try{
             SYMBOL_NATIVE_OBJECT = runtime.createV8ValueSymbol("NATIVE OBJECT");

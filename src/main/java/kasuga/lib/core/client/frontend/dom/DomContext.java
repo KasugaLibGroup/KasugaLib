@@ -6,7 +6,7 @@ import kasuga.lib.core.client.frontend.dom.nodes.DomNode;
 import kasuga.lib.core.client.frontend.dom.registration.DOMPriorityRegistry;
 import kasuga.lib.core.client.frontend.dom.registration.DOMRegistryItemDynamicProxy;
 import kasuga.lib.core.javascript.Tickable;
-import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 import kasuga.lib.core.javascript.engine.JavascriptValue;
 import kasuga.lib.core.util.Callback;
 import net.minecraft.resources.ResourceLocation;

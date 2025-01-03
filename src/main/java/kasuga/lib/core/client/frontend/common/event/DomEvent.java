@@ -1,7 +1,7 @@
 package kasuga.lib.core.client.frontend.common.event;
 
 import kasuga.lib.core.client.frontend.dom.nodes.DomNode;
-import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 
 public abstract class DomEvent extends Event{
     protected final DomNode<?> currentTarget;
