@@ -106,4 +106,11 @@ public class RailwayData {
         putTrainExtraData(train);
         return trainExtraDatas.get(train.id);
     }
+
+    public TrainExtraData withTrainExtraData(UUID id) {
+        if(trainExtraDatas.containsKey(id)){
+            return trainExtraDatas.get(id);
+        }
+        return null;
+    }
 }

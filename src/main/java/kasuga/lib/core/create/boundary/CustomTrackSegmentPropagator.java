@@ -2,8 +2,6 @@ package kasuga.lib.core.create.boundary;
 
 import com.simibubi.create.Create;
 import com.simibubi.create.content.trains.graph.*;
-import com.simibubi.create.content.trains.signal.SignalBoundary;
-import com.simibubi.create.content.trains.signal.SignalPropagator;
 import com.simibubi.create.foundation.utility.Couple;
 import com.simibubi.create.foundation.utility.Iterate;
 import kasuga.lib.KasugaLib;
@@ -132,8 +130,7 @@ public class CustomTrackSegmentPropagator{
             return;
 
         if (!forCollection) {
-            // Create.RAILWAYS.sync.edgeDataChanged(graph, node1, node2, startEdge, oppositeEdge);
-            // @TODO: Notify ourselves's Extra Edge Data Changed
+            KasugaLib.STACKS.RAILWAY.sync.edgeExtraDataChanged(graph, node1, node2, startEdge, oppositeEdge);
         }
 
         // Check for signal on the same edge
@@ -207,8 +204,7 @@ public class CustomTrackSegmentPropagator{
                     // no boundary- update group of edge
                     if (!extraData.hasCustomBoundaryInThisEdge(featureName)) {
                         if (nonBoundaryCallback.test(extraData)) {
-                            // Create.RAILWAYS.sync.edgeDataChanged(graph, currentNode, nextNode, edge, oppositeEdge);
-                            // @TODO: Notify ourselves sync module to notify edge data changed
+                            KasugaLib.STACKS.RAILWAY.sync.edgeExtraDataChanged(graph, currentNode, nextNode, edge, oppositeEdge);
                         }
                         continue;
                     }
@@ -220,8 +216,8 @@ public class CustomTrackSegmentPropagator{
                     if (circuitCallback.test(Pair.of(currentNode, nextBoundary))) {
                         // currentEdge.getEdgeData()
                         //        .refreshIntersectingSignalGroups(graph);
-                        // Create.RAILWAYS.sync.edgeDataChanged(graph, currentNode, nextNode, edge, oppositeEdge);
                         // @TODO: Notify ourselves sync module to notify edge data changed
+                        KasugaLib.STACKS.RAILWAY.sync.edgeExtraDataChanged(graph, currentNode, nextNode, edge, oppositeEdge);
                     }
                     continue EdgeWalk;
                 }
