@@ -71,7 +71,7 @@ console.info("ΔTP=", measureTime() / 1000);
 
         runtime.getGlobalObject().set("benchmarker",new ClassBenchmarker());
 
-        System.out.printf("ΔT初 = %d\n", (System.nanoTime() - nanoTime));
+        System.out.printf("delta T start = %d\n", (System.nanoTime() - nanoTime));
 
         int beforeRef = runtime.getReferenceCount();
 
@@ -82,8 +82,8 @@ console.info("ΔTP=", measureTime() / 1000);
         runtime.lowMemoryNotification();
         System.gc();
 
-        System.out.printf("ΔREF = %d\n" , beforeRef - runtime.getReferenceCount());
-        System.out.printf("ΔCTX = %d\n" , beforeCtx - runtime.getCallbackContextCount());
+        System.out.printf("delta REF = %d\n" , beforeRef - runtime.getReferenceCount());
+        System.out.printf("delta CTX = %d\n" , beforeCtx - runtime.getCallbackContextCount());
 
         runtime.close();
     }
@@ -108,7 +108,7 @@ console.info("ΔTP=", measureTime() / 1000);
         System.out.println("-----Benchmarking Result of FastJavetClassConverter-----");
         long nanoTime = System.nanoTime();
         runtime.getGlobalObject().set("benchmarker",new ClassBenchmarker());
-        System.out.printf("ΔT初 = %d\n", (System.nanoTime() - nanoTime));
+        System.out.printf("delta T start = %d\n", (System.nanoTime() - nanoTime));
 
         int beforeRef = runtime.getReferenceCount();
 
@@ -119,8 +119,8 @@ console.info("ΔTP=", measureTime() / 1000);
         runtime.lowMemoryNotification();
         System.gc();
 
-        System.out.printf("ΔREF = %d\n" , beforeRef - runtime.getReferenceCount());
-        System.out.printf("ΔCTX = %d\n" , beforeCtx - runtime.getCallbackContextCount());
+        System.out.printf("delta REF = %d\n" , beforeRef - runtime.getReferenceCount());
+        System.out.printf("delta CTX = %d\n" , beforeCtx - runtime.getCallbackContextCount());
 
         runtime.close();
     }
