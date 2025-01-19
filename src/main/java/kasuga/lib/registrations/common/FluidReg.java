@@ -19,11 +19,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -51,6 +52,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -79,6 +81,8 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     private final FluidTagReg tag;
     private String renderType = "solid";
     private Vector3f fogColor = null;
+    private CustomFillEvent customFillEvent;
+    private Supplier<Item> bucketSupplier;
 
     /**
      * Create a fluid registration.
@@ -91,6 +95,8 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         block = new FluidBlockReg<>(registrationKey);
         propertyBuilders = new ArrayList<>();
         tag = new FluidTagReg("forge", registrationKey, "fluids/" + registrationKey);
+        customFillEvent = null;
+        bucketSupplier = Items.BUCKET::asItem;
     }
 
     /**
@@ -197,6 +203,16 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     public FluidReg<E> bucketItem(BucketItemReg<? extends BucketItem> reg) {
         itemReg = reg;
         registerItem = false;
+        return this;
+    }
+
+    public FluidReg<E> setCustomFillEvent(CustomFillEvent event) {
+        this.customFillEvent = event;
+        return this;
+    }
+
+    public FluidReg<E> setEmptyBucket(Supplier<Item> bucket) {
+        this.bucketSupplier = bucket;
         return this;
     }
 
@@ -635,18 +651,33 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
 
     @SubscribeEvent
     public ItemStack getFillResult(FillBucketEvent event) {
+        if (customFillEvent != null)
+            return customFillEvent.get(event, this);
         if (event.getTarget() == null ||
                 event.getTarget().getType() != HitResult.Type.BLOCK) return event.getEmptyBucket();
+        Player player = event.getEntity();
+        if (!player.getItemInHand(InteractionHand.MAIN_HAND).is(bucketSupplier.get()))
+            return player.getItemInHand(InteractionHand.MAIN_HAND);
         BlockPos pos = new BlockPos(event.getTarget().getLocation());
         BlockState state = event.getLevel().getBlockState(pos);
         if (!state.is(this.block.getBlock())) return event.getEmptyBucket();
         LiquidBlock bp = (LiquidBlock) state.getBlock();
         if (!bp.getFluid().isSource(bp.getFluidState(state))) return event.getEmptyBucket();
         event.setResult(Event.Result.ALLOW);
-        event.getLevel().setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+        Level level = event.getLevel();
+        level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
         ItemStack result = this.bucket().getDefaultInstance();
         event.setFilledBucket(result);
+        SoundEvent sound = type.getSound(SoundActions.BUCKET_FILL);
+        if (sound != null) {
+            level.playSound(player, player.getOnPos(), sound,
+                    SoundSource.PLAYERS, 1, 1);
+        }
         return result;
+    }
+
+    public interface CustomFillEvent {
+        ItemStack get(FillBucketEvent event, FluidReg<?> reg);
     }
 
     public interface FluidBuilder<T extends Fluid> {
