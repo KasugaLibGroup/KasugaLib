@@ -5,13 +5,11 @@ import com.caoccao.javet.interop.V8Runtime;
 import com.caoccao.javet.interop.callback.IJavetDirectCallable;
 import com.caoccao.javet.interop.callback.JavetCallbackContext;
 import com.caoccao.javet.interop.callback.JavetCallbackType;
+import com.caoccao.javet.interop.converters.JavetProxyConverter;
 import com.caoccao.javet.values.V8Value;
 import com.caoccao.javet.values.reference.*;
-import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 import kasuga.lib.core.javascript.engine.JavascriptValue;
-import kasuga.lib.core.javascript.engine.javet.JavetJavascriptValue;
-import kasuga.lib.core.javascript.engine.javet.JavetKasugaConverter;
-import kasuga.lib.core.javascript.engine.javet.JavetValue;
 import kasuga.lib.core.util.data_type.Pair;
 
 import java.lang.reflect.*;
@@ -271,6 +269,8 @@ public class JavetClassConverter {
                 }
                 for (Method sameNameMethod : alternativeMethods) {
                     if(!sameNameMethod.canAccess(object))
+                        continue;
+                    if(sameNameMethod.getParameterCount() != argsList.size())
                         continue;
                     Pair<Boolean, V8Value> callResult = tryInvoke(sameNameMethod, argsList, converted);
                     if(callResult.getFirst()){

@@ -2,7 +2,6 @@ package kasuga.lib.example_env;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Vector3f;
-import com.simibubi.create.content.materials.ExperienceBlock;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.BucketItem;
 import kasuga.lib.core.base.commands.CommandHandler;
@@ -195,15 +194,15 @@ public class AllExampleElements {
                     .addProperty(BlockBehaviour.Properties::requiresCorrectToolForDrops)
                     .defaultBlockItem()
                     .tabTo(tab)
-                    .submit(ExampleMain.testRegistry);
+                    .submit(AllExampleElements.REGISTRY);
 
-/*    public static final OreReg<DropExperienceBlock> exampleOreConfig = new OreReg<DropExperienceBlock>("salt_ore")
+    public static final OreReg<DropExperienceBlock> exampleOreConfig = new OreReg<DropExperienceBlock>("salt_ore")
             .setOreBlock(SALT_ORE::getBlock)
             .setOreCountPerChunk(20)
             .setOreQuantityPerGroup(100)
             .setOreDistributionType(PlacedFeatureReg.DistributionType.TRIANGLE)
             .setOreAnchorAbsolute(80, -80)
-            .submit(ExampleMain.testRegistry);*/
+            .submit(AllExampleElements.REGISTRY);
 
     public static final MenuReg<GreenAppleMenu, GreenAppleScreen> apple =
             new MenuReg<GreenAppleMenu, GreenAppleScreen>("green_apple_screen")

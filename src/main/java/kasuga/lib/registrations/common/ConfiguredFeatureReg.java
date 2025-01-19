@@ -14,6 +14,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -21,40 +22,46 @@ public class ConfiguredFeatureReg<T extends Block> extends Reg {
 
     private int quantityPerGroup = 9;
 
-    private List<OreConfiguration.TargetBlockState> oreConfigTargetList = List.of();
-
-    private Supplier<List<OreConfiguration.TargetBlockState>> oreConfigurationListSupplier =
-            Suppliers.memoize(() -> oreConfigTargetList);
+    private final List<Supplier<OreConfiguration.TargetBlockState>> oreConfigTargetList;
 
     private RegistryObject<ConfiguredFeature<?, ?>> registryObject = null;
 
     public ConfiguredFeatureReg(String registrationKey) {
         super(registrationKey);
+        this.oreConfigTargetList = new ArrayList<>();
     }
 
-    public ConfiguredFeatureReg<T> addOreConfigTarget(T ore) {
-        oreConfigTargetList.add(OreConfiguration.target(
+    public ConfiguredFeatureReg<T> addOreConfigTarget(BlockReg<T> ore) {
+        oreConfigTargetList.add(() -> OreConfiguration.target(
                 OreFeatures.STONE_ORE_REPLACEABLES,
-                ore.defaultBlockState()));
+                ore.getBlock().defaultBlockState()));
+        return this;
+    }
+
+    public ConfiguredFeatureReg<T> addOreConfigTarget(Supplier<T> ore) {
+        oreConfigTargetList.add(() -> OreConfiguration.target(
+                OreFeatures.STONE_ORE_REPLACEABLES,
+                ore.get().defaultBlockState()
+        ));
         return this;
     }
 
     public ConfiguredFeatureReg<T> addOreConfigTarget(RuleTest replacedBlockRuleTest, Supplier<T> ore) {
-        oreConfigTargetList.add(OreConfiguration.target(
+        oreConfigTargetList.add(() -> OreConfiguration.target(
                 replacedBlockRuleTest,
                 ore.get().defaultBlockState()));
         return this;
     }
 
     public ConfiguredFeatureReg<T> addOreConfigTarget(TagKey<Block> blockTagKey, Supplier<T> ore) {
-        oreConfigTargetList.add(OreConfiguration.target(
+        oreConfigTargetList.add(() -> OreConfiguration.target(
                 new TagMatchTest(blockTagKey),
                 ore.get().defaultBlockState()));
         return this;
     }
 
     public ConfiguredFeatureReg<T> addOreConfigTarget(Block block, Supplier<T> ore) {
-        oreConfigTargetList.add(OreConfiguration.target(
+        oreConfigTargetList.add(() -> OreConfiguration.target(
                 new BlockMatchTest(block),
                 ore.get().defaultBlockState()));
         return this;
@@ -71,8 +78,7 @@ public class ConfiguredFeatureReg<T extends Block> extends Reg {
                 registrationKey,
                 () -> new ConfiguredFeature<>(
                         Feature.ORE,
-                        new OreConfiguration(oreConfigurationListSupplier.get(), quantityPerGroup)
-                ));
+                        new OreConfiguration(getOreConfigTargetList(), quantityPerGroup)));
         return this;
     }
 
@@ -85,12 +91,14 @@ public class ConfiguredFeatureReg<T extends Block> extends Reg {
         return this.quantityPerGroup;
     }
 
-    public List<OreConfiguration.TargetBlockState> getOreConfigTargetList() {
+    public List<Supplier<OreConfiguration.TargetBlockState>> getOreConfigTargetSupplierList() {
         return this.oreConfigTargetList;
     }
 
-    public Supplier<List<OreConfiguration.TargetBlockState>> getOreConfigurationListSupplier() {
-        return this.oreConfigurationListSupplier;
+    public List<OreConfiguration.TargetBlockState> getOreConfigTargetList() {
+        List<OreConfiguration.TargetBlockState> list = new ArrayList<>(oreConfigTargetList.size());
+        oreConfigTargetList.forEach(sup -> list.add(sup.get()));
+        return list;
     }
 
     public RegistryObject<ConfiguredFeature<?, ?>> getRegistryObject() {

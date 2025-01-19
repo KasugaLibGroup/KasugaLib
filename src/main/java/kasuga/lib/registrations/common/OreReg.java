@@ -75,10 +75,8 @@ public class OreReg<T extends Block> extends Reg {
     public OreReg<T> submit(SimpleRegistry registry) {
         if (configuredFeatureObject == null || placedFeatureObject == null)
             throw new NullPointerException("Either ConfiguredFeature or PlacedFeature is null in OreReg!");
-        configuredFeatureObject.addOreConfigTarget(oreBlockSupplier.get());
-        configuredFeatureObject.submit(registry);
-        placedFeatureObject.setConfiguredFeatureObject(configuredFeatureObject.getRegistryObject());
-        placedFeatureObject.submit(registry);
+        configuredFeatureObject.addOreConfigTarget(oreBlockSupplier).submit(registry);
+        placedFeatureObject.setConfiguredFeatureObject(configuredFeatureObject.getRegistryObject()).submit(registry);
         return this;
     }
 
