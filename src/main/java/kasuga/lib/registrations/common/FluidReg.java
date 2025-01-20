@@ -83,6 +83,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     private Vector3f fogColor = null;
     private CustomFillEvent customFillEvent;
     private Supplier<Item> bucketSupplier;
+    private String stillRegKey, flowingRegKey;
 
     /**
      * Create a fluid registration.
@@ -95,6 +96,8 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         block = new FluidBlockReg<>(registrationKey);
         propertyBuilders = new ArrayList<>();
         tag = new FluidTagReg("forge", registrationKey, "fluids/" + registrationKey);
+        stillRegKey = registrationKey;
+        flowingRegKey = registrationKey + "_flow";
         customFillEvent = null;
         bucketSupplier = Items.BUCKET::asItem;
     }
@@ -113,6 +116,14 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         return this;
     }
 
+    @Optional
+    public FluidReg<E> still(FluidBuilder<? extends E> builder, String registerName, String stillTexPath) {
+        stillBuilder = (FluidBuilder<E>) builder;
+        this.stillTexturePath = stillTexPath;
+        this.stillRegKey = registerName;
+        return this;
+    }
+
     /**
      * Pass your flowing fluid constructor here. "Flowing" means it is moving, and it's texture should be a flowing fluid
      * texture. See {@link net.minecraft.world.level.material.WaterFluid} or {@link ForgeFlowingFluid}
@@ -124,6 +135,14 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     public FluidReg<E> flow(FluidBuilder<? extends E> builder, String flowingTexPath) {
         flowingBuilder = (FluidBuilder<E>) builder;
         this.flowingTexturePath = flowingTexPath;
+        return this;
+    }
+
+    @Optional
+    public FluidReg<E> flow(FluidBuilder<? extends E> builder, String registerName, String flowingTexPath) {
+        flowingBuilder = (FluidBuilder<E>) builder;
+        this.flowingTexturePath = flowingTexPath;
+        this.flowingRegKey = registerName;
         return this;
     }
 
@@ -535,9 +554,9 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         for(FluidPropertyBuilder builder : builders)
             builder.build(fluidProp);
         if(stillBuilder != null)
-            stillObject = registry.fluid().register(registrationKey, () -> stillBuilder.build(fluidProp));
+            stillObject = registry.fluid().register(stillRegKey, () -> stillBuilder.build(fluidProp));
         if(flowingBuilder != null)
-            flowingObject = registry.fluid().register(registrationKey + "_flow", () -> flowingBuilder.build(fluidProp));
+            flowingObject = registry.fluid().register(flowingRegKey, () -> flowingBuilder.build(fluidProp));
         if (registerItem) itemReg.submit(registry);
         if(menuReg != null && registerMenu) {
             if(!registry.hasMenuCache(this.toString()))
