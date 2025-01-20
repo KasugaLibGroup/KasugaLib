@@ -25,6 +25,7 @@ public class WebsocketInterface {
     public void addEventListener(JavascriptValue eventName, JavascriptValue eventConsumer){
         if(!eventName.isString())
             throw new IllegalArgumentException("Illegal argument: invalid type for event name : expected string");
+        eventConsumer = eventConsumer.cloneValue();
         eventConsumer.pin();
         addEventListener(eventName.asString(),eventConsumer);
     }
