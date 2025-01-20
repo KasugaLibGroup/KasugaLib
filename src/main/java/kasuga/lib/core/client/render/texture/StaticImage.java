@@ -161,6 +161,31 @@ public class StaticImage {
                 mask.getColor());
     }
 
+    public void renderToGui(PoseStack.Pose pose, Vector3f leftTop, Vector3f rightTop, Vector3f leftDown, Vector3f rightDown,
+                            Vec2f uvLeftTop, Vec2f uvRightTop, Vec2f uvLeftDown, Vec2f uvRightDown,
+                            SimpleColor color) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, id);
+        RenderSystem.setShaderColor(
+                color.getfR(), color.getfG(), color.getfB(), color.getA());
+        RenderSystem.enableBlend();
+        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        Matrix4f poseMatrix = pose.pose();
+        buffer.vertex(poseMatrix, leftTop.x(), leftTop.y(), leftDown.z()).uv(uvLeftTop.x(), uvLeftTop.y()).endVertex();
+        buffer.vertex(poseMatrix, leftDown.x(), leftDown.y(), leftDown.z()).uv(uvLeftDown.x(), uvLeftDown.y()).endVertex();
+        buffer.vertex(poseMatrix, rightDown.x(), rightDown.y(), rightDown.z()).uv(uvRightDown.x(),uvRightDown.y()).endVertex();
+        buffer.vertex(poseMatrix, rightTop.x(), rightTop.y(), rightTop.z()).uv(uvRightTop.x(), uvRightTop.y()).endVertex();
+        BufferUploader.drawWithShader(buffer.end());
+        RenderSystem.disableBlend();
+    }
+
+    public void renderToGui(ImageMask mask, PoseStack.Pose pose) {
+        renderToGui(pose, mask.getLeftTop(), mask.getRightTop(), mask.getLeftDown(), mask.getRightDown(),
+                mask.getUvLeftTop(), mask.getUvRightTop(), mask.getUvLeftDown(), mask.getUvRightDown(),
+                mask.getColor());
+    }
+
     public void renderToWorld(PoseStack pose, MultiBufferSource buffer, RenderType type,
                               Vector3f leftTop, Vector3f rightTop, Vector3f leftDown, Vector3f rightDown,
                               Vec2f uvLeftTop, Vec2f uvRightTop, Vec2f uvLeftDown, Vec2f uvRightDown,
