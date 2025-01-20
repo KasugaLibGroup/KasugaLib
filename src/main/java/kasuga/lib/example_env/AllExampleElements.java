@@ -164,17 +164,17 @@ public class AllExampleElements {
             .tab(tab)
             .submit(ExampleMain.testRegistry);
 
-    public static final BlockReg<DropExperienceBlock> SALT_ORE =
-            new BlockReg<DropExperienceBlock>("salt_ore")
-                    .blockType(props ->
-                            new DropExperienceBlock(props, UniformInt.of(3, 7)))
-                    .material(Material.STONE)
-                    .materialColor(MaterialColor.STONE)
-                    .addProperty(properties -> properties.strength(1.5f, 6.0F))
-                    .addProperty(BlockBehaviour.Properties::requiresCorrectToolForDrops)
-                    .defaultBlockItem()
-                    .tabTo(tab)
-                    .submit(ExampleMain.testRegistry);
+//    public static final BlockReg<DropExperienceBlock> SALT_ORE =
+//            new BlockReg<DropExperienceBlock>("salt_ore")
+//                    .blockType(props ->
+//                            new DropExperienceBlock(props, UniformInt.of(3, 7)))
+//                    .material(Material.STONE)
+//                    .materialColor(MaterialColor.STONE)
+//                    .addProperty(properties -> properties.strength(1.5f, 6.0F))
+//                    .addProperty(BlockBehaviour.Properties::requiresCorrectToolForDrops)
+//                    .defaultBlockItem()
+//                    .tabTo(tab)
+//                    .submit(ExampleMain.testRegistry);
 
 /*    public static final OreReg<DropExperienceBlock> exampleOreConfig = new OreReg<DropExperienceBlock>("salt_ore")
             .setOreBlock(SALT_ORE::getBlock)
