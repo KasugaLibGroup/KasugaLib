@@ -32,6 +32,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -677,7 +678,8 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         Player player = event.getEntity();
         if (!player.getItemInHand(InteractionHand.MAIN_HAND).is(bucketSupplier.get()))
             return player.getItemInHand(InteractionHand.MAIN_HAND);
-        BlockPos pos = new BlockPos(event.getTarget().getLocation());
+        BlockHitResult bhr = (BlockHitResult) event.getTarget();
+        BlockPos pos = new BlockPos(bhr.getBlockPos());
         BlockState state = event.getLevel().getBlockState(pos);
         if (!state.is(this.block.getBlock())) return event.getEmptyBucket();
         LiquidBlock bp = (LiquidBlock) state.getBlock();
