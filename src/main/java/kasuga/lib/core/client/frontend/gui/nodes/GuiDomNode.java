@@ -235,8 +235,6 @@ public class GuiDomNode extends DomNode<GuiContext> {
 
         if(!translated.isPropagationStopped()){
             this.dispatchEvent(event.getType(), finalEvent);
-        }else{
-            event.stopPropagation();
         }
 
         return true;
