@@ -6,7 +6,7 @@ import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 public abstract class DomEvent extends Event{
     protected final DomNode<?> currentTarget;
     protected final DomNode<?> target;
-    protected boolean propagationStopped;
+    protected boolean propagationStopped = false;
     protected DomEvent(DomNode<?> currentTarget, DomNode<?> target, boolean trusted) {
         super(trusted);
         this.currentTarget = currentTarget;
