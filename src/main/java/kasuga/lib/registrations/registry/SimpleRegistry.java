@@ -122,7 +122,7 @@ public class SimpleRegistry {
         ATTRIBUTES = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, namespace);
         FLUID_TYPE = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, namespace);
         FLUID = DeferredRegister.create(ForgeRegistries.Keys.FLUIDS, namespace);
-        CONFIGURED_FEATURE = DeferredRegister.create(CONFIGURED_FEATURE_REGISTRY, namespace);
+        CONFIGURED_FEATURE = DeferredRegister.create(Registry.CONFIGURED_FEATURE_REGISTRY, namespace);
         PLACED_FEATURE = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, namespace);
         MODELS = new ModelRegistry(namespace, this);
         CACHE_OF_BLOCK_ENTITIES = new HashMap<>();

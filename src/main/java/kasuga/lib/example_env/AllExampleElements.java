@@ -31,6 +31,7 @@ import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -178,8 +179,10 @@ public class AllExampleElements {
 
 /*    public static final OreReg<DropExperienceBlock> exampleOreConfig = new OreReg<DropExperienceBlock>("salt_ore")
             .setOreBlock(SALT_ORE::getBlock)
+            .addOreReplaceTarget()
+            .addDeepSlateReplaceTarget()
             .setOreCountPerChunk(20)
-            .setOreQuantityPerGroup(100)
+            .setOreQuantityPerGroup(64)
             .setOreDistributionType(PlacedFeatureReg.DistributionType.TRIANGLE)
             .setOreAnchorAbsolute(80, -80)
             .submit(ExampleMain.testRegistry);*/

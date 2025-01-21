@@ -1,7 +1,10 @@
 package kasuga.lib.registrations.common;
 
+import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DropExperienceBlock;
@@ -15,38 +18,48 @@ import java.util.function.Supplier;
 public class OreReg<T extends Block> extends Reg {
 
     private Supplier<T> oreBlockSupplier;
-
-    private ConfiguredFeatureReg<T> configuredFeatureObject = null;
-
-    private PlacedFeatureReg placedFeatureObject = null;
+    private final ConfiguredFeatureReg<T> configuredFeatureObject;
+    private final PlacedFeatureReg placedFeatureObject;
 
     public OreReg(String registrationKey) {
         super(registrationKey);
         this.configuredFeatureObject = new ConfiguredFeatureReg<T>(registrationKey);
-        this.placedFeatureObject = new PlacedFeatureReg(registrationKey + "_placed");
+        this.placedFeatureObject = new PlacedFeatureReg(registrationKey);
     }
 
+    @Mandatory
     public OreReg<T> setOreBlock(Supplier<T> oreBlockSupplier) {
         this.oreBlockSupplier = oreBlockSupplier;
         return this;
     }
 
-    public OreReg<T> addOreBlockReplaceTarget(Block block, Supplier<T> ore) {
-        this.configuredFeatureObject.addOreConfigTarget(block, ore);
+    public OreReg<T> addOreBlockReplaceTarget(ResourceLocation block) {
+        this.configuredFeatureObject.addOreConfigTargetByBlock(block, oreBlockSupplier);
         return this;
     }
 
-    public OreReg<T> addOreTagReplaceTarget(TagKey<Block> tagKey, Supplier<T> ore) {
-        this.configuredFeatureObject.addOreConfigTarget(tagKey, ore);
+    public OreReg<T> addOreTagReplaceTarget(TagKey<Block> tagKey) {
+        this.configuredFeatureObject.addOreConfigTargetByKey(tagKey, oreBlockSupplier);
         return this;
     }
 
-    public OreReg<T> addOreRuleReplaceTarget(RuleTest ruleTest, Supplier<T> ore) {
-        this.configuredFeatureObject.addOreConfigTarget(ruleTest, ore);
+    public OreReg<T> addOreRuleReplaceTarget(RuleTest ruleTest) {
+        this.configuredFeatureObject.addOreConfigTargetByRule(ruleTest, oreBlockSupplier);
+        return this;
+    }
+
+    public OreReg<T> addOreReplaceTarget() {
+        this.configuredFeatureObject.addOreConfigTarget(oreBlockSupplier);
+        return this;
+    }
+
+    public OreReg<T> addDeepSlateReplaceTarget() {
+        this.configuredFeatureObject.addDeepSlateOreConfigTarget(oreBlockSupplier);
         return this;
     }
 
     public OreReg<T> setOreQuantityPerGroup(int count) {
+        count = Math.max(1, Math.min(count, 64));
         this.configuredFeatureObject.setQuantityPerGroup(count);
         return this;
     }
@@ -73,8 +86,13 @@ public class OreReg<T extends Block> extends Reg {
 
     @Override
     public OreReg<T> submit(SimpleRegistry registry) {
-        if (configuredFeatureObject == null || placedFeatureObject == null)
-            throw new NullPointerException("Either ConfiguredFeature or PlacedFeature is null in OreReg!");
+        if (configuredFeatureObject == null) {
+            crashOnNotPresent(ConfiguredFeatureReg.class, "OrgReg", "submit");
+            return this;
+        } else if (placedFeatureObject == null) {
+            crashOnNotPresent(PlacedFeatureReg.class, "OrgReg", "submit");
+            return this;
+        }
         configuredFeatureObject.addOreConfigTarget(oreBlockSupplier).submit(registry);
         placedFeatureObject.setConfiguredFeatureObject(configuredFeatureObject.getRegistryObject()).submit(registry);
         return this;
