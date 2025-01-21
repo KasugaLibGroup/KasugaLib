@@ -93,7 +93,7 @@ public class OreReg<T extends Block> extends Reg {
             crashOnNotPresent(PlacedFeatureReg.class, "OrgReg", "submit");
             return this;
         }
-        configuredFeatureObject.addOreConfigTarget(oreBlockSupplier).submit(registry);
+        configuredFeatureObject.submit(registry);
         placedFeatureObject.setConfiguredFeatureObject(configuredFeatureObject.getRegistryObject()).submit(registry);
         return this;
     }
