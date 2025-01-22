@@ -552,6 +552,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         type = type == null ? initDefaultType(registry) : type;
         RegistryObject<FluidType> typeObj = registry.fluid_type().register(registrationKey, () -> type);
         fluidProp = new ForgeFlowingFluid.Properties(typeObj, () -> stillObject.get(), () -> flowingObject.get());
+        fluidProp.bucket(this::bucket);
         for(FluidPropertyBuilder builder : builders)
             builder.build(fluidProp);
         if(stillBuilder != null)
