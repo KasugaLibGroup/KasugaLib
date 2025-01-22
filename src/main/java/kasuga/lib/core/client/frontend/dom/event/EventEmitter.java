@@ -26,6 +26,7 @@ public class EventEmitter {
     }
 
     public void subscribe(String eventName, JavascriptValue consumer){
+        consumer = consumer.cloneValue();
         consumer.pin();
         functionalListeners.computeIfAbsent(eventName,(v)->new HashSet<>())
                 .add(consumer);

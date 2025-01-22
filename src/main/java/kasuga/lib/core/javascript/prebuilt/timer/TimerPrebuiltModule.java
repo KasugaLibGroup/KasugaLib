@@ -1,9 +1,8 @@
 package kasuga.lib.core.javascript.prebuilt.timer;
 
 import kasuga.lib.core.javascript.JavascriptContext;
-import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 import kasuga.lib.core.javascript.engine.JavascriptValue;
-import kasuga.lib.core.javascript.engine.javet.JavetClassConverter;
 import kasuga.lib.core.javascript.prebuilt.PrebuiltModule;
 
 import java.util.HashMap;
@@ -27,20 +26,22 @@ public class TimerPrebuiltModule extends PrebuiltModule {
     }
     @HostAccess.Export
     public int requestTimeout(JavascriptValue callback, JavascriptValue interval){
-        callback.pin();
+        JavascriptValue finalCallback = callback.cloneValue();
+        finalCallback.pin();
         int[] cancelHandler = new int[1];
         cancelHandler[0] = -1;
         return cancelHandler[0] = requestScheduled(KasugaTimer.TimerType.TIMEOUT,()->{
             this.cancelHandler.remove(cancelHandler[0]);
-            callback.executeVoid();
-            callback.unpin();
-        }, ()->{callback.unpin();},interval);
+            finalCallback.executeVoid();
+            finalCallback.unpin();
+        }, ()->{finalCallback.unpin();},interval);
     }
 
     @HostAccess.Export
     public int requestInterval(JavascriptValue callback, JavascriptValue interval){
-        callback.pin();
-        return requestScheduled(KasugaTimer.TimerType.INTERVAL,()->callback.executeVoid(), ()->callback.unpin(), interval);
+        JavascriptValue finalCallback = callback.cloneValue();
+        finalCallback.pin();
+        return requestScheduled(KasugaTimer.TimerType.INTERVAL,()-> finalCallback.executeVoid(), ()->finalCallback.unpin(), interval);
     }
 
 

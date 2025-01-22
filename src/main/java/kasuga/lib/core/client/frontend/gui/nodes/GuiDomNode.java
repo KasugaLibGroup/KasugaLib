@@ -11,11 +11,11 @@ import kasuga.lib.core.client.frontend.common.style.StyleTarget;
 import kasuga.lib.core.client.frontend.dom.nodes.DomNode;
 import kasuga.lib.core.client.frontend.font.ExtendableProperty;
 import kasuga.lib.core.client.frontend.gui.GuiContext;
-import kasuga.lib.core.client.frontend.gui.events.MouseEvent;
+import kasuga.lib.core.client.frontend.gui.events.mouse.MouseEvent;
 import kasuga.lib.core.client.frontend.gui.layout.EdgeSize2D;
 import kasuga.lib.core.client.frontend.rendering.BackgroundRenderer;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
-import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraftforge.common.util.Lazy;
@@ -45,7 +45,7 @@ public class GuiDomNode extends DomNode<GuiContext> {
 
     }
 
-    GuiDomNode(GuiContext context){
+    public GuiDomNode(GuiContext context){
         super(context);
         attributes.registerProxy("style",new StyleAttributeProxy(styles));
         styles.setCallback(this::onStyleUpdate);
@@ -235,8 +235,6 @@ public class GuiDomNode extends DomNode<GuiContext> {
 
         if(!translated.isPropagationStopped()){
             this.dispatchEvent(event.getType(), finalEvent);
-        }else{
-            event.stopPropagation();
         }
 
         return true;

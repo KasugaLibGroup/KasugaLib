@@ -16,21 +16,31 @@ import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.FillBucketEvent;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.RegistryObject;
@@ -39,6 +49,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.function.Supplier;
@@ -70,6 +81,9 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     private final FluidTagReg tag;
     private String renderType = "solid";
     private Vector3f fogColor = null;
+    private CustomFillEvent customFillEvent;
+    private Supplier<Item> bucketSupplier;
+    private String stillRegKey, flowingRegKey;
 
     /**
      * Create a fluid registration.
@@ -81,6 +95,10 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         block = new FluidBlockReg<>(registrationKey);
         propertyBuilders = new ArrayList<>();
         tag = new FluidTagReg("forge", registrationKey, "fluids/" + registrationKey);
+        stillRegKey = registrationKey;
+        flowingRegKey = registrationKey + "_flow";
+        customFillEvent = null;
+        bucketSupplier = Items.BUCKET::asItem;
     }
 
     /**
@@ -97,6 +115,14 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         return this;
     }
 
+    @Optional
+    public FluidReg<E> still(FluidBuilder<? extends E> builder, String registerName, String stillTexPath) {
+        stillBuilder = (FluidBuilder<E>) builder;
+        this.stillTexturePath = stillTexPath;
+        this.stillRegKey = registerName;
+        return this;
+    }
+
     /**
      * Pass your flowing fluid constructor here. "Flowing" means it is moving, and it's texture should be a flowing fluid
      * texture. See {@link net.minecraft.world.level.material.WaterFluid} or {@link ForgeFlowingFluid}
@@ -108,6 +134,14 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     public FluidReg<E> flow(FluidBuilder<? extends E> builder, String flowingTexPath) {
         flowingBuilder = (FluidBuilder<E>) builder;
         this.flowingTexturePath = flowingTexPath;
+        return this;
+    }
+
+    @Optional
+    public FluidReg<E> flow(FluidBuilder<? extends E> builder, String registerName, String flowingTexPath) {
+        flowingBuilder = (FluidBuilder<E>) builder;
+        this.flowingTexturePath = flowingTexPath;
+        this.flowingRegKey = registerName;
         return this;
     }
 
@@ -187,6 +221,16 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     public FluidReg<E> bucketItem(BucketItemReg<? extends BucketItem> reg) {
         itemReg = reg;
         registerItem = false;
+        return this;
+    }
+
+    public FluidReg<E> setCustomFillEvent(CustomFillEvent event) {
+        this.customFillEvent = event;
+        return this;
+    }
+
+    public FluidReg<E> setEmptyBucket(Supplier<Item> bucket) {
+        this.bucketSupplier = bucket;
         return this;
     }
 
@@ -490,21 +534,23 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
             crashOnNotPresent(ForgeFlowingFluid.class, "still", "submit");
         }
         block.fluid(() -> stillObject.get());
-        block.submit(registry);
+        if (registerBlock) block.submit(registry);
         // type = type == null ? initDefaultType(registry) : type;
         // RegistryObject<FluidAttributes> typeObj = registry.fluid_type().register(registrationKey, () -> properties.build());
         fluidProp = new ForgeFlowingFluid.Properties(() -> stillObject.get(), () -> flowingObject.get(), properties);
+        fluidProp.bucket(this::bucket);
         for(FluidPropertyBuilder builder : builders)
             builder.build(fluidProp);
         if(stillBuilder != null)
-            stillObject = registry.fluid().register(registrationKey, () -> stillBuilder.build(fluidProp));
+            stillObject = registry.fluid().register(stillRegKey, () -> stillBuilder.build(fluidProp));
         if(flowingBuilder != null)
-            flowingObject = registry.fluid().register(registrationKey + "_flow", () -> flowingBuilder.build(fluidProp));
+            flowingObject = registry.fluid().register(flowingRegKey, () -> flowingBuilder.build(fluidProp));
         if (registerItem) itemReg.submit(registry);
         if(menuReg != null && registerMenu) {
             if(!registry.hasMenuCache(this.toString()))
                 registry.cacheMenuIn(menuReg);
         }
+        MinecraftForge.EVENT_BUS.addListener(this::getFillResult);
         tag.submit(registry);
         return this;
     }
@@ -564,6 +610,38 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     @Override
     public String getIdentifier() {
         return "fluid";
+    }
+
+    @SubscribeEvent
+    public ItemStack getFillResult(FillBucketEvent event) {
+        if (customFillEvent != null)
+            return customFillEvent.get(event, this);
+        if (event.getTarget() == null ||
+                event.getTarget().getType() != HitResult.Type.BLOCK) return event.getEmptyBucket();
+        Player player = event.getPlayer();
+        if (!player.getItemInHand(InteractionHand.MAIN_HAND).is(bucketSupplier.get()))
+            return player.getItemInHand(InteractionHand.MAIN_HAND);
+        BlockHitResult bhr = (BlockHitResult) event.getTarget();
+        BlockPos pos = new BlockPos(bhr.getBlockPos());
+        BlockState state = event.getWorld().getBlockState(pos);
+        if (!state.is(this.block.getBlock())) return event.getEmptyBucket();
+        LiquidBlock bp = (LiquidBlock) state.getBlock();
+        if (!bp.getFluid().isSource(bp.getFluidState(state))) return event.getEmptyBucket();
+        event.setResult(Event.Result.ALLOW);
+        Level level = event.getWorld();
+        level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+        ItemStack result = this.bucket().getDefaultInstance();
+        event.setFilledBucket(result);
+        SoundEvent sound = type.getFillSound();
+        if (sound != null) {
+            level.playSound(player, player.getOnPos(), sound,
+                    SoundSource.PLAYERS, 1, 1);
+        }
+        return result;
+    }
+
+    public interface CustomFillEvent {
+        ItemStack get(FillBucketEvent event, FluidReg<?> reg);
     }
 
     public interface FluidBuilder<T extends Fluid> {

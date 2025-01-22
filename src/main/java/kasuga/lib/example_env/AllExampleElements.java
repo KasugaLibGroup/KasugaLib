@@ -36,11 +36,15 @@ import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.OreBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
@@ -166,6 +170,29 @@ public class AllExampleElements {
             .setRenderType("translucent")
             .tab(tab)
             .submit(testRegistry);
+
+    public static final BlockReg<OreBlock> SALT_ORE =
+            new BlockReg<OreBlock>("salt_ore")
+                    .blockType(props ->
+                            new OreBlock(props, UniformInt.of(3, 7)))
+                    .material(Material.STONE)
+                    .materialColor(MaterialColor.STONE)
+                    .addProperty(properties -> properties.strength(1.5f, 6.0F))
+                    .addProperty(BlockBehaviour.Properties::requiresCorrectToolForDrops)
+                    .defaultBlockItem()
+                    .tabTo(tab)
+                    .submit(AllExampleElements.REGISTRY);
+
+    public static final OreReg<OreBlock> exampleOreConfig =
+            new OreReg<OreBlock>("salt_ore")
+            .setOreBlock(SALT_ORE::getBlock)
+            .addOreReplaceTarget()
+            .addDeepSlateReplaceTarget()
+            .setOreCountPerChunk(20)
+            .setOreQuantityPerGroup(64)
+            .setOreDistributionType(PlacedFeatureReg.DistributionType.TRIANGLE)
+            .setOreAnchorAbsolute(80, -80)
+            .submit(AllExampleElements.REGISTRY);
 
     public static final MenuReg<GreenAppleMenu, GreenAppleScreen> apple =
             new MenuReg<GreenAppleMenu, GreenAppleScreen>("green_apple_screen")

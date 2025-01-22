@@ -19,7 +19,7 @@ public class PlayLogEvent {
         if (!Envs.isDevEnvironment()) return;
         Panel.test = new PanelRenderer(player.getForward(), Vec3.ZERO);
         // TODO: deal with this
-        // KasugaLibClient.PANEL_RENDERERS.add(Panel.test);
+        KasugaLibClient.PANEL_RENDERERS.add(Panel.test);
     }
 
     @SubscribeEvent

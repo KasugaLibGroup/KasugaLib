@@ -2,8 +2,7 @@ package kasuga.lib.core.menu.api;
 
 import kasuga.lib.core.channel.address.ConnectionInfo;
 import kasuga.lib.core.channel.peer.Channel;
-import kasuga.lib.core.channel.peer.ChannelHandle;
-import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 import kasuga.lib.core.util.data_type.Pair;
 
 import java.util.Objects;
