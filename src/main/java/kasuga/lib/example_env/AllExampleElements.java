@@ -175,10 +175,9 @@ public class AllExampleElements {
 //                    .addProperty(BlockBehaviour.Properties::requiresCorrectToolForDrops)
 //                    .defaultBlockItem()
 //                    .tabTo(tab)
-//                    .submit(AllExampleElements.REGISTRY);
+//                    .submit(ExampleMain.testRegistry);
 //
-//    public static final OreReg<DropExperienceBlock> exampleOreConfig =
-//            new OreReg<DropExperienceBlock>("salt_ore")
+//    public static final OreReg<DropExperienceBlock> exampleOreConfig = new OreReg<DropExperienceBlock>("salt_ore")
 //            .setOreBlock(SALT_ORE::getBlock)
 //            .addOreReplaceTarget()
 //            .addDeepSlateReplaceTarget()
@@ -186,7 +185,7 @@ public class AllExampleElements {
 //            .setOreQuantityPerGroup(64)
 //            .setOreDistributionType(PlacedFeatureReg.DistributionType.TRIANGLE)
 //            .setOreAnchorAbsolute(80, -80)
-//            .submit(AllExampleElements.REGISTRY);
+//            .submit(ExampleMain.testRegistry);
 
     public static final MenuReg<GreenAppleMenu, GreenAppleScreen> apple =
             new MenuReg<GreenAppleMenu, GreenAppleScreen>("green_apple_screen")
