@@ -177,7 +177,8 @@ public class StaticImage {
         buffer.vertex(poseMatrix, leftDown.x(), leftDown.y(), leftDown.z()).uv(uvLeftDown.x(), uvLeftDown.y()).endVertex();
         buffer.vertex(poseMatrix, rightDown.x(), rightDown.y(), rightDown.z()).uv(uvRightDown.x(),uvRightDown.y()).endVertex();
         buffer.vertex(poseMatrix, rightTop.x(), rightTop.y(), rightTop.z()).uv(uvRightTop.x(), uvRightTop.y()).endVertex();
-        BufferUploader.drawWithShader(buffer.end());
+        buffer.end();
+        BufferUploader.end(buffer);
         RenderSystem.disableBlend();
     }
 
