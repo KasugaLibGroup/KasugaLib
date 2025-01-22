@@ -47,6 +47,7 @@ import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -63,7 +64,6 @@ import java.util.function.Supplier;
 public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     private RegistryObject<E> stillObject = null;
     private RegistryObject<E> flowingObject = null;
-    private RegistryObject<? extends BucketItem> itemRegistryObject = null;
     private FluidAttributes.Builder properties;
     private ForgeFlowingFluid.Properties fluidProp = null;
     private FluidBuilder<E> stillBuilder = null, flowingBuilder = null;
@@ -80,7 +80,6 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     boolean registerItem = false, registerBlock = false, registerMenu = false;
     private final FluidTagReg tag;
     private String renderType = "solid";
-    private Vector3f fogColor = null;
     private CustomFillEvent customFillEvent;
     private Supplier<Item> bucketSupplier;
     private String stillRegKey, flowingRegKey;
@@ -398,8 +397,9 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
      * @return self.
      */
     @Optional
-    public FluidReg<E> tintColor(int r, int g, int b) {
-        this.tintColor = r * 0xff * 0xff + g * 0xff + b;
+    public FluidReg<E> tintColor(int r, int g, int b, int a) {
+        Color color = new Color(r, g, b, a);
+        this.tintColor = (a << 24) + color.getRGB();
         return this;
     }
 
@@ -465,7 +465,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     @Optional
-    public FluidReg<E> sound(SoundEvent fillSound, SoundEvent emptySound, SoundEvent vaporizeSound) {
+    public FluidReg<E> sound(SoundEvent fillSound, SoundEvent emptySound) {
         return this.typeProperty(prop -> prop.sound(fillSound, emptySound));
     }
 
@@ -477,7 +477,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
 
     @Optional
     public FluidReg<E> defaultSounds() {
-        return sound(SoundEvents.BUCKET_FILL, SoundEvents.BUCKET_EMPTY, SoundEvents.FIRE_EXTINGUISH);
+        return sound(SoundEvents.BUCKET_FILL, SoundEvents.BUCKET_EMPTY);
     }
 
     @Optional
@@ -489,18 +489,6 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     @Optional
     public FluidReg<E> setTranslucentRenderType() {
         this.renderType = "translucent";
-        return this;
-    }
-
-    @Optional
-    public FluidReg<E> fogColor(Vector3f fogColor) {
-        this.fogColor = fogColor;
-        return this;
-    }
-
-    @Optional
-    public FluidReg<E> fogColor(float r, float g, float b) {
-        this.fogColor = new Vector3f(r / 255f, g / 255f, b / 255f);
         return this;
     }
 
@@ -575,7 +563,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     public FluidAttributes fluidAttributes() {
-        return type = type == null ? properties.build(stillFluid()) : type;
+        return stillObject.get().getAttributes();
     }
 
     public ForgeFlowingFluid stillFluid() {
