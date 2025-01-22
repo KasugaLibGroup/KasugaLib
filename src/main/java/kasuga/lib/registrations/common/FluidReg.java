@@ -587,11 +587,11 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     public RegistryObject<? extends BucketItem> itemRegistryObject() {
-        return itemRegistryObject;
+        return itemReg.getRegistryObject();
     }
 
     public BucketItem bucket() {
-        return itemRegistryObject.get();
+        return itemReg.getItem();
     }
 
     public LiquidBlock legacyBlock() {
