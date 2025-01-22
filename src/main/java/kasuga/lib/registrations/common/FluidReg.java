@@ -574,8 +574,8 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         return flowingObject;
     }
 
-    public FluidAttributes FluidAttributes() {
-        return type;
+    public FluidAttributes fluidAttributes() {
+        return type = type == null ? properties.build(stillFluid()) : type;
     }
 
     public ForgeFlowingFluid stillFluid() {
@@ -632,7 +632,7 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
         level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
         ItemStack result = this.bucket().getDefaultInstance();
         event.setFilledBucket(result);
-        SoundEvent sound = type.getFillSound();
+        SoundEvent sound = fluidAttributes().getFillSound();
         if (sound != null) {
             level.playSound(player, player.getOnPos(), sound,
                     SoundSource.PLAYERS, 1, 1);
