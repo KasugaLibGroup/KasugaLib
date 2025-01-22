@@ -24,8 +24,8 @@ public class ExampleFluid extends ForgeFlowingFluid {
     }
 
     @Override
-    public boolean isSource(FluidState fluidState) {
-        return true;
+    public boolean isSource(@NotNull FluidState fluidState) {
+        return fluidState.getType() instanceof ExampleFluid && !(fluidState.getType() instanceof ExampleFluid.Flowing);
     }
 
     @Override
@@ -40,8 +40,8 @@ public class ExampleFluid extends ForgeFlowingFluid {
         }
 
         @Override
-        public boolean isSource(FluidState fluidState) {
-            return false;
+        public boolean isSource(@NotNull FluidState fluidState) {
+            return super.isSource(fluidState);
         }
     }
 }

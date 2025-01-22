@@ -1,7 +1,7 @@
 package kasuga.lib.core.javascript.prebuilt.websocket;
 
 import io.netty.buffer.ByteBuf;
-import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 
 public class WebsocketEvent {
 

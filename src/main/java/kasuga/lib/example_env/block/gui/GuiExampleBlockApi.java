@@ -1,7 +1,6 @@
 package kasuga.lib.example_env.block.gui;
 
-import kasuga.lib.core.javascript.engine.HostAccess;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 
 public class GuiExampleBlockApi {
 

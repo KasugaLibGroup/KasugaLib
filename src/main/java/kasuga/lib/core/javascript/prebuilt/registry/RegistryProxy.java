@@ -1,7 +1,7 @@
 package kasuga.lib.core.javascript.prebuilt.registry;
 
 import kasuga.lib.core.javascript.JavascriptContext;
-import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 import kasuga.lib.core.javascript.engine.JavascriptValue;
 import kasuga.lib.core.javascript.ffi.ResourceLocationFFIHelper;
 import kasuga.lib.core.javascript.registration.JavascriptPriorityRegistry;

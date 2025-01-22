@@ -1,7 +1,7 @@
 package kasuga.lib.core.client.frontend.common.style;
 
 import com.caoccao.javet.annotations.V8Convert;
-import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 import kasuga.lib.core.util.Callback;
 
 import java.util.*;

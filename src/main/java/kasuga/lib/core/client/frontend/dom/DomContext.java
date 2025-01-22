@@ -6,7 +6,7 @@ import kasuga.lib.core.client.frontend.dom.nodes.DomNode;
 import kasuga.lib.core.client.frontend.dom.registration.DOMPriorityRegistry;
 import kasuga.lib.core.client.frontend.dom.registration.DOMRegistryItemDynamicProxy;
 import kasuga.lib.core.javascript.Tickable;
-import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 import kasuga.lib.core.javascript.engine.JavascriptValue;
 import kasuga.lib.core.util.Callback;
 import net.minecraft.resources.ResourceLocation;
@@ -65,6 +65,7 @@ public abstract class DomContext<P extends DomNode<?>,T extends P> implements Ti
         while(!queue.isEmpty() && (++taskNumebr)<64){
             queue.poll().execute();
         }
+        rootNode.dispatchRenderTick();
     }
 
     public void setReady() {

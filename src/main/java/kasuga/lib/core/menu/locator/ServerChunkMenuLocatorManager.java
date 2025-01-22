@@ -72,14 +72,17 @@ public class ServerChunkMenuLocatorManager {
 
         List<ServerPlayer> oldPlayers = players.get(oldChunk);
         List<ServerPlayer> newPlayers = players.get(newChunk);
-        oldPlayers
-                .stream()
-                .filter(player -> !newPlayers.contains(player))
-                .forEach(player -> menuLocator.sendDownTo(player.connection.getConnection()));
 
-        newPlayers
-                .stream()
-                .filter(player -> !oldPlayers.contains(player))
-                .forEach(player -> menuLocator.sendUpTo(player.connection.getConnection()));
+        if(oldPlayers != null)
+            oldPlayers
+                    .stream()
+                    .filter(player -> newPlayers == null ? true : !newPlayers.contains(player))
+                    .forEach(player -> menuLocator.sendDownTo(player.connection.getConnection()));
+
+        if(newPlayers != null)
+            newPlayers
+                    .stream()
+                    .filter(player -> oldPlayers == null ? true :  !oldPlayers.contains(player))
+                    .forEach(player -> menuLocator.sendUpTo(player.connection.getConnection()));
     }
 }

@@ -1,9 +1,8 @@
 package kasuga.lib.core.menu.api;
 
-import kasuga.lib.core.channel.address.ConnectionInfo;
 import kasuga.lib.core.channel.peer.ChannelHandle;
 import kasuga.lib.core.javascript.CompoundTagWrapper;
-import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 
 import java.util.Objects;
 import java.util.WeakHashMap;
