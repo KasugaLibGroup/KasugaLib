@@ -56,7 +56,7 @@ import java.util.stream.Stream;
 import java.util.function.Supplier;
 
 /**
- * Use this registration to register fluids like water of lava.
+ * Use this registration to register fluids like water or lava.
  * See {@link ForgeFlowingFluid}, {@link net.minecraft.world.level.material.WaterFluid} and
  * {@link net.minecraft.world.level.material.LavaFluid}
  * @param <E> the class of your fluid.

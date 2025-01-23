@@ -470,6 +470,7 @@ public class SimpleRegistry {
     public void hookFluidAndRenders(FMLCommonSetupEvent event) {
         for (Map.Entry<FluidReg<?>, String> entry : KasugaLibStacks.FLUID_RENDERS.entrySet()) {
             RenderType type = NamedRenderTypeManager.get(new ResourceLocation(entry.getValue()));
+            ItemBlockRenderTypes.setRenderLayer(entry.getKey().legacyBlock(), type);
             ItemBlockRenderTypes.setRenderLayer(entry.getKey().stillFluid(), type);
             ItemBlockRenderTypes.setRenderLayer(entry.getKey().flowingFluid(), type);
         }
