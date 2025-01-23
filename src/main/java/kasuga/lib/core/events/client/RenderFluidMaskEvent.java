@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -27,7 +28,8 @@ public class RenderFluidMaskEvent {
         if (event.getOverlayType() != RenderBlockOverlayEvent.OverlayType.WATER)
             return;
         PoseStack pose = event.getPoseStack();
-        BlockState state = event.getBlockState();
+        BlockState state = event.getPlayer().getLevel().getBlockState(event.getBlockPos());
+        if (state.is(Blocks.WATER) || state.is(Blocks.LAVA)) return;
         Block rawBlock = state.getBlock();
         if (!(rawBlock instanceof LiquidBlock block)) return;
         Fluid fluid  = block.getFluid();
@@ -35,14 +37,16 @@ public class RenderFluidMaskEvent {
         ResourceLocation overlay = attributes.getOverlayTexture();
         if (overlay == null) return;
         renderOverlay(pose, attributes.getOverlayTexture());
+        event.setCanceled(true);
     }
 
     @OnlyIn(Dist.CLIENT)
     public static void renderOverlay(PoseStack pose, ResourceLocation overlay) {
+        ResourceLocation rl = new ResourceLocation(overlay.getNamespace(), "textures/" + overlay.getPath() + ".png");
         Minecraft pMinecraft = Minecraft.getInstance();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.enableTexture();
-        RenderSystem.setShaderTexture(0, overlay);
+        RenderSystem.setShaderTexture(0, rl);
         BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
         float f = pMinecraft.player.getBrightness();
         RenderSystem.enableBlend();

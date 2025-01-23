@@ -160,9 +160,7 @@ public class AllExampleElements {
             .basicFluidProperties(5, 15, 5, true)
             .defaultSounds()
             .tintColor(0xFFD2691E)
-            .fogColor(210, 105, 30)
-            .blockType((fluid, properties) ->
-                    new ExampleFluidBlock(fluid, BlockBehaviour.Properties.copy(Blocks.WATER)))
+            .blockType(ExampleFluidBlock::new)
             .noLootAndOcclusion()
             .setRenderType("translucent")
             .tab(tab)

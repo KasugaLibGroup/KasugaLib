@@ -15,6 +15,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -37,10 +38,10 @@ import java.util.function.Supplier;
  * @param <T> The class of fluid.
  */
 public class FluidBlockReg<T extends LiquidBlock> extends Reg {
-    private Material material = Material.AIR;
+    private Material material = Material.WATER;
     private MaterialColor color = MaterialColor.NONE;
 
-    public BlockBehaviour.Properties properties = BlockBehaviour.Properties.of(Material.AIR);
+    public BlockBehaviour.Properties properties = BlockBehaviour.Properties.copy(Blocks.WATER);
     private FluidBlockBuilder<T> builder;
     private BlockEntityReg<? extends BlockEntity> blockEntityReg = null;
     private MenuReg<?, ?> menuReg = null;
