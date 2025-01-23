@@ -59,6 +59,7 @@ import java.util.function.Supplier;
  * Use this registration to register fluids like water or lava.
  * See {@link ForgeFlowingFluid}, {@link net.minecraft.world.level.material.WaterFluid} and
  * {@link net.minecraft.world.level.material.LavaFluid}
+ * important: There must be a water tag in data.minecraft.tags.fluids
  * @param <E> the class of your fluid.
  */
 public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
