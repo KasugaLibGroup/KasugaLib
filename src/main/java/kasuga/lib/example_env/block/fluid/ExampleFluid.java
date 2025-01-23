@@ -1,14 +1,9 @@
 package kasuga.lib.example_env.block.fluid;
 
-import kasuga.lib.registrations.common.FluidReg;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.common.extensions.IForgeFluid;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
-import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
 public class ExampleFluid extends ForgeFlowingFluid {
