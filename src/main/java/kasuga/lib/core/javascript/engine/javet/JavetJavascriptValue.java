@@ -161,4 +161,13 @@ public class JavetJavascriptValue implements JavascriptValue {
     public int hashCode() {
         return Objects.hash(value, reciever);
     }
+
+    @Override
+    public JavascriptValue cloneValue() {
+        try{
+            return new JavetJavascriptValue(value.toClone(), runtime);
+        }catch (JavetException e){
+            throw new RuntimeException(e);
+        }
+    }
 }

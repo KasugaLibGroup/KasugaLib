@@ -1,13 +1,12 @@
 package kasuga.lib.core.javascript;
 
-import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 public class CompoundTagWrapper {
     CompoundTag tag;

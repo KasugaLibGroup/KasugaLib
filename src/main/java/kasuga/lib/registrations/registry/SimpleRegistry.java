@@ -23,6 +23,7 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
@@ -37,6 +38,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -83,6 +86,8 @@ public class SimpleRegistry {
     private final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS;
     private final DeferredRegister<FluidType> FLUID_TYPE;
     private final DeferredRegister<Fluid> FLUID;
+    private final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURE;
+    private final DeferredRegister<PlacedFeature> PLACED_FEATURE;
     private final DeferredRegister<ArgumentTypeInfo<?, ?>> ARGUMENT_TYPES;
     private final ModelRegistry MODELS;
     private final HashMap<String, BlockEntityReg<?>> CACHE_OF_BLOCK_ENTITIES;
@@ -123,6 +128,8 @@ public class SimpleRegistry {
         FLUID_TYPE = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, namespace);
         FLUID = DeferredRegister.create(ForgeRegistries.Keys.FLUIDS, namespace);
         ARGUMENT_TYPES = DeferredRegister.create(ForgeRegistries.Keys.COMMAND_ARGUMENT_TYPES, namespace);
+        CONFIGURED_FEATURE = DeferredRegister.create(Registries.CONFIGURED_FEATURE, namespace);
+        PLACED_FEATURE = DeferredRegister.create(Registries.PLACED_FEATURE, namespace);
         MODELS = new ModelRegistry(namespace, this);
         CACHE_OF_BLOCK_ENTITIES = new HashMap<>();
         CUSTOM_RENDERED_ITEMS = new HashSet<>();
@@ -242,6 +249,10 @@ public class SimpleRegistry {
     @Deprecated
     public DeferredRegister<ArgumentTypeInfo<?, ?>> argumentTypes() {return ARGUMENT_TYPES;}
 
+    public DeferredRegister<ConfiguredFeature<?, ?>> configuredFeature() { return CONFIGURED_FEATURE; }
+
+    public DeferredRegister<PlacedFeature> placedFeature() { return PLACED_FEATURE; }
+
     /**
      * retrun the registry of kasuga lib style models. See {@link kasuga.lib.registrations.client.ModelReg}
      * @return the registry of kasuga lib style models.
@@ -290,6 +301,8 @@ public class SimpleRegistry {
         FLUID.register(eventBus);
         // ARGUMENT_TYPES.register("base", ()-> ArgumentTypeInfos.registerByClass(BaseArgument.class, new BaseArgumentInfo()));
         // ARGUMENT_TYPES.register(eventBus);
+        CONFIGURED_FEATURE.register(eventBus);
+        PLACED_FEATURE.register(eventBus);
         ATTRIBUTES.register(eventBus);
         for (String key : CACHE_OF_BLOCK_ENTITIES.keySet()) {
             try {
@@ -468,11 +481,11 @@ public class SimpleRegistry {
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public void hookFluidAndRenders(FMLCommonSetupEvent event) {
-        for (Map.Entry<FluidReg<?>, String> entry : KasugaLibStacks.FLUID_RENDERS.entrySet()) {
-            RenderType type = NamedRenderTypeManager.get(new ResourceLocation(entry.getValue())).block();
-            ItemBlockRenderTypes.setRenderLayer(entry.getKey().stillFluid(), type);
-            ItemBlockRenderTypes.setRenderLayer(entry.getKey().flowingFluid(), type);
-        }
+//        for (Map.Entry<FluidReg<?>, String> entry : KasugaLibStacks.FLUID_RENDERS.entrySet()) {
+//            RenderType type = NamedRenderTypeManager.get(new ResourceLocation(entry.getValue())).block();
+//            ItemBlockRenderTypes.setRenderLayer(entry.getKey().stillFluid(), type);
+//            ItemBlockRenderTypes.setRenderLayer(entry.getKey().flowingFluid(), type);
+//        }
     }
 
     public void onAnimationReg() {

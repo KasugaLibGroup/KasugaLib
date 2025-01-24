@@ -8,7 +8,7 @@ public class JavascriptMenuHandler {
     private JavascriptEngineContext context;
     private JavascriptValue handle;
     JavascriptMenuHandler(JavascriptEngineContext context,JavascriptValue handle){
-        this.handle = handle;
+        this.handle = handle.cloneValue();
         this.context = context;
     }
     public Runnable open(JavascriptMenuHandle handle){

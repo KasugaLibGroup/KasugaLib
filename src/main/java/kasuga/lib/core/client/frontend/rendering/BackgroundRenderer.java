@@ -79,7 +79,7 @@ public class BackgroundRenderer {
         ImageMask imageMask = nineSlicedMask.get();
         imageMask.rectangle(new Vector3f(x, y, 0), ImageMask.Axis.X, ImageMask.Axis.Y, true, true, width, height);
         if (context.getContextType() == RenderContext.RenderContextType.SCREEN)
-            imageMask.renderToGui();
+            imageMask.renderToGui(context.pose().last());
         else
             imageMask.renderToWorld(context.pose(), context.getBufferSource(),
                 context.getRenderType().build(imageMask.image.id), false, context.packedLight);
@@ -91,7 +91,7 @@ public class BackgroundRenderer {
         if (imageMask == null) return;
         imageMask.rectangle(new Vector3f(x, y, 0), ImageMask.Axis.X, ImageMask.Axis.Y, true, true, width, height);
         if (context.getContextType() == RenderContext.RenderContextType.SCREEN)
-            imageMask.renderToGui();
+            imageMask.renderToGui(context.pose().last());
         else
             imageMask.renderToWorld(context.pose(), context.getBufferSource(),
                 context.getRenderType().build(imageMask.image.id), false, context.packedLight);

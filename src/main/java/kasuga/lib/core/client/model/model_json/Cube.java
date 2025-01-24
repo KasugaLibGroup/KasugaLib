@@ -127,10 +127,6 @@ public class Cube implements Rotationable {
         return bone;
     }
 
-    @Override
-    public Vector3f getPivot() {
-        return pivot;
-    }
 
     public void addQuads(IGeometryBakingContext owner, IModelBuilder<?> modelBuilder, ModelBaker bakery,
                          Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ResourceLocation modelLocation) {

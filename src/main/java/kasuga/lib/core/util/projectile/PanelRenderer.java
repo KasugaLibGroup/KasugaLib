@@ -29,6 +29,7 @@ public class PanelRenderer {
     private final Panel panel;
     private final Grid grid;
     private final Vec3 pos;
+    private final CameraTracker tracker;
 
     private static final LazyRecomputable<AnimModel> panelModel = LazyRecomputable.of(
             () -> {
@@ -65,6 +66,7 @@ public class PanelRenderer {
         grid = new Grid(panel, new Vector3f());
         this.pos = pos;
         this.rays = new ArrayList<>();
+        tracker = new CameraTracker(Minecraft.getInstance().gui, Minecraft.getInstance().gameRenderer.getMainCamera());
     }
 
     public PanelRenderer(Panel panel, Vec3 pos, Grid grid, ArrayList<Ray> rays) {
@@ -72,6 +74,7 @@ public class PanelRenderer {
         this.grid = grid;
         this.pos = pos;
         this.rays = rays;
+        tracker = new CameraTracker(Minecraft.getInstance().gui, Minecraft.getInstance().gameRenderer.getMainCamera());
     }
 
     public void render(PoseStack pose, MultiBufferSource buffer, int light, int overlay, float partial) {
@@ -79,12 +82,12 @@ public class PanelRenderer {
         Vector3f lookVec = camera.getLookVector();
         panel.setNormal(new Vec3(lookVec));
         Vec3 position = camera.getPosition().add(BASE_OFFSET_2);
-        panel.moveTo(position);
+        // panel.moveTo(position);
         rays.add(grid.getNormalRay(testRayPos));
         grid.setO(VectorUtil.vec3ToVec3f(position));
         Quaternionf quaternion = panel.getQuaternion();
         pose.pushPose();
-        pose.translate(position.x(), position.y(), position.z());
+        // pose.translate(position.x(), position.y(), position.z());
         pose.mulPose(quaternion);
         pose.translate(-BASE_OFFSET.x(), BASE_OFFSET.y(), -BASE_OFFSET.z());
         if (!panel.valid())
@@ -110,19 +113,6 @@ public class PanelRenderer {
         arrow2Model.get().render(pose, buffer, light, overlay);
 
         pose.popPose();
-        rays.forEach(
-                ray -> {
-                    pose.pushPose();
-                    Vec3 rayPos = new Vec3(ray.getSource()).add(BASE_OFFSET_2);
-                    pose.translate(rayPos.x(), rayPos.y(), rayPos.z());
-                    Quaternionf q = Panel.getQuaternion(ray.getForward());
-                    pose.translate(-BASE_OFFSET.x(), BASE_OFFSET.y(), -BASE_OFFSET.z());
-                    pose.mulPose(q);
-                    arrowModel.get().resetAnimation();
-                    arrowModel.get().render(pose, buffer, light, overlay);
-                    pose.popPose();
-                }
-        );
         rays.clear();
     }
 }
