@@ -131,7 +131,8 @@ public class Grid {
 
     public Ray getNormalRay(float x, float y) {
         Vector3f source = get(x, y);
-        return new Ray(source, new Vector3f(panel.normal));
+        Vec3 v = panel.normal;
+        return new Ray(source, new Vector3f((float) v.x(), (float) v.y(), (float) v.z()));
     }
 
     public Ray getNormalRay(Vec2f pos) {

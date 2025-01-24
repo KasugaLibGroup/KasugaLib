@@ -1,6 +1,5 @@
 package kasuga.lib.core.util.projectile;
 
-import com.mojang.math.Vector3f;
 import lombok.Getter;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;

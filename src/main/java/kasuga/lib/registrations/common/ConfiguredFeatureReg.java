@@ -6,6 +6,7 @@ import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -39,7 +40,7 @@ public class ConfiguredFeatureReg<T extends Block> extends Reg {
 
     public ConfiguredFeatureReg<T> addOreConfigTarget(Supplier<T> ore) {
         oreConfigTargetList.add(() -> OreConfiguration.target(
-                OreFeatures.STONE_ORE_REPLACEABLES,
+                new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES),
                 ore.get().defaultBlockState()));
         return this;
     }
@@ -50,7 +51,7 @@ public class ConfiguredFeatureReg<T extends Block> extends Reg {
 
     public ConfiguredFeatureReg<T> addDeepSlateOreConfigTarget(Supplier<T> ore) {
         oreConfigTargetList.add(() -> OreConfiguration.target(
-                OreFeatures.DEEPSLATE_ORE_REPLACEABLES,
+                new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES),
                 ore.get().defaultBlockState()
         ));
         return this;

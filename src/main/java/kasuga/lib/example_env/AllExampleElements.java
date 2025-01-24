@@ -150,22 +150,22 @@ public class AllExampleElements {
 
 
 
-    public static final FluidReg<ExampleFluid> exampleFluid = new FluidReg<ExampleFluid>("example_fluid")
-            .still(ExampleFluid::new, "block/fluid/water_still")
-            .flow(ExampleFluid.Flowing::new, "block/fluid/water_flow")
-            .numericProperties(1, 8, 3, 10)
-            .overlayTexPath("block/fluid/water_overlay")
-            .bucketItem(BucketItem::new)
-            .basicFluidProperties(5, 15, 5, true)
-            .defaultSounds()
-            .tintColor(0xFFD2691E)
-            .fogColor(210, 105, 30)
-            .blockType((fluid, properties) ->
-                    new ExampleFluidBlock(fluid, BlockBehaviour.Properties.copy(Blocks.WATER)))
-            .noLootAndOcclusion()
-            .setRenderType("translucent")
-            .tab(tab)
-            .submit(testRegistry);
+//    public static final FluidReg<ExampleFluid> exampleFluid = new FluidReg<ExampleFluid>("example_fluid")
+//            .still(ExampleFluid::new, "block/fluid/water_still")
+//            .flow(ExampleFluid.Flowing::new, "block/fluid/water_flow")
+//            .numericProperties(1, 8, 3, 10)
+//            .overlayTexPath("block/fluid/water_overlay")
+//            .bucketItem(BucketItem::new)
+//            .basicFluidProperties(5, 15, 5, true)
+//            .defaultSounds()
+//            .tintColor(0xFFD2691E)
+//            .fogColor(210, 105, 30)
+//            .blockType((fluid, properties) ->
+//                    new ExampleFluidBlock(fluid, BlockBehaviour.Properties.copy(Blocks.WATER)))
+//            .noLootAndOcclusion()
+//            .setRenderType("translucent")
+//            .tab(tab)
+//            .submit(testRegistry);
 
 //    public static final BlockReg<DropExperienceBlock> SALT_ORE =
 //            new BlockReg<DropExperienceBlock>("salt_ore")

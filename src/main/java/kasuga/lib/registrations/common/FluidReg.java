@@ -65,7 +65,6 @@ import java.util.function.Supplier;
 public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     private RegistryObject<E> stillObject = null;
     private RegistryObject<E> flowingObject = null;
-    private RegistryObject<? extends BucketItem> itemRegistryObject = null;
     private final FluidType.Properties properties;
     private ForgeFlowingFluid.Properties fluidProp = null;
     private FluidBuilder<E> stillBuilder = null, flowingBuilder = null;

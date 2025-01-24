@@ -1,14 +1,14 @@
 package kasuga.lib.core.util.projectile;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.model.AnimModelLoader;
 import kasuga.lib.core.client.model.anim_model.AnimModel;
 import kasuga.lib.core.util.LazyRecomputable;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import static kasuga.lib.core.util.projectile.PanelRenderer.BASE_OFFSET;
 
@@ -31,7 +31,7 @@ public class RayRenderer {
         pose.pushPose();
         Vector3f source = ray.getSource();
         pose.translate(source.x(), source.y(), source.z());
-        Quaternion quaternion = Panel.getQuaternion(ray.getForward());
+        Quaternionf quaternion = Panel.getQuaternion(ray.getForward());
         pose.mulPose(quaternion);
         pose.translate(-BASE_OFFSET.x(), BASE_OFFSET.y(), -BASE_OFFSET.z());
         arrowModel.get().render(pose, buffer, light, overlay);
