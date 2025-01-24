@@ -165,6 +165,18 @@ public class NineSlicedImageMask extends ImageMask {
     }
 
     @Override
+    public void renderToGui(PoseStack.Pose pose) {
+        for(int y = 1; y < 4; y++) {
+            for (int x = 1; x < 4; x++) {
+                image.renderToGui(pose, positionMatrix.get(y, x), positionMatrix.get(y, x + 1),
+                        positionMatrix.get(y + 1, x), positionMatrix.get(y + 1, x + 1),
+                        matrix.get(y, x), matrix.get(y, x + 1), matrix.get(y + 1, x), matrix.get(y + 1, x + 1),
+                        getColor());
+            }
+        }
+    }
+
+    @Override
     public void renderToWorld(PoseStack pose, MultiBufferSource buffer, RenderType type, boolean revert, int light) {
         if (buffer == null) return;
         for (int y = 1; y < 4; y++) {

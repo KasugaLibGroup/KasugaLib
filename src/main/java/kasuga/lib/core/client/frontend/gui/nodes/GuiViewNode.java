@@ -6,7 +6,7 @@ import kasuga.lib.core.client.frontend.rendering.RenderContext;
 
 @V8Convert()
 public class GuiViewNode extends GuiDomNode{
-    GuiViewNode(GuiContext context) {
+    public GuiViewNode(GuiContext context) {
         super(context);
     }
 }

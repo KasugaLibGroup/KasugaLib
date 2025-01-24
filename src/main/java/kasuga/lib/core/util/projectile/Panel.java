@@ -25,7 +25,7 @@ public class Panel {
     @Setter
     public Vec3 normal;
 
-    public final double constant;
+    public double constant;
 
     public Panel(Panel panel) {
         this.normal = panel.normal;
@@ -59,8 +59,12 @@ public class Panel {
         return new Panel(this);
     }
 
-    public Panel moveTo(Vec3 point) {
+    public Panel moveAndCopy(Vec3 point) {
         return new Panel(this.normal, point);
+    }
+
+    public void moveTo(Vec3 point) {
+        this.constant = point.dot(normal);
     }
 
     public Panel offset(Vec3 offset) {

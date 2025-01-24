@@ -1,6 +1,6 @@
 package kasuga.lib.core.javascript.prebuilt.process;
 import kasuga.lib.core.javascript.JavascriptContext;
-import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 import kasuga.lib.core.javascript.prebuilt.PrebuiltModule;
 
 public class ProcessModule extends PrebuiltModule {

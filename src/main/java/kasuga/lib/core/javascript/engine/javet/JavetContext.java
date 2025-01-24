@@ -9,6 +9,7 @@ import com.caoccao.javet.values.reference.V8ValueFunction;
 import kasuga.lib.core.addons.node.NodePackage;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.engine.*;
+import kasuga.lib.core.javascript.engine.javet.converter.FastJavetClassConverter;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -25,7 +26,7 @@ public class JavetContext implements JavascriptEngineContext {
         JavetStandardConsoleInterceptor consoleInterceptor = new JavetStandardConsoleInterceptor(runtime);
         consoleInterceptor.register(runtime.getGlobalObject());
         moduleAPI = new JavetModuleAPI(runtime,this, context.getModuleLoader());
-        runtime.setConverter(new JavetKasugaConverter(runtime));
+        runtime.setConverter(new FastJavetClassConverter(runtime));
         runtime.setPromiseRejectCallback((event, promise, value)->{
             if(event.getCode() == 0){
                 System.err.println("Error" + event.getName());

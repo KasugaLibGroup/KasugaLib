@@ -1,7 +1,7 @@
 package kasuga.lib.core.javascript.prebuilt.websocket;
 
 import io.netty.buffer.ByteBuf;
-import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 import kasuga.lib.core.javascript.engine.JavascriptValue;
 import kasuga.lib.core.util.data_type.Pair;
 
@@ -25,6 +25,7 @@ public class WebsocketInterface {
     public void addEventListener(JavascriptValue eventName, JavascriptValue eventConsumer){
         if(!eventName.isString())
             throw new IllegalArgumentException("Illegal argument: invalid type for event name : expected string");
+        eventConsumer = eventConsumer.cloneValue();
         eventConsumer.pin();
         addEventListener(eventName.asString(),eventConsumer);
     }

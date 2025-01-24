@@ -98,6 +98,10 @@ public class ImageMask {
         image.renderToWorld(pose, buffer, type, this, revert, light);
     }
 
+    public void renderToGui(PoseStack.Pose pose) {
+        image.renderToGui(this, pose);
+    }
+
     public StaticImage getImage() {
         return image;
     }

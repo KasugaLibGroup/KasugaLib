@@ -39,7 +39,7 @@ public class GuiTextNode extends GuiDomNode implements MayMeasurable {
         return Pair.of((int)measureResult.x,(int)measureResult.y);
     });
 
-    GuiTextNode(GuiContext context) {
+    public GuiTextNode(GuiContext context) {
         super(context);
         this.attributes.registerProxy("content", new AttributeProxy() {
             @Override
