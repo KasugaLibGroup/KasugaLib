@@ -21,15 +21,12 @@
     "client.MixinBlockModel$Deserializer",
     "client.MixinBlockModelBinding",
     "client.MixinBlockModelShaper",
-    "client.MixinLevelRenderer",
-
     "client.MixinTextureManager",
     "client.MixinBezierConnection",
     "client.MixinBlockRenderDispatcher",
     "client.MixinCarriageContraptionEntityRenderer",
     "client.MixinStationBlockEntityClient",
-    "client.MixinTextureManager",
-
+    "client.MixinModelBakery",
   ],
   "minVersion": "0.8"
 }
