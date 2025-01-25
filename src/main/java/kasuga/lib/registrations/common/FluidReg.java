@@ -33,6 +33,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
@@ -412,6 +413,46 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     public FluidReg<E> overlayTexPath(String path) {
         this.overlayTexturePath = path;
         return this;
+    }
+
+    @Optional
+    public FluidReg<E> adjacentPathType(BlockPathTypes type) {
+        return typeProperty(p -> p.adjacentPathType(type));
+    }
+
+    @Optional
+    public FluidReg<E> canConvertToSource(boolean flag) {
+        return typeProperty(p -> p.canConvertToSource(flag));
+    }
+
+    @Optional
+    public FluidReg<E> canDrown(boolean flag) {
+        return typeProperty(p -> p.canDrown(flag));
+    }
+
+    @Optional
+    public FluidReg<E> canExtinguish(boolean flag) {
+        return typeProperty(p -> p.canExtinguish(flag));
+    }
+
+    @Optional
+    public FluidReg<E> canSwim(boolean flag) {
+        return typeProperty(p -> p.canSwim(flag));
+    }
+
+    @Optional
+    public FluidReg<E> canHydrate(boolean flag) {
+        return typeProperty(p -> p.canHydrate(flag));
+    }
+
+    @Optional
+    public FluidReg<E> canPushEntity(boolean flag) {
+        return typeProperty(p -> p.canPushEntity(flag));
+    }
+
+    @Optional
+    public FluidReg<E> fallDistanceModifier(float modifier) {
+        return typeProperty(p -> p.fallDistanceModifier(modifier));
     }
 
     /**

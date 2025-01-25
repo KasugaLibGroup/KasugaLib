@@ -19,7 +19,7 @@
     "client.MixinDirectoryLister",
     "client.MixinTextureManager",
     "client.MixinBlockModelShaper",
-    "client.MixinLevelRenderer",
+    "client.MixinTextureManager",
     "client.MixinCarriageContraptionEntityRenderer",
     "client.MixinStationBlockEntityClient"
   ],

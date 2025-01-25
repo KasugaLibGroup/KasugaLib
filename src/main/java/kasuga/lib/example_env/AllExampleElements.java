@@ -162,7 +162,7 @@ public class AllExampleElements {
 //            .bucketItem(BucketItem::new)
 //            .basicFluidProperties(5, 15, 5, true)
 //            .defaultSounds()
-//            .tintColor(0xFFD2691E)
+//            .tintColor(0x70D2691E)
 //            .fogColor(210, 105, 30)
 //            .blockType((fluid, properties) ->
 //                    new ExampleFluidBlock(fluid, BlockBehaviour.Properties.copy(Blocks.WATER)))

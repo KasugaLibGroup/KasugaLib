@@ -478,11 +478,11 @@ public class SimpleRegistry {
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public void hookFluidAndRenders(FMLCommonSetupEvent event) {
-//        for (Map.Entry<FluidReg<?>, String> entry : KasugaLibStacks.FLUID_RENDERS.entrySet()) {
-//            RenderType type = NamedRenderTypeManager.get(new ResourceLocation(entry.getValue())).block();
-//            ItemBlockRenderTypes.setRenderLayer(entry.getKey().stillFluid(), type);
-//            ItemBlockRenderTypes.setRenderLayer(entry.getKey().flowingFluid(), type);
-//        }
+        for (Map.Entry<FluidReg<?>, String> entry : KasugaLibStacks.FLUID_RENDERS.entrySet()) {
+            RenderType type = NamedRenderTypeManager.get(new ResourceLocation(entry.getValue())).block();
+            ItemBlockRenderTypes.setRenderLayer(entry.getKey().stillFluid(), type);
+            ItemBlockRenderTypes.setRenderLayer(entry.getKey().flowingFluid(), type);
+        }
     }
 
     public void onAnimationReg() {
