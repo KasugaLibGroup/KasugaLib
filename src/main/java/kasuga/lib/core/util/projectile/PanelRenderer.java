@@ -9,21 +9,30 @@ import kasuga.lib.core.client.model.anim_model.AnimModel;
 import kasuga.lib.core.client.model.model_json.BedrockModel;
 import kasuga.lib.core.client.render.SimpleColor;
 import kasuga.lib.core.client.render.texture.Vec2f;
+import kasuga.lib.core.util.Envs;
 import kasuga.lib.core.util.LazyRecomputable;
 import lombok.Getter;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import java.awt.*;
 import java.util.ArrayList;
 
 @Getter
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class PanelRenderer {
 
     private final Panel panel;
@@ -60,6 +69,29 @@ public class PanelRenderer {
     public static Vec2f testRayPos = new Vec2f(.5f, .5f);
 
     private final ArrayList<Ray> rays;
+
+    @SubscribeEvent
+    public static void renderToWorld(RenderLevelStageEvent event) {
+        if (!Envs.isDevEnvironment()) return;
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) return;
+        PoseStack pose = event.getPoseStack();
+        float partial = event.getPartialTick();
+        RenderBuffers buffers = Minecraft.getInstance().renderBuffers();
+        MultiBufferSource.BufferSource bufferSource = buffers.bufferSource();
+        pose.pushPose();
+        Player player = Minecraft.getInstance().player;
+        if (player == null) return;
+        Vec3 pos = player.getPosition(partial);
+        pose.translate(- pos.x(), - pos.y(), - pos.z());
+        KasugaLibClient.PANEL_RENDERERS.forEach(
+                renderer -> {
+                    pose.pushPose();
+                    renderer.render(pose, bufferSource, LightTexture.FULL_BLOCK, 0, partial);
+                    pose.popPose();
+                }
+        );
+        pose.popPose();
+    }
 
     public PanelRenderer(Vec3 normal, Vec3 pos) {
         panel = new Panel(pos, normal);
