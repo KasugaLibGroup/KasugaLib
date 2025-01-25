@@ -18,7 +18,6 @@
     "client.MixinBlockModelShaper",
     "client.MixinBlockRenderDispatcher",
     "client.MixinCarriageContraptionEntityRenderer",
-    "client.MixinLevelRenderer",
     "client.MixinModelBakery",
     "client.MixinObjLoader",
     "client.MixinRenderType",
