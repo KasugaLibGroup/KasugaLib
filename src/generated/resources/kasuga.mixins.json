@@ -16,7 +16,6 @@
     "client.MixinBlockModelBinding",
     "client.MixinBlockModelShaper",
     "client.MixinBlockRenderDispatcher",
-    "client.MixinLevelRenderer",
     "client.MixinModelBakery",
     "client.MixinObjLoader",
     "client.MixinRenderType",
