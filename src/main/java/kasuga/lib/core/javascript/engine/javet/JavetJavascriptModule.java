@@ -14,6 +14,8 @@ import kasuga.lib.core.javascript.engine.AbstractJavascriptEngineModule;
 import kasuga.lib.core.javascript.engine.JavascriptEngineModule;
 import kasuga.lib.core.javascript.engine.JavascriptValue;
 
+import java.util.HashMap;
+import java.util.UUID;
 import java.util.function.BiFunction;
 
 public class JavetJavascriptModule extends AbstractJavascriptEngineModule {
@@ -37,7 +39,7 @@ public class JavetJavascriptModule extends AbstractJavascriptEngineModule {
               directoryName,
               context,
               nodePackage.reader,
-              KasugaLib.STACKS.JAVASCRIPT.ASSETS.get(),
+              KasugaLib.STACKS.JAVASCRIPT.ASSETS.orElseGet(()->new HashMap<UUID, Object>()),
               nodePackage.minecraft != null ? nodePackage.minecraft.assetsFolder() : ""
       ): null, absolutePath, directoryName, context);
     }
