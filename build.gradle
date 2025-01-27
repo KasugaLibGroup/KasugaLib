@@ -327,8 +327,15 @@ reobf{
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        register('mavenJava', MavenPublication) {
             artifact jar
+            artifact shadowJar
+            // artifact sourcesJar
+            // artifact javadocJar
+            groupId = "kasuga.lib"
+            artifactId = "kasuga_lib"
+            version = "${mod_version}-${compileTarget}"
+            fg.component(it)
         }
     }
     repositories {
@@ -343,6 +350,22 @@ publishing {
 //                password = TOKEN
 //            }
 //        }
+    }
+
+    repositories {
+        maven {
+            name = "GradleCIMaven"
+            url = uri("https://git.gradle.ci/api/packages/KuaYueTeam/maven")
+
+            credentials(HttpHeaderCredentials) {
+                name = "Authorization"
+                value = "Bearer ${project.findProperty("kuaYueTeamGradleCiToken")}"
+            }
+
+            authentication {
+                header(HttpHeaderAuthentication)
+            }
+        }
     }
 }
 
