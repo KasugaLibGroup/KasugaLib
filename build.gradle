@@ -31,7 +31,6 @@ version = "${mod_version}"
 group = 'kasuga.lib' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'kasuga_lib'
 
-boolean isSdk = false
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -253,7 +252,19 @@ dependencies {
     minecraftLibrary 'com.caoccao.javet:javet-v8-windows-x86_64:4.0.0'
 
     shadedLib 'com.caoccao.javet:javet-core:4.0.0' // Must-have
-    shadedLib 'com.caoccao.javet:javet-v8-windows-x86_64:4.0.0' // Currently, we only support Win x86-64 structure in main build
+
+    if ( !javetLibraryExcluding || javetLibraryExcluding == "false" ){
+        if( compileTarget == 'macos') {
+            System.out.println("Building for MacOS")
+            shadedLib 'com.caoccao.javet:javet-v8-macos-arm64:4.0.0'
+            shadedLib 'com.caoccao.javet:javet-v8-macos-x86_64:4.0.0'
+        } else {
+            System.out.println("Building for Windows & Linux")
+            shadedLib 'com.caoccao.javet:javet-v8-linux-arm64:4.0.0'
+            shadedLib 'com.caoccao.javet:javet-v8-linux-x86_64:4.0.0'
+            shadedLib 'com.caoccao.javet:javet-v8-windows-x86_64:4.0.0' // Currently, we only support Win x86-64 structure in main build
+        }
+    }
 
     shadedLib 'org.apache.httpcomponents:httpcore:4.4.14'
     shadedLib 'org.apache.httpcomponents:httpclient:4.5.13'
@@ -294,12 +305,7 @@ jar {
 }
 
 // Example configuration to allow publishing using the maven-publish plugin
-// This is the preferred method to reobfuscate your jar file
-if (!isSdk) {
-    jar.finalizedBy('reobfShadowJar')
-}
-// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
-// publish.dependsOn('reobfJar')
+jar.finalizedBy('reobfShadowJar')
 
 shadowJar{
     mergeServiceFiles() // To fix graal issue: https://github.com/oracle/graaljs/issues/125
@@ -325,8 +331,15 @@ reobf{
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        register('mavenJava', MavenPublication) {
             artifact jar
+            artifact shadowJar
+            // artifact sourcesJar
+            // artifact javadocJar
+            groupId = "kasuga.lib"
+            artifactId = "kasuga_lib"
+            version = "${mod_version}-${compileTarget}"
+            fg.component(it)
         }
     }
     repositories {
@@ -341,6 +354,22 @@ publishing {
 //                password = TOKEN
 //            }
 //        }
+    }
+
+    repositories {
+        maven {
+            name = "GradleCIMaven"
+            url = uri("https://git.gradle.ci/api/packages/KuaYueTeam/maven")
+
+            credentials(HttpHeaderCredentials) {
+                name = "Authorization"
+                value = "Bearer ${project.findProperty("kuaYueTeamGradleCiToken")}"
+            }
+
+            authentication {
+                header(HttpHeaderAuthentication)
+            }
+        }
     }
 }
 
