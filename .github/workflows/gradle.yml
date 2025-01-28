@@ -43,7 +43,6 @@ jobs:
 
     - name: Build KasugaLib Javascript Runtime
       run: |
-        cd ./kasugalib
         git submodule update --remote --recursive
         rm ./src/generated/resources/script/ -r -f
         yarn
