@@ -46,7 +46,6 @@ jobs:
         rm ./src/generated/resources/script/ -r -f
         yarn
         yarn build
-        cd ..
 
     - name: Build with Gradle
       run: ./gradlew build
