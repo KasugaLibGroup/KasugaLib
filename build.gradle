@@ -16,7 +16,6 @@ buildscript {
 plugins {
     id 'eclipse'
     id 'maven-publish'
-    id 'groovy-gradle-plugin'
     // id 'com.github.johnrengelman.shadow' version '7.1.+'
     id("com.github.johnrengelman.shadow")
     id "com.modrinth.minotaur" version "2.+"
@@ -354,14 +353,24 @@ reobf{
 publishing {
     publications {
         register('mavenJava', MavenPublication) {
-            artifact jar
-            artifact shadowJar
-            // artifact sourcesJar
-            // artifact javadocJar
             groupId = "kasuga.lib"
             artifactId = "kasuga_lib"
-            version = "${mod_version}-${compileTarget}"
-            fg.component(it)
+            version = "${mod_version}"
+            // fg.component(it)
+            
+            // 为每个平台的 JAR 文件指定不同的分类器
+            tasks.named('multiPlatformBinaryPack').get().platforms.each { platform ->
+                artifact("${buildDir}/libs/${archivesBaseName}-${version}-${platform.name}.jar") {
+                    builtBy tasks.named('multiPlatformBinaryPack')
+                    classifier platform.name // 使用平台名称作为分类器
+                }
+            }
+            
+            // 添加统一的 JAR 文件
+            artifact("${buildDir}/libs/${archivesBaseName}-${version}.jar") {
+                builtBy tasks.named('multiPlatformBinaryPack')
+                classifier '' // 为统一的 JAR 文件指定分类器
+            }
         }
     }
     repositories {
