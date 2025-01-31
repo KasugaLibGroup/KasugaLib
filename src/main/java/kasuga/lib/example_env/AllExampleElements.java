@@ -179,7 +179,7 @@ public class AllExampleElements {
 //
 //    public static final OreReg<DropExperienceBlock> exampleOreConfig =
 //            new OreReg<DropExperienceBlock>("salt_ore")
-//            .setOreBlock(SALT_ORE::getBlock)
+//            .setOreBlock(SALT_ORE::getBlock).setDeepSlateOreBlock(SALT_ORE::getBlock)
 //            .addOreReplaceTarget()
 //            .addDeepSlateReplaceTarget()
 //            .setOreCountPerChunk(20)

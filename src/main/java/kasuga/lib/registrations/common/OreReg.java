@@ -18,6 +18,7 @@ import java.util.function.Supplier;
 public class OreReg<T extends Block> extends Reg {
 
     private Supplier<T> oreBlockSupplier;
+    private Supplier<T> deepSlateOreBlockSupplier;
     private final ConfiguredFeatureReg<T> configuredFeatureObject;
     private final PlacedFeatureReg placedFeatureObject;
 
@@ -30,6 +31,11 @@ public class OreReg<T extends Block> extends Reg {
     @Mandatory
     public OreReg<T> setOreBlock(Supplier<T> oreBlockSupplier) {
         this.oreBlockSupplier = oreBlockSupplier;
+        return this;
+    }
+
+    public OreReg<T> setDeepSlateOreBlock(Supplier<T> deepSlateOreBlockSupplier){
+        this.deepSlateOreBlockSupplier = deepSlateOreBlockSupplier;
         return this;
     }
 
@@ -54,7 +60,8 @@ public class OreReg<T extends Block> extends Reg {
     }
 
     public OreReg<T> addDeepSlateReplaceTarget() {
-        this.configuredFeatureObject.addDeepSlateOreConfigTarget(oreBlockSupplier);
+        this.configuredFeatureObject.addDeepSlateOreConfigTarget(
+                deepSlateOreBlockSupplier != null ? deepSlateOreBlockSupplier : oreBlockSupplier);
         return this;
     }
 
