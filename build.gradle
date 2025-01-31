@@ -18,13 +18,11 @@ plugins {
     id 'maven-publish'
     // id 'com.github.johnrengelman.shadow' version '7.1.+'
     id("com.github.johnrengelman.shadow")
-    id "com.modrinth.minotaur" version "2.+"
-    id "com.dorongold.task-tree" version "3.0.0"
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'org.spongepowered.mixin'
-apply plugin: kasuga.build.PackerPlugin
+apply plugin: kasuga.builder.PackerPlugin
 
 configurations {
     shadedLib
