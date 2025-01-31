@@ -13,11 +13,10 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.HashMap;
 import java.util.function.Supplier;
 
 public class OreReg<T extends Block> extends Reg {
-
-    private Supplier<T> oreBlockSupplier;
     private final ConfiguredFeatureReg<T> configuredFeatureObject;
     private final PlacedFeatureReg placedFeatureObject;
 
@@ -27,35 +26,49 @@ public class OreReg<T extends Block> extends Reg {
         this.placedFeatureObject = new PlacedFeatureReg(registrationKey);
     }
 
-    @Mandatory
-    public OreReg<T> setOreBlock(Supplier<T> oreBlockSupplier) {
-        this.oreBlockSupplier = oreBlockSupplier;
+    public OreReg<T> addOreBlockReplaceTarget(ResourceLocation block, Supplier<T> supplier) {
+        this.configuredFeatureObject.addOreConfigTargetByBlock(block, supplier);
         return this;
     }
 
-    public OreReg<T> addOreBlockReplaceTarget(ResourceLocation block) {
-        this.configuredFeatureObject.addOreConfigTargetByBlock(block, oreBlockSupplier);
+    public OreReg<T> addOreBlockReplaceTarget(ResourceLocation block, BlockReg<T> reg) {
+        return addOreBlockReplaceTarget(block, reg::getBlock);
+    }
+
+    public OreReg<T> addOreTagReplaceTarget(TagKey<Block> tagKey, Supplier<T> supplier) {
+        this.configuredFeatureObject.addOreConfigTargetByKey(tagKey, supplier);
         return this;
     }
 
-    public OreReg<T> addOreTagReplaceTarget(TagKey<Block> tagKey) {
-        this.configuredFeatureObject.addOreConfigTargetByKey(tagKey, oreBlockSupplier);
+    public OreReg<T> addOreTagReplaceTarget(TagKey<Block> tagKey, BlockReg<T> reg) {
+        return addOreTagReplaceTarget(tagKey, reg::getBlock);
+    }
+
+    public OreReg<T> addOreRuleReplaceTarget(RuleTest rule, Supplier<T> supplier) {
+        this.configuredFeatureObject.addOreConfigTargetByRule(rule, supplier);
         return this;
     }
 
-    public OreReg<T> addOreRuleReplaceTarget(RuleTest ruleTest) {
-        this.configuredFeatureObject.addOreConfigTargetByRule(ruleTest, oreBlockSupplier);
+    public OreReg<T> addOreRuleReplaceTarget(RuleTest rule, BlockReg<T> reg) {
+        return addOreRuleReplaceTarget(rule, reg::getBlock);
+    }
+
+    public OreReg<T> addOreReplaceTarget(Supplier<T> block) {
+        this.configuredFeatureObject.addOreConfigTarget(block);
         return this;
     }
 
-    public OreReg<T> addOreReplaceTarget() {
-        this.configuredFeatureObject.addOreConfigTarget(oreBlockSupplier);
+    public OreReg<T> addOreReplaceTarget(BlockReg<T> reg) {
+        return addOreReplaceTarget(reg::getBlock);
+    }
+
+    public OreReg<T> addDeepSlateReplaceTarget(Supplier<T> block) {
+        this.configuredFeatureObject.addDeepSlateOreConfigTarget(block);
         return this;
     }
 
-    public OreReg<T> addDeepSlateReplaceTarget() {
-        this.configuredFeatureObject.addDeepSlateOreConfigTarget(oreBlockSupplier);
-        return this;
+    public OreReg<T> addDeepSlateReplaceTarget(BlockReg<T> reg) {
+        return addDeepSlateReplaceTarget(reg::getBlock);
     }
 
     public OreReg<T> setOreQuantityPerGroup(int count) {
