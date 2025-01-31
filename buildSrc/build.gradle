@@ -1,0 +1,17 @@
+plugins {
+}
+
+
+group = 'kasuga.build'
+
+repositories {
+    mavenCentral()
+    jcenter {}
+    gradlePluginPortal()
+}
+
+dependencies {
+    implementation localGroovy()
+    implementation gradleApi()
+    implementation("com.github.johnrengelman.shadow:com.github.johnrengelman.shadow.gradle.plugin:7.1+")
+}

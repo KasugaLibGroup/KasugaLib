@@ -3,8 +3,6 @@ package kasuga.lib.example_env;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Vector3f;
 import kasuga.lib.KasugaLib;
-import kasuga.lib.core.base.commands.CommandHandler;
-import kasuga.lib.core.config.SimpleConfig;
 import kasuga.lib.core.base.BucketItem;
 import kasuga.lib.core.base.commands.CommandHandler;
 import kasuga.lib.core.client.interaction.GuiOperatingPerspectiveScreen;
@@ -169,28 +167,27 @@ public class AllExampleElements {
             .tab(tab)
             .submit(testRegistry);
 
-    public static final BlockReg<OreBlock> SALT_ORE =
-            new BlockReg<OreBlock>("salt_ore")
-                    .blockType(props ->
-                            new OreBlock(props, UniformInt.of(3, 7)))
-                    .material(Material.STONE)
-                    .materialColor(MaterialColor.STONE)
-                    .addProperty(properties -> properties.strength(1.5f, 6.0F))
-                    .addProperty(BlockBehaviour.Properties::requiresCorrectToolForDrops)
-                    .defaultBlockItem()
-                    .tabTo(tab)
-                    .submit(ExampleMain.testRegistry);
-
-    public static final OreReg<OreBlock> exampleOreConfig =
-            new OreReg<OreBlock>("salt_ore")
-            .setOreBlock(SALT_ORE::getBlock)
-            .addOreReplaceTarget()
-            .addDeepSlateReplaceTarget()
-            .setOreCountPerChunk(20)
-            .setOreQuantityPerGroup(64)
-            .setOreDistributionType(PlacedFeatureReg.DistributionType.TRIANGLE)
-            .setOreAnchorAbsolute(80, -80)
-            .submit(ExampleMain.testRegistry);
+//    public static final BlockReg<OreBlock> SALT_ORE =
+//            new BlockReg<OreBlock>("salt_ore")
+//                    .blockType(props ->
+//                            new OreBlock(props, UniformInt.of(3, 7)))
+//                    .material(Material.STONE)
+//                    .materialColor(MaterialColor.STONE)
+//                    .addProperty(properties -> properties.strength(1.5f, 6.0F))
+//                    .addProperty(BlockBehaviour.Properties::requiresCorrectToolForDrops)
+//                    .defaultBlockItem()
+//                    .tabTo(tab)
+//                    .submit(ExampleMain.testRegistry);
+//
+//    public static final OreReg<OreBlock> exampleOreConfig =
+//            new OreReg<OreBlock>("salt_ore")
+//            .addOreReplaceTarget(SALT_ORE)
+//            .addDeepSlateReplaceTarget(SALT_ORE)
+//            .setOreCountPerChunk(20)
+//            .setOreQuantityPerGroup(64)
+//            .setOreDistributionType(PlacedFeatureReg.DistributionType.TRIANGLE)
+//            .setOreAnchorAbsolute(80, -80)
+//            .submit(ExampleMain.testRegistry);
 
     public static final MenuReg<GreenAppleMenu, GreenAppleScreen> apple =
             new MenuReg<GreenAppleMenu, GreenAppleScreen>("green_apple_screen")
