@@ -17,14 +17,19 @@ buildscript {
 plugins {
     id 'eclipse'
     id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '7.1.+'
+    // id 'com.github.johnrengelman.shadow' version '7.1.+'
+    id("com.github.johnrengelman.shadow")
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'org.spongepowered.mixin'
+apply plugin: kasuga.builder.PackerPlugin
 
 configurations {
     shadedLib
+
+    macOSDependency
+    commonDependency
 }
 
 version = "${mod_version}"
@@ -35,7 +40,6 @@ archivesBaseName = 'kasuga_lib'
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
-jarJar.enable()
 minecraft {
 
     mappings channel: 'parchment', version: '2022.09.04-1.18.2'
@@ -249,16 +253,19 @@ dependencies {
 
     shadedLib 'com.caoccao.javet:javet-core:4.0.0' // Must-have
 
+
+    commonDependency 'com.caoccao.javet:javet-v8-linux-arm64:4.0.0'
+    commonDependency 'com.caoccao.javet:javet-v8-linux-x86_64:4.0.0'
+    commonDependency 'com.caoccao.javet:javet-v8-windows-x86_64:4.0.0'
+    macOSDependency 'com.caoccao.javet:javet-v8-macos-arm64:4.0.0'
+    macOSDependency 'com.caoccao.javet:javet-v8-macos-x86_64:4.0.0'
+
     if ( !javetLibraryExcluding || javetLibraryExcluding == "false" ){
         if( compileTarget == 'macos') {
             System.out.println("Building for MacOS")
-            shadedLib 'com.caoccao.javet:javet-v8-macos-arm64:4.0.0'
-            shadedLib 'com.caoccao.javet:javet-v8-macos-x86_64:4.0.0'
         } else {
             System.out.println("Building for Windows & Linux")
-            shadedLib 'com.caoccao.javet:javet-v8-linux-arm64:4.0.0'
-            shadedLib 'com.caoccao.javet:javet-v8-linux-x86_64:4.0.0'
-            shadedLib 'com.caoccao.javet:javet-v8-windows-x86_64:4.0.0' // Currently, we only support Win x86-64 structure in main build
+             // Currently, we only support Win x86-64 structure in main build
         }
     }
 
@@ -274,7 +281,7 @@ dependencies {
     // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
     // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
     minecraftLibrary "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.2"
-    jarJar(group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)")
+    shadedLib (group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)")
     // Examples using mod jars from ./libs
     // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
 
@@ -303,10 +310,25 @@ jar {
 // Example configuration to allow publishing using the maven-publish plugin
 jar.finalizedBy('reobfShadowJar')
 
+multiPlatformBinaryPack {
+    platform {
+        name 'common'
+        dependencies  = [ project.configurations.commonDependency ]
+    }
+    
+    platform {
+        name 'macOS' 
+        dependencies = [ project.configurations.macOSDependency ]
+    }
+
+    dependsOn("reobfShadowJar")
+}
+// shadowJar.finalizedBy('multiPlatformBinaryPack')
+
 shadowJar{
     mergeServiceFiles() // To fix graal issue: https://github.com/oracle/graaljs/issues/125
     configurations = [project.configurations.shadedLib]
-    archiveClassifier.set('');
+    archiveClassifier.set('shadow');
     relocate 'org.graalvm', 'kasuga.lib.vendor_modules.org.graalvm'
     relocate 'com.oracle', 'kasuga.lib.vendor_modules.com.oracle'
     relocate 'com.ibm', 'kasuga.lib.vendor_modules.com.ibm'
@@ -320,6 +342,7 @@ shadowJar{
 }
 
 assemble.dependsOn shadowJar
+assemble.dependsOn multiPlatformBinaryPack
 
 reobf{
     shadowJar {}
@@ -328,28 +351,30 @@ reobf{
 publishing {
     publications {
         register('mavenJava', MavenPublication) {
-            artifact jar
-            artifact shadowJar
-            // artifact sourcesJar
-            // artifact javadocJar
             groupId = "kasuga.lib"
             artifactId = "kasuga_lib"
-            version = "${mod_version}-${compileTarget}"
-            fg.component(it)
+            version = "${mod_version}"
+            // fg.component(it)
+            
+            // 为每个平台的 JAR 文件指定不同的分类器
+            tasks.named('multiPlatformBinaryPack').get().platforms.each { platform ->
+                artifact("${buildDir}/libs/${archivesBaseName}-${version}-${platform.name}.jar") {
+                    builtBy tasks.named('multiPlatformBinaryPack')
+                    classifier platform.name // 使用平台名称作为分类器
+                }
+            }
+            
+            // 添加统一的 JAR 文件
+            artifact("${buildDir}/libs/${archivesBaseName}-${version}.jar") {
+                builtBy tasks.named('multiPlatformBinaryPack')
+                classifier '' // 为统一的 JAR 文件指定分类器
+            }
         }
     }
     repositories {
         maven {
             url "file://${project.projectDir}/mcmodsrepo"
         }
-//        maven {
-//            name "github"
-//            url "https://maven.pkg.github.com/KasugaLibGroup/"
-//            credentials {
-//                username = USERNAME
-//                password = TOKEN
-//            }
-//        }
     }
 
     repositories {
