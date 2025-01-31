@@ -177,10 +177,10 @@ public class AllExampleElements {
 //                    .tabTo(tab)
 //                    .submit(ExampleMain.testRegistry);
 //
-//    public static final OreReg<DropExperienceBlock> exampleOreConfig = new OreReg<DropExperienceBlock>("salt_ore")
-//            .setOreBlock(SALT_ORE::getBlock)
-//            .addOreReplaceTarget()
-//            .addDeepSlateReplaceTarget()
+//    public static final OreReg<DropExperienceBlock> exampleOreConfig =
+//            new OreReg<DropExperienceBlock>("salt_ore")
+//            .addOreReplaceTarget(SALT_ORE)
+//            .addDeepSlateReplaceTarget(SALT_ORE)
 //            .setOreCountPerChunk(20)
 //            .setOreQuantityPerGroup(64)
 //            .setOreDistributionType(PlacedFeatureReg.DistributionType.TRIANGLE)
