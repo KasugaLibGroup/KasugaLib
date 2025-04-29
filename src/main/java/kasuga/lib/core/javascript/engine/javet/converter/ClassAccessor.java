@@ -173,7 +173,7 @@ public class ClassAccessor {
                         if(
                                 Arrays.equals(method.getTypeParameters(), interfaceMethod.getTypeParameters()) &&
                                         method.getReturnType() == interfaceMethod.getReturnType() &&
-                                        Modifier.isFinal(interfaceMethod.getModifiers())
+                                        Modifier.isAbstract(interfaceMethod.getModifiers())
                         ){
                             filteredMethods.add(method);
                             accessor.isFunctionalInterface = true;
