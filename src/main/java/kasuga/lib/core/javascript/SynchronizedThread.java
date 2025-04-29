@@ -36,8 +36,7 @@ public abstract class SynchronizedThread extends Thread{
                             pendingTasks.poll().run();
 
                     }catch (RuntimeException e){
-                        // TODO: output using logger
-                        System.out.println("An exception occurs when running the tasks");
+                        logger.error("Error in thread " + this.getName(), e);
                         e.printStackTrace();
                     }
                 }
