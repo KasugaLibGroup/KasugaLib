@@ -1,13 +1,18 @@
 package kasuga.lib.core.javascript;
 
+import kasuga.lib.KasugaLib;
+import org.slf4j.Logger;
+
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class SynchronizedThread extends Thread{
+    public final Logger logger;
     SynchronizedThread(String name){
         super(name);
+        logger = KasugaLib.createLogger("THREAD/" + name);
     }
     final Queue<Runnable> pendingTasks = new ArrayDeque<>();
     AtomicBoolean shouldShutdown = new AtomicBoolean(false);
