@@ -13,6 +13,7 @@ import java.util.UUID;
 public class EdgeExtraData {
     public static final UUID passiveBoundaryGroup = UUID.fromString("00000000-0000-0000-0000-000000000000");
     HashMap<ResourceLocation, UUID> customBoundaryGroups = new HashMap<>();
+    HashMap<ResourceLocation, EdgeExtraPayload> payload = new HashMap<>();
     public CompoundTag write(ResourcePattle resourcePattle) {
         CompoundTag tag = new CompoundTag();
         ListTag listTag = new ListTag();
@@ -27,6 +28,14 @@ public class EdgeExtraData {
             listTag.add(entryTag);
         }
         tag.put("BoundaryGroups", listTag);
+        ListTag payloadTag = new ListTag();
+        for (Map.Entry<ResourceLocation, EdgeExtraPayload> entry : payload.entrySet()) {
+            CompoundTag entryTag = new CompoundTag();
+            entryTag.putInt("Id", resourcePattle.encode(entry.getKey()));
+            entryTag.put("Data", entry.getValue().write());
+            payloadTag.add(entryTag);
+        }
+        tag.put("Payload", payloadTag);
         return tag;
     }
 
@@ -42,6 +51,16 @@ public class EdgeExtraData {
                     resourcePattle.decode(entryTag.getInt("Id")),
                     value
             );
+        }
+
+        ListTag payloadTag = data.getList("Payload", Tag.TAG_COMPOUND);
+        for(int i=0;i<payloadTag.size();i++){
+            CompoundTag entryTag = payloadTag.getCompound(i);
+            EdgeExtraPayloadType<?> type = EdgeExtraPayloadRegistry.get(resourcePattle.decode(entryTag.getInt("Id")));
+            if(type == null)
+                continue;
+            EdgeExtraPayload payload = (EdgeExtraPayload) type.read(entryTag.getCompound("Data"));
+            this.payload.put(resourcePattle.decode(entryTag.getInt("Id")), payload);
         }
     }
 
@@ -67,5 +86,13 @@ public class EdgeExtraData {
 
     public void setBoundaryFeaturePassive(ResourceLocation featureName) {
         customBoundaryGroups.remove(featureName);
+    }
+
+    public void setPayload(EdgeExtraPayload payload) {
+        this.payload.put(EdgeExtraPayloadRegistry.getId(payload.getType()), payload);
+    }
+
+    public EdgeExtraPayload getPayload(ResourceLocation featureName) {
+        return payload.get(featureName);
     }
 }
