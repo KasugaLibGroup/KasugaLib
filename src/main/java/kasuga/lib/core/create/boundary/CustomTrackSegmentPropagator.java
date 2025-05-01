@@ -12,6 +12,7 @@ import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class CustomTrackSegmentPropagator{
@@ -48,6 +49,9 @@ public class CustomTrackSegmentPropagator{
                     TrackEdgeLocation location = extraData.DEBUG_findLocationOf(val);
                     val.setBoundaryFeature(featureName, segmentId);
                     return true;
+                },
+                (immedateBoundary)->{
+                    immedateBoundary.setSegment(!direction, segmentId);
                 },
                 false
         );
@@ -100,6 +104,9 @@ public class CustomTrackSegmentPropagator{
                         }
                         return false;
                     },
+                    (immedateBoundary)->{
+                        immedateBoundary.markDirty(!front);
+                    },
                     false
             );
         }
@@ -113,6 +120,7 @@ public class CustomTrackSegmentPropagator{
             boolean front,
             Predicate<Pair<TrackNode, ? super CustomBoundary>> boundaryCallback,
             Predicate<EdgeExtraData> nonBoundaryCallback,
+            Consumer<CustomBoundary> immedateBoundaryConsumer,
             boolean forCollection
     ) {
 
@@ -138,6 +146,7 @@ public class CustomTrackSegmentPropagator{
         CustomBoundary immediateBoundary = (CustomBoundary) startEdge.getEdgeData()
                 .next(boundaryEdgePointType, boundary.getLocationOn(startEdge));
         if (immediateBoundary != null) {
+            immedateBoundaryConsumer.accept(immediateBoundary);
             return;
         }
 
