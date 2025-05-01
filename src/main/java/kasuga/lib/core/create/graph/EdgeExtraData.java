@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public class EdgeExtraData {
@@ -99,5 +100,9 @@ public class EdgeExtraData {
                 return null;
             return (EdgeExtraPayload) type.create();
         });
+    }
+
+    public Optional<EdgeExtraPayload> getPayloadOptional(ResourceLocation featureName) {
+        return Optional.ofNullable(payload.get(featureName));
     }
 }
