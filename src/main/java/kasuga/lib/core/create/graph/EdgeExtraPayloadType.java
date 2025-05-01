@@ -5,11 +5,11 @@ import net.minecraft.nbt.CompoundTag;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public abstract class EdgeExtraPayloadType<T> {
+public abstract class EdgeExtraPayloadType<T extends EdgeExtraPayload> {
     abstract T read(CompoundTag tag);
     abstract T create();
 
-    public static class Builder<T> {
+    public static class Builder<T extends EdgeExtraPayload> {
         private final Supplier<T> supplier;
         private final Function<CompoundTag, T> reader;
 

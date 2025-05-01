@@ -93,6 +93,11 @@ public class EdgeExtraData {
     }
 
     public EdgeExtraPayload getPayload(ResourceLocation featureName) {
-        return payload.get(featureName);
+        return payload.computeIfAbsent(featureName, (x)->{
+            EdgeExtraPayloadType<?> type = EdgeExtraPayloadRegistry.get(featureName);
+            if(type == null)
+                return null;
+            return (EdgeExtraPayload) type.create();
+        });
     }
 }
