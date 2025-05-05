@@ -19,7 +19,7 @@ public class Quad {
         vertices = new Vertex[4];
         this.direction = uv.getDirection();
         for (int i = 0; i < 4; i++) vertices[i] = new Vertex(cube, uv, i);
-        skip = (uv.getUvSize().x() == 0 || uv.getUvSize().y() == 0) || !uv.isVisible();
+        skip = (uv.getUvSize().x() == 0 & uv.getUvSize().y() == 0) || !uv.isVisible();
     }
 
     public Quad(Vertex[] vertices, Direction direction, Geometry model, boolean skip) {
