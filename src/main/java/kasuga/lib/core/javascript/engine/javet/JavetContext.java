@@ -6,9 +6,12 @@ import com.caoccao.javet.interop.V8Host;
 import com.caoccao.javet.interop.V8Runtime;
 import com.caoccao.javet.values.V8Value;
 import com.caoccao.javet.values.reference.V8ValueFunction;
+import kasuga.lib.KasugaLib;
 import kasuga.lib.core.addons.node.NodePackage;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.engine.*;
+import kasuga.lib.core.javascript.engine.javet.converter.FastJavetClassConverter;
+import org.slf4j.Logger;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -19,16 +22,18 @@ public class JavetContext implements JavascriptEngineContext {
     V8Runtime runtime;
     JavetModuleAPI moduleAPI;
 
+    private final Logger logger = KasugaLib.createLogger("JavetContext");
+
     JavetContext(JavascriptContext context) throws JavetException {
         this.context = context;
         runtime = V8Host.getV8Instance().createV8Runtime();
-        JavetStandardConsoleInterceptor consoleInterceptor = new JavetStandardConsoleInterceptor(runtime);
+        KasugaJavetConsoleInterceptor consoleInterceptor = new KasugaJavetConsoleInterceptor(runtime);
         consoleInterceptor.register(runtime.getGlobalObject());
         moduleAPI = new JavetModuleAPI(runtime,this, context.getModuleLoader());
-        runtime.setConverter(new JavetKasugaConverter(runtime));
+        runtime.setConverter(new FastJavetClassConverter(runtime));
         runtime.setPromiseRejectCallback((event, promise, value)->{
             if(event.getCode() == 0){
-                System.err.println("Error" + event.getName());
+                logger.error("Error", event.getName());
             }
         });
     }

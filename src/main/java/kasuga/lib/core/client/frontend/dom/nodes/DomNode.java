@@ -5,14 +5,12 @@ import kasuga.lib.core.client.frontend.dom.attribute.AttributeMap;
 import kasuga.lib.core.client.frontend.dom.event.EventEmitter;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
 import kasuga.lib.core.javascript.JavascriptContext;
-import kasuga.lib.core.javascript.engine.HostAccess;
+import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 import kasuga.lib.core.javascript.engine.JavascriptValue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Consumer;
 
 public class DomNode<T extends DomContext<?,?>> {
 
@@ -112,4 +110,13 @@ public class DomNode<T extends DomContext<?,?>> {
     public boolean hasFeature(String feature){
         return false;
     }
+
+    public void dispatchRenderTick() {
+        renderTick();
+        for (DomNode<T> child : this.children) {
+            child.dispatchRenderTick();
+        }
+    }
+
+    protected void renderTick() {}
 }

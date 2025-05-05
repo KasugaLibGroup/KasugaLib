@@ -3,9 +3,12 @@ package kasuga.lib.core.client.frontend.gui;
 import com.mojang.blaze3d.vertex.PoseStack;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutBox;
-import kasuga.lib.core.client.frontend.gui.events.MouseClickEvent;
-import kasuga.lib.core.client.frontend.gui.events.MouseReleasedEvent;
+import kasuga.lib.core.client.frontend.gui.events.mouse.MouseClickEvent;
+import kasuga.lib.core.client.frontend.gui.events.mouse.MouseDownEvent;
+import kasuga.lib.core.client.frontend.gui.events.mouse.MouseMoveEvent;
+import kasuga.lib.core.client.frontend.gui.events.mouse.MouseUpEvent;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
+import kasuga.lib.core.util.data_type.Pair;
 import kasuga.lib.core.util.data_type.Vec2i;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -53,26 +56,52 @@ public class GuiScreen extends Screen {
         }
     }
 
+
+    Pair<Double, Double> lastClickedPos = null;
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        MouseClickEvent event = MouseClickEvent.fromScreen(null, new Vec2i((int)pMouseX,(int)pMouseY), pButton);
+        MouseDownEvent event = MouseDownEvent.fromScreen(null, new Vec2i((int)pMouseX,(int)pMouseY), pButton);
         instance.getContext().ifPresent((context)->{
             context.appendTask(()->{
                 context.getRootNode().onMouseEvent(this,event);
             });
         });
+        lastClickedPos = Pair.of(pMouseX, pMouseY);
         return true;
     }
 
     @Override
     public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
-        MouseReleasedEvent event = MouseReleasedEvent.fromScreen(null, new Vec2i((int)pMouseX,(int)pMouseY), pButton);
+        MouseUpEvent event = MouseUpEvent.fromScreen(null, new Vec2i((int)pMouseX,(int)pMouseY), pButton);
         instance.getContext().ifPresent((context)->{
             context.appendTask(()->{
                 context.getRootNode().onMouseEvent(this,event);
             });
         });
+
+        if(lastClickedPos != null) {
+            if(Math.abs(lastClickedPos.getFirst() - pMouseX) + Math.abs(lastClickedPos.getSecond() - pMouseY) < 0.1){
+                MouseClickEvent clickEvent = MouseClickEvent.fromScreen(null, new Vec2i((int)pMouseX,(int)pMouseY), pButton);
+                instance.getContext().ifPresent((context)->{
+                    context.appendTask(()->{
+                        context.getRootNode().onMouseEvent(this,clickEvent);
+                    });
+                });
+            }
+        }
+        lastClickedPos = null;
         return true;
+    }
+
+
+    @Override
+    public void mouseMoved(double pMouseX, double pMouseY) {
+        MouseMoveEvent moveEvent = MouseMoveEvent.fromScreen(null, new Vec2i((int)pMouseX,(int)pMouseY), 0);
+        instance.getContext().ifPresent((context)->{
+            context.appendTask(()->{
+                context.getRootNode().onMouseEvent(this,moveEvent);
+            });
+        });
     }
 
     @Override

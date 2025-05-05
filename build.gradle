@@ -16,26 +16,29 @@ buildscript {
 plugins {
     id 'eclipse'
     id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '7.1.+'
+    // id 'com.github.johnrengelman.shadow' version '7.1.+'
+    id("com.github.johnrengelman.shadow")
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'org.spongepowered.mixin'
+apply plugin: kasuga.builder.PackerPlugin
 
 configurations {
     shadedLib
+
+    macOSDependency
+    commonDependency
 }
 
 version = "${mod_version}"
 group = 'kasuga.lib' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'kasuga_lib'
 
-boolean isSdk = false
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
-jarJar.enable()
 minecraft {
 
     mappings channel: 'parchment', version: '2022.09.18-1.19.2'
@@ -249,7 +252,22 @@ dependencies {
     minecraftLibrary 'com.caoccao.javet:javet-v8-windows-x86_64:4.0.0'
 
     shadedLib 'com.caoccao.javet:javet-core:4.0.0' // Must-have
-    shadedLib 'com.caoccao.javet:javet-v8-windows-x86_64:4.0.0' // Currently, we only support Win x86-64 structure in main build
+
+
+    commonDependency 'com.caoccao.javet:javet-v8-linux-arm64:4.0.0'
+    commonDependency 'com.caoccao.javet:javet-v8-linux-x86_64:4.0.0'
+    commonDependency 'com.caoccao.javet:javet-v8-windows-x86_64:4.0.0'
+    macOSDependency 'com.caoccao.javet:javet-v8-macos-arm64:4.0.0'
+    macOSDependency 'com.caoccao.javet:javet-v8-macos-x86_64:4.0.0'
+
+    if ( !javetLibraryExcluding || javetLibraryExcluding == "false" ){
+        if( compileTarget == 'macos') {
+            System.out.println("Building for MacOS")
+        } else {
+            System.out.println("Building for Windows & Linux")
+             // Currently, we only support Win x86-64 structure in main build
+        }
+    }
 
     shadedLib 'org.apache.httpcomponents:httpcore:4.4.14'
     shadedLib 'org.apache.httpcomponents:httpclient:4.5.13'
@@ -263,7 +281,7 @@ dependencies {
     // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
     // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
     minecraftLibrary "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.2"
-    jarJar(group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)")
+    shadedLib (group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)")
     // Examples using mod jars from ./libs
     // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
 
@@ -290,17 +308,34 @@ jar {
 }
 
 // Example configuration to allow publishing using the maven-publish plugin
-// This is the preferred method to reobfuscate your jar file
-if (!isSdk) {
-    jar.finalizedBy('reobfShadowJar')
+jar.finalizedBy('reobfShadowJar')
+jar.finalizedBy('multiPlatformBinaryPack')
+
+multiPlatformBinaryPack {
+    platform {
+        name 'common'
+        dependencies  = [ project.configurations.commonDependency ]
+    }
+    
+    platform {
+        name 'macOS' 
+        dependencies = [ project.configurations.macOSDependency ]
+    }
+
+    platform {
+        name 'unified'
+        dependencies = [ project.configurations.commonDependency, project.configurations.macOSDependency ]
+        archiveClassifier = ''
+    }
+
+    dependsOn("reobfShadowJar")
 }
-// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
-// publish.dependsOn('reobfJar')
+// shadowJar.finalizedBy('multiPlatformBinaryPack')
 
 shadowJar{
     mergeServiceFiles() // To fix graal issue: https://github.com/oracle/graaljs/issues/125
     configurations = [project.configurations.shadedLib]
-    archiveClassifier.set('');
+    archiveClassifier.set('shadow');
     relocate 'org.graalvm', 'kasuga.lib.vendor_modules.org.graalvm'
     relocate 'com.oracle', 'kasuga.lib.vendor_modules.com.oracle'
     relocate 'com.ibm', 'kasuga.lib.vendor_modules.com.ibm'
@@ -314,6 +349,7 @@ shadowJar{
 }
 
 assemble.dependsOn shadowJar
+assemble.dependsOn multiPlatformBinaryPack
 
 reobf{
     shadowJar {}
@@ -321,22 +357,47 @@ reobf{
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
-            artifact jar
+        register('mavenJava', MavenPublication) {
+            groupId = "kasuga.lib"
+            artifactId = "kasuga_lib"
+            version = "${mod_version}"
+            // fg.component(it)
+            
+            // 为每个平台的 JAR 文件指定不同的分类器
+            tasks.named('multiPlatformBinaryPack').get().platforms.each { platform ->
+                String jarClassifier = platform.getArchiveClassifier();
+                String platformName = platform.getName();
+                String suffix = jarClassifier;
+                if(suffix != null && suffix.length() > 0){
+                    suffix = "-" + suffix;
+                }
+                artifact("${buildDir}/libs/${archivesBaseName}-${version}${suffix}.jar") {
+                    builtBy tasks.named("platformJar${platformName.capitalize()}")
+                    classifier jarClassifier // 使用平台名称作为分类器
+                }
+            }
         }
     }
     repositories {
         maven {
             url "file://${project.projectDir}/mcmodsrepo"
         }
-//        maven {
-//            name "github"
-//            url "https://maven.pkg.github.com/KasugaLibGroup/"
-//            credentials {
-//                username = USERNAME
-//                password = TOKEN
-//            }
-//        }
+    }
+
+    repositories {
+        maven {
+            name = "GradleCIMaven"
+            url = uri("https://git.gradle.ci/api/packages/KuaYueTeam/maven")
+
+            credentials(HttpHeaderCredentials) {
+                name = "Authorization"
+                value = "Bearer ${project.findProperty("kuaYueTeamGradleCiToken")}"
+            }
+
+            authentication {
+                header(HttpHeaderAuthentication)
+            }
+        }
     }
 }
 

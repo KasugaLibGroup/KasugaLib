@@ -1,13 +1,18 @@
 package kasuga.lib.core.javascript;
 
+import kasuga.lib.KasugaLib;
+import org.slf4j.Logger;
+
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class SynchronizedThread extends Thread{
+    public final Logger logger;
     SynchronizedThread(String name){
         super(name);
+        logger = KasugaLib.createLogger("THREAD/" + name);
     }
     final Queue<Runnable> pendingTasks = new ArrayDeque<>();
     AtomicBoolean shouldShutdown = new AtomicBoolean(false);
@@ -31,8 +36,7 @@ public abstract class SynchronizedThread extends Thread{
                             pendingTasks.poll().run();
 
                     }catch (RuntimeException e){
-                        // TODO: output using logger
-                        System.out.println("An exception occurs when running the tasks");
+                        logger.error("Error in thread " + this.getName(), e);
                         e.printStackTrace();
                     }
                 }

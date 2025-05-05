@@ -14,7 +14,6 @@
     "client.MixinBlockModel$Deserializer",
     "client.MixinBlockModelBinding",
     "client.MixinBlockModelShaper",
-    "client.MixinLevelRenderer",
     "client.MixinModelBakery",
     "client.MixinTextureManager"
   ],
