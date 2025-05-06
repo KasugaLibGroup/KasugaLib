@@ -126,7 +126,7 @@ public class TrackReg<T extends TrackBlock> extends BlockReg<T> {
                 .lang(material.langName + trackNameSuffix)
                 .properties(BlockBehaviour.Properties::noOcclusion);
         tags.forEach(builder::tag);
-        builder.onRegister(CreateRegistrate.blockModel(() -> TrackModel::new))
+        builder.onRegister(CreateRegistrate.blockModel(()->TrackModelDeduplicator.simple(TrackModel::new)))
                 .item(TrackBlockItem::new)
                 .model((c, p) -> p.generated(c, trackItemModelLocation)).build();
         entry = builder.register();
