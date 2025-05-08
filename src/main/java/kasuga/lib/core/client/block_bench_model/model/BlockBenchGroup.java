@@ -28,7 +28,7 @@ public class BlockBenchGroup implements ModelElement {
         this.groupFile = group;
         this.id = group.getId();
         this.pivot = group.getPivot();
-        this.rotation = getRotation();
+        this.rotation = group.getRotation();
         this.render = group.isExport() && group.isVisibility();
         children = new HashMap<>();
     }
@@ -37,8 +37,8 @@ public class BlockBenchGroup implements ModelElement {
         name = "";
         id = null;
         groupFile = null;
-        pivot = TransformContext.ZERO;
-        rotation = TransformContext.ZERO;
+        pivot = new Vector3f();
+        rotation = new Vector3f();
         render = true;
         children = new HashMap<>();
     }

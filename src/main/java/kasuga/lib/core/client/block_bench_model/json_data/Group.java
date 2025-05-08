@@ -34,12 +34,16 @@ public class Group implements IElement {
             throw new BlockBenchFile.UnableToLoadFileError("Unable to load group", e);
         }
         try {
-            JsonArray rotArray = json.get("rotation").getAsJsonArray();
-            rotation = new Vector3f(
-                    rotArray.get(0).getAsFloat(),
-                    rotArray.get(1).getAsFloat(),
-                    rotArray.get(2).getAsFloat()
-            );
+            if (json.has("rotation")) {
+                JsonArray rotArray = json.get("rotation").getAsJsonArray();
+                rotation = new Vector3f(
+                        rotArray.get(0).getAsFloat(),
+                        rotArray.get(1).getAsFloat(),
+                        rotArray.get(2).getAsFloat()
+                );
+            } else {
+                rotation = new Vector3f();
+            }
         } catch (Exception e) {
             throw new BlockBenchFile.UnableToLoadFileError("Unable to load group", e);
         }

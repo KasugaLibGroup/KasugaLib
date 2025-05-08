@@ -10,7 +10,7 @@ import lombok.Setter;
 public class TransformContext {
 
     public static final Vector3f ZERO = new Vector3f(0, 0, 0);
-    public static final Vector3f BASE_OFFSEt = new Vector3f(.5f, 0, .5f);
+    public static final Vector3f BASE_OFFSET = new Vector3f(.5f, 0, .5f);
 
     private Quaternion quaternion;
     private Vector3f root;

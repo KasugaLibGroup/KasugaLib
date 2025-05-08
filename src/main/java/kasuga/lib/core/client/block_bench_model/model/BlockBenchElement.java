@@ -1,21 +1,15 @@
 package kasuga.lib.core.client.block_bench_model.model;
 
-import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.block_bench_model.json_data.Element;
 import kasuga.lib.core.client.render.texture.Vec2f;
-import kasuga.lib.core.util.data_type.Pair;
 import lombok.Getter;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelBuilder;
-import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 
 import java.util.*;
 import java.util.function.Function;
@@ -67,12 +61,13 @@ public class BlockBenchElement implements ModelElement {
             v = myTransform.applyToElement(v);
             v.mul(1/16f);
             v.add(universalOffset);
+            v.add(TransformContext.BASE_OFFSET);
             v.mul(universalScale.x(), universalScale.y(), universalScale.z());
             transformedVertices.put(entry.getKey(), v);
         }
         for (BlockBenchFace face : faces) {
-            BakedQuad quad = face.fillVertices(transformedVertices, resolution, spriteGetter);
-            modelBuilder.addCulledFace(quad.getDirection(), quad);
+            BakedQuad quad = face.fillVertices(transformedVertices, resolution, spriteGetter, transform);
+            if (quad != null) modelBuilder.addUnculledFace(quad);
         }
     }
 }
