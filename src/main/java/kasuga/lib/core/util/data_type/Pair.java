@@ -47,4 +47,22 @@ public class Pair<K, V> {
     public int hashCode() {
         return Objects.hash(first, second);
     }
+
+    public static class Mutable<K,V> extends Pair<K, V> {
+        public Mutable(K first, V second) {
+            super(first, second);
+        }
+
+        public void setFirst(K first) {
+            this.first = first;
+        }
+
+        public void setSecond(V second) {
+            this.second = second;
+        }
+
+        public static Mutable<Boolean, Boolean> create(boolean first, boolean second) {
+            return new Mutable<>(first, second);
+        }
+    }
 }
