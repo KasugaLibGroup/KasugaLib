@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.*;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.model.model_json.Geometry;
-import kasuga.lib.core.util.Resources;
+import kasuga.lib.core.resource.Resources;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.resources.ResourceLocation;
