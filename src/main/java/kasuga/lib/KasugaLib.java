@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import kasuga.lib.core.KasugaLibStacks;
 import kasuga.lib.core.client.frontend.commands.FrontendCommands;
-import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaFileLocator;
+import kasuga.lib.core.client.frontend.gui.layout.LayoutEngines;
 import kasuga.lib.core.javascript.commands.JavascriptModuleCommands;
 import kasuga.lib.core.packets.AllPackets;
 import kasuga.lib.core.util.Envs;
@@ -50,10 +50,10 @@ public class KasugaLib {
         // YogaExample.example();
         JavascriptModuleCommands.invoke();
         FrontendCommands.invoke();
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()-> YogaFileLocator::configureLWJGLPath);
         KasugaLibConfig.invoke();
         if (Envs.isDevEnvironment())
             AllExampleElements.invoke();
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()-> LayoutEngines::init);
     }
 
     public static Logger createLogger(String name) {

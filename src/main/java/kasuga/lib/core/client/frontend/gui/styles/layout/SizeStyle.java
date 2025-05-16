@@ -3,14 +3,13 @@ package kasuga.lib.core.client.frontend.gui.styles.layout;
 import kasuga.lib.core.client.frontend.common.style.Style;
 import kasuga.lib.core.client.frontend.common.style.StyleTarget;
 import kasuga.lib.core.client.frontend.common.style.StyleType;
-import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaNode;
 import kasuga.lib.core.client.frontend.gui.styles.PixelUnit;
 import kasuga.lib.core.util.data_type.Pair;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-public abstract class SizeStyle extends Style<Pair<Float, PixelUnit>, StyleTarget> {
+public abstract class SizeStyle extends LayoutStyle<Pair<Float, PixelUnit>> {
 
     public final String original;
     public final Pair<Float,PixelUnit> value;
@@ -19,13 +18,11 @@ public abstract class SizeStyle extends Style<Pair<Float, PixelUnit>, StyleTarge
     public SizeStyle(float value,PixelUnit unit){
         this.value = Pair.of(value,unit);
         this.original = unit.toString(value);
-        this.createTarget();
     }
 
     public SizeStyle(String source){
         this.original = source;
         this.value = PixelUnit.parse(source);
-        this.createTarget();
     }
 
     @Override
@@ -43,30 +40,12 @@ public abstract class SizeStyle extends Style<Pair<Float, PixelUnit>, StyleTarge
         return value;
     }
 
-    public static SizeStyleType createType(BiConsumer<YogaNode,Pair<Float, PixelUnit>> consumer) {
-        return new SizeStyleType(consumer);
+    public static SizeStyleType createType() {
+        return new SizeStyleType();
     }
-
-    private void createTarget() {
-        this.target = StyleTarget.LAYOUT_NODE.create((node) -> {
-            if (!this.isValid(null))
-                return;
-            getConsumer().accept(node,value);
-        });
-    }
-
-    @Override
-    public StyleTarget getTarget() {
-        return target;
-    }
-
-    protected abstract BiConsumer<YogaNode,Pair<Float, PixelUnit>> getConsumer();
 
     public static class SizeStyleType implements StyleType<SizeStyle, StyleTarget>{
-        private final BiConsumer<YogaNode,Pair<Float, PixelUnit>> consumer;
-
-        SizeStyleType(BiConsumer<YogaNode,Pair<Float, PixelUnit>> accessor){
-            this.consumer = accessor;
+        SizeStyleType(){
             EMPTY = create(0,PixelUnit.NATIVE);
         }
 
@@ -85,11 +64,6 @@ public abstract class SizeStyle extends Style<Pair<Float, PixelUnit>, StyleTarge
                 public StyleType<?, StyleTarget> getType() {
                     return type;
                 }
-
-                @Override
-                protected BiConsumer<YogaNode,Pair<Float, PixelUnit>> getConsumer() {
-                    return consumer;
-                }
             };
         }
 
@@ -99,10 +73,6 @@ public abstract class SizeStyle extends Style<Pair<Float, PixelUnit>, StyleTarge
                 @Override
                 public StyleType<?, StyleTarget> getType() {
                     return type;
-                }
-                @Override
-                protected BiConsumer<YogaNode,Pair<Float, PixelUnit>> getConsumer() {
-                    return consumer;
                 }
             };
         }

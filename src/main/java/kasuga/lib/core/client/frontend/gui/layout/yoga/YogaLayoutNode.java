@@ -6,6 +6,7 @@ import kasuga.lib.core.client.frontend.common.layouting.LayoutNode;
 import kasuga.lib.core.client.frontend.common.style.StyleList;
 import kasuga.lib.core.client.frontend.common.style.StyleTarget;
 import kasuga.lib.core.client.frontend.gui.layout.EdgeSize2D;
+import kasuga.lib.core.client.frontend.gui.layout.LayoutNodeContext;
 import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaMeasureFunction;
 import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaNode;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomNode;
@@ -15,18 +16,19 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class YogaLayoutNode implements LayoutNode {
+    private final YogaLayoutEngine engine;
     private final GuiDomNode domNode;
     private final YogaNode node;
     private final Object source;
     private final LayoutCache cache;
     protected YogaLayoutNode parent;
     protected ArrayList<YogaLayoutNode> children = new ArrayList<>();
-
     private EdgeSize2D padding = EdgeSize2D.ZERO;
     private EdgeSize2D margin = EdgeSize2D.ZERO;
     private EdgeSize2D border = EdgeSize2D.ZERO;
 
-    public YogaLayoutNode(GuiDomNode node, Object source) {
+    public YogaLayoutNode(YogaLayoutEngine engine, GuiDomNode node, Object source) {
+        this.engine = engine;
         this.domNode = node;
         this.node = YogaNode.create();
         this.source = source;
@@ -42,7 +44,11 @@ public class YogaLayoutNode implements LayoutNode {
             return false;
 
         styles.forEachCacheStyle((style)->{
-            style.getTarget().attemptApply(this.node);
+            style.getTarget().attemptApply(new LayoutNodeContext<>(
+                    engine,
+                    domNode,
+                    this
+            ));
         });
 
         styles.resetNewStyle(this);
@@ -150,5 +156,9 @@ public class YogaLayoutNode implements LayoutNode {
     @Override
     public LayoutBox getRelative() {
         return this.cache.engineCoordinate;
+    }
+
+    public YogaNode getYogaNode() {
+        return node;
     }
 }

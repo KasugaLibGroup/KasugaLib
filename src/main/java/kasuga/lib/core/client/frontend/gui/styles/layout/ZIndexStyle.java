@@ -3,7 +3,6 @@ package kasuga.lib.core.client.frontend.gui.styles.layout;
 import kasuga.lib.core.client.frontend.common.style.Style;
 import kasuga.lib.core.client.frontend.common.style.StyleTarget;
 import kasuga.lib.core.client.frontend.common.style.StyleType;
-import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaNode;
 import kasuga.lib.core.client.frontend.gui.styles.PixelUnit;
 import kasuga.lib.core.client.frontend.gui.styles.node.FontSizeStyle;
 import kasuga.lib.core.client.frontend.gui.styles.node.SimpleNodeStyleType;
@@ -12,7 +11,7 @@ import kasuga.lib.core.util.data_type.Pair;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-public class ZIndexStyle extends Style<Integer, StyleTarget> {
+public class ZIndexStyle extends LayoutStyle<Integer> {
 
     public static final StyleType<ZIndexStyle, StyleTarget> TYPE = SimpleNodeStyleType.of(ZIndexStyle::new, "0");
 
@@ -36,12 +35,6 @@ public class ZIndexStyle extends Style<Integer, StyleTarget> {
         return TYPE;
     }
 
-    @Override
-    public StyleTarget getTarget() {
-        return StyleTarget.GUI_DOM_NODE.create((domNode)->{
-            domNode.setZIndex(integerValue);
-        });
-    }
 
     @Override
     public String getValueString() {
