@@ -14,6 +14,6 @@ public class Step extends Interpolation {
     public Vector3f interpolate(Animator animator, KeyFrame pre, KeyFrame next, float time) {
         Vector3f result = stepOnKeyFrame(pre, next, time);
         if (result != null) return result;
-        return pre.getPostDataPointSup().get();
+        return pre.getPostDataPoint();
     }
 }

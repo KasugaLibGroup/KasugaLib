@@ -25,19 +25,19 @@ public class CatmullRom extends Interpolation {
         boolean isPreUninterrupted = pre.isUninterrupted();
         boolean isNextUninterrupted = next.isUninterrupted();
         if (preIndex == -1 || nextIndex == -1) {
-            return pre.getPostDataPointSup().get();
+            return pre.getPostDataPoint();
         }
         if (timeLine.size() == 2 || (!isPreUninterrupted && !isNextUninterrupted)) {
-            return Linear.linearInterpolate(pre.getPostDataPointSup().get(),
-                    next.getPreDataPointSup().get(), percentage);
+            return Linear.linearInterpolate(pre.getPostDataPoint(),
+                    next.getPreDataPoint(), percentage);
         }
         Vector3f[] points;
         if (preIndex == 0 || !isPreUninterrupted) {
             KeyFrame nextNext = timeLine.get(nextIndex + 1);
             points = CatmullRomUtils.last3PointsToCRSPoints(
-                    pre.getPostDataPointSup().get(),
-                    next.getPreDataPointSup().get(),
-                    nextNext.getPreDataPointSup().get()
+                    pre.getPostDataPoint(),
+                    next.getPreDataPoint(),
+                    nextNext.getPreDataPoint()
             );
             result = CatmullRomUtils.applyCRS(points, percentage);
             return result;
@@ -45,9 +45,9 @@ public class CatmullRom extends Interpolation {
         if (nextIndex == timeLine.size() - 1 || !isNextUninterrupted) {
             KeyFrame last = timeLine.get(preIndex - 1);
             points = CatmullRomUtils.first3PointsToCRSPoints(
-                    last.getPostDataPointSup().get(),
-                    pre.getPreDataPointSup().get(),
-                    next.getPreDataPointSup().get()
+                    last.getPostDataPoint(),
+                    pre.getPreDataPoint(),
+                    next.getPreDataPoint()
             );
             result = CatmullRomUtils.applyCRS(points, percentage);
             return result;
@@ -55,10 +55,10 @@ public class CatmullRom extends Interpolation {
         KeyFrame nextNext = timeLine.get(nextIndex + 1);
         KeyFrame last = timeLine.get(preIndex - 1);
         points = CatmullRomUtils.genDefaultCRSPoints(
-                last.getPostDataPointSup().get(),
-                pre.getPreDataPointSup().get(),
-                next.getPreDataPointSup().get(),
-                nextNext.getPreDataPointSup().get()
+                last.getPostDataPoint(),
+                pre.getPreDataPoint(),
+                next.getPreDataPoint(),
+                nextNext.getPreDataPoint()
                 );
         result = CatmullRomUtils.applyCRS(points, percentage);
         return result;

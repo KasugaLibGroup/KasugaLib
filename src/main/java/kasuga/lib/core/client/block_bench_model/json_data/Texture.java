@@ -21,6 +21,7 @@ public class Texture {
             renderMode, renderSides, frameOrderType,
             frameOrder, syncToProject;
 
+    private final int arrayIndex;
     @Setter
     @NonNull
     private Vec2f scaleFactor;
@@ -37,7 +38,8 @@ public class Texture {
 
     private final TextureSource source;
 
-    public Texture(JsonObject json) {
+    public Texture(int arrayIndex, JsonObject json) {
+        this.arrayIndex = arrayIndex;
         scaleFactor = new Vec2f(1, 1);
         path = json.get("path").getAsString();
         relativePath = json.get("relative_path").getAsString();

@@ -17,6 +17,11 @@ public abstract class Interpolation {
         this.name = name;
     }
 
+    public void updateEvaluations(Animator animator, KeyFrame frame) {
+        animator.getAnimation().getNamespace().assign("time", frame.getTime());
+        animator.getAnimation().runEvaluation();
+    }
+
     public abstract Vector3f interpolate(Animator animator, KeyFrame pre, KeyFrame next, float time);
 
     public float getPercentage(KeyFrame pre, KeyFrame next, float time) {
@@ -28,9 +33,9 @@ public abstract class Interpolation {
     public @Nullable Vector3f stepOnKeyFrame(KeyFrame pre, KeyFrame next, float time) {
         float percentage = getPercentage(pre, next, time);
         if (percentage > 0.999f) {
-            return next.getPostDataPointSup().get();
+            return next.getPostDataPoint();
         } else if (percentage < 0.001f) {
-            return pre.getPreDataPointSup().get();
+            return pre.getPreDataPoint();
         }
         return null;
     }

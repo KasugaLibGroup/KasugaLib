@@ -61,7 +61,7 @@ public class BlockBenchModel extends SimpleUnbakedGeometry<BlockBenchModel> {
                 Material mapped = null;
                 Texture tex = null;
                 for (Texture texture : materials.keySet()) {
-                    if (index.equals(Integer.parseInt(texture.getId()))) {
+                    if (index.equals(texture.getArrayIndex())) {
                         mapped = materials.get(texture).getSecond();
                         tex = texture;
                         if (!isSingleTexture) {

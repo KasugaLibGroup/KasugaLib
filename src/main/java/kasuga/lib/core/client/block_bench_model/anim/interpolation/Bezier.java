@@ -19,7 +19,7 @@ public class Bezier extends Interpolation {
         Vector3f result = stepOnKeyFrame(pre, next, time);
         if (result != null) return result;
         float percentage = getPercentage(pre, next, time);
-        Vec2f[][] data = get3DBezierCtrlPoints(pre, next);
+        Vec2f[][] data = get3DBezierCtrlPoints(animator, pre, next);
         result = get3DPercentagePoint(data, percentage);
         return result;
     }
@@ -50,7 +50,7 @@ public class Bezier extends Interpolation {
         return result;
     }
 
-    public Vec2f[][] get3DBezierCtrlPoints(KeyFrame pre, KeyFrame next) {
+    public Vec2f[][] get3DBezierCtrlPoints(Animator animator, KeyFrame pre, KeyFrame next) {
         Pair<Vector3f, Vector3f> leftCtrlPoint = pre.hasBezierRight() ? pre.getBezierRightSup().get() : null;
         Pair<Vector3f, Vector3f> rightCtrlPoint = next.hasBezierLeft() ? next.getBezierLeftSup().get() : null;
         if (leftCtrlPoint != null) {
@@ -61,7 +61,7 @@ public class Bezier extends Interpolation {
                     leftData.y(),
                     leftData.z()
             );
-            leftData.add(pre.getPreDataPointSup().get());
+            leftData.add(pre.getPreDataPoint());
             leftTime = new Vector3f(
                     leftTime.x() + pre.getTime(),
                     leftTime.y() + pre.getTime(),
@@ -77,7 +77,8 @@ public class Bezier extends Interpolation {
                     rightData.y(),
                     rightData.z()
             );
-            rightData.add(next.getPostDataPointSup().get());
+            updateEvaluations(animator, next);
+            rightData.add(next.getPostDataPoint());
             rightTime = new Vector3f(
                     rightTime.x() + next.getTime(),
                     rightTime.y() + next.getTime(),
@@ -97,10 +98,10 @@ public class Bezier extends Interpolation {
                 next.getTime()
         );
         Pair<Vector3f, Vector3f> prePair = Pair.of(
-                preTime, pre.getPostDataPointSup().get()
+                preTime, pre.getPostDataPoint()
         );
         Pair<Vector3f, Vector3f> nextPair = Pair.of(
-                nextTime, next.getPreDataPointSup().get()
+                nextTime, next.getPreDataPoint()
         );
         if (leftCtrlPoint == null && rightCtrlPoint == null) {
             data = new Vec2f[2][3];

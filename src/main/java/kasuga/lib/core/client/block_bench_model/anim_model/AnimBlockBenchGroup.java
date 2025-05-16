@@ -50,9 +50,13 @@ public class AnimBlockBenchGroup extends AnimElement implements ElementCollectio
         pose.pushPose();
         if (group != null) {
             translateToPivot(pose);
+        }
+        pose.translate(transform.getOffset().x(), transform.getOffset().y(), transform.getOffset().z());
+        if (group != null) {
             baseRotation(pose, this.group.getRotation());
         }
-        transform.transform(pose);
+        pose.mulPose(transform.getQuaternion());
+        pose.scale(transform.getScale().x(), transform.getScale().y(), transform.getScale().z());
         children.forEach((id, element) -> {
             ((Renderable) element).render(pose, consumer, color, light, overlay);
         });

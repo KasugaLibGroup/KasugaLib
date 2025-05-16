@@ -18,8 +18,8 @@ public class Linear extends Interpolation {
         // linear interpolation
         float percentage = getPercentage(pre, next, time);
         return linearInterpolate(
-                pre.getPostDataPointSup().get(),
-                next.getPreDataPointSup().get(),
+                pre.getPostDataPoint(),
+                next.getPreDataPoint(),
                 percentage
         );
     }

@@ -74,8 +74,9 @@ public class BlockBenchFile {
         }
         try {
             JsonArray texturesArray = json.getAsJsonArray("textures");
-            for (JsonElement ele : texturesArray) {
-                Texture texture = new Texture(ele.getAsJsonObject());
+            for (int i = 0; i < texturesArray.size(); i++) {
+                JsonObject textureObj = texturesArray.get(i).getAsJsonObject();
+                Texture texture = new Texture(i, textureObj);
                 textures.add(texture);
             }
         } catch (Exception e) {

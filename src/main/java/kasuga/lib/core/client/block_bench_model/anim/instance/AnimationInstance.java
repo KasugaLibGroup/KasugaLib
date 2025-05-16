@@ -60,7 +60,7 @@ public class AnimationInstance {
     }
 
     public static float tickToSecond(int tick, float partial) {
-        return ((float) tick + partial) / 20f;
+        return ((float) tick + partial) / 600f;
     }
 
     public float getStartDelay() {

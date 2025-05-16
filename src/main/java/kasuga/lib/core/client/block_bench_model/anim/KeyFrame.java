@@ -56,6 +56,18 @@ public class KeyFrame {
         isBezierLinked = false;
     }
 
+    public Vector3f getPreDataPoint() {
+        anim.getNamespace().assign("time", time);
+        anim.runEvaluation();
+        return preDataPointSup.get();
+    }
+
+    public Vector3f getPostDataPoint() {
+        anim.getNamespace().assign("time", time);
+        anim.runEvaluation();
+        return postDataPointSup.get();
+    }
+
     public void compileDataPoints(JsonArray dataArray) {
         if (dataArray.isEmpty()) return;
         this.preDataPointSup = compileSinglePoint(dataArray.get(0).getAsJsonObject());
@@ -103,7 +115,9 @@ public class KeyFrame {
         final Supplier<Float> xSup = compileSingleData(anim.getNamespace(), x);
         final Supplier<Float> ySup = compileSingleData(anim.getNamespace(), y);
         final Supplier<Float> zSup = compileSingleData(anim.getNamespace(), z);
-        return () -> new Vector3f(xSup.get(), ySup.get(), zSup.get());
+        return () -> new Vector3f(xSup.get() * ((channel == Channel.POSITION) ? 1/16f : 1f),
+                ySup.get() * ((channel == Channel.POSITION) ? 1/16f : 1f),
+                zSup.get()  * ((channel == Channel.POSITION) ? 1/16f : 1f));
     }
 
     public Supplier<Vector3f> compileSinglePoint(JsonObject point) {
@@ -122,7 +136,11 @@ public class KeyFrame {
         } else {
             try {
                 Formula formula = namespace.decodeFormula(str);
-                return formula::getResult;
+                return () -> {
+                    float result = formula.getResult();
+                    if (Float.isNaN(result)) return 0f;
+                    return result;
+                };
             } catch (Exception e) {
                 KasugaLib.MAIN_LOGGER.error("Failed to compile animation data", e);
                 return () -> 0f;

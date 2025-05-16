@@ -63,6 +63,7 @@ public class AnimatorInstance {
             currentStaticFrame.put(entry.getKey(), timeLine);
             for (Pair<Float, Supplier<Vector3f>> pair : entry.getValue()) {
                 getNamespace().assign("time", pair.getFirst());
+                animation.getAnimation().runEvaluation();
                 timeLine.add(Pair.of(pair.getFirst(), pair.getSecond().get()));
             }
         }
@@ -80,7 +81,6 @@ public class AnimatorInstance {
         float time;
         for (float i = 0; i < size; i++) {
             time = i * step;
-            getNamespace().assign("time", time);
             if (cacheNextFrame == null) {
                 result.add(
                         Pair.of(time, cachePreFrame.getPostDataPointSup())
