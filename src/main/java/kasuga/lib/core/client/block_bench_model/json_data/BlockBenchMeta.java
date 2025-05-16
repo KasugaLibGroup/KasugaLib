@@ -1,8 +1,11 @@
 package kasuga.lib.core.client.block_bench_model.json_data;
 
 import com.google.gson.JsonObject;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.openjdk.nashorn.internal.objects.annotations.Getter;
 
+@OnlyIn(Dist.CLIENT)
 public class BlockBenchMeta {
 
     private final String formatVersion, modelFormat;

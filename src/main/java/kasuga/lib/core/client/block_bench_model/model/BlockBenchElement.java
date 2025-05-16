@@ -9,11 +9,14 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.IModelBuilder;
 
 import java.util.*;
 import java.util.function.Function;
 
+@OnlyIn(Dist.CLIENT)
 @Getter
 public class BlockBenchElement implements ModelElement {
 
@@ -47,6 +50,7 @@ public class BlockBenchElement implements ModelElement {
     public void addQuads(IModelBuilder<?> modelBuilder, ModelState modelTransform,
                          TransformContext transform, Vec2f resolution,
                          Function<Material, TextureAtlasSprite> spriteGetter) {
+        if (!render) return;
         TransformContext myTransform = transform.transform(this.rotation, this.pivot);
         Transformation rotation = modelTransform.getRotation();
         Vector3f universalOffset = rotation.getTranslation();

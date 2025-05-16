@@ -3,18 +3,21 @@ package kasuga.lib.core.client.block_bench_model.json_data;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.mojang.math.Vector3f;
+import kasuga.lib.KasugaLib;
+import kasuga.lib.core.client.block_bench_model.anim.Animation;
 import kasuga.lib.core.client.render.texture.Vec2f;
 import lombok.Getter;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+@OnlyIn(Dist.CLIENT)
 @Getter
 public class BlockBenchFile {
 
@@ -78,25 +81,40 @@ public class BlockBenchFile {
         } catch (Exception e) {
             throw new UnableToLoadFileError("Unable to parse texture", e);
         }
+        if (!json.has("animations")) return;
+        JsonArray animationsArray = json.getAsJsonArray("animations");
+        String animVarPlaceHolder = json.has("animation_variable_placeholders") ?
+                json.get("animation_variable_placeholders").getAsString() : null;
+        for (JsonElement ele : animationsArray) {
+            try {
+                JsonObject animationObj = ele.getAsJsonObject();
+                Animation animation = new Animation(this, animationObj);
+                animation.setAnimVarPlaceholders(animVarPlaceHolder);
+                animations.add(animation);
+            } catch (Exception e) {
+                throw new UnableToLoadFileError("Unable to parse animation", e);
+            }
+        }
     }
 
     public static void main(String[] args) throws UnableToLoadFileError, IOException {
-        JsonElement json = JsonParser.parseReader(new FileReader("C:/Users/13168/Desktop/BlockBenchPlugin/model_test_group_2_animated_move_rot_group_2.bbmodel"));
-        BlockBenchFile file = new BlockBenchFile(json.getAsJsonObject());
     }
 
 
     public static class UnableToLoadFileError extends RuntimeException {
 
         private final Throwable cause;
+        private final String message;
 
         public UnableToLoadFileError(String message, Throwable cause) {
             this.cause = cause;
+            this.message = message;
         }
 
         @Override
         public void printStackTrace() {
             if (cause != null) cause.printStackTrace();
+            KasugaLib.MAIN_LOGGER.error(message);
             super.printStackTrace();
         }
     }

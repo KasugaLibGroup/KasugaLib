@@ -15,6 +15,8 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.SimpleUnbakedGeometry;
@@ -23,12 +25,14 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 
+@OnlyIn(Dist.CLIENT)
 @Getter
 public class BlockBenchModel extends SimpleUnbakedGeometry<BlockBenchModel> {
 
     private final BlockBenchFile file;
     private final HashMap<Texture, Pair<ResourceLocation, Material>> materials;
     private final BlockBenchGroup rootGroup;
+    private final boolean isSingleTexture;
     private final HashMap<UUID, BlockBenchElement> elements;
     private final Vec2f resolution;
 
@@ -38,6 +42,7 @@ public class BlockBenchModel extends SimpleUnbakedGeometry<BlockBenchModel> {
         elements = new HashMap<>();
         resolution = file.getResolution();
         collectMaterials();
+        isSingleTexture = materials.size() == 1;
 
         rootGroup = new BlockBenchGroup();
         buildModelFromFile();
@@ -59,6 +64,14 @@ public class BlockBenchModel extends SimpleUnbakedGeometry<BlockBenchModel> {
                     if (index.equals(Integer.parseInt(texture.getId()))) {
                         mapped = materials.get(texture).getSecond();
                         tex = texture;
+                        if (!isSingleTexture) {
+                            tex.setScaleFactor(
+                                    new Vec2f(
+                                            tex.getUvWidth() / resolution.x(),
+                                            tex.getUvHeight() / resolution.y()
+                                    )
+                            );
+                        }
                         break;
                     }
                 }

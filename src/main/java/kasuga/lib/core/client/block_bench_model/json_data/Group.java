@@ -4,11 +4,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.math.Vector3f;
 import lombok.Getter;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.Vector;
 
+@OnlyIn(Dist.CLIENT)
 @Getter
 public class Group implements IElement {
 

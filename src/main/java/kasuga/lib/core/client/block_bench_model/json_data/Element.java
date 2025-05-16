@@ -7,9 +7,12 @@ import com.mojang.math.Vector3f;
 import kasuga.lib.core.util.data_type.Pair;
 import lombok.Getter;
 import net.minecraft.core.Direction;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.*;
 
+@OnlyIn(Dist.CLIENT)
 @Getter
 public class Element implements IElement {
 
@@ -55,8 +58,8 @@ public class Element implements IElement {
         } catch (Exception e) {
             throw new BlockBenchFile.UnableToLoadFileError("Unable to load rotation", e);
         }
-        export = object.has("export") && object.get("export").getAsBoolean();
-        visibility = object.has("visibility") && object.get("visibility").getAsBoolean();
+        export = !object.has("export") || object.get("export").getAsBoolean();
+        visibility = !object.has("visibility") || object.get("visibility").getAsBoolean();
         locked = object.has("locked") && object.get("locked").getAsBoolean();
         allowMirrorRendering = object.has("allow_mirror_rendering") && object.get("allow_mirror_rendering").getAsBoolean();
         renderOrder = object.get("render_order").getAsString();

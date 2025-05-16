@@ -4,9 +4,12 @@ import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @Getter
 @Setter
+@OnlyIn(Dist.CLIENT)
 public class TransformContext {
 
     public static final Vector3f ZERO = new Vector3f(0, 0, 0);

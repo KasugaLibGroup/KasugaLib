@@ -9,9 +9,12 @@ import kasuga.lib.core.util.data_type.Pair;
 import lombok.Getter;
 import net.minecraft.client.renderer.FaceInfo;
 import net.minecraft.core.Direction;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.*;
 
+@OnlyIn(Dist.CLIENT)
 @Getter
 public class Face {
 

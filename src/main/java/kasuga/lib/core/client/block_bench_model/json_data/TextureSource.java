@@ -13,6 +13,8 @@ import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.FallbackResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -20,6 +22,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.stream.Stream;
 
+@OnlyIn(Dist.CLIENT)
 @Getter
 public class TextureSource {
 
@@ -53,6 +56,10 @@ public class TextureSource {
                 new Resources.CheatResourceLocation(location.getNamespace(), location.getPath());
         Minecraft.getInstance().textureManager.register((ResourceLocation) cheat,
                 new DynamicTexture(NativeImage.read(new ByteArrayInputStream(data))));
+    }
+
+    public NativeImage getImage() throws IOException {
+        return NativeImage.read(new ByteArrayInputStream(data));
     }
 
     public Material getAsMaterial(ResourceLocation atlas, ResourceLocation location) throws IOException {

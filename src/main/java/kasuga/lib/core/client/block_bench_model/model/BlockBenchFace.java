@@ -12,6 +12,8 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+@OnlyIn(Dist.CLIENT)
 @Getter
 public class BlockBenchFace {
 
@@ -79,11 +82,11 @@ public class BlockBenchFace {
                     (i < this.vertices.size()) ? i : (this.vertices.size() - 1)
             );
             Vector3f pos = vertices.get(vertexName);
+            Vec2f scaleFactor = texture.getScaleFactor();
             fillVertex(data, i, normal, pos,
                     this.vertexMapping.get(vertexName)
-                            .scale(1f / texture.getUvWidth()
-                                    , 1f / texture.getUvHeight()
-                            ),
+                            .scale(scaleFactor.x() / texture.getUvWidth(),
+                                    scaleFactor.y() / texture.getUvHeight()),
                     uvData.getFirst(), uvData.getSecond());
         }
         Direction direction = getDirection(vertices);

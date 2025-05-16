@@ -7,12 +7,15 @@ import lombok.Getter;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.IModelBuilder;
 
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.function.Function;
 
+@OnlyIn(Dist.CLIENT)
 @Getter
 public class BlockBenchGroup implements ModelElement {
 
