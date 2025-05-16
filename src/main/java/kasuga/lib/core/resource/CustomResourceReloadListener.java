@@ -40,11 +40,24 @@ public class CustomResourceReloadListener extends SimplePreparableReloadListener
     }
 
     public void applyOnStitch() {
-        synchronized (this) {
-            if (alreadyStitched) return;
-            CustomResourceReloadListener.INSTANCE.apply(null, null, null);
-            alreadyStitched = true;
+        if (alreadyStitched) {
+            synchronized (this) {
+                registerFunctions.forEach(
+                        (rl, stack) -> {
+                            KasugaPackResource pack = cachedResources.getOrDefault(rl, null);
+                            if (pack == null) return;
+                            Consumer<KasugaPackResource> consumer;
+                            while (!stack.isEmpty()) {
+                                consumer = stack.pop();
+                                consumer.accept(pack);
+                            }
+                        }
+                );
+            }
+            return;
         }
+        CustomResourceReloadListener.INSTANCE.apply(null, null, null);
+        alreadyStitched = true;
     }
 
     @Override
