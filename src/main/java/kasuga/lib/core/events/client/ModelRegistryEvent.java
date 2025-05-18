@@ -88,6 +88,6 @@ public class ModelRegistryEvent {
 
     @SubscribeEvent
     public static void beforeTextureStitch(TextureStitchEvent.Pre event) {
-        CustomResourceReloadListener.INSTANCE.applyOnStitch();
+        // CustomResourceReloadListener.INSTANCE.applyOnStitch();
     }
 }

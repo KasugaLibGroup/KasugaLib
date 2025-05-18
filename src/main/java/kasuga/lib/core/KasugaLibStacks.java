@@ -24,6 +24,7 @@ import kasuga.lib.core.javascript.JavascriptApi;
 import kasuga.lib.core.menu.GuiMenuManager;
 import kasuga.lib.core.menu.locator.ServerChunkMenuLocatorManager;
 import kasuga.lib.core.menu.targets.TargetsClient;
+import kasuga.lib.core.resource.KasugaPackFinder;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.registrations.client.KeyBindingReg;
 import kasuga.lib.registrations.common.FluidReg;
@@ -93,7 +94,7 @@ public class KasugaLibStacks {
         bus.addListener(BothSetupEvent::onFMLCommonSetup);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
         MinecraftForge.EVENT_BUS.addListener(ServerTickEvent::onServerTick);
-
+        bus.addListener(KasugaPackFinder.getInstance()::post);
 
         if(Envs.isClient()) {
             MinecraftForge.EVENT_BUS.addListener(PacketEvent::onClientPayloadHandleEvent);

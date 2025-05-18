@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Stack;
 import java.util.function.Consumer;
 
+@Deprecated(forRemoval = true)
 public class CustomResourceReloadListener extends SimplePreparableReloadListener {
 
     public static final CustomResourceReloadListener INSTANCE = new CustomResourceReloadListener();

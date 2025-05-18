@@ -3,6 +3,7 @@ package kasuga.lib.core.client.block_bench_model.json_data;
 import com.mojang.blaze3d.platform.NativeImage;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.KasugaLibClient;
+import kasuga.lib.core.resource.KasugaPackFinder;
 import kasuga.lib.core.resource.Resources;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -73,7 +74,11 @@ public class TextureSource {
     }
 
     public void registerAsResource(ResourceLocation location) {
-        Resources.registerResource(KasugaLib.MOD_ID, KasugaLibClient.INTERNAL_TEXTURE_PACK,
-                pack -> pack.registerResource(location, data));
+        try {
+            KasugaPackFinder.getInstance().registerResource(KasugaLibClient.INTERNAL_TEXTURE_PACK,
+                    location, data);
+        } catch (IOException e) {
+            KasugaLib.MAIN_LOGGER.error("Failed to register texture.", e);
+        }
     }
 }

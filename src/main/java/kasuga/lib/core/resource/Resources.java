@@ -160,6 +160,7 @@ public class Resources {
         }
     }
 
+    @Deprecated(forRemoval = true)
     public static void registerResource(String namespace, String name, Consumer<KasugaPackResource> registerFunc) {
         HashMap<ResourceLocation, Stack<Consumer<KasugaPackResource>>> map =
                 CustomResourceReloadListener.INSTANCE.getRegisterFunctions();
@@ -173,6 +174,7 @@ public class Resources {
         }
     }
 
+    @Deprecated(forRemoval = true)
     protected static KasugaPackResource internalRegisterCustomPack(PackType type, String namespace, String name) {
         if (type == PackType.CLIENT_RESOURCES && Envs.isClient()) {
             return registerCustomClientPack(namespace, name);
@@ -182,29 +184,33 @@ public class Resources {
         return null;
     }
 
+    @Deprecated(forRemoval = true)
     protected static void updateCustomPack(KasugaPackResource resource) {
-        if (Envs.isClient() && resource.getPackType() == PackType.CLIENT_RESOURCES) {
+        if (Envs.isClient()) {
             updateCustomClientPack(resource);
-        } else if (!Envs.isClient() && resource.getPackType() == PackType.SERVER_DATA) {
+        } else if (!Envs.isClient()) {
             updateCustomServerPack(resource);
         }
     }
 
+    @Deprecated(forRemoval = true)
     private static void updateCustomClientPack(KasugaPackResource resource) {
         MultiPackResourceManagerAccessor mprmAccessor = getMPRMClient();
         if (mprmAccessor == null) return;
         internalUpdatePack(mprmAccessor, resource);
     }
 
+    @Deprecated(forRemoval = true)
     private static void updateCustomServerPack(KasugaPackResource resource) {
         MultiPackResourceManagerAccessor mprmAccessor = getMPRMServer();
         if (mprmAccessor == null) return;
         internalUpdatePack(mprmAccessor, resource);
     }
 
+    @Deprecated(forRemoval = true)
     private static void internalUpdatePack(MultiPackResourceManagerAccessor manager,
                                              KasugaPackResource resources) {
-        Collection<String> namespaces = resources.getNamespaces(resources.getPackType());
+        Collection<String> namespaces = resources.getNamespaces();
         Map<String, FallbackResourceManager> fallbackMap = manager.getNamespacedManagers();
         for (String space : namespaces) {
             FallbackResourceManager fallback = fallbackMap.getOrDefault(space, null);
@@ -216,6 +222,7 @@ public class Resources {
         }
     }
 
+    @Deprecated(forRemoval = true)
     public static void registerCustomPack(PackType type, String namespace, String name) {
         if (type == PackType.CLIENT_RESOURCES && Envs.isClient()) {
             ResourceLocation location = new ResourceLocation(namespace, name);
@@ -228,6 +235,7 @@ public class Resources {
         }
     }
 
+    @Deprecated(forRemoval = true)
     private static KasugaPackResource registerCustomClientPack(String namespace, String name) {
         MultiPackResourceManagerAccessor mprmAccessor = getMPRMClient();
         if (mprmAccessor == null) {return null;}
@@ -239,6 +247,7 @@ public class Resources {
      * {@link Minecraft#resourceManager}(line 474),
      * {@link ReloadableResourceManager#ReloadableResourceManager(PackType)}
      */
+    @Deprecated(forRemoval = true)
     public static MultiPackResourceManagerAccessor getMPRMClient() {
         if (!Envs.isClient()) return null;
         ResourceManager m = Minecraft.getInstance().getResourceManager();
@@ -248,7 +257,7 @@ public class Resources {
         return  (MultiPackResourceManagerAccessor) mprm;
     }
 
-
+    @Deprecated(forRemoval = true)
     private static KasugaPackResource registerCustomServerPack(String namespace, String name) {
         MultiPackResourceManagerAccessor mprmAccessor = getMPRMServer();
         if (mprmAccessor == null) {return null;}
@@ -262,6 +271,7 @@ public class Resources {
      * {@link net.minecraft.client.gui.screens.worldselection.WorldOpenFlows#createLevelFromExistingSettings(LevelStorageSource.LevelStorageAccess, ReloadableServerResources, RegistryAccess.Frozen, WorldData)},
      * {@link WorldLoader.PackConfig#createResourceManager()}
      */
+    @Deprecated(forRemoval = true)
     public static MultiPackResourceManagerAccessor getMPRMServer() {
         if (Envs.isClient() || KasugaLib.server == null) return null;
         MinecraftServer.ReloadableResources resources = KasugaLib.server.getServerResources();
@@ -269,6 +279,7 @@ public class Resources {
         return (MultiPackResourceManagerAccessor) mprm;
     }
 
+    @Deprecated(forRemoval = true)
     private static KasugaPackResource internalRegisterPack(MultiPackResourceManagerAccessor manager, String namespace, String name) {
         Map<String, FallbackResourceManager> fallbackMap = manager.getNamespacedManagers();
         FallbackResourceManager fallback = fallbackMap.getOrDefault(namespace, null);
@@ -276,7 +287,7 @@ public class Resources {
             fallback = new FallbackResourceManager(PackType.CLIENT_RESOURCES, namespace);
             manager.getNamespacedManagers().put(namespace, fallback);
         }
-        KasugaPackResource resource = new KasugaPackResource(PackType.CLIENT_RESOURCES, name, namespace);
+        KasugaPackResource resource = new KasugaPackResource(name, namespace);
         fallback.push(resource);
         return resource;
     }

@@ -3,6 +3,7 @@ package kasuga.lib.core.client.block_bench_model.model;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.KasugaLibClient;
 import kasuga.lib.core.client.block_bench_model.json_data.*;
 import kasuga.lib.core.client.render.texture.Vec2f;
 import kasuga.lib.core.util.data_type.Pair;

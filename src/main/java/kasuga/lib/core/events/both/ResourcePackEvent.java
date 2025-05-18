@@ -10,11 +10,11 @@ public class ResourcePackEvent {
 
     @SubscribeEvent
     public static void onResourcePackReload(AddReloadListenerEvent reloadListenerEvent){
-        reloadListenerEvent.addListener(CustomResourceReloadListener.INSTANCE);
+        // reloadListenerEvent.addListener(CustomResourceReloadListener.INSTANCE);
     }
 
     @SubscribeEvent
     public static void onClientResourcePackReload(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(CustomResourceReloadListener.INSTANCE);
+        // event.registerReloadListener(CustomResourceReloadListener.INSTANCE);
     }
 }

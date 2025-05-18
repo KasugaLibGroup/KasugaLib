@@ -6,27 +6,28 @@ import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraftforge.resource.PathPackResources;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 @Getter
-public class KasugaPackResource implements PackResources {
+public class KasugaPackResource extends PathPackResources {
 
     private final HashMap<ResourceLocation, Stack<Resource>> resources;
     private final File file;
-    private final PackType packType;
     private final List<String> namespaces;
     private final String name;
 
-    public KasugaPackResource(PackType type, String name, String... namespaces) {
-        this.packType = type;
+    public KasugaPackResource(String name, String... namespaces) {
+        super(name, Path.of("dummy"));
         this.resources = new HashMap<>();
-        this.file = new File("dummy");
+        this.file = getFile();
         this.namespaces = new ArrayList<>();
         this.namespaces.addAll(Arrays.asList(namespaces));
         this.name = name;
@@ -50,18 +51,24 @@ public class KasugaPackResource implements PackResources {
 
     public boolean registerResource(ResourceLocation location, Resource resource) {
         if (!location.getNamespace().equals(resource.sourcePackId())) return false;
-        if (!namespaces.contains(location.getNamespace())) {
-            namespaces.add(location.getNamespace());
+        synchronized (namespaces) {
+            if (!namespaces.contains(location.getNamespace())) {
+                namespaces.add(location.getNamespace());
+            }
         }
-        if (!resources.containsKey(location)) {
-            Stack<Resource> stack = new Stack<>();
-            stack.push(resource);
-            resources.put(location, stack);
+        synchronized (resources) {
+            if (!resources.containsKey(location)) {
+                Stack<Resource> stack = new Stack<>();
+                stack.push(resource);
+                resources.put(location, stack);
+                return true;
+            }
+            Stack<Resource> stack = resources.get(location);
+            synchronized (stack) {
+                stack.push(resource);
+            }
             return true;
         }
-        Stack<Resource> stack = resources.get(location);
-        stack.push(resource);
-        return true;
     }
 
     @Override
@@ -71,9 +78,6 @@ public class KasugaPackResource implements PackResources {
 
     @Override
     public InputStream getResource(PackType pType, ResourceLocation pLocation) throws IOException {
-        if (!pType.equals(this.packType)) {
-            throw new IllegalArgumentException("Pack type " + pType + " is not supported");
-        }
         Stack<Resource> resource = resources.getOrDefault(pLocation, null);
         if (resource == null || resource.isEmpty()) {
             throw new IllegalArgumentException("Resource " + pLocation + " not found");
@@ -83,7 +87,6 @@ public class KasugaPackResource implements PackResources {
 
     @Override
     public Collection<ResourceLocation> getResources(PackType pType, String pNamespace, String pPath, Predicate<ResourceLocation> pFilter) {
-        if (!pType.equals(this.packType)) return List.of();
         if (!namespaces.contains(pNamespace)) return List.of();
         Stream<ResourceLocation> locationStream = resources.keySet().stream();
         return locationStream.filter(location -> location.getNamespace().equals(pNamespace) &&
@@ -92,13 +95,11 @@ public class KasugaPackResource implements PackResources {
 
     @Override
     public boolean hasResource(PackType pType, ResourceLocation pLocation) {
-        if (!pType.equals(this.packType)) return false;
         return resources.containsKey(pLocation);
     }
 
     @Override
     public Set<String> getNamespaces(PackType pType) {
-        if (!pType.equals(this.packType)) return Collections.emptySet();
         return new HashSet<>(this.namespaces);
     }
 
