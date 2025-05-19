@@ -7,6 +7,7 @@ import kasuga.lib.core.client.block_bench_model.anim.KeyFrame;
 import kasuga.lib.core.client.block_bench_model.anim.LoopMode;
 import kasuga.lib.core.util.data_type.Pair;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -60,7 +61,7 @@ public class AnimationInstance {
     }
 
     public static float tickToSecond(int tick, float partial) {
-        return ((float) tick + partial) / 600f;
+        return ((float) tick + partial) / 20f;
     }
 
     public float getStartDelay() {

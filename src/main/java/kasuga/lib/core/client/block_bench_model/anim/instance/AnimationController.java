@@ -84,6 +84,17 @@ public class AnimationController {
         tickerOpt.ifPresent(Ticker::pause);
     }
 
+
+    public void setSpeed(String name, float speed) {
+        Optional<Ticker> ticker = findAnimation(name);
+        ticker.ifPresent(value -> value.setSpeed(speed));
+    }
+
+    public void setSpeed(UUID id, float speed) {
+        Optional<Ticker> ticker = getAnimation(id);
+        ticker.ifPresent(value -> value.setSpeed(speed));
+    }
+
     @SafeVarargs
     public final void assign(Pair<String, Float>... assignment) {
         animations.forEach(

@@ -76,10 +76,11 @@ public class AnimBlockBenchElement extends AnimElement implements Renderable {
         }
         pose.pushPose();
         translateToPivot(pose);
-        pose.translate(transform.getOffset().x(), transform.getOffset().y(), transform.getOffset().z());
+        // pose.translate(transform.getOffset().x(), transform.getOffset().y(), transform.getOffset().z());
         baseRotation(pose, this.element.getRotation());
-        pose.mulPose(transform.getQuaternion());
-        pose.scale(transform.getScale().x(), transform.getScale().y(), transform.getScale().z());
+        // transform.transform(pose);
+        // pose.mulPose(transform.getQuaternion());
+        // pose.scale(transform.getScale().x(), transform.getScale().y(), transform.getScale().z());
         for (BakedQuad quad : bakedQuads) {
             consumer.putBulkData(pose.last(), quad, color.getfR(),
                     color.getfG(), color.getfB(), light, overlay);

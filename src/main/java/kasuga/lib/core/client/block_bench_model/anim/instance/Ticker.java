@@ -2,6 +2,7 @@ package kasuga.lib.core.client.block_bench_model.anim.instance;
 
 import kasuga.lib.core.client.block_bench_model.anim_model.AnimBlockBenchModel;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -18,12 +19,16 @@ public class Ticker {
     private int anim_tick;
     private float lengthTick, startDelayTick, loopDelayTick;
 
+    @Setter
+    private float speed;
+
     public Ticker(AnimBlockBenchModel model, AnimationInstance animation) {
         this.animation = animation;
         this.model = model;
         tick = 0;
         anim_tick = 0;
         refreshParamTicks();
+        speed = 1f;
     }
 
     public void refreshParamTicks() {
@@ -34,7 +39,8 @@ public class Ticker {
 
     public void tick() {
         if (!start) return;
-        if (tick >= lengthTick + loopDelayTick) {
+        if (speed == 0) speed = 1;
+        if (tick >= (lengthTick + loopDelayTick) / speed) {
             switch (getAnimation().getLoopMode()) {
                 case HOLD -> {
                     return;
@@ -51,8 +57,9 @@ public class Ticker {
             }
         }
         tick++;
-        if (tick < startDelayTick ||
-            (tick >= lengthTick && tick < lengthTick + loopDelayTick)) {
+        if (tick < startDelayTick / speed ||
+            (tick >= lengthTick / speed &&
+                    tick < (lengthTick + loopDelayTick) / speed)) {
             return;
         }
         anim_tick++;
@@ -77,7 +84,7 @@ public class Ticker {
     }
 
     public void applyToModel(float partialTick) {
-        float sec = toSecond(partialTick);
+        float sec = toSecond(partialTick) * speed;
         animation.updateTransformations(sec);
         model.applyAnimation(this);
     }

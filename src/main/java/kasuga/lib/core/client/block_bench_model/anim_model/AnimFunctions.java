@@ -11,13 +11,13 @@ public class AnimFunctions {
     public static final Namespace animRoot = new Namespace();
 
     public static final Function COS = animRoot.register1Param("math.cos",
-            (input) -> (float) Math.cos(Math.toDegrees(input)));
+            (input) -> (float) Math.cos(Math.toRadians(input)));
 
     public static final Function SIN = animRoot.register1Param("math.sin",
-            (input) -> (float) Math.sin(Math.toDegrees(input)));
+            (input) -> (float) Math.sin(Math.toRadians(input)));
 
     public static final Function TAN = animRoot.register1Param("math.tan",
-            (input) -> (float) Math.tan(Math.toDegrees(input)));
+            (input) -> (float) Math.tan(Math.toRadians(input)));
 
     public static final Function SQRT = animRoot.register1Param("math.sqrt",
             (input) -> (float) Math.sqrt(input));

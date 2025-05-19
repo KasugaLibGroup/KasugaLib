@@ -28,7 +28,12 @@ public class ModelTransform {
     }
 
     public Quaternion getQuaternion() {
-        return Quaternion.fromXYZDegrees(rotation);
+        Quaternion quaternion = Quaternion.ONE.copy();
+        quaternion.mul(Vector3f.ZP.rotationDegrees(rotation.z()));
+        quaternion.mul(Vector3f.YP.rotationDegrees(rotation.y()));
+        quaternion.mul(Vector3f.XN.rotationDegrees(rotation.x()));
+        return quaternion;
+        // return Quaternion.fromXYZDegrees(rotation);
     }
 
     public void clear() {

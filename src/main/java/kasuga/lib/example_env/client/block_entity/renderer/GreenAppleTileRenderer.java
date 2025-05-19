@@ -43,6 +43,7 @@ public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTil
             });
         AnimationController controller = bbTestModel.get();
         if (controller == null) return;
+        // controller.setSpeed("animation.model.new", 0.05f);
         controller.start("animation.model.new");
         controller.render(pose, buffer, light, overlay, partial);
 

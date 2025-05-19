@@ -55,6 +55,7 @@ public class AnimBlockBenchGroup extends AnimElement implements ElementCollectio
         if (group != null) {
             baseRotation(pose, this.group.getRotation());
         }
+        // transform.transform(pose);
         pose.mulPose(transform.getQuaternion());
         pose.scale(transform.getScale().x(), transform.getScale().y(), transform.getScale().z());
         children.forEach((id, element) -> {
