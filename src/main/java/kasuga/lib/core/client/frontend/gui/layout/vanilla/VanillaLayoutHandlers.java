@@ -38,6 +38,8 @@ public class VanillaLayoutHandlers {
                 float v = s.getValue().getFirst();
                 if(s.getValue().getSecond() == PixelUnit.NATIVE)
                     $n.setEngineCoordinateWidth(v);
+                else
+                    $n.setEngineCoordinateWidth(Float.MAX_VALUE);
             });
         });
 
@@ -46,6 +48,8 @@ public class VanillaLayoutHandlers {
                 float v = s.getValue().getFirst();
                 if(s.getValue().getSecond() == PixelUnit.NATIVE)
                     $n.setEngineCoordinateHeight(v);
+                else
+                    $n.setEngineCoordinateHeight(Float.MAX_VALUE);
             });
         });
     }

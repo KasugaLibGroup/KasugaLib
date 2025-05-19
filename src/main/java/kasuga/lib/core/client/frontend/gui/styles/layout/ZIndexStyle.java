@@ -11,7 +11,7 @@ import kasuga.lib.core.util.data_type.Pair;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-public class ZIndexStyle extends LayoutStyle<Integer> {
+public class ZIndexStyle extends Style<Integer, StyleTarget> {
 
     public static final StyleType<ZIndexStyle, StyleTarget> TYPE = SimpleNodeStyleType.of(ZIndexStyle::new, "0");
 
@@ -35,7 +35,12 @@ public class ZIndexStyle extends LayoutStyle<Integer> {
         return TYPE;
     }
 
-
+    @Override
+    public StyleTarget getTarget() {
+        return StyleTarget.GUI_DOM_NODE.create((domNode)->{
+            domNode.setZIndex(integerValue);
+        });
+    }
     @Override
     public String getValueString() {
         return integerValue.toString();

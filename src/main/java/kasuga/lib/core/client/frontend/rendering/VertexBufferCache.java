@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 import java.util.*;
 
 public class VertexBufferCache {
-    private static final BufferBuilder BUILDER = new BufferBuilder(1024 * 1024);
+    // private static final BufferBuilder BUILDER = new BufferBuilder(1024 * 1024);
     HashMap<RenderType, VertexBuffer> buffers;
     MultiBufferStore multiBufferStore;
     public VertexBufferCache() {
@@ -49,10 +49,7 @@ public class VertexBufferCache {
         public void upload(Matrix4f pose) {
             for (Map.Entry<RenderType, VertexBuffer> entry : buffers.entrySet()) {
                 VertexBuffer buffer = buffers.get(entry.getKey());
-                BUILDER.begin(entry.getKey().mode(), entry.getKey().format());
-                entry.getValue().apply(pose, BUILDER);
-                entry.getKey().end(BUILDER, 0,0,0);
-                BUILDER.discard();
+                buffer.apply(pose, entry.getKey());
             }
         }
 
@@ -220,6 +217,14 @@ public class VertexBufferCache {
                 }
                 consumer.endVertex();
             }
+        }
+
+        public void apply(Matrix4f matrix4f, RenderType type){
+            RenderSystem.assertOnRenderThread();
+            BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+            buffer.begin(type.mode(), type.format());
+            apply(matrix4f, buffer);
+            type.end(buffer, 0,0,0);
         }
     }
 }
