@@ -1,10 +1,12 @@
 package kasuga.lib.core.addons.node;
 
+import kasuga.lib.KasugaLib;
 import kasuga.lib.core.addons.resource.HierarchicalFilesystem;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.JavascriptThread;
 import kasuga.lib.core.javascript.JavascriptThreadGroup;
 import kasuga.lib.core.util.glob.GlobMatcher;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,6 +15,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class NodePackageLoader {
+
+    private static final Logger logger = KasugaLib.createLogger("NodeJS Package Loader");
     public HashMap<String, NodePackage> packages = new HashMap<>();
     private JavascriptThreadGroup group;
     private EntryType entryType;
@@ -20,7 +24,7 @@ public class NodePackageLoader {
     public NodePackageLoader(){}
 
     public void addPackage(NodePackage nodePackage){
-        System.out.printf("Package discovered: %s\n",nodePackage.packageName);
+        logger.info(String.format("Package discovered: %s\n",nodePackage.packageName));
         packages.put(nodePackage.packageName, nodePackage);
         group.getModuleLoader().registerPackage(nodePackage);
         createRuntime(nodePackage);
@@ -28,7 +32,7 @@ public class NodePackageLoader {
 
     public void addPackages(List<NodePackage> nodePackages){
         for (NodePackage nodePackage : nodePackages) {
-            System.out.printf("Package discovered: %s\n",nodePackage.packageName);
+            logger.info(String.format("Package discovered: %s\n",nodePackage.packageName));
             packages.put(nodePackage.packageName, nodePackage);
             group.getModuleLoader().registerPackage(nodePackage);
         }
@@ -97,7 +101,7 @@ public class NodePackageLoader {
             );
         }
         for (String entry : entriesList) {
-            System.out.printf("Create entry \"%s\" for module %s\n",entry,nodePackage.packageName);
+            logger.info(String.format("Create entry \"%s\" for module %s\n",entry,nodePackage.packageName));
             JavascriptContext context = thread.createContext(entriesList, "Package " + nodePackage.packageName + " Entry " + entry);
             context.runTask(()->{
                 context.loadModuleVoid(nodePackage.packageName + "/" + entry);

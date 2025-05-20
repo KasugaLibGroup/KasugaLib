@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.*;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.annos.Inner;
 import kasuga.lib.core.client.render.SimpleColor;
-import kasuga.lib.core.util.Resources;
+import kasuga.lib.core.resource.Resources;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;

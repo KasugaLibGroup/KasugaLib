@@ -1,5 +1,6 @@
 package kasuga.lib.core.client.frontend.common.layouting;
 
+import kasuga.lib.core.client.frontend.common.style.Style;
 import kasuga.lib.core.client.frontend.gui.layout.EdgeSize2D;
 
 public interface LayoutNode {

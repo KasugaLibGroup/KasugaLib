@@ -14,7 +14,7 @@ import java.util.function.Function;
 @Getter
 public class Grid {
 
-    private final Panel panel;
+    private Panel panel;
 
     private Vector3f xAxis, yAxis;
 
@@ -117,6 +117,16 @@ public class Grid {
         flex(scale, scale);
     }
 
+    public void movePanel(Vector3f offset) {
+        this.o.add(offset);
+        this.panel = this.panel.offset(offset);
+    }
+
+    public void movePanel(Vec3 offset) {
+        this.o.add(VectorUtil.vec3ToVec3f(offset));
+        this.panel = this.panel.offset(offset);
+    }
+
     public void rot(float rad) {
         xAxis2d = xAxis2d.rotate(rad);
         yAxis2d = yAxis2d.rotate(rad);
@@ -150,6 +160,11 @@ public class Grid {
         return "Grid<\n    " + panel + ", \n    " +
                o + ", \n    " + xAxis2d + ", " + yAxis2d + ",\n    "
                 + xAxis + ", " + yAxis + "\n>";
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
     }
 
     public static void main(String[] args) {

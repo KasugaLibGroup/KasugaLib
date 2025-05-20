@@ -69,7 +69,15 @@ public class Panel {
 
     public Panel offset(Vec3 offset) {
         double offsetConst = offset.dot(normal);
-        return new Panel(this.normal.add(offset), this.constant + offsetConst);
+        return new Panel(this.normal, this.constant + offsetConst);
+    }
+
+    public Panel offset(Vector3f offset) {
+        double offsetConst =
+                offset.x() * normal.x() +
+                offset.y() * normal.y() +
+                offset.z() * normal.z();
+        return new Panel(this.normal, this.constant + offsetConst);
     }
 
     public Panel rotate(Quaternionf quaternion, Vec3 referencePoint) {
