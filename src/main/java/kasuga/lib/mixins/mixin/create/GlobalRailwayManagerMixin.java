@@ -51,18 +51,4 @@ public class GlobalRailwayManagerMixin {
             return;
         KasugaLib.STACKS.RAILWAY.get().removeExtraData(graph.id);
     }
-
-    @Inject(method = "addTrain", at = @At("TAIL"))
-    public void onAddTrain(Train train, CallbackInfo ci){
-        if(!((GlobalRailwayManager)(Object)(this) == Create.RAILWAYS))
-            return;
-        KasugaLib.STACKS.RAILWAY.get().putTrainExtraData(train);
-    }
-
-    @Inject(method = "removeTrain", at = @At("TAIL"))
-    public void onRemoveTrain(UUID id, CallbackInfo ci){
-        if(!((GlobalRailwayManager)(Object)(this) == Create.RAILWAYS))
-            return;
-        KasugaLib.STACKS.RAILWAY.get().removeTrainExtraData(id);
-    }
 }

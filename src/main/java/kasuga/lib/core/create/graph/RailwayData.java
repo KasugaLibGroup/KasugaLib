@@ -20,8 +20,6 @@ public class RailwayData {
 
     public HashMap<UUID, GraphExtraData> extraDatas = new HashMap<>();
 
-    public HashMap<UUID, TrainExtraData> trainExtraDatas = new HashMap<>();
-
     public void createExtraData(UUID graphId){
         this.extraDatas.computeIfAbsent(graphId, (id)->new GraphExtraData());
     }
@@ -71,7 +69,6 @@ public class RailwayData {
 
     public void read(CompoundTag compoundTag, DimensionPalette dimensions, ResourcePattle resourcePattle) {
         markDirty();
-        trainExtraDatas.clear();
         extraDatas.clear();
         ListTag extraDataTags = compoundTag.getList("ExtraDatas", Tag.TAG_COMPOUND);
         for(int i=0;i<extraDataTags.size();i++){
@@ -86,31 +83,5 @@ public class RailwayData {
         if(manager != null){
             manager.setDirty();
         }
-    }
-
-    public void putTrainExtraData(Train train) {
-        if(trainExtraDatas.containsKey(train.id)){
-            return;
-        }
-        trainExtraDatas.put(train.id, new TrainExtraData(train));
-    }
-
-    public void removeTrainExtraData(UUID id) {
-        trainExtraDatas.remove(id);
-    }
-
-    public TrainExtraData withTrainExtraData(Train train) {
-        if(trainExtraDatas.containsKey(train.id)){
-            return trainExtraDatas.get(train.id);
-        }
-        putTrainExtraData(train);
-        return trainExtraDatas.get(train.id);
-    }
-
-    public TrainExtraData withTrainExtraData(UUID id) {
-        if(trainExtraDatas.containsKey(id)){
-            return trainExtraDatas.get(id);
-        }
-        return null;
     }
 }
