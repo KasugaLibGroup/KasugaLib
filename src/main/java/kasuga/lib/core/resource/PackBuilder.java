@@ -2,6 +2,7 @@ package kasuga.lib.core.resource;
 
 import kasuga.lib.core.annos.Mandatory;
 import kasuga.lib.core.annos.Optional;
+import kasuga.lib.core.util.Envs;
 import kasuga.lib.core.util.LazyRecomputable;
 import net.minecraft.server.packs.PackType;
 import lombok.Getter;
@@ -12,7 +13,10 @@ import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackCompatibility;
 import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.world.flag.FeatureFlag;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import java.util.*;
 import java.util.function.Function;
@@ -33,6 +37,7 @@ public class PackBuilder {
     private boolean fixedPos;
     private final Set<PackType> dists;
     private final Set<String> namespaces;
+    private FeatureFlagSet features;
 
     @NonNull
     private LazyRecomputable<PackResources> packSupplier;
@@ -58,6 +63,7 @@ public class PackBuilder {
         if (dists != null && dists.length > 0) {
             this.dists.addAll(Arrays.asList(dists));
         }
+        features = FeatureFlagSet.of();
     }
 
     @Optional
@@ -121,9 +127,37 @@ public class PackBuilder {
         return this;
     }
 
-    public Pack create(Pack.PackConstructor constructor) {
-        return constructor.create(this.id, title, required, packSupplier::get,
-                new PackMetadataSection(description, packFormat, packTypeVersions), defaultPosition,
-                source, hidden);
+    @Optional
+    public PackBuilder setFeatures(FeatureFlag universe, FeatureFlag... flags) {
+        this.features = FeatureFlagSet.of(universe, flags);
+        return this;
+    }
+
+    public int getResourceFormat() {
+        return packTypeVersions.getOrDefault(PackType.CLIENT_RESOURCES, packFormat);
+    }
+
+    public int getDataFormat() {
+        return packTypeVersions.getOrDefault(PackType.SERVER_DATA, packFormat);
+    }
+
+    public PackType getPackType() {
+        if (Envs.isDedicateServer() && dists.contains(PackType.SERVER_DATA)) {
+            return PackType.SERVER_DATA;
+        } else {
+            if (dists.contains(PackType.CLIENT_RESOURCES)) {
+                return PackType.CLIENT_RESOURCES;
+            }
+            return PackType.SERVER_DATA;
+        }
+    }
+
+    public Pack create() {
+        Pack.Info info = new Pack.Info(description,
+                getResourceFormat(), getPackFormat(),
+                features, hidden);
+        return Pack.create(id, title, required,
+                name -> packSupplier.get(), info, getPackType(),
+                defaultPosition, fixedPos, source);
     }
 }

@@ -1,13 +1,13 @@
 package kasuga.lib.core.client.block_bench_model.anim_model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import kasuga.lib.core.client.block_bench_model.anim.Channel;
 import kasuga.lib.core.client.block_bench_model.model.TransformContext;
 import lombok.Getter;
 import lombok.Setter;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 @Getter
 @Setter
@@ -27,11 +27,11 @@ public class ModelTransform {
         this.scale = scale;
     }
 
-    public Quaternion getQuaternion() {
-        Quaternion quaternion = Quaternion.ONE.copy();
-        quaternion.mul(Vector3f.ZP.rotationDegrees(rotation.z()));
-        quaternion.mul(Vector3f.YP.rotationDegrees(rotation.y()));
-        quaternion.mul(Vector3f.XN.rotationDegrees(rotation.x()));
+    public Quaternionf getQuaternion() {
+        Quaternionf quaternion = new Quaternionf();
+        quaternion.mul(Axis.ZP.rotationDegrees(rotation.z()));
+        quaternion.mul(Axis.YP.rotationDegrees(rotation.y()));
+        quaternion.mul(Axis.XN.rotationDegrees(rotation.x()));
         return quaternion;
         // return Quaternion.fromXYZDegrees(rotation);
     }
@@ -57,7 +57,7 @@ public class ModelTransform {
         pose.translate(offset.x(), offset.y(), offset.z());
 
         if (!rotation.equals(TransformContext.ZERO)) {
-            Quaternion quaternion = getQuaternion();
+            Quaternionf quaternion = getQuaternion();
             pose.mulPose(quaternion);
         }
         if (!scale.equals(new Vector3f(1, 1, 1))) {

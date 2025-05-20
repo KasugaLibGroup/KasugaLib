@@ -2,9 +2,9 @@ package kasuga.lib.core.client.frontend.rendering;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix4f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import org.joml.Matrix4f;
 
 import java.nio.ByteBuffer;
 import java.util.*;
@@ -224,7 +224,7 @@ public class VertexBufferCache {
             BufferBuilder buffer = Tesselator.getInstance().getBuilder();
             buffer.begin(type.mode(), type.format());
             apply(matrix4f, buffer);
-            type.end(buffer, 0,0,0);
+            type.end(buffer, VertexSorting.byDistance(0,0,0));
         }
     }
 }

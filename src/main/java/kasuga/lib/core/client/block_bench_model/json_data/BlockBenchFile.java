@@ -3,13 +3,13 @@ package kasuga.lib.core.client.block_bench_model.json_data;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.math.Vector3f;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.block_bench_model.anim.Animation;
 import kasuga.lib.core.client.render.texture.Vec2f;
 import lombok.Getter;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Vector3f;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -1,7 +1,6 @@
 package kasuga.lib.core.client.block_bench_model.model;
 
 import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.KasugaLibClient;
 import kasuga.lib.core.client.block_bench_model.json_data.*;
@@ -11,10 +10,7 @@ import lombok.Getter;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -142,16 +138,15 @@ public class BlockBenchModel extends SimpleUnbakedGeometry<BlockBenchModel> {
     }
 
     @Override
-    protected void addQuads(IGeometryBakingContext owner, IModelBuilder<?> modelBuilder,
-                            ModelBakery bakery,
-                            Function<Material, TextureAtlasSprite> spriteGetter,
-                            ModelState modelTransform, ResourceLocation modelLocation) {
+    protected void addQuads(IGeometryBakingContext iGeometryBakingContext, IModelBuilder<?> iModelBuilder,
+                            ModelBaker modelBaker, Function<Material, TextureAtlasSprite> function,
+                            ModelState modelState, ResourceLocation resourceLocation) {
         TransformContext context = new TransformContext();
-        context.getQuaternion().mul(modelTransform.getRotation().getLeftRotation());
-        rootGroup.addQuads(modelBuilder, modelTransform, context, resolution, spriteGetter);
+        context.getQuaternion().mul(modelState.getRotation().getLeftRotation());
+        rootGroup.addQuads(iModelBuilder, modelState, context, resolution, function);
     }
 
-    @Override
+
     public Collection<Material> getMaterials(IGeometryBakingContext context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<com.mojang.datafixers.util.Pair<String, String>> missingTextureErrors) {
         List<Material> upload = new ArrayList<>(materials.size());
         materials.forEach((tex, pair) -> upload.add(pair.getSecond()));

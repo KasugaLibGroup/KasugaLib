@@ -1,8 +1,8 @@
 package kasuga.lib.core.client.block_bench_model.anim.interpolation;
 
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.block_bench_model.anim.Animator;
 import kasuga.lib.core.client.block_bench_model.anim.KeyFrame;
+import org.joml.Vector3f;
 
 public class Linear extends Interpolation {
 

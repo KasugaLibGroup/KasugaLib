@@ -124,10 +124,6 @@ public class Resources {
 
         private boolean isOutside = true;
 
-        protected CheatResourceLocation(String[] pDecomposedLocation) {
-            super(pDecomposedLocation);
-        }
-
         public CheatResourceLocation(String pLocation) {
             super(pLocation);
         }
@@ -148,7 +144,8 @@ public class Resources {
         }
 
         public CheatResourceLocation clone() {
-            return new CheatResourceLocation(namespace, path, isOutside);
+            return new CheatResourceLocation(super.getNamespace(),
+                    super.getPath(), isOutside);
         }
 
         public void setOutside(boolean outside) {

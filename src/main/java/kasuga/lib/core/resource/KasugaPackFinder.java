@@ -106,11 +106,11 @@ public class KasugaPackFinder {
         packs.clear();
         ksgResources.clear();
         PackType type = event.getPackType();
-        event.addRepositorySource((consumer, constructor) -> {
+        event.addRepositorySource(consumer -> {
             for (Map.Entry<String, PackBuilder> entry : packBuilders.entrySet()) {
                 PackBuilder builder = entry.getValue();
                 if (!builder.getDists().contains(type)) continue;
-                Pack pack = builder.create(constructor);
+                Pack pack = builder.create();
                 consumer.accept(pack);
                 if (pack.open() instanceof KasugaPackResource ksgPack) {
                     ksgResources.put(entry.getKey(), ksgPack);

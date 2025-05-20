@@ -1,7 +1,6 @@
 package kasuga.lib.core.client.block_bench_model.model;
 
 import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.block_bench_model.json_data.Element;
 import kasuga.lib.core.client.render.texture.Vec2f;
 import lombok.Getter;
@@ -12,6 +11,7 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.IModelBuilder;
+import org.joml.Vector3f;
 
 import java.util.*;
 import java.util.function.Function;

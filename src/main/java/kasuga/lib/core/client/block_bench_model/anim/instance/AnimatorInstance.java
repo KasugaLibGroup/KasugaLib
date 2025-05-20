@@ -1,6 +1,5 @@
 package kasuga.lib.core.client.block_bench_model.anim.instance;
 
-import com.mojang.math.Vector3f;
 import interpreter.compute.data.Namespace;
 import kasuga.lib.core.client.block_bench_model.anim.Animator;
 import kasuga.lib.core.client.block_bench_model.anim.Channel;
@@ -12,6 +11,7 @@ import kasuga.lib.core.util.data_type.Pair;
 import lombok.Getter;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Vector3f;
 
 import java.util.*;
 import java.util.function.Supplier;

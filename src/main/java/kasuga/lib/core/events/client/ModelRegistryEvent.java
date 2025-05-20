@@ -86,8 +86,8 @@ public class ModelRegistryEvent {
         });
     }
 
-    @SubscribeEvent
-    public static void beforeTextureStitch(TextureStitchEvent.Pre event) {
-        // CustomResourceReloadListener.INSTANCE.applyOnStitch();
-    }
+//    @SubscribeEvent
+//    public static void beforeTextureStitch(TextureStitchEvent.Pre event) {
+//        // CustomResourceReloadListener.INSTANCE.applyOnStitch();
+//    }
 }

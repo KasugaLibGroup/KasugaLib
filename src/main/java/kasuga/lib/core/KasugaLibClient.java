@@ -26,7 +26,7 @@ public class KasugaLibClient {
     public static final String INTERNAL_TEXTURE_PACK = "internal_texture";
 
     public static void invoke() {
-        Resources.registerCustomPack(PackType.CLIENT_RESOURCES,
-                MOD_ID, INTERNAL_TEXTURE_PACK);
+//        Resources.registerCustomPack(PackType.CLIENT_RESOURCES,
+//                MOD_ID, INTERNAL_TEXTURE_PACK);
     }
 }

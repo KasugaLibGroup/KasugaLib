@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
+import net.minecraft.server.packs.resources.IoSupplier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraftforge.resource.PathPackResources;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +26,7 @@ public class KasugaPackResource extends PathPackResources {
     private final String name;
 
     public KasugaPackResource(String name, String... namespaces) {
-        super(name, Path.of("dummy"));
+        super(name, true, Path.of("dummy"));
         this.resources = new HashMap<>();
         this.file = getFile();
         this.namespaces = new ArrayList<>();
@@ -34,7 +35,7 @@ public class KasugaPackResource extends PathPackResources {
     }
 
     public boolean registerResource(ResourceLocation location, byte[] data) {
-        Resource resource = new Resource(location.getNamespace(), () -> new ByteArrayInputStream(data));
+        Resource resource = new Resource(this, () -> new ByteArrayInputStream(data));
         return registerResource(location, resource);
     }
 
@@ -71,29 +72,39 @@ public class KasugaPackResource extends PathPackResources {
         }
     }
 
+
     @Override
-    public @Nullable InputStream getRootResource(String pFileName) throws IOException {
-        return new ByteArrayInputStream(new byte[0]);
+    public @Nullable IoSupplier<InputStream> getRootResource(String... paths) {
+        return IoSupplier.create(Path.of("dummy"));
     }
 
     @Override
-    public InputStream getResource(PackType pType, ResourceLocation pLocation) throws IOException {
+    public IoSupplier<InputStream> getResource(PackType pType, ResourceLocation pLocation) {
         Stack<Resource> resource = resources.getOrDefault(pLocation, null);
-        if (resource == null || resource.isEmpty()) {
-            throw new IllegalArgumentException("Resource " + pLocation + " not found");
-        }
-        return resource.peek().open();
+        if (resource == null || resource.isEmpty()) return null;
+        return CustomIoSupplier.create(resource.peek());
+    }
+
+    public Resource getResource(ResourceLocation location) {
+        Stack<Resource> resource = resources.getOrDefault(location, null);
+        if (resource == null || resource.isEmpty()) return null;
+        return resource.peek();
     }
 
     @Override
-    public Collection<ResourceLocation> getResources(PackType pType, String pNamespace, String pPath, Predicate<ResourceLocation> pFilter) {
-        if (!namespaces.contains(pNamespace)) return List.of();
+    public void listResources(PackType pType, String pNamespace, String pPath, ResourceOutput output) {
+        if (!namespaces.contains(pNamespace)) return;
         Stream<ResourceLocation> locationStream = resources.keySet().stream();
-        return locationStream.filter(location -> location.getNamespace().equals(pNamespace) &&
-                location.getPath().startsWith(pPath) && pFilter.test(location)).toList();
+        locationStream.filter(location -> location.getNamespace().equals(pNamespace) &&
+                location.getPath().startsWith(pPath)).forEach(a -> {
+            try {
+                Resource r = getResource(a);
+                if (r == null) return;
+                output.accept(a, CustomIoSupplier.create(r));
+            } catch (Exception ignored) {}
+        });
     }
 
-    @Override
     public boolean hasResource(PackType pType, ResourceLocation pLocation) {
         return resources.containsKey(pLocation);
     }
@@ -108,7 +119,6 @@ public class KasugaPackResource extends PathPackResources {
         return null;
     }
 
-    @Override
     public String getName() {
         return name;
     }

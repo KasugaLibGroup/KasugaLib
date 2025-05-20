@@ -2,7 +2,6 @@ package kasuga.lib.core.client.block_bench_model.anim;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.mojang.math.Vector3f;
 import interpreter.compute.data.Namespace;
 import interpreter.compute.infrastructure.Formula;
 import kasuga.lib.KasugaLib;
@@ -14,6 +13,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import java.util.UUID;
 import java.util.function.Supplier;

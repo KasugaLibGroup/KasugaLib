@@ -1,8 +1,8 @@
 package kasuga.lib.core.client.block_bench_model.json_data;
 
-import com.mojang.math.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Vector3f;
 
 import java.util.UUID;
 

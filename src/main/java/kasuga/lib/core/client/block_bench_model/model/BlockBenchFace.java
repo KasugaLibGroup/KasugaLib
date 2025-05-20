@@ -1,7 +1,5 @@
 package kasuga.lib.core.client.block_bench_model.model;
 
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.block_bench_model.json_data.Face;
 import kasuga.lib.core.client.block_bench_model.json_data.Texture;
 import kasuga.lib.core.client.render.texture.Vec2f;
@@ -15,6 +13,8 @@ import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.HashMap;
 import java.util.List;
@@ -68,13 +68,13 @@ public class BlockBenchFace {
         if (this.material == null || this.face == null || vertices.isEmpty()) return null;
         TextureAtlasSprite sprite = spriteGetter.apply(this.material);
         Pair<Vec2f, Vec2f> uvData = getUVData(sprite);
-        Quaternion quaternion = transform.getQuaternion();
+        Quaternionf quaternion = transform.getQuaternion();
         Vector3f normalVec = new Vector3f(
                 this.normal.x(),
                 this.normal.y(),
                 this.normal.z()
         );
-        normalVec.transform(quaternion);
+        normalVec.rotate(quaternion);
         int normal = getNormal(normalVec);
         int[] data = new int[32];
         for (int i = 0; i < 4; i++) {

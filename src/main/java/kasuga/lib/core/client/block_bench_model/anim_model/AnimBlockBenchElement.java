@@ -2,7 +2,6 @@ package kasuga.lib.core.client.block_bench_model.anim_model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.block_bench_model.model.BlockBenchElement;
 import kasuga.lib.core.client.block_bench_model.model.BlockBenchGroup;
 import kasuga.lib.core.client.block_bench_model.model.TransformContext;
@@ -14,6 +13,7 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import java.util.HashMap;
 import java.util.HashSet;

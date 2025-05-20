@@ -1,10 +1,10 @@
 package kasuga.lib.core.client.block_bench_model.anim.interpolation;
 
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.block_bench_model.anim.Animator;
 import kasuga.lib.core.client.block_bench_model.anim.KeyFrame;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import java.util.List;
 

@@ -1,10 +1,10 @@
 package kasuga.lib.core.client.block_bench_model.anim.interpolation;
 
-import com.mojang.math.Vector3f;
 import kasuga.lib.core.client.block_bench_model.anim.Animator;
 import kasuga.lib.core.client.block_bench_model.anim.KeyFrame;
 import kasuga.lib.core.client.render.texture.Vec2f;
 import kasuga.lib.core.util.data_type.Pair;
+import org.joml.Vector3f;
 
 import java.util.Arrays;
 

@@ -1,8 +1,7 @@
 package kasuga.lib.core.client.block_bench_model.anim_model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import kasuga.lib.core.client.animation.neo_neo.VectorUtil;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.renderer.RenderType;
@@ -10,6 +9,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.UUID;
 
@@ -55,7 +56,7 @@ public abstract class AnimElement {
     }
 
     public void baseRotation(PoseStack pose, Vector3f rotation) {
-        Quaternion quaternion = Quaternion.fromXYZDegrees(rotation);
+        Quaternionf quaternion = VectorUtil.fromXYZDegrees(rotation);
         pose.mulPose(quaternion);
     }
 
