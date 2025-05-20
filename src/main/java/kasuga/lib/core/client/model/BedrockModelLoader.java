@@ -1,20 +1,15 @@
 package kasuga.lib.core.client.model;
 
-import com.google.common.collect.Maps;
 import com.google.gson.*;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.model.model_json.BedrockModel;
 import kasuga.lib.core.client.model.anim_model.AnimModel;
 import kasuga.lib.core.client.model.model_json.Geometry;
 import kasuga.lib.core.util.LazyRecomputable;
-import kasuga.lib.core.util.Resources;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransform;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraftforge.client.model.IModelLoader;

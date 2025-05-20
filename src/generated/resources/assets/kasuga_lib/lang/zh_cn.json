@@ -1,5 +1,7 @@
 {
   "tips.block": "--------------------------------------=== 方块 ===--------------------------------------",
   "block.kasuga_lib.green_apple": "绿色林檎",
-  "item.kasuga_lib.example_fluid_bucket": "范例液体桶"
+  "item.kasuga_lib.example_fluid_bucket": "范例液体桶",
+  "internal.kasuga_lib.texture_pack": "Kasuga Lib 内置纹理包",
+  "internal.kasuga_lib.texture_pack.desc": "服务于Kasuga Lib内置BlockBench模型加载器的内置纹理包。"
 }

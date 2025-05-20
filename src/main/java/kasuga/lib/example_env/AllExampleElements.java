@@ -57,7 +57,9 @@ public class AllExampleElements {
     public static final BlockReg<GreenAppleBlock> greenApple =
             new BlockReg<GreenAppleBlock>("green_apple")
             .blockType(GreenAppleBlock::new)
-            .material(Material.AIR)
+            .withBlockEntity("green_apple_tile", GreenAppleTile::new)
+            .withBlockEntityRenderer(() -> GreenAppleTileRenderer::new)
+            .material(Material.STONE)
             .materialColor(MaterialColor.COLOR_GREEN)
             .withSound(SoundType.CROP)
             .defaultBlockItem(new ResourceLocation(KasugaLib.MOD_ID, "block/test/green_apple"))

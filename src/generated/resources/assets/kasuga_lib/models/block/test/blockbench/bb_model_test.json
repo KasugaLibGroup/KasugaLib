@@ -1,0 +1,5 @@
+{
+  "loader": "kasuga_lib:blockbench_model",
+  "model": "kasuga_lib:block/test/blockbench/qj_bogey_main",
+  "identifier": "bb_test_model"
+}

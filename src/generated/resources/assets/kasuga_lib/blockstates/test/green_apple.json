@@ -3,6 +3,6 @@
 
   },
   "": {
-    "model": "kasuga_lib:block/test/test_model_complicate"
+    "model": "kasuga_lib:block/test/blockbench/bb_model_test"
   }
 }

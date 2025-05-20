@@ -5,11 +5,24 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import kasuga.lib.core.KasugaLibStacks;
 import kasuga.lib.core.client.frontend.commands.FrontendCommands;
-import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaFileLocator;
+import kasuga.lib.core.client.frontend.gui.layout.LayoutEngines;
 import kasuga.lib.core.javascript.commands.JavascriptModuleCommands;
 import kasuga.lib.core.packets.AllPackets;
 import kasuga.lib.core.util.Envs;
+import kasuga.lib.core.resource.KasugaPackResource;
 import kasuga.lib.example_env.AllExampleElements;
+import kasuga.lib.mixins.mixin.MultiPackResourceManagerAccessor;
+import kasuga.lib.mixins.mixin.ReloadableResourceManagerAccessor;
+import lombok.Getter;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ReloadableServerResources;
+import net.minecraft.server.WorldLoader;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.*;
+import net.minecraft.world.level.storage.LevelStorageSource;
+import net.minecraft.world.level.storage.WorldData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.entity.ai.sensing.Sensor;
@@ -20,6 +33,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,16 +48,20 @@ public class KasugaLib {
     public static final KasugaLibStacks STACKS = new KasugaLibStacks(EVENTS);
     public static final Gson GSON = new GsonBuilder().enableComplexMapKeySerialization().create();
 
+    @Nullable
+    @Getter
+    public static MinecraftServer server = null;
+
     public KasugaLib() {
         EVENTS.register(this);
         AllPackets.init();
         // YogaExample.example();
         JavascriptModuleCommands.invoke();
         FrontendCommands.invoke();
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()-> YogaFileLocator::configureLWJGLPath);
         KasugaLibConfig.invoke();
         if (Envs.isDevEnvironment())
             AllExampleElements.invoke();
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()-> LayoutEngines::init);
     }
 
     public static Logger createLogger(String name) {

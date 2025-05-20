@@ -132,4 +132,8 @@ public class LayoutContext<T extends LayoutNode,N extends DomNode> {
         }
         return this.sources.containsKey(source);
     }
+
+    public LayoutEngine<T, N> getLayoutEngine() {
+        return engine;
+    }
 }

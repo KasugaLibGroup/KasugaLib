@@ -8,7 +8,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import com.mojang.datafixers.util.Pair;
 import kasuga.lib.KasugaLib;
-import kasuga.lib.core.util.Resources;
+import kasuga.lib.core.resource.Resources;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -26,7 +26,6 @@ import net.minecraftforge.client.model.geometry.IModelGeometryPart;
 import net.minecraftforge.client.model.geometry.IMultipartModelGeometry;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;

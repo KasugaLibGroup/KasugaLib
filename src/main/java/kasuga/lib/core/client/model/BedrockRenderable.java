@@ -15,7 +15,7 @@ public interface BedrockRenderable {
     BedrockRenderable getChild(String name);
     void applyTranslationAndRotation(PoseStack pose);
     void render(PoseStack pose, VertexConsumer consumer, SimpleColor color, int light, int overlay);
-    default Vector3f vonvertPivot(Vector3f myPosition, Vector3f parentPosition) {
+    default Vector3f convertPivot(Vector3f myPosition, Vector3f parentPosition) {
         Vector3f vector3f = myPosition.copy();
         vector3f.sub(parentPosition);
         return vector3f;
