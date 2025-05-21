@@ -28,7 +28,6 @@
     "client.MixinBlockRenderDispatcher",
     "client.MixinCarriageContraptionEntityRenderer",
     "client.MixinStationBlockEntityClient",
-    "client.MixinModelBakery",
     "client.MixinDirectoryLister",
   ],
   "minVersion": "0.8"

@@ -7,7 +7,7 @@ import kasuga.lib.example_env.ExampleMain;
 import kasuga.lib.registrations.common.BlockEntityReg;
 import kasuga.lib.registrations.common.BlockReg;
 import kasuga.lib.registrations.create.MovementReg;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 
 public class ExampleTrainDeviceModule {
     public static final TrainDeviceSystemType<ExampleTrainDevice> EXAMPLE_TRAIN_DEVICE = new TrainDeviceSystemType<>(ExampleTrainDevice::new);
@@ -16,7 +16,7 @@ public class ExampleTrainDeviceModule {
             new BlockReg<ExampleTrainDeviceBlock>("example_train_device")
             .blockType(ExampleTrainDeviceBlock::new)
             .defaultBlockItem()
-            .material(Material.METAL)
+            .materialColor(MapColor.COLOR_BLACK)
             .submit(ExampleMain.testRegistry);
 
     public static final BlockEntityReg<ExampleTrainDeviceBlockEntity> EXAMPLE_DEVICE_BLOCK_ENTITY =

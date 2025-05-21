@@ -17,7 +17,6 @@ public class ExampleMain {
         // ExampleTracks.invoke();
         // AllExampleBogey.invoke();
         ExampleTrainDeviceModule.invoke();
-        testRegistry.submit();
         ExampleBoundaryModule.invoke();
         AllExampleElements.testRegistry.submit();
     }
