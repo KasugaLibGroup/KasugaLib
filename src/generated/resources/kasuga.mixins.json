@@ -6,6 +6,8 @@
   "refmap": "kasuga.refmap.json",
   "mixins": [
     "MixinNbtUtils",
+    "MultiPackResourceManagerAccessor",
+    "ReloadableResourceManagerAccessor",
     "resources.DelegatingPackResourcesMixin",
     "resources.FilePackResourceMixin",
     "resources.PathPackResourceMixin",

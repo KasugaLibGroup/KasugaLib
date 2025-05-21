@@ -1,6 +1,8 @@
 package kasuga.lib.core.events.client;
 
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.client.block_bench_model.anim.instance.AnimationController;
+import kasuga.lib.core.client.frontend.gui.GuiEngine;
 import kasuga.lib.core.client.model.anim_instance.AnimateTickerManager;
 import kasuga.lib.registrations.client.KeyBindingReg;
 import net.minecraftforge.event.TickEvent;
@@ -19,7 +21,11 @@ public class ClientTickEvent {
         }
 
         KasugaLib.STACKS.MENU.clientTick();
+        AnimationController.CONTROLLERS.forEach(
+                AnimationController::tick
+        );
 
+        KasugaLib.STACKS.GUI.ifPresent(GuiEngine::renderTick);
         // deal with world ticker;
     }
 

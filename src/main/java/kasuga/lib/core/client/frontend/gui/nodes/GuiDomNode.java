@@ -61,7 +61,7 @@ public class GuiDomNode extends DomNode<GuiContext> {
         return styles;
     }
 
-    Lazy<LayoutContext<?,GuiDomNode>> layoutManager = Lazy.concurrentOf(()->new LayoutContext<>(this,this.domContext.getLayoutEngine()));
+    Lazy<LayoutContext<?,GuiDomNode>> layoutManager = Lazy.concurrentOf(()->new LayoutContext<>(this, this.domContext.getLayoutEngine()));
 
     public LayoutContext<?,GuiDomNode> getLayoutManager() {
         return layoutManager.get();

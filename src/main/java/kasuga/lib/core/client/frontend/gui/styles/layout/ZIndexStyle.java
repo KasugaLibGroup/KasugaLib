@@ -3,7 +3,6 @@ package kasuga.lib.core.client.frontend.gui.styles.layout;
 import kasuga.lib.core.client.frontend.common.style.Style;
 import kasuga.lib.core.client.frontend.common.style.StyleTarget;
 import kasuga.lib.core.client.frontend.common.style.StyleType;
-import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaNode;
 import kasuga.lib.core.client.frontend.gui.styles.PixelUnit;
 import kasuga.lib.core.client.frontend.gui.styles.node.FontSizeStyle;
 import kasuga.lib.core.client.frontend.gui.styles.node.SimpleNodeStyleType;
@@ -42,7 +41,6 @@ public class ZIndexStyle extends Style<Integer, StyleTarget> {
             domNode.setZIndex(integerValue);
         });
     }
-
     @Override
     public String getValueString() {
         return integerValue.toString();

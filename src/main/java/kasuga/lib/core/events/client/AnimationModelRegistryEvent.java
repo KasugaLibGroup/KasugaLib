@@ -7,7 +7,7 @@ import kasuga.lib.core.client.model.BedrockModelLoader;
 import kasuga.lib.core.client.model.ModelPreloadManager;
 import kasuga.lib.core.client.model.anim_instance.AnimCacheManager;
 import kasuga.lib.core.client.model.anim_json.AnimationFile;
-import kasuga.lib.core.util.Resources;
+import kasuga.lib.core.resource.Resources;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraftforge.client.event.ModelEvent;

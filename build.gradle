@@ -316,6 +316,7 @@ jar {
 
 // Example configuration to allow publishing using the maven-publish plugin
 jar.finalizedBy('reobfShadowJar')
+jar.finalizedBy('multiPlatformBinaryPack')
 
 multiPlatformBinaryPack {
     platform {
@@ -326,6 +327,12 @@ multiPlatformBinaryPack {
     platform {
         name 'macOS' 
         dependencies = [ project.configurations.macOSDependency ]
+    }
+
+    platform {
+        name 'unified'
+        dependencies = [ project.configurations.commonDependency, project.configurations.macOSDependency ]
+        archiveClassifier = ''
     }
 
     dependsOn("reobfShadowJar")
@@ -371,16 +378,16 @@ publishing {
             
             // 为每个平台的 JAR 文件指定不同的分类器
             tasks.named('multiPlatformBinaryPack').get().platforms.each { platform ->
-                artifact("${buildDir}/libs/${archivesBaseName}-${version}-${platform.name}.jar") {
-                    builtBy tasks.named('multiPlatformBinaryPack')
-                    classifier platform.name // 使用平台名称作为分类器
+                String jarClassifier = platform.getArchiveClassifier();
+                String platformName = platform.getName();
+                String suffix = jarClassifier;
+                if(suffix != null && suffix.length() > 0){
+                    suffix = "-" + suffix;
                 }
-            }
-            
-            // 添加统一的 JAR 文件
-            artifact("${buildDir}/libs/${archivesBaseName}-${version}.jar") {
-                builtBy tasks.named('multiPlatformBinaryPack')
-                classifier '' // 为统一的 JAR 文件指定分类器
+                artifact("${buildDir}/libs/${archivesBaseName}-${version}${suffix}.jar") {
+                    builtBy tasks.named("platformJar${platformName.capitalize()}")
+                    classifier jarClassifier // 使用平台名称作为分类器
+                }
             }
         }
     }

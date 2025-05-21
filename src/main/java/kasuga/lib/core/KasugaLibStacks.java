@@ -14,6 +14,7 @@ import kasuga.lib.core.client.frontend.gui.GuiEngine;
 import kasuga.lib.core.client.model.ModelPreloadManager;
 import kasuga.lib.core.events.both.BothSetupEvent;
 import kasuga.lib.core.events.both.EntityAttributeEvent;
+import kasuga.lib.core.events.both.ResourcePackEvent;
 import kasuga.lib.core.events.client.*;
 import kasuga.lib.core.events.server.ServerConnectionListeners;
 import kasuga.lib.core.events.server.ServerResourceListener;
@@ -24,6 +25,7 @@ import kasuga.lib.core.javascript.JavascriptApi;
 import kasuga.lib.core.menu.GuiMenuManager;
 import kasuga.lib.core.menu.locator.ServerChunkMenuLocatorManager;
 import kasuga.lib.core.menu.targets.TargetsClient;
+import kasuga.lib.core.resource.KasugaPackFinder;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.registrations.client.KeyBindingReg;
 import kasuga.lib.registrations.create.TrackMaterialReg;
@@ -87,13 +89,16 @@ public class KasugaLibStacks {
 
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverAboutToStart);
+        MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverStopped);
+        MinecraftForge.EVENT_BUS.addListener(ResourcePackEvent::onResourcePackReload);
+        MinecraftForge.EVENT_BUS.addListener(ResourcePackEvent::onClientResourcePackReload);
         MinecraftForge.EVENT_BUS.addListener(PacketEvent::onServerPayloadHandleEvent);
         MinecraftForge.EVENT_BUS.addListener(ServerChunkMenuLocatorManager::onWatch);
         MinecraftForge.EVENT_BUS.addListener(ServerChunkMenuLocatorManager::onUnWatch);
         bus.addListener(BothSetupEvent::onFMLCommonSetup);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
         MinecraftForge.EVENT_BUS.addListener(ServerTickEvent::onServerTick);
-
+        bus.addListener(KasugaPackFinder.getInstance()::post);
 
         if(Envs.isClient()) {
             MinecraftForge.EVENT_BUS.addListener(PacketEvent::onClientPayloadHandleEvent);
@@ -109,6 +114,7 @@ public class KasugaLibStacks {
             MinecraftForge.EVENT_BUS.addListener(ClientConnection::onClientDisconnect);
 
             bus.addListener(ModelRegistryEvent::registerAdditionalModels);
+            // bus.addListener(ModelRegistryEvent::beforeTextureStitch);
             bus.addListener(ModelRegistryEvent::registerStaticImages);
             bus.addListener(ModelRegistryEvent::bakingCompleted);
             bus.addListener(TextureRegistryEvent::onModelRegistry);

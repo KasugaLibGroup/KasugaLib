@@ -1,6 +1,6 @@
 package kasuga.lib.core;
 
-import kasuga.lib.core.util.Resources;
+import kasuga.lib.core.resource.Resources;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;

@@ -5,8 +5,7 @@ import com.mojang.blaze3d.vertex.*;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
 import kasuga.lib.core.client.render.PoseContext;
 import kasuga.lib.core.client.render.SimpleColor;
-import kasuga.lib.core.util.LazyRecomputable;
-import kasuga.lib.core.util.Resources;
+import kasuga.lib.core.resource.Resources;
 import kasuga.lib.core.util.data_type.Pair;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -23,7 +22,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
-import java.util.function.Supplier;
 
 public class Texture extends GraphicsImage<Texture> {
     @Nullable

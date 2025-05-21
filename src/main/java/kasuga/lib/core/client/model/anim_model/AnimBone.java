@@ -66,7 +66,7 @@ public class AnimBone implements BedrockRenderable, Animable {
         HashMap<String, Locator> locators = bone.getLocators();
         Vector3f parentPivot = parent == null ? new Vector3f() : new Vector3f(parent.getPivot());
         locators.forEach((name, loc) -> {
-            this.locators.put(name, new Locator(vonvertPivot(loc.position, parentPivot), loc.rotation));
+            this.locators.put(name, new Locator(convertPivot(loc.position, parentPivot), loc.rotation));
         });
     }
 
@@ -144,7 +144,7 @@ public class AnimBone implements BedrockRenderable, Animable {
     public void applyTranslationAndRotation(PoseStack pose) {
         Vector3f translation = getRealPosition();
         Vector3f parentTrans = parent != null ? new Vector3f(parent.getPivot()) : new Vector3f();
-        Vector3f t = vonvertPivot(translation, parentTrans);
+        Vector3f t = convertPivot(translation, parentTrans);
         pose.translate(t.x(), t.y(), t.z());
 
         Vector3f rotation = getRealRotation();

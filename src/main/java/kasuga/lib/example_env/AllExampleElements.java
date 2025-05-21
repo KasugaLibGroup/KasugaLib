@@ -64,6 +64,8 @@ public class AllExampleElements {
             new BlockReg<GreenAppleBlock>("green_apple")
             .blockType(GreenAppleBlock::new)
             .materialColor(MapColor.COLOR_GREEN)
+            .withBlockEntity("green_apple_tile", GreenAppleTile::new)
+            .withBlockEntityRenderer(() -> GreenAppleTileRenderer::new)
             .withSound(SoundType.CROP)
             .defaultBlockItem(new ResourceLocation(KasugaLib.MOD_ID, "block/test/green_apple"))
             .stackSize(32)

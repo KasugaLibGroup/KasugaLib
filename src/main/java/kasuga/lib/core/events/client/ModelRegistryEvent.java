@@ -3,6 +3,7 @@ package kasuga.lib.core.events.client;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.render.model.MultiPartModel;
 import kasuga.lib.core.client.render.model.SimpleModel;
+import kasuga.lib.core.resource.CustomResourceReloadListener;
 import kasuga.lib.example_env.AllExampleElements;
 import kasuga.lib.core.client.render.texture.StaticImage;
 import kasuga.lib.core.client.render.texture.StaticImageHolder;
@@ -14,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.io.IOException;
@@ -85,4 +87,9 @@ public class ModelRegistryEvent {
             }
         });
     }
+
+//    @SubscribeEvent
+//    public static void beforeTextureStitch(TextureStitchEvent.Pre event) {
+//        // CustomResourceReloadListener.INSTANCE.applyOnStitch();
+//    }
 }
