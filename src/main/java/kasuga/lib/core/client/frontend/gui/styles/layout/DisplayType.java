@@ -1,19 +1,13 @@
 package kasuga.lib.core.client.frontend.gui.styles.layout;
 
 
-import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaDisplay;
-
 public enum DisplayType {
-    FLEX("flex", YogaDisplay.FLEX),
-    UNSET("unset",YogaDisplay.NONE),
-    INVALID("invalid",null)
+    FLEX("flex"),
+    UNSET("unset"),
+    INVALID("invalid")
     ;
 
-    private final YogaDisplay value;
-
-    DisplayType(String type, YogaDisplay yogaDisplayType) {
-        this.value = yogaDisplayType;
-    }
+    DisplayType(String type) {}
 
     public static DisplayType fromString(String positionType){
         return switch (positionType.toLowerCase()){
@@ -30,9 +24,5 @@ public enum DisplayType {
             case UNSET -> "unset";
             case INVALID -> "invalid";
         };
-    }
-
-    public YogaDisplay getValue(){
-        return value;
     }
 }

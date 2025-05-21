@@ -60,7 +60,7 @@ public class AnimCube implements BedrockRenderable {
     public void applyTranslationAndRotation(PoseStack pose) {
         Vector3f translation = pivot.copy();
         Vector3f parentTrans = bone.getPivot().copy();
-        Vector3f t = vonvertPivot(translation, parentTrans);
+        Vector3f t = convertPivot(translation, parentTrans);
         pose.translate(t.x(), t.y(), t.z());
 
         Vector3f rotation = this.rotation.copy();

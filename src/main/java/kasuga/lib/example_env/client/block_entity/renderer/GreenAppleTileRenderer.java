@@ -1,6 +1,9 @@
 package kasuga.lib.example_env.client.block_entity.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import kasuga.lib.core.client.block_bench_model.BlockBenchModelLoader;
+import kasuga.lib.core.client.block_bench_model.anim.instance.AnimationController;
+import kasuga.lib.core.client.block_bench_model.anim_model.AnimBlockBenchModel;
 import kasuga.lib.core.client.model.BedrockModelLoader;
 import kasuga.lib.core.client.model.anim_instance.AnimateTicker;
 import kasuga.lib.core.client.model.anim_instance.AnimationInstance;
@@ -24,19 +27,33 @@ public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTil
             ExampleMain.testRegistry.asResource("model"),
             "transform", AnimateTicker.TickerType.RENDER, 60, 100);
 
+    LazyRecomputable<AnimationController> bbTestModel = null;
+
     public GreenAppleTileRenderer(BlockEntityRendererProvider.Context context) {}
     // private WorldTexture TEXTURE = new WorldTexture(new ResourceLocation("kasuga_lib","textures/gui/pixel.png"));
     @Override
     public void render(GreenAppleTile tile, float partial, PoseStack pose, MultiBufferSource buffer, int light, int overlay) {
         pose.pushPose();
 
+        if (bbTestModel == null)
+            bbTestModel = LazyRecomputable.of(() -> {
+                AnimBlockBenchModel model = BlockBenchModelLoader.INSTANCE.getAnimModel("bb_test_model", RenderType.translucent());
+                if (model == null) return null;
+                return new AnimationController(model);
+            });
+        AnimationController controller = bbTestModel.get();
+        if (controller == null) return;
+        // controller.setSpeed("animation.model.new", 0.05f);
+        controller.start("animation.model.new");
+        controller.render(pose, buffer, light, overlay, partial);
+
         // textContext.rotateDeg(1f, 1f, 1f);
-        ticker.get().tickAndRender(pose, buffer, light, overlay, partial);
-        if (tile.sec < 10) tile.sec+=0.01;
-        if (tile.sec >= 10 && !tile.saved) {
-            tile.saved = true;
-            ticker.get().start();tile.sec++;
-        }
+//        ticker.get().tickAndRender(pose, buffer, light, overlay, partial);
+//        if (tile.sec < 10) tile.sec+=0.01;
+//        if (tile.sec >= 10 && !tile.saved) {
+//            tile.saved = true;
+//            ticker.get().start();tile.sec++;
+//        }
         // if (tile.sec < 5f && !tile.direction) tile.sec += 0.01f;
         // else if (tile.sec >= 5f && !tile.direction) tile.direction = true;
         // if (tile.sec > -2.5f && tile.direction) tile.sec -= 0.01f;

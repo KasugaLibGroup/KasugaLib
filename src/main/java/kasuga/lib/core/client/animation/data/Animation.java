@@ -15,7 +15,7 @@ import kasuga.lib.core.client.animation.infrastructure.IAnchor;
 import kasuga.lib.core.client.animation.infrastructure.MappingLayer;
 import kasuga.lib.core.client.render.PoseContext;
 import kasuga.lib.core.client.render.model.SimpleModel;
-import kasuga.lib.core.util.Resources;
+import kasuga.lib.core.resource.Resources;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.entity.Entity;

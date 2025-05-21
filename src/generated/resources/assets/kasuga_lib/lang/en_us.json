@@ -1,5 +1,7 @@
 {
   "tips.block": "--------------------------------------=== all blocks ===--------------------------------------",
   "block.kasuga_lib.green_apple": "Green Apple",
-  "item.kasuga_lib.example_fluid_bucket": "Example Fluid Bucket"
+  "item.kasuga_lib.example_fluid_bucket": "Example Fluid Bucket",
+  "internal.kasuga_lib.texture_pack": "Kasuga Lib Internal Texture Pack",
+  "internal.kasuga_lib.texture_pack.desc": "Internal Texture Pack for kasuga lib's blockbench model loader."
 }

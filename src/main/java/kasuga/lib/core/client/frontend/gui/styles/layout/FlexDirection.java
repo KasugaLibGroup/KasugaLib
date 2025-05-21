@@ -1,22 +1,17 @@
 package kasuga.lib.core.client.frontend.gui.styles.layout;
 
 
-import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaFlexDirection;
-
 public enum FlexDirection {
-    ROW("row", YogaFlexDirection.ROW),
-    COLUMN("column", YogaFlexDirection.COLUMN),
+    ROW("row"),
+    COLUMN("column"),
 
-    ROW_REVERSE("row_reverse", YogaFlexDirection.ROW_REVERSE),
-    COLUMN_REVERSE("column_reverse", YogaFlexDirection.COLUMN_REVERSE),
-    INVALID("column", null)
+    ROW_REVERSE("row_reverse"),
+    COLUMN_REVERSE("column_reverse"),
+    INVALID("column")
     ;
 
-    private final YogaFlexDirection value;
 
-    FlexDirection(String type, YogaFlexDirection flexDirection) {
-        this.value = flexDirection;
-    }
+    FlexDirection(String type) {}
 
     public static FlexDirection fromString(String flexDirection){
         return switch (flexDirection.toLowerCase()){
@@ -37,9 +32,5 @@ public enum FlexDirection {
             case COLUMN_REVERSE -> "column_reverse";
             case INVALID -> "invalid";
         };
-    }
-
-    public YogaFlexDirection getValue(){
-        return value;
     }
 }

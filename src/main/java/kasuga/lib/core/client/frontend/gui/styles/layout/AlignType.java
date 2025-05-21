@@ -1,25 +1,18 @@
 package kasuga.lib.core.client.frontend.gui.styles.layout;
 
 
-import kasuga.lib.core.client.frontend.gui.layout.yoga.api.YogaAlign;
-
 public enum AlignType {
-    AUTO("auto", YogaAlign.AUTO),
-    BASELINE("baseline", YogaAlign.BASELINE),
-    CENTER("center", YogaAlign.CENTER),
-    FLEX_END("flex_end", YogaAlign.FLEX_END),
-    FLEX_START("flex_start", YogaAlign.FLEX_START),
-    SPACE_AROUND("space_around", YogaAlign.SPACE_AROUND),
-    SPACE_BETWEEN("space_between", YogaAlign.SPACE_BETWEEN),
-    STRETCH("stretch", YogaAlign.STRETCH),
-    INVALID("invalid",null)
+    AUTO("auto"),
+    BASELINE("baseline"),
+    CENTER("center"),
+    FLEX_END("flex_end"),
+    FLEX_START("flex_start"),
+    SPACE_AROUND("space_around"),
+    SPACE_BETWEEN("space_between"),
+    STRETCH("stretch"),
+    INVALID("invalid")
     ;
-
-    private final YogaAlign value;
-
-    AlignType(String type, YogaAlign alignType) {
-        this.value = alignType;
-    }
+    AlignType(String type) {}
 
     public static AlignType fromString(String positionType){
         return switch (positionType.toLowerCase()){
@@ -48,9 +41,5 @@ public enum AlignType {
             case STRETCH -> "stretch";
             case INVALID -> "invalid";
         };
-    }
-
-    public YogaAlign getValue() {
-        return value;
     }
 }

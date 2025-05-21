@@ -159,4 +159,8 @@ public class TrainDeviceManager {
             system.notifyDistance(distance);
         }
     }
+
+    public Train getTrain() {
+        return train;
+    }
 }
