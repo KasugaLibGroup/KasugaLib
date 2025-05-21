@@ -207,7 +207,6 @@ public class AllExampleElements {
             .loadPacket(ExampleS2CPacket.class, ExampleS2CPacket::new)
             .submit(testRegistry);
 
-
     public static final GuiMenuType<GuiExampleMenu> MENU_EXAMPLE = GuiMenuType.createType(GuiExampleMenu::new);
 
 
@@ -241,5 +240,7 @@ public class AllExampleElements {
     public static void invoke() {
         // if (Envs.isClient()) AllClient.invoke();
         // testRegistry.submit();
+        if (Envs.isClient()) AllClient.invoke();
+        // REGISTRY.submit();
     }
 }

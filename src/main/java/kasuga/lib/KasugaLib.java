@@ -9,6 +9,7 @@ import kasuga.lib.core.javascript.commands.JavascriptModuleCommands;
 import kasuga.lib.core.packets.AllPackets;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.core.resource.KasugaPackResource;
+import kasuga.lib.example_env.ExampleMain;
 import kasuga.lib.example_env.AllExampleElements;
 import kasuga.lib.mixins.mixin.MultiPackResourceManagerAccessor;
 import kasuga.lib.mixins.mixin.ReloadableResourceManagerAccessor;

@@ -121,8 +121,8 @@ minecraft {
         }
 
         data {
-            workingDirectory project.file('run')
             arg '-mixin.config=kasuga.mixins.json'
+            workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
 
             property 'forge.logging.console.level', 'debug'
@@ -274,6 +274,11 @@ dependencies {
 
     shadedLib 'org.apache.httpcomponents:httpcore:4.4.14'
     shadedLib 'org.apache.httpcomponents:httpclient:4.5.13'
+
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
+    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.4.1")) {
+        jarJar.ranged(it, "[0.4.1,)")
+    }
 
 
     // testImplementation "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.0"

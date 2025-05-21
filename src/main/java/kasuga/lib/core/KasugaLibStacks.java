@@ -6,17 +6,20 @@ import kasuga.lib.core.base.CustomBlockRenderer;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgumentInfo;
 import kasuga.lib.core.channel.ChannelNetworkManager;
+import kasuga.lib.core.channel.network.NetworkManager;
 import kasuga.lib.core.channel.network.address.NetworkAddressTypes;
 import kasuga.lib.core.channel.packets.ChannelNetworkPacket;
 import kasuga.lib.core.channel.test.ChannelTest;
 import kasuga.lib.core.client.animation.Constants;
 import kasuga.lib.core.client.frontend.gui.GuiEngine;
 import kasuga.lib.core.client.model.ModelPreloadManager;
+import kasuga.lib.core.create.graph.RailwayManager;
 import kasuga.lib.core.events.both.BothSetupEvent;
 import kasuga.lib.core.events.both.EntityAttributeEvent;
 import kasuga.lib.core.events.both.ResourcePackEvent;
 import kasuga.lib.core.events.client.*;
 import kasuga.lib.core.events.server.ServerConnectionListeners;
+import kasuga.lib.core.events.server.ServerLevelEvents;
 import kasuga.lib.core.events.server.ServerResourceListener;
 import kasuga.lib.core.events.server.ServerStartingEvents;
 import kasuga.lib.core.client.render.texture.old.SimpleTexture;
@@ -28,8 +31,8 @@ import kasuga.lib.core.menu.targets.TargetsClient;
 import kasuga.lib.core.resource.KasugaPackFinder;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.registrations.client.KeyBindingReg;
-import kasuga.lib.registrations.create.TrackMaterialReg;
 import kasuga.lib.registrations.common.FluidReg;
+import kasuga.lib.registrations.create.TrackMaterialReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import kasuga.lib.registrations.registry.FontRegistry;
 import kasuga.lib.registrations.registry.TextureRegistry;
@@ -38,6 +41,7 @@ import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -46,6 +50,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
+import java.util.function.Supplier;
 import java.util.HashSet;
 import java.util.Optional;
 
@@ -60,9 +65,9 @@ public class KasugaLibStacks {
     private final TextureRegistry TEXTURES;
     private final FontRegistry FONTS;
     private final RandomSource random = RandomSource.create();
-    private final HashMap<TrackMaterial, TrackMaterialReg> TRACK_MATERIALS;
     private final HashMap<Block, CustomBlockRenderer> BLOCK_RENDERERS;
     public static final HashMap<FluidReg<?>, String> FLUID_RENDERS = new HashMap<>();
+    private final HashMap<TrackMaterial, TrackMaterialReg> TRACK_MATERIALS;
 
     public final JavascriptApi JAVASCRIPT = new JavascriptApi();
 
@@ -73,6 +78,8 @@ public class KasugaLibStacks {
     public static final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
     public static final ChannelNetworkManager CHANNEL = new ChannelNetworkManager();
     public static HashSet<Minecraft> mcs = new HashSet<>();
+
+    public final RailwayManager RAILWAY = RailwayManager.createServer();
 
     public KasugaLibStacks(IEventBus bus) {
         this.bus = bus;
@@ -98,6 +105,11 @@ public class KasugaLibStacks {
         bus.addListener(BothSetupEvent::onFMLCommonSetup);
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
         MinecraftForge.EVENT_BUS.addListener(ServerTickEvent::onServerTick);
+
+        MinecraftForge.EVENT_BUS.addListener(ServerLevelEvents::onLevelLoad);
+        MinecraftForge.EVENT_BUS.addListener(ServerLevelEvents::onLevelSave);
+        MinecraftForge.EVENT_BUS.addListener(ServerLevelEvents::onLevelExit);
+
         bus.addListener(KasugaPackFinder.getInstance()::post);
 
         if(Envs.isClient()) {

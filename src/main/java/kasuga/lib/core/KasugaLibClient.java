@@ -5,6 +5,8 @@ import kasuga.lib.core.client.model.BedrockModelLoader;
 import kasuga.lib.core.client.model.model_json.BedrockModel;
 import kasuga.lib.core.client.render.texture.StaticImageHolder;
 import kasuga.lib.core.resource.Resources;
+import kasuga.lib.core.create.graph.RailwayManager;
+import kasuga.lib.core.create.graph.RailwayManager;
 import kasuga.lib.core.util.LazyRecomputable;
 import kasuga.lib.core.util.projectile.PanelRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -29,4 +31,6 @@ public class KasugaLibClient {
 //        Resources.registerCustomPack(PackType.CLIENT_RESOURCES,
 //                MOD_ID, INTERNAL_TEXTURE_PACK);
     }
+
+    public static final RailwayManager RAILWAY = RailwayManager.createClient();
 }

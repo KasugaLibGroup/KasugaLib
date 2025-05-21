@@ -11,19 +11,25 @@
     "resources.DelegatingPackResourcesMixin",
     "resources.FilePackResourceMixin",
     "resources.PathPackResourceMixin",
-    "MixinStationBlockEntity"
+    "MixinStationBlockEntity",
+    "create.GlobalRailwayManagerMixin",
+    "create.TrackGraphMixin",
+    "create.TrackGraphAccessor",
+    "create.SignalPropagatorMixin",
+    "create.EdgeDataMixin",
+    "create.TrainMixin"
   ],
   "client": [
     "client.MixinBlockModel$Deserializer",
-    "client.MixinBezierConnection",
     "client.MixinBlockModelBinding",
-    "client.MixinBlockRenderDispatcher",
-    "client.MixinDirectoryLister",
-    "client.MixinTextureManager",
     "client.MixinBlockModelShaper",
     "client.MixinTextureManager",
+    "client.MixinBezierConnection",
+    "client.MixinBlockRenderDispatcher",
     "client.MixinCarriageContraptionEntityRenderer",
-    "client.MixinStationBlockEntityClient"
+    "client.MixinStationBlockEntityClient",
+    "client.MixinModelBakery",
+    "client.MixinDirectoryLister",
   ],
   "minVersion": "0.8"
 }

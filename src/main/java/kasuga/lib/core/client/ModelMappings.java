@@ -32,8 +32,8 @@ public class ModelMappings {
             if(!name.endsWith(".json") || !name.startsWith(IDENTIFIER)) continue;
             String plainName = IDENTIFIER + name.substring(name.lastIndexOf("/"));
             map.put(new ResourceLocation(namespace, plainName), new ResourceLocation(namespace, name));
-            KasugaLib.MAIN_LOGGER.error("mapping block:" + name);
         }
+        KasugaLib.MAIN_LOGGER.info("Successfully remap " + resources.keySet().size() + " models.");
         map_finished = true;
     }
 

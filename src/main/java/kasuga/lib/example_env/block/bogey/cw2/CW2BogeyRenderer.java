@@ -9,13 +9,14 @@ import com.simibubi.create.content.trains.bogey.BogeySizes;
 import com.simibubi.create.content.trains.entity.CarriageBogey;
 import com.simibubi.create.foundation.utility.Iterate;
 import kasuga.lib.example_env.AllExampleElements;
+import kasuga.lib.example_env.ExampleMain;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
 public class CW2BogeyRenderer extends BogeyRenderer {
 
     private static ResourceLocation asBlockModelResource(String path) {
-        return AllExampleElements.testRegistry.asResource("block/" + path);
+        return ExampleMain.testRegistry.asResource("block/" + path);
     }
 
     /**

@@ -1,6 +1,6 @@
 {
   "values": [
-    "kasuga_lib:example_fluid_still",
+    "kasuga_lib:example_fluid",
     "kasuga_lib:example_fluid_flow"
   ]
 }
