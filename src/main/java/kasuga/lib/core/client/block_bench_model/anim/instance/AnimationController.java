@@ -1,7 +1,6 @@
 package kasuga.lib.core.client.block_bench_model.anim.instance;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.sk89q.jchronic.utils.Tick;
 import kasuga.lib.core.client.block_bench_model.anim.Animation;
 import kasuga.lib.core.client.block_bench_model.anim_model.AnimBlockBenchModel;
 import kasuga.lib.core.util.data_type.Pair;

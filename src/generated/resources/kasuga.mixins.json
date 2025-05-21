@@ -10,7 +10,6 @@
     "resources.DelegatingResourcePackMixin",
     "MultiPackResourceManagerAccessor",
     "ReloadableResourceManagerAccessor",
-    "resources.DelegatingPackResourcesMixin",
     "resources.FilePackResourceMixin",
     "resources.PathResourcePackMixin"
   ],

@@ -19,8 +19,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.IModelBuilder;
-import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
-import net.minecraftforge.client.model.geometry.SimpleUnbakedGeometry;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.geometry.IModelGeometryPart;
+import net.minecraftforge.client.model.geometry.IMultipartModelGeometry;
 
 import java.io.IOException;
 import java.util.*;
@@ -28,7 +29,7 @@ import java.util.function.Function;
 
 @OnlyIn(Dist.CLIENT)
 @Getter
-public class BlockBenchModel extends SimpleUnbakedGeometry<BlockBenchModel> {
+public class BlockBenchModel implements IMultipartModelGeometry<BlockBenchModel> {
 
     private final BlockBenchFile file;
     private final HashMap<Texture, Pair<ResourceLocation, Material>> materials;
@@ -142,17 +143,26 @@ public class BlockBenchModel extends SimpleUnbakedGeometry<BlockBenchModel> {
     }
 
     @Override
-    protected void addQuads(IGeometryBakingContext owner, IModelBuilder<?> modelBuilder,
-                            ModelBakery bakery,
-                            Function<Material, TextureAtlasSprite> spriteGetter,
-                            ModelState modelTransform, ResourceLocation modelLocation) {
+    public Collection<? extends IModelGeometryPart> getParts() {
+        return List.of();
+    }
+
+    @Override
+    public Optional<? extends IModelGeometryPart> getPart(String s) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void addQuads(IModelConfiguration owner, IModelBuilder<?> modelBuilder, ModelBakery bakery,
+                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
+                            ResourceLocation modelLocation) {
         TransformContext context = new TransformContext();
         context.getQuaternion().mul(modelTransform.getRotation().getLeftRotation());
         rootGroup.addQuads(modelBuilder, modelTransform, context, resolution, spriteGetter);
     }
 
     @Override
-    public Collection<Material> getMaterials(IGeometryBakingContext context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<com.mojang.datafixers.util.Pair<String, String>> missingTextureErrors) {
+    public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<com.mojang.datafixers.util.Pair<String, String>> missingTextureErrors) {
         List<Material> upload = new ArrayList<>(materials.size());
         materials.forEach((tex, pair) -> upload.add(pair.getSecond()));
         return upload;

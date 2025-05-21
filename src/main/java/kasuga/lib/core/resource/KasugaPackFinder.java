@@ -2,6 +2,7 @@ package kasuga.lib.core.resource;
 
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.KasugaLibClient;
+import kasuga.lib.core.util.ComponentHelper;
 import lombok.Getter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -32,8 +33,8 @@ public class KasugaPackFinder {
 
     static {
         PackBuilder ksgInternalBuilder = new PackBuilder(KasugaLibClient.INTERNAL_TEXTURE_PACK,
-                Component.translatable("internal.kasuga_lib.texture_pack"),
-                Component.translatable("internal.kasuga_lib.texture_pack.desc"),
+                ComponentHelper.translatable("internal.kasuga_lib.texture_pack"),
+                ComponentHelper.translatable("internal.kasuga_lib.texture_pack.desc"),
                 9, PackType.CLIENT_RESOURCES)
                 .addNamespace(KasugaLib.MOD_ID);
         getInstance().addPackBuilder(ksgInternalBuilder);

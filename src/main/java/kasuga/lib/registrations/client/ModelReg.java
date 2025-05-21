@@ -108,7 +108,8 @@ public class ModelReg extends Reg {
         ResourceLocation location = new ResourceLocation(registry.namespace, "models/" + this.location.getPath() + ".json");
         Resource resource = getResource(location);
         if(resource == null) return;
-        JsonObject json = JsonParser.parseReader(Resources.openAsJson(resource)).getAsJsonObject();
+        JsonObject json = JsonParser.parseReader(
+                new InputStreamReader(resource.getInputStream())).getAsJsonObject();
         if(!json.has(COMBINE_CODEC)) return;
         multiPart = true;
         JsonObject members = json.getAsJsonObject(COMBINE_CODEC);
@@ -152,9 +153,9 @@ public class ModelReg extends Reg {
     @Inner
     private JsonObject presentIfIsMulti(ResourceLocation location) throws IOException {
         Resource resource = getResource(location);
-        HashMap<String, ResourceLocation> result = new HashMap<>();
         if(resource == null) return null;
-        JsonObject json = JsonParser.parseReader(Resources.openAsJson(resource)).getAsJsonObject();
+        JsonObject json = JsonParser.parseReader
+                (new InputStreamReader(resource.getInputStream())).getAsJsonObject();
         if(!json.has(COMBINE_CODEC)) return null;
         return json.getAsJsonObject(COMBINE_CODEC);
     }

@@ -71,7 +71,7 @@ public class BlockBenchElement implements ModelElement {
         }
         for (BlockBenchFace face : faces) {
             BakedQuad quad = face.fillVertices(transformedVertices, resolution, spriteGetter, transform);
-            if (quad != null) modelBuilder.addUnculledFace(quad);
+            if (quad != null) modelBuilder.addGeneralQuad(quad);
         }
     }
 }

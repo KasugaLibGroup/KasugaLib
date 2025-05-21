@@ -11,7 +11,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ReloadableServerResources;
-import net.minecraft.server.WorldLoader;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.*;
@@ -63,13 +62,18 @@ public class Resources {
     @Util
     public static net.minecraft.server.packs.resources.Resource getResource(ResourceLocation location) throws IOException {
         ResourceManager rm = Minecraft.getInstance().getResourceManager();
-        return rm.getResourceOrThrow(location);
+        return rm.getResource(location);
     }
 
     @Util
     public static Optional<net.minecraft.server.packs.resources.Resource> attemptGetResource(ResourceLocation location) {
         ResourceManager rm = Minecraft.getInstance().getResourceManager();
-        return rm.getResource(location);
+        try {
+            Resource resources = rm.getResource(location);
+            return Optional.of(resources);
+        } catch (IOException e) {
+            return Optional.empty();
+        }
     }
 
     /**
@@ -95,10 +99,16 @@ public class Resources {
     @Inner
     private static Map<String, net.minecraft.server.packs.resources.Resource> innerGetResources(ResourceManager rm, ResourceLocation location, boolean isFile, boolean fullyPath) throws IOException {
         if(isFile) {
-            return Map.of(location.getPath(), rm.getResourceOrThrow(location));
+            return Map.of(location.getPath(), rm.getResource(location));
         }
-        Map<ResourceLocation, net.minecraft.server.packs.resources.Resource> resources = rm.listResources(location.getPath(),
-                l -> l.getNamespace().equals(location.getNamespace()));
+        Collection<ResourceLocation> resourcesList = rm.listResources(location.getPath(), rl -> true);
+        HashMap<ResourceLocation, Resource> resources = new HashMap<>();
+        resourcesList.forEach(resource -> {
+            try {
+                if (!resource.getNamespace().equals(location.getNamespace())) return;
+                resources.put(resource, rm.getResource(resource));
+            } catch (IOException ignored) {}
+        });
         HashMap<String, net.minecraft.server.packs.resources.Resource> result = new HashMap<>();
         for(ResourceLocation location1 : resources.keySet()) {
             if(fullyPath) {
@@ -218,7 +228,7 @@ public class Resources {
                 fallback = new FallbackResourceManager(PackType.CLIENT_RESOURCES, space);
                 fallbackMap.put(space, fallback);
             }
-            fallback.push(resources);
+            fallback.add(resources);
         }
     }
 
@@ -288,7 +298,7 @@ public class Resources {
             manager.getNamespacedManagers().put(namespace, fallback);
         }
         KasugaPackResource resource = new KasugaPackResource(name, namespace);
-        fallback.push(resource);
+        fallback.add(resource);
         return resource;
     }
 }

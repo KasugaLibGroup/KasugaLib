@@ -25,6 +25,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -66,7 +67,8 @@ public class Animation {
 
     public static Map<String, Animation> decode(Namespace namespace, ResourceLocation location) throws IOException {
         Resource resources = Resources.getResource(location);
-        JsonObject fileRoot = JsonParser.parseReader(Resources.openAsJson(resources)).getAsJsonObject();
+        JsonObject fileRoot = JsonParser.parseReader(
+                new InputStreamReader(resources.getInputStream())).getAsJsonObject();
         if(!fileRoot.has("animation")) return new HashMap<>();
         HashMap<String, Animation> result = new HashMap<>();
         JsonObject root = fileRoot.getAsJsonObject("animation");

@@ -17,15 +17,16 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.geometry.IGeometryLoader;
+import net.minecraftforge.client.model.IModelLoader;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.UUID;
 
 @OnlyIn(Dist.CLIENT)
-public class BlockBenchModelLoader implements IGeometryLoader<BlockBenchModel>, ResourceManagerReloadListener, ItemTransformProvider {
+public class BlockBenchModelLoader implements IModelLoader<BlockBenchModel>, ResourceManagerReloadListener, ItemTransformProvider {
 
     public static final BlockBenchModelLoader INSTANCE = new BlockBenchModelLoader();
 
@@ -55,13 +56,13 @@ public class BlockBenchModelLoader implements IGeometryLoader<BlockBenchModel>, 
     }
 
     @Override
-    public BlockBenchModel read(JsonObject jsonObject, JsonDeserializationContext deserializationContext) throws JsonParseException {
+    public BlockBenchModel read(JsonDeserializationContext deserializationContext, JsonObject jsonObject) throws JsonParseException {
         ResourceLocation loc = new ResourceLocation(jsonObject.get("model").getAsString());
         ResourceLocation modelLocation = new ResourceLocation(loc.getNamespace(), "models/" + loc.getPath() + ".bbmodel");
         String modelIdentifier = jsonObject.has("identifier") ? jsonObject.get("identifier").getAsString() : null;
         try {
             Resource resource = Resources.getResource(modelLocation);
-            BlockBenchFile file = new BlockBenchFile(JsonParser.parseReader(resource.openAsReader()).getAsJsonObject());
+            BlockBenchFile file = new BlockBenchFile(JsonParser.parseReader(new InputStreamReader(resource.getInputStream())).getAsJsonObject());
             BlockBenchModel model = new BlockBenchModel(file);
             if (modelIdentifier != null) {
                 models.put(modelIdentifier, model);

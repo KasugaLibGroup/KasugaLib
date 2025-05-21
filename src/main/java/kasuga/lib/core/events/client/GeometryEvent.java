@@ -13,7 +13,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class GeometryEvent {
 
     @SubscribeEvent
-    public static void registerGeometry(ModelEvent.RegisterGeometryLoaders event) {
+    public static void registerGeometry(ModelRegistryEvent event) {
         ModelLoaderRegistry.registerLoader(new ResourceLocation(KasugaLib.MOD_ID, "bedrock_model"), BedrockModelLoader.INSTANCE);
         ModelLoaderRegistry.registerLoader(new ResourceLocation(KasugaLib.MOD_ID, "bedrock_animated"), AnimModelLoader.INSTANCE);
         ModelLoaderRegistry.registerLoader(new ResourceLocation(KasugaLib.MOD_ID, "blockbench_model"), BlockBenchModelLoader.INSTANCE);
