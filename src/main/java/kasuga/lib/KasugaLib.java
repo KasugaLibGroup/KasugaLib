@@ -53,7 +53,7 @@ public class KasugaLib {
         FrontendCommands.invoke();
         KasugaLibConfig.invoke();
         if (Envs.isDevEnvironment())
-            AllExampleElements.invoke();
+            ExampleMain.invoke();
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()-> LayoutEngines::init);
     }
 
