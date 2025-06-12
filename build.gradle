@@ -292,6 +292,15 @@ dependencies {
     shadedLib (group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)")
     // Examples using mod jars from ./libs
     // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
+    minecraftLibrary("io.javalin:javalin:6.6.0"){
+        exclude group: 'org.jetbrains', module:'annotations'
+        exclude group: 'j2objc', module: 'annotations'
+        transitive = true
+    }
+
+    shadedLib "io.javalin:javalin:6.6.0"
+
+    minecraftLibrary 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
 
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html

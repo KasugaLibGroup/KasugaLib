@@ -3,5 +3,7 @@
   "block.kasuga_lib.green_apple": "绿色林檎",
   "item.kasuga_lib.example_fluid_bucket": "范例液体桶",
   "internal.kasuga_lib.texture_pack": "Kasuga Lib 内置纹理包",
-  "internal.kasuga_lib.texture_pack.desc": "服务于Kasuga Lib内置BlockBench模型加载器的内置纹理包。"
+  "internal.kasuga_lib.texture_pack.desc": "服务于Kasuga Lib内置BlockBench模型加载器的内置纹理包。",
+  "msg.kasuga_lib.connection": "点击打开 %s",
+  "msg.kasuga_lib.server_not_started": "Web 服务器在请求的方向上未启用。"
 }

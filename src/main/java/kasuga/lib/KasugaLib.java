@@ -5,10 +5,12 @@ import com.google.gson.GsonBuilder;
 import kasuga.lib.core.KasugaLibStacks;
 import kasuga.lib.core.client.frontend.commands.FrontendCommands;
 import kasuga.lib.core.client.frontend.gui.layout.LayoutEngines;
+import kasuga.lib.core.client.frontend.webserver.GuiWebServerEndpoint;
 import kasuga.lib.core.javascript.commands.JavascriptModuleCommands;
 import kasuga.lib.core.packets.AllPackets;
 import kasuga.lib.core.util.Envs;
 import kasuga.lib.core.resource.KasugaPackResource;
+import kasuga.lib.core.webserver.KasugaHttpServer;
 import kasuga.lib.example_env.ExampleMain;
 import kasuga.lib.example_env.AllExampleElements;
 import kasuga.lib.mixins.mixin.MultiPackResourceManagerAccessor;
@@ -52,9 +54,11 @@ public class KasugaLib {
         JavascriptModuleCommands.invoke();
         FrontendCommands.invoke();
         KasugaLibConfig.invoke();
+        KasugaHttpServer.invoke();
         if (Envs.isDevEnvironment())
             ExampleMain.invoke();
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()-> LayoutEngines::init);
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()-> GuiWebServerEndpoint::invoke);
     }
 
     public static Logger createLogger(String name) {
