@@ -32,7 +32,16 @@ public class KasugaAuthenticator {
 
             authenticateUrl = KasugaClientFastAuthenticator.authenticate(path);
             if(authenticateUrl != null && authenticateUrl.length() > 0) {
-                player.sendSystemMessage(Component.translatable("msg.kasuga_lib.connection", authenticateUrl));
+                player.sendSystemMessage(
+                        Component.translatable("msg.kasuga_lib.connection", authenticateUrl)
+                                .setStyle(
+                                        Component.empty().getStyle()
+                                                .withClickEvent(new net.minecraft.network.chat.ClickEvent(
+                                                        net.minecraft.network.chat.ClickEvent.Action.OPEN_URL,
+                                                        authenticateUrl
+                                                ))
+                                )
+                );
             } else AllPackets.CHANNEL_REG.sendToServer(new C2SOpenWebUIPacket(path));
             return;
         } else if(player instanceof ServerPlayer serverPlayer) {

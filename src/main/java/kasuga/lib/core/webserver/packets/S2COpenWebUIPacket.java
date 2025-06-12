@@ -8,6 +8,7 @@ import kasuga.lib.core.webserver.KasugaHttpServer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -37,7 +38,18 @@ public class S2COpenWebUIPacket extends S2CPacket {
             player.sendSystemMessage(Component.translatable("msg.kasuga_lib.server_not_started"));
         }
 
-        player.sendSystemMessage(Component.translatable("msg.kasuga_lib.connection", KasugaClientFastAuthenticator.authenticate(path)));
+        String connectionUrl = KasugaClientFastAuthenticator.authenticate(path);
+
+        player.sendSystemMessage(
+                Component.translatable("msg.kasuga_lib.connection", connectionUrl)
+                        .setStyle(
+                                Style.EMPTY
+                                        .withClickEvent(new net.minecraft.network.chat.ClickEvent(
+                                                net.minecraft.network.chat.ClickEvent.Action.OPEN_URL,
+                                                connectionUrl
+                                        ))
+                        )
+        );
     }
 
     @Override
