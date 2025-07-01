@@ -44,7 +44,7 @@ class PackerPlugin implements Plugin<Project> {
             project.tasks.create(name: jarTaskName, type: Jar) { jarTask ->
                 duplicatesStrategy = 'exclude'
                 from {
-                    project.tasks.getByName('shadowJar').archiveFile.map { shadowJarFile -> project.zipTree(shadowJarFile) }
+                    project.tasks.getByName('jarJar').archiveFile.map { shadowJarFile -> project.zipTree(shadowJarFile) }
                 }
 
                 from {
@@ -63,7 +63,7 @@ class PackerPlugin implements Plugin<Project> {
                 manifest {
                     attributes(project.tasks.jar.manifest.attributes)
                 }
-                dependsOn("reobfShadowJar")
+                dependsOn("reobfJarJar")
             }
 
             // 将平台特定的 jar 任务设置为当前任务的依赖
