@@ -360,6 +360,17 @@ shadowJar{
     relocate('interpreter','kasuga.lib.vendor_modules.interpreter');
     relocate('org.apache', 'kasuga.lib.vendor_modules.org.apache');
     // relocate ('com.caoccao.javet', 'kasuga.lib.vendor_modules.com.caoccao.javet');
+    
+    relocate "jakarta", "kasuga.lib.vendor_modules.jakarta"
+    relocate "javax.servlet", "kasuga.lib.vendor_modules.org.javax.servlet"
+    relocate "org.intellij", "kasuga.lib.vendor_modules.org.intellij"
+    relocate "org.jetbrains", "kasuga.lib.vendor_modules.org.jetbrains"
+    relocate "org.slf4j", "kasuga.lib.vendor_modules.org.slf4j"
+    relocate "org.eclipse", "kasuga.lib.vendor_modules.org.eclipse"
+    relocate "kotlin", "kasuga.lib.vendor_modules.kotlin.kotlin"
+    relocate "io.javalin", "kasuga.lib.vendor_modules.io.javalin"
+    relocate 'org.eclipse.jetty', 'kasuga.lib.vendor_modules.org.eclipse.jetty'
+
     finalizedBy 'reobfShadowJar'
 }
 
