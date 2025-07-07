@@ -192,4 +192,18 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
     public Object getContextModuleNative(String contextModuleName) {
         return this.guiInstance.getModule(contextModuleName);
     }
+
+    List<GuiDomNode> activateElements = List.of();
+
+    public void setActivateElement(GuiDomNode node) {
+        activateElements = List.of(node);
+    }
+
+    public void removeActivateElement() {
+        activateElements = List.of();
+    }
+
+    public List<GuiDomNode> getActivateElements() {
+        return activateElements;
+    }
 }
