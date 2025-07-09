@@ -6,6 +6,8 @@ import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutEngine;
 import kasuga.lib.core.client.frontend.dom.DomContext;
 import kasuga.lib.core.client.frontend.dom.registration.DOMPriorityRegistry;
+import kasuga.lib.core.client.frontend.gui.events.mouse.MouseDragEndEvent;
+import kasuga.lib.core.client.frontend.gui.events.mouse.MouseUpEvent;
 import kasuga.lib.core.client.frontend.gui.layout.LayoutEngines;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomNode;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomRoot;
@@ -200,6 +202,14 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
     }
 
     public void removeActivateElement() {
+        activateElements = List.of();
+    }
+
+    public void removeActivateElement(MouseUpEvent $event){
+        MouseDragEndEvent event = MouseDragEndEvent.fromMouseUp($event);
+        for (GuiDomNode activateElement : activateElements) {
+            activateElement.dispatchEvent(event.getType(), event.withTarget(activateElement));
+        }
         activateElements = List.of();
     }
 

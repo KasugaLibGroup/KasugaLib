@@ -203,8 +203,8 @@ public class GuiDomNode extends DomNode<GuiContext> {
         // 2. Dispatch the event to the children
         // 3. If the event is not stopped, dispatch the event to the parent
 
-        if(event instanceof MouseUpEvent) {
-            domContext.removeActivateElement();
+        if(event instanceof MouseUpEvent mouseUpEvent) {
+            domContext.removeActivateElement(mouseUpEvent);
         }
 
         LayoutContext<?,GuiDomNode> layout = getLayoutManager();
