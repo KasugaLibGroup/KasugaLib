@@ -1,5 +1,11 @@
 package kasuga.lib.core.webserver;
 
+import kasuga.lib.core.webserver.packets.S2COpenWebUIPacket;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.entity.player.Player;
+
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -24,5 +30,29 @@ public class KasugaClientFastAuthenticator {
                 URLEncoder.encode(path, StandardCharsets.UTF_8)
         );
         return url;
+    }
+
+    public static void handle(S2COpenWebUIPacket s2COpenWebUIPacket) {
+        Player player = Minecraft.getInstance().player;
+
+        if (player != null)
+            return;
+
+        if (!KasugaHttpServer.isClientHttpServerStart()) {
+            player.sendSystemMessage(Component.translatable("msg.kasuga_lib.server_not_started"));
+        }
+
+        String connectionUrl = KasugaClientFastAuthenticator.authenticate(s2COpenWebUIPacket.getPath());
+
+        player.sendSystemMessage(
+                Component.translatable("msg.kasuga_lib.connection", connectionUrl)
+                        .setStyle(
+                                Style.EMPTY
+                                        .withClickEvent(new net.minecraft.network.chat.ClickEvent(
+                                                net.minecraft.network.chat.ClickEvent.Action.OPEN_URL,
+                                                connectionUrl
+                                        ))
+                        )
+        );
     }
 }

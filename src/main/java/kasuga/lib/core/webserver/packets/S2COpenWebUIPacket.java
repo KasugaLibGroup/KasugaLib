@@ -11,6 +11,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -29,31 +31,17 @@ public class S2COpenWebUIPacket extends S2CPacket {
 
     @Override
     public void handle(Minecraft minecraft) {
-        Player player = minecraft.player;
-
-        if(player != null)
-            return;
-
-        if(!KasugaHttpServer.isClientHttpServerStart()) {
-            player.sendSystemMessage(Component.translatable("msg.kasuga_lib.server_not_started"));
-        }
-
-        String connectionUrl = KasugaClientFastAuthenticator.authenticate(path);
-
-        player.sendSystemMessage(
-                Component.translatable("msg.kasuga_lib.connection", connectionUrl)
-                        .setStyle(
-                                Style.EMPTY
-                                        .withClickEvent(new net.minecraft.network.chat.ClickEvent(
-                                                net.minecraft.network.chat.ClickEvent.Action.OPEN_URL,
-                                                connectionUrl
-                                        ))
-                        )
-        );
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()->()-> {
+            KasugaClientFastAuthenticator.handle(this);
+        });
     }
 
     @Override
     public void encode(FriendlyByteBuf buf) {
         buf.writeUtf(path);
+    }
+
+    public String getPath() {
+        return path;
     }
 }
