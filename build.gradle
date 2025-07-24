@@ -22,7 +22,6 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'org.spongepowered.mixin'
-apply plugin: kasuga.builder.PackerPlugin
 
 configurations {
     shadedLib
@@ -263,12 +262,12 @@ dependencies {
     shadedLib 'com.caoccao.javet:javet-core:4.0.0' // Must-have
 
 
-    commonDependency 'com.caoccao.javet:javet-v8-linux-arm64:4.0.0'
-    commonDependency 'com.caoccao.javet:javet-v8-linux-x86_64:4.0.0'
-    commonDependency 'com.caoccao.javet:javet-v8-windows-x86_64:4.0.0'
-    macOSDependency 'com.caoccao.javet:javet-v8-macos-arm64:4.0.0'
-    macOSDependency 'com.caoccao.javet:javet-v8-macos-x86_64:4.0.0'
-
+    // commonDependency 'com.caoccao.javet:javet-v8-linux-arm64:4.0.0'
+    // commonDependency 'com.caoccao.javet:javet-v8-linux-x86_64:4.0.0'
+    // commonDependency 'com.caoccao.javet:javet-v8-windows-x86_64:4.0.0'
+    // macOSDependency 'com.caoccao.javet:javet-v8-macos-arm64:4.0.0'
+    // macOSDependency 'com.caoccao.javet:javet-v8-macos-x86_64:4.0.0'
+    /*
     if ( !javetLibraryExcluding || javetLibraryExcluding == "false" ){
         if( compileTarget == 'macos') {
             System.out.println("Building for MacOS")
@@ -276,7 +275,7 @@ dependencies {
             System.out.println("Building for Windows & Linux")
              // Currently, we only support Win x86-64 structure in main build
         }
-    }
+    }*/
 
     shadedLib 'org.apache.httpcomponents:httpcore:4.4.14'
     shadedLib 'org.apache.httpcomponents:httpclient:4.5.13'
@@ -301,10 +300,13 @@ dependencies {
     minecraftLibrary("io.javalin:javalin:6.6.0"){
         exclude group: 'org.jetbrains', module:'annotations'
         exclude group: 'j2objc', module: 'annotations'
+        exclude group: 'org.slf4j'
         transitive = true
     }
 
-    shadedLib "io.javalin:javalin:6.6.0"
+    shadedLib("io.javalin:javalin:6.6.0"){
+        exclude group: 'org.slf4j';
+    }
 
     minecraftLibrary 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
 
@@ -335,33 +337,12 @@ javadoc {
 }
 // Example configuration to allow publishing using the maven-publish plugin
 jar.finalizedBy('reobfShadowJar')
-jar.finalizedBy('multiPlatformBinaryPack')
 
-multiPlatformBinaryPack {
-    platform {
-        name 'common'
-        dependencies  = [ project.configurations.commonDependency ]
-    }
-    
-    platform {
-        name 'macOS' 
-        dependencies = [ project.configurations.macOSDependency ]
-    }
-
-    platform {
-        name 'unified'
-        dependencies = [ project.configurations.commonDependency, project.configurations.macOSDependency ]
-        archiveClassifier = ''
-    }
-
-    dependsOn("reobfShadowJar")
-}
-// shadowJar.finalizedBy('multiPlatformBinaryPack')
 
 shadowJar{
     mergeServiceFiles() // To fix graal issue: https://github.com/oracle/graaljs/issues/125
     configurations = [project.configurations.shadedLib]
-    archiveClassifier.set('shadow');
+    archiveClassifier.set('');
     relocate 'org.graalvm', 'kasuga.lib.vendor_modules.org.graalvm'
     relocate 'com.oracle', 'kasuga.lib.vendor_modules.com.oracle'
     relocate 'com.ibm', 'kasuga.lib.vendor_modules.com.ibm'
@@ -376,7 +357,7 @@ shadowJar{
     relocate "javax.servlet", "kasuga.lib.vendor_modules.org.javax.servlet"
     relocate "org.intellij", "kasuga.lib.vendor_modules.org.intellij"
     relocate "org.jetbrains", "kasuga.lib.vendor_modules.org.jetbrains"
-    relocate "org.slf4j", "kasuga.lib.vendor_modules.org.slf4j"
+    // relocate "org.slf4j", "kasuga.lib.vendor_modules.org.slf4j"
     relocate "org.eclipse", "kasuga.lib.vendor_modules.org.eclipse"
     relocate "kotlin", "kasuga.lib.vendor_modules.kotlin.kotlin"
     relocate "io.javalin", "kasuga.lib.vendor_modules.io.javalin"
@@ -386,7 +367,6 @@ shadowJar{
 }
 
 assemble.dependsOn shadowJar
-assemble.dependsOn multiPlatformBinaryPack
 
 reobf{
     shadowJar {}
@@ -404,21 +384,8 @@ publishing {
             groupId = "kasuga.lib"
             artifactId = "kasuga_lib"
             version = "${mod_version}"
-            // fg.component(it)
-            
-            // 为每个平台的 JAR 文件指定不同的分类器
-            tasks.named('multiPlatformBinaryPack').get().platforms.each { platform ->
-                String jarClassifier = platform.getArchiveClassifier();
-                String platformName = platform.getName();
-                String suffix = jarClassifier;
-                if(suffix != null && suffix.length() > 0){
-                    suffix = "-" + suffix;
-                }
-                artifact("${buildDir}/libs/${archivesBaseName}-${version}${suffix}.jar") {
-                    builtBy tasks.named("platformJar${platformName.capitalize()}")
-                    classifier jarClassifier // 使用平台名称作为分类器
-                }
-            }
+
+            artifact shadowJar
         }
     }
     repositories {

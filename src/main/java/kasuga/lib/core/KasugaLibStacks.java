@@ -1,5 +1,6 @@
 package kasuga.lib.core;
 
+import com.caoccao.javet.interop.loader.JavetLibLoader;
 import com.simibubi.create.content.trains.track.TrackMaterial;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.CustomBlockRenderer;
@@ -25,6 +26,8 @@ import kasuga.lib.core.events.server.ServerStartingEvents;
 import kasuga.lib.core.client.render.texture.old.SimpleTexture;
 import kasuga.lib.core.events.server.ServerTickEvent;
 import kasuga.lib.core.javascript.JavascriptApi;
+import kasuga.lib.core.javascript.engine.ScriptEngines;
+import kasuga.lib.core.javascript.engine.javet.JavetDownloader;
 import kasuga.lib.core.menu.GuiMenuManager;
 import kasuga.lib.core.menu.locator.ServerChunkMenuLocatorManager;
 import kasuga.lib.core.menu.targets.TargetsClient;
@@ -111,6 +114,9 @@ public class KasugaLibStacks {
 
         bus.addListener(KasugaPackFinder.getInstance()::post);
 
+        JavetLibLoader.setLibLoadingListener(new JavetDownloader());
+        ScriptEngines.CURRENT.get().init();
+
         if(Envs.isClient()) {
             MinecraftForge.EVENT_BUS.addListener(PacketEvent::onClientPayloadHandleEvent);
             MinecraftForge.EVENT_BUS.addListener(Constants::onClientTick);
@@ -135,6 +141,7 @@ public class KasugaLibStacks {
             bus.addListener(GeometryEvent::registerGeometry);
             bus.addListener(GeometryEvent::registerReloadListener);
             bus.addListener(BothSetupEvent::RegisterKeyEvent);
+
             GUI = Optional.of(new GuiEngine());
             MENU.initClient();
             bus.addListener(AnimationModelRegistryEvent::registerAnimations);
