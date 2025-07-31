@@ -1,7 +1,7 @@
-name: Build Nightly for Minecraft 1.19.2
+name: Build Nightly for Minecraft 1.19.2 (Create Branch)
 on:
   schedule:
-    - cron: "0 22 * * *"
+    - cron: "0 21 * * *"
   workflow_dispatch:
 
 jobs:
