@@ -452,8 +452,8 @@ publishing {
             name = "kuayueMaven"
             url = uri("https://maven.kuayue.pw/${repository_channel}/")
             credentials(PasswordCredentials) {
-                username = project.findProperty("kuayueMavenUsername") ?: localProperties.findProperty("repository_username")
-                password = project.findProperty("kuayueMavenPassword") ?: localProperties.findProperty("repository_password")
+                username = project.findProperty("kuayueMavenUsername") ?: localProperties.getProperty("repository_username")
+                password = project.findProperty("kuayueMavenPassword") ?: localProperties.getProperty("repository_password")
             }
             authentication {
                 basic(BasicAuthentication)
