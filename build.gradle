@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 buildscript {
     repositories {
         // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
@@ -25,12 +27,63 @@ apply plugin: 'org.spongepowered.mixin'
 
 configurations {
     shadedLib
-
     macOSDependency
     commonDependency
 }
 
-version = "${mod_version}"
+Properties localProperties = new Properties()
+File localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withInputStream { stream ->
+        localProperties.load(stream)
+    }
+}
+
+channel = localProperties.getProperty("channel") ?: channel
+snapshot_serial = localProperties.getProperty("snapshot_serial") ?: snapshot_serial
+internal_code = localProperties.getProperty("internal_code") ?: internal_code
+
+def mod_full_version
+def repository_channel = "releases"
+def repository_version = "${minecraft_version}"
+version = "${minecraft_version}-${mod_version}"
+
+if(type == "create") {
+    version = "${version}-create"
+    repository_version = "${repository_version}-create"
+}
+
+switch (channel) {
+    case "nightly":
+        repository_channel = "nightly"
+        if(!project.findProperty("git_version"))
+            throw new GradleException("You must specify the git_version property by using -Pgit_version=..... for nightly builds.")
+        version = "${version}-nightly-${project.property("git_version")}+" + (new SimpleDateFormat("yyMMddHHmm").format(new Date()))
+        break;
+    case "alpha":
+    case "beta":
+    case "rc":
+        repository_channel = "snapshots"
+        if(!project.findProperty("snapshot_serial"))
+            throw new GradleException("You must specify the snapshot serial in gradle.properties!")
+        version = "${version}-${channel}.${snapshot_serial}"
+        break;
+    case "internal":
+        repository_channel = "internals"
+        if(!project.findProperty("internal_code"))
+            throw new GradleException("You must specify the internal code in gradle.properties!")
+        version = "${version}-internal-${internal_code}-" + (new SimpleDateFormat("yyMMddHHmmss").format(new Date()))
+        break;
+    case "release":
+        break;
+    default:
+        throw new GradleException("Unknown channel: ${channel}. Please use one of the following channels: nightly, alpha, beta, rc, internal, release.");
+}
+
+System.out.println("Building KasugaLib for channel: ${repository_channel}, version: ${version} (${minecraft_version})")
+mod_full_version = version
+
+
 group = 'kasuga.lib' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'kasuga_lib'
 
@@ -290,13 +343,13 @@ dependencies {
     // clientAnnotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
     // apiAnnotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
     // Real mod deobf dependency examples - these get remapped to your current mappings
-    // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
-    // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
-    // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
+    // compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api") // Adds JEI API as a compile dependency
+    // runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
+    // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${minecraft_version}-${registrate_version}") // Adds registrate as a dependency
     minecraftLibrary "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.2"
     shadedLib (group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)")
     // Examples using mod jars from ./libs
-    // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
+    // implementation fg.deobf("blank:coolmod-${minecraft_version}:${coolmod_version}")
     minecraftLibrary("io.javalin:javalin:6.6.0"){
         exclude group: 'org.jetbrains', module:'annotations'
         exclude group: 'j2objc', module: 'annotations'
@@ -324,7 +377,7 @@ jar {
                 "Specification-Vendor"    : "MegumiKasuga",
                 "Specification-Version"   : "20", // We are version 18 of ourselves
                 "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Version"  : version,
                 "Implementation-Vendor"   : "MegumiKasuga",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
                 'MixinConfigs': 'kasuga.mixins.json'
@@ -382,8 +435,8 @@ publishing {
     publications {
         register('mavenJava', MavenPublication) {
             groupId = "kasuga.lib"
-            artifactId = "kasuga_lib"
-            version = "${mod_version}"
+            artifactId = "kasuga_lib-${repository_version}"
+            version = "${mod_full_version}"
 
             artifact shadowJar
         }
@@ -396,16 +449,14 @@ publishing {
 
     repositories {
         maven {
-            name = "GradleCIMaven"
-            url = uri("https://git.gradle.ci/api/packages/KuaYueTeam/maven")
-
-            credentials(HttpHeaderCredentials) {
-                name = "Authorization"
-                value = "Bearer ${project.findProperty("kuaYueTeamGradleCiToken")}"
+            name = "kuayueMaven"
+            url = uri("https://maven.kuayue.pw/${repository_channel}/")
+            credentials(PasswordCredentials) {
+                username = project.findProperty("kuayueMavenUsername") ?: localProperties.findProperty("repository_username")
+                password = project.findProperty("kuayueMavenPassword") ?: localProperties.findProperty("repository_password")
             }
-
             authentication {
-                header(HttpHeaderAuthentication)
+                basic(BasicAuthentication)
             }
         }
     }
