@@ -56,11 +56,11 @@ jobs:
           yarn build
 
       - name: Build and Publish KasugaLib
-        $if: ${{ inputs.publish }}
+        if: ${{ inputs.publish }}
         run: |
           ./gradlew build publishAllPublicationsToKuayueMavenRepository -Pchannel=${{ inputs.channel }} -Pgit_version=$(git rev-parse --short HEAD)
 
       - name: Build KasugaLib
-        $if: ${{ !inputs.publish }}
+        if: ${{ !inputs.publish }}
         run: |
           ./gradlew build -Pchannel=${{ inputs.channel }} -Pgit_version=$(git rev-parse --short HEAD) -PkuayueMavenUsername = "${{ secrets.KUAYUE_MAVEN_USERNAME }}" -PkuayueMavenPassword = "${{ secrets.KUAYUE_MAVEN_PASSWORD }}"
