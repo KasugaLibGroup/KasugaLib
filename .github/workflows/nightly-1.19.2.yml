@@ -1,0 +1,16 @@
+name: Build Nightly for Minecraft 1.19.2
+on:
+  schedule:
+    - cron: "0 22 * * *"
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: ./build.yml
+    with:
+      channel: "nightly"
+      branch: "master"
+      publish: true
+    secrets:
+      KUAYUE_MAVEN_USERNAME: ${{ secrets.KUAYUE_MAVEN_USERNAME }}
+      KUAYUE_MAVEN_PASSWORD: ${{ secrets.KUAYUE_MAVEN_PASSWORD }}
