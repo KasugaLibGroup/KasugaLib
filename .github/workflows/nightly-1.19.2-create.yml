@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    uses: ./build.yml
+    uses: ./.github/workflows/build.yml
     with:
       channel: "nightly"
       branch: "1.19.2-create"
