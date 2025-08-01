@@ -4,6 +4,12 @@ on:
       - 'alpha/v*-alpha.*'
       - 'beta/v*-beta.*'
       - 'rc/v*-rc.*'
+      - 'alpha/v*-*-alpha.*'
+      - 'beta/v*-*-beta.*'
+      - 'rc/v*-*-rc.*'
+      - 'alpha/v*-*-*-alpha.*'
+      - 'beta/v*-*-*-beta.*'
+      - 'rc/v*-*-*-rc.*'
 
 jobs:
   extract:
