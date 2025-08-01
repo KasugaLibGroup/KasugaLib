@@ -4,6 +4,12 @@ on:
       - 'alpha/v*-alpha.*'
       - 'beta/v*-beta.*'
       - 'rc/v*-rc.*'
+      - 'alpha/v*-*-alpha.*'
+      - 'beta/v*-*-beta.*'
+      - 'rc/v*-*-rc.*'
+      - 'alpha/v*-*-*-alpha.*'
+      - 'beta/v*-*-*-beta.*'
+      - 'rc/v*-*-*-rc.*'
 
 jobs:
   extract:
@@ -18,21 +24,25 @@ jobs:
           tag="${GITHUB_REF#refs/tags/}"
 
           echo "$tag" | awk -F/ '
-            {
-              channel = $1
-
-              tag_body = $2
-
-              if (match(tag_body, /-(alpha|beta|rc)\.[0-9]+$/)) {
-                snapshot_serial = substr(tag_body, RSTART + RLENGTH - length($0) + match(substr($0, RSTART), /[0-9]+/))
-              } else {
-                snapshot_serial = "0"
-              }
-
-              print "channel=" channel
-              print "snapshot_serial=" snapshot_serial
-            }
-          ' >> "$GITHUB_OUTPUT"
+          {
+            channel = $1
+            tag_body = $2
+            
+            if (match(tag_body, /-(alpha|beta|rc)\.[0-9]+$/)) {
+            matched = substr(tag_body, RSTART, RLENGTH)
+            if (match(matched, /[0-9]+/)) {
+            snapshot_serial = substr(matched, RSTART, RLENGTH)
+          } else {
+            snapshot_serial = "0"
+          }
+          } else {
+            snapshot_serial = "0"
+          }
+        
+            print "channel=" channel
+            print "snapshot_serial=" snapshot_serial
+          }
+          '
   build:
     needs: extract
     uses: ./.github/workflows/build.yml
