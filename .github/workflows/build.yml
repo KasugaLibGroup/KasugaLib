@@ -14,6 +14,10 @@ on:
         type: boolean
         default: false
 
+      snapshot_serial:
+        type: string
+        required: false
+
     secrets:
       KUAYUE_MAVEN_USERNAME:
         required: false
@@ -63,7 +67,7 @@ jobs:
       - name: Build and Publish KasugaLib
         if: ${{ inputs.publish }}
         run: |
-          ./gradlew build publishAllPublicationsToKuayueMavenRepository -Pchannel=${{ inputs.channel }} -Pgit_version=$(git rev-parse --short HEAD) -PkuayueMavenUsername="${{ secrets.KUAYUE_MAVEN_USERNAME }}" -PkuayueMavenPassword="${{ secrets.KUAYUE_MAVEN_PASSWORD }}"
+          ./gradlew build publishAllPublicationsToKuayueMavenRepository -Pchannel=${{ inputs.channel }} -Pgit_version=$(git rev-parse --short HEAD) -PkuayueMavenUsername="${{ secrets.KUAYUE_MAVEN_USERNAME }}" -PkuayueMavenPassword="${{ secrets.KUAYUE_MAVEN_PASSWORD }}" -Psnapshot_serial="${{ inputs.snapshot_serial }}"
 
       - name: Build KasugaLib
         if: ${{ !inputs.publish }}
