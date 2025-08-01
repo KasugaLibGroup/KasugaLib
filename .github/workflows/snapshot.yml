@@ -46,7 +46,7 @@ jobs:
             print "channel=" channel
             print "snapshot_serial=" snapshot_serial
           }
-          '
+          ' >> "$GITHUB_OUTPUT"
   build:
     needs: extract
     uses: ./.github/workflows/build.yml
