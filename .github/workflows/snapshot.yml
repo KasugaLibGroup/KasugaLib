@@ -12,7 +12,6 @@ jobs:
       channel: ${{ steps.setvars.outputs.channel }}
       snapshot_serial: ${{ steps.setvars.outputs.snapshot_serial }}
     steps:
-    steps:
       - name: Extract infromation from SemVer
         id: setvars
         run: |
