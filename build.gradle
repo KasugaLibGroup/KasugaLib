@@ -210,6 +210,11 @@ repositories {
     //     dir 'libs'
     // }
     maven {
+        name = 'forge build minecraft'
+        url = 'https://lss233.littleservice.cn/repositories/minecraft'
+    }
+    mavenCentral()
+    maven {
         name = 'tterrag maven'
         url = 'https://maven.tterrag.com/'
     }
