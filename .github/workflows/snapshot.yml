@@ -1,5 +1,9 @@
 on:
   push:
+    branches:
+      - 'alpha/*'
+      - 'beta/*'
+      - 'rc/*'
     tags:
       - 'alpha/v*-alpha.*'
       - 'beta/v*-beta.*'
