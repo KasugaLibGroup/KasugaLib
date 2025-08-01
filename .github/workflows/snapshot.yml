@@ -12,23 +12,28 @@ jobs:
       channel: ${{ steps.setvars.outputs.channel }}
       snapshot_serial: ${{ steps.setvars.outputs.snapshot_serial }}
     steps:
-      - name: Extract the SemVer Version Code
+    steps:
+      - name: Extract infromation from SemVer
         id: setvars
         run: |
           tag="${GITHUB_REF#refs/tags/}"
 
-          # Get the prefix (channel): alpha, beta, rc
-          channel="${tag%%/*}"
-          # Get the suffix after last dash, e.g. "alpha.5" -> "5"
-          snapshot_serial="${tag##*-}"
+          echo "$tag" | awk -F/ '
+            {
+              channel = $1
 
-          echo "tag=$tag"
-          echo "channel=$channel"
-          echo "snapshot_serial=$snapshot_serial"
+              tag_body = $2
 
-          echo "channel=$channel" >> $GITHUB_OUTPUT
-          echo "snapshot_serial=$snapshot_serial" >> $GITHUB_OUTPUT
+              if (match(tag_body, /-(alpha|beta|rc)\.[0-9]+$/)) {
+                snapshot_serial = substr(tag_body, RSTART + RLENGTH - length($0) + match(substr($0, RSTART), /[0-9]+/))
+              } else {
+                snapshot_serial = "0"
+              }
 
+              print "channel=" channel
+              print "snapshot_serial=" snapshot_serial
+            }
+          ' >> "$GITHUB_OUTPUT"
   build:
     needs: extract
     uses: ./.github/workflows/build.yml
