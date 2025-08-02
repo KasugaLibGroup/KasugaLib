@@ -53,12 +53,15 @@ if(type == "create") {
     repository_version = "${repository_version}-create"
 }
 
+def pomEntries = project.objects.mapProperty(String, String)
+
 switch (channel) {
     case "nightly":
         repository_channel = "nightly"
         if(!project.findProperty("git_version"))
             throw new GradleException("You must specify the git_version property by using -Pgit_version=..... for nightly builds.")
         version = "${version}-nightly-${project.property("git_version")}+" + (new SimpleDateFormat("yyMMddHHmm").format(new Date()))
+        pomEntries.put("git_version", project.findProperty("git_version_full") ?: project.property("git_version"))
         break;
     case "alpha":
     case "beta":
@@ -79,6 +82,14 @@ switch (channel) {
     default:
         throw new GradleException("Unknown channel: ${channel}. Please use one of the following channels: nightly, alpha, beta, rc, internal, release.");
 }
+
+pomEntries.put("channel", channel)
+
+pomEntries.put("builder_name", project.findProperty("builder_name") ?: "unknown");
+
+def ci_type = project.findProperty("ci_type")
+
+def ci_url = project.findProperty("ci_url")
 
 System.out.println("Building KasugaLib for channel: ${repository_channel}, version: ${version} (${minecraft_version})")
 mod_full_version = version
@@ -423,6 +434,16 @@ publishing {
             version = "${mod_full_version}"
 
             artifact shadowJar
+
+            pom {
+                properties.putAll(pomEntries);
+                if(ci_type) {
+                    ciManagement {
+                        name = ci_type
+                        url = ci_url
+                    }
+                }
+            }
         }
     }
     repositories {
