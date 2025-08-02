@@ -67,7 +67,7 @@ jobs:
       - name: Build and Publish KasugaLib
         if: ${{ inputs.publish }}
         run: |
-          ./gradlew build publishAllPublicationsToKuayueMavenRepository -Pchannel=${{ inputs.channel }} -Pgit_version=$(git rev-parse --short HEAD) -PkuayueMavenUsername="${{ secrets.KUAYUE_MAVEN_USERNAME }}" -PkuayueMavenPassword="${{ secrets.KUAYUE_MAVEN_PASSWORD }}" -Psnapshot_serial="${{ inputs.snapshot_serial }}"
+          ./gradlew build publishAllPublicationsToKuayueMavenRepository -Pchannel=${{ inputs.channel }} -Pgit_version=$(git rev-parse --short HEAD) -PkuayueMavenUsername="${{ secrets.KUAYUE_MAVEN_USERNAME }}" -PkuayueMavenPassword="${{ secrets.KUAYUE_MAVEN_PASSWORD }}" -Psnapshot_serial="${{ inputs.snapshot_serial }}" -Pgit_version_full="$(git rev-parse HEAD)" -Pci_type="github/${RUNNER_ENVIRONMENT}" -Pbuilder_name="${RUNNER_NAME}" -Pci_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
 
       - name: Build KasugaLib
         if: ${{ !inputs.publish }}
