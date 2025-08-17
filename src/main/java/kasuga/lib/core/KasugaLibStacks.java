@@ -12,6 +12,8 @@ import kasuga.lib.core.channel.test.ChannelTest;
 import kasuga.lib.core.client.animation.Constants;
 import kasuga.lib.core.client.frontend.gui.GuiEngine;
 import kasuga.lib.core.client.model.ModelPreloadManager;
+import kasuga.lib.core.compat.AllCompats;
+import kasuga.lib.core.compat.iris.IrisOculusCompat;
 import kasuga.lib.core.events.both.BothSetupEvent;
 import kasuga.lib.core.events.both.EntityAttributeEvent;
 import kasuga.lib.core.events.both.ResourcePackEvent;
@@ -72,6 +74,9 @@ public class KasugaLibStacks {
 
     public static final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
     public static final ChannelNetworkManager CHANNEL = new ChannelNetworkManager();
+
+    public final AllCompats COMPATS = new AllCompats();
+
     public static HashSet<Minecraft> mcs = new HashSet<>();
 
     public KasugaLibStacks(IEventBus bus) {
@@ -85,6 +90,8 @@ public class KasugaLibStacks {
         FONTS = new FontRegistry(MOD_ID);
         BLOCK_RENDERERS = new HashMap<>();
         MENU.init();
+
+        COMPATS.IRIS_OCULUS.map(IrisOculusCompat::isRenderingShadow).orElse(false);
 
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverAboutToStart);

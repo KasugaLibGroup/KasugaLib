@@ -270,6 +270,7 @@ dependencies {
     runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}-forge:${jei_version}")
 
     implementation fg.deobf("curse.maven:worldedit-225608:3922622")
+    implementation fg.deobf("curse.maven:oculus-581495:6020961")
 
     implementation "org.spongepowered:mixin:${mixin_version}"
     annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
