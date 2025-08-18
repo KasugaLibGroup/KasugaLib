@@ -18,7 +18,8 @@
     "client.MixinBlockModelBinding",
     "client.MixinBlockModelShaper",
     "client.MixinModelBakery",
-    "client.MixinTextureManager"
+    "client.MixinTextureManager",
+    "compat.client.IrisOculusCompatMixin"
   ],
   "minVersion": "0.8"
 }
