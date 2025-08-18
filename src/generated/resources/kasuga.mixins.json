@@ -19,7 +19,8 @@
     "client.MixinBlockModelShaper",
     "client.MixinModelBakery",
     "client.MixinTextureManager",
-    "compat.client.IrisOculusCompatMixin"
+    "compat.client.IrisOculusCompatMixin",
+    "client.MixinGameRenderer"
   ],
   "minVersion": "0.8"
 }
