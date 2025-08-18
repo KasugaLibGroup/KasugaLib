@@ -1,6 +1,6 @@
 package kasuga.lib.core.compat.iris;
 
-import kasuga.lib.mixins.mixin.compat.IrisOculusCompatMixin;
+import kasuga.lib.mixins.mixin.compat.client.IrisOculusCompatMixin;
 import net.coderbot.iris.block_rendering.BlockRenderingSettings;
 import net.coderbot.iris.shadows.ShadowRenderingState;
 

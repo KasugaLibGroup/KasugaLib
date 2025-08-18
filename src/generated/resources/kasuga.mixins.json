@@ -30,6 +30,7 @@
     "client.MixinCarriageContraptionEntityRenderer",
     "client.MixinStationBlockEntityClient",
     "client.MixinModelBakery",
+    "compat.client.IrisOculusCompatMixin"
   ],
   "minVersion": "0.8"
 }
