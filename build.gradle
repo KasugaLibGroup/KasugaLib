@@ -407,7 +407,7 @@ shadowJar{
     relocate('interpreter','kasuga.lib.vendor_modules.interpreter');
     relocate('org.apache', 'kasuga.lib.vendor_modules.org.apache');
     // relocate ('com.caoccao.javet', 'kasuga.lib.vendor_modules.com.caoccao.javet');
-    
+
     relocate "jakarta", "kasuga.lib.vendor_modules.jakarta"
     relocate "javax.servlet", "kasuga.lib.vendor_modules.org.javax.servlet"
     relocate "org.intellij", "kasuga.lib.vendor_modules.org.intellij"
@@ -456,7 +456,7 @@ publishing {
     repositories {
         maven {
             name = "kuayueMaven"
-            url = uri("https://maven.kuayue.pw/${repository_channel}/")
+            url = uri("https://maven.kycraft.cn/${repository_channel}/")
             credentials(PasswordCredentials) {
                 username = project.findProperty("kuayueMavenUsername") ?: localProperties.getProperty("repository_username")
                 password = project.findProperty("kuayueMavenPassword") ?: localProperties.getProperty("repository_password")
