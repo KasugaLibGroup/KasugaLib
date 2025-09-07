@@ -8,6 +8,7 @@ import kasuga.lib.registrations.common.CommandReg;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import org.slf4j.Logger;
@@ -89,7 +90,7 @@ public class KasugaHttpServer {
                 @Override
                 public void run() {
                     CommandSourceStack source = this.ctx.getSource();
-                    if(!source.isPlayer())
+                    if(!(source.getEntity() instanceof ServerPlayer player))
                         return;
                     if(!KasugaHttpServer.isServerHttpServerStart())
                         return;
@@ -97,7 +98,7 @@ public class KasugaHttpServer {
                             .SERVER_AUTH
                             .grant(
                                     this.ctx.getArgument("token", String.class),
-                                    KasugaServerAuthenticationGateway.SessionInfo.forPlayer(source.getPlayer())
+                                    KasugaServerAuthenticationGateway.SessionInfo.forPlayer(player)
                             );
                 }
             })
@@ -110,9 +111,9 @@ public class KasugaHttpServer {
                 @Override
                 public void run() {
                     CommandSourceStack source = this.ctx.getSource();
-                    if(!source.isPlayer())
+                    if(!(source.getEntity() instanceof ServerPlayer player))
                         return;
-                    KasugaAuthenticator.notifyOpen(source.getPlayer(), "/", KasugaAuthenticator.Direction.BOTH);
+                    KasugaAuthenticator.notifyOpen(player, "/", KasugaAuthenticator.Direction.BOTH);
                 }
             })
             .submit(KasugaLib.STACKS.REGISTRY);

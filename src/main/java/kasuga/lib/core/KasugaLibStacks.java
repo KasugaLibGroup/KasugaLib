@@ -125,7 +125,7 @@ public class KasugaLibStacks {
             MinecraftForge.EVENT_BUS.addListener(InteractionFovEvent::onComputedFov);
             bus.addListener(GeometryEvent::registerGeometry);
             bus.addListener(GeometryEvent::registerReloadListener);
-            bus.addListener(BothSetupEvent::RegisterKeyEvent);
+            bus.addListener(BothSetupEvent::onFMLClientSetup);
 
             GUI = Optional.of(new GuiEngine());
             MENU.initClient();

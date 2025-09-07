@@ -11,10 +11,7 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.event.ViewportEvent;
 
 public class ScreenClickProjectionHelper {
     public static Pair<Vec3, Vec3> getScreenClickProjection(double mouseX, double mouseY) {
@@ -22,7 +19,7 @@ public class ScreenClickProjectionHelper {
         GameRenderer renderer = mc.gameRenderer;
         Camera camera = renderer.getMainCamera();
         Window window = mc.getWindow();
-        float pt = mc.getPartialTick();
+        float pt = mc.getFrameTime();
 
         Entity camEntity = mc.getCameraEntity() != null ? mc.getCameraEntity() : mc.player;
         camera.setup(mc.level, camEntity,

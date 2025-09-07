@@ -24,8 +24,7 @@
     "compat.client.IrisOculusCompatMixin",
     "client.MixinGameRenderer",
     "client.MixinObjLoader",
-    "client.MixinRenderType",
-    "client.MixinTextureManager"
+    "client.MixinRenderType"
   ],
   "minVersion": "0.8"
 }

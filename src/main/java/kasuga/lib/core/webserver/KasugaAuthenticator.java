@@ -4,8 +4,11 @@ import kasuga.lib.KasugaLibConfig;
 import kasuga.lib.core.packets.AllPackets;
 import kasuga.lib.core.webserver.packets.C2SOpenWebUIPacket;
 import kasuga.lib.core.webserver.packets.S2COpenWebUIPacket;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -32,15 +35,16 @@ public class KasugaAuthenticator {
 
             authenticateUrl = KasugaClientFastAuthenticator.authenticate(path);
             if(authenticateUrl != null && authenticateUrl.length() > 0) {
-                player.sendSystemMessage(
-                        Component.translatable("msg.kasuga_lib.connection", authenticateUrl)
+                player.sendMessage(
+                        new TranslatableComponent("msg.kasuga_lib.connection", authenticateUrl)
                                 .setStyle(
-                                        Component.empty().getStyle()
+                                        TextComponent.EMPTY.getStyle()
                                                 .withClickEvent(new net.minecraft.network.chat.ClickEvent(
                                                         net.minecraft.network.chat.ClickEvent.Action.OPEN_URL,
                                                         authenticateUrl
                                                 ))
-                                )
+                                ),
+                        Util.NIL_UUID
                 );
             } else AllPackets.CHANNEL_REG.sendToServer(new C2SOpenWebUIPacket(path));
             return;

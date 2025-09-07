@@ -3,10 +3,12 @@ package kasuga.lib.core.webserver;
 import kasuga.lib.KasugaLibConfig;
 import kasuga.lib.core.packets.AllPackets;
 import kasuga.lib.core.webserver.packets.C2SOpenWebUIPacket;
+import net.minecraft.Util;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
@@ -23,7 +25,7 @@ public class KasugaServerAuthenticator {
         if(!KasugaHttpServer.isServerHttpServerStart()) {
             if(forceReturn)
                 return -1;
-            player.sendSystemMessage(Component.translatable("msg.kasuga_lib.server_not_started"));
+            player.sendMessage(new TranslatableComponent("msg.kasuga_lib.server_not_started"), Util.NIL_UUID);
             return -1;
         }
 
@@ -39,9 +41,9 @@ public class KasugaServerAuthenticator {
         } catch (MalformedURLException e) {
             connectionURL = "[YOUR SERVER IP]:" + String.valueOf(path);
         }
-        player.sendSystemMessage(Component.translatable("msg.kasuga_lib.connection", connectionURL).setStyle(
+        player.sendMessage(new TranslatableComponent("msg.kasuga_lib.connection", connectionURL).setStyle(
                 Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, connectionURL))
-        ));
+        ), Util.NIL_UUID);
         return 1;
     }
 }
