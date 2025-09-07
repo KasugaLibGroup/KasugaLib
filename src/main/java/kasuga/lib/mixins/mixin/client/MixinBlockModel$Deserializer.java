@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 
-@Mixin(targets = "net.minecraft.client.renderer.block/model/BlockModel$Deserializer")
+@Mixin(BlockModel.Deserializer.class)
 public class MixinBlockModel$Deserializer {
 
     @Inject(method = "deserialize(Lcom/google/gson/JsonElement;Ljava/lang/reflect/Type;Lcom/google/gson/JsonDeserializationContext;)Lnet/minecraft/client/renderer/block/model/BlockModel;",
