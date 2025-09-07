@@ -28,6 +28,11 @@ public class StyleList<R> {
         freshCache(null);
         setHasNewStyle();
     }
+
+    public StyleRegistry<R> getStyleRegistry() {
+        return styleRegistry;
+    }
+
     public int freshCache(StyleType<?,R> type){
         Lock cacheWriteLock = cacheLock.writeLock();
         cacheWriteLock.lock();

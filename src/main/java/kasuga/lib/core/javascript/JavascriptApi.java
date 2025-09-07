@@ -26,7 +26,7 @@ public class JavascriptApi {
     public void setupClient(){
         ASSETS = Optional.of(new HashMap<UUID, Object>());
         GROUP_CLIENT = GROUP_MAIN.createChild("client");
-        GROUP_CLIENT.setScriptEngine(ScriptEngines.JAVET.get());
+        GROUP_CLIENT.setScriptEngine(ScriptEngines.CURRENT.get());
         CLIENT_LOADER = new NodePackageLoader();
         CLIENT_LOADER.bindRuntime(GROUP_CLIENT, EntryType.CLIENT);
         GROUP_CLIENT.getModuleLoader().getLoader().register(new NodeModuleResolver());
@@ -36,7 +36,7 @@ public class JavascriptApi {
 
     public void setupServer(){
         GROUP_SERVER = GROUP_MAIN.createChild("server");
-        GROUP_SERVER.setScriptEngine(ScriptEngines.JAVET.get());
+        GROUP_SERVER.setScriptEngine(ScriptEngines.CURRENT.get());
         SERVER_LOADER = new NodePackageLoader();
         SERVER_LOADER.bindRuntime(GROUP_SERVER, EntryType.SERVER);
         GROUP_SERVER.getModuleLoader().getLoader().register(new NodeModuleResolver());

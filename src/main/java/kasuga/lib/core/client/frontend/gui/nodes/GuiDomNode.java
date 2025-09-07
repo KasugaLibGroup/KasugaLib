@@ -11,7 +11,9 @@ import kasuga.lib.core.client.frontend.common.style.StyleTarget;
 import kasuga.lib.core.client.frontend.dom.nodes.DomNode;
 import kasuga.lib.core.client.frontend.font.ExtendableProperty;
 import kasuga.lib.core.client.frontend.gui.GuiContext;
+import kasuga.lib.core.client.frontend.gui.events.mouse.MouseDownEvent;
 import kasuga.lib.core.client.frontend.gui.events.mouse.MouseEvent;
+import kasuga.lib.core.client.frontend.gui.events.mouse.MouseUpEvent;
 import kasuga.lib.core.client.frontend.gui.layout.EdgeSize2D;
 import kasuga.lib.core.client.frontend.rendering.BackgroundRenderer;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
@@ -201,6 +203,10 @@ public class GuiDomNode extends DomNode<GuiContext> {
         // 2. Dispatch the event to the children
         // 3. If the event is not stopped, dispatch the event to the parent
 
+        if(event instanceof MouseUpEvent mouseUpEvent) {
+            domContext.removeActivateElement(mouseUpEvent);
+        }
+
         LayoutContext<?,GuiDomNode> layout = getLayoutManager();
         if(!layout.hasSource(source)){
             return false; // Source already unloaded
@@ -235,6 +241,10 @@ public class GuiDomNode extends DomNode<GuiContext> {
 
         if(!translated.isPropagationStopped()){
             this.dispatchEvent(event.getType(), finalEvent);
+        }
+
+        if(target == this && event instanceof MouseDownEvent) {
+            this.domContext.setActivateElement(target);
         }
 
         return true;
