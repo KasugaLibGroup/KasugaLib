@@ -7,4 +7,6 @@ import java.util.function.Supplier;
 
 public class ScriptEngines {
     public static Lazy<JavetScriptEngine> JAVET = Lazy.of(()->new JavetScriptEngine());
+
+    public static Lazy<? extends ScriptEngine> CURRENT = JAVET;
 }

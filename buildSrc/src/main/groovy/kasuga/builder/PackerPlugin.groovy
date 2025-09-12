@@ -48,6 +48,14 @@ class PackerPlugin implements Plugin<Project> {
                 }
 
                 from {
+                     project.tasks.getByName('jarJar').archiveFile.map {
+                        jarJarFile -> project.zipTree(jarJarFile).matching {
+                            include "META-INF/jarjar/**"
+                        }
+                    }
+                }
+
+                from {
                     platform.dependencies.collect { dep ->
                         dep.resolve().collect { file ->
                             project.zipTree(file)

@@ -132,6 +132,12 @@ public class SimpleConfig {
         return this;
     }
 
+    public SimpleConfig stringConfig(String key, String defaultValue) {
+        ForgeConfigSpec.ConfigValue<String> value = cachedBuilder.define(key, defaultValue);
+        values.put(key, new ConfigContext<String>(value, String.class, key, defaultValue, null, null));
+        return this;
+    }
+
     public SimpleConfig popCached() {
         popIfPushed();
         return this;
@@ -243,6 +249,11 @@ public class SimpleConfig {
     public Double getMinDouble(String key) {
         if (!containsDoubleValue(key)) return Double.MIN_VALUE;
         return (Double) values.get(key).min;
+    }
+
+    public String getStringValue(String key) {
+        if (!contains(key, String.class)) return "";
+        return (String) values.get(key).value.get();
     }
 
     public ConfigContext<?> getContext(String key) {

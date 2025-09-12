@@ -1,6 +1,7 @@
 package kasuga.lib.core.util.data_type;
 
 import kasuga.lib.core.client.render.texture.Vec2f;
+import kasuga.lib.core.javascript.engine.annotations.HostAccess;
 
 public class Vec2i {
 
@@ -24,5 +25,15 @@ public class Vec2i {
 
     public Vec2i() {
         this(0, 0);
+    }
+
+    @HostAccess.Export
+    public int getX() {
+        return x;
+    }
+
+    @HostAccess.Export
+    public int getY() {
+        return y;
     }
 }

@@ -6,11 +6,14 @@ import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutEngine;
 import kasuga.lib.core.client.frontend.dom.DomContext;
 import kasuga.lib.core.client.frontend.dom.registration.DOMPriorityRegistry;
+import kasuga.lib.core.client.frontend.gui.events.mouse.MouseDragEndEvent;
+import kasuga.lib.core.client.frontend.gui.events.mouse.MouseUpEvent;
 import kasuga.lib.core.client.frontend.gui.layout.LayoutEngines;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomNode;
 import kasuga.lib.core.client.frontend.gui.nodes.GuiDomRoot;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
 import kasuga.lib.core.client.frontend.rendering.VertexBufferCache;
+import kasuga.lib.core.compat.iris.IrisOculusCompat;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.Tickable;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -110,18 +113,36 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
         if(store == null){
             return;
         }
-        if(!renderDirty.containsKey(source)){
-            this.cachedRender(store, source, context);
-            this.renderDirty.put(source, true);
+
+        if(KasugaLib.STACKS.COMPATS.IRIS_OCULUS.map(IrisOculusCompat::isRenderingShadow).orElse(false)){
+            return;
         }
-        if(context.getContextType() == RenderContext.RenderContextType.WORLD) {
-            store.upload(context.poseMatrix(), context.getBufferSource());
-        } else {
-            context.pose().pushPose();
-            context.pose().scale(1,-1,1);
-            store.upload(context.poseMatrix());
-            context.pose().popPose();
+
+        if(context.getContextType() == RenderContext.RenderContextType.SCREEN){
+            KasugaLib.STACKS.COMPATS.IRIS_OCULUS.ifPresent((i)->i.pushExtendedVertexFormat(false));
         }
+
+        try{
+            if(!renderDirty.containsKey(source)){
+                this.cachedRender(store, source, context);
+                this.renderDirty.put(source, true);
+            }
+            if(context.getContextType() == RenderContext.RenderContextType.WORLD) {
+                store.upload(context.poseMatrix(), context.getBufferSource());
+            } else {
+                context.pose().pushPose();
+                context.pose().scale(1,-1,1);
+                store.upload(context.poseMatrix());
+                context.pose().popPose();
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if(context.getContextType() == RenderContext.RenderContextType.SCREEN){
+            KasugaLib.STACKS.COMPATS.IRIS_OCULUS.ifPresent((i)->i.popExtendedVertexFormat());
+        }
+
     }
 
     private void cachedRender(VertexBufferCache.MultiBufferStore store, Object source, RenderContext context) {
@@ -191,5 +212,27 @@ public class GuiContext extends DomContext<GuiDomNode,GuiDomRoot> implements Tic
     @Override
     public Object getContextModuleNative(String contextModuleName) {
         return this.guiInstance.getModule(contextModuleName);
+    }
+
+    List<GuiDomNode> activateElements = List.of();
+
+    public void setActivateElement(GuiDomNode node) {
+        activateElements = List.of(node);
+    }
+
+    public void removeActivateElement() {
+        activateElements = List.of();
+    }
+
+    public void removeActivateElement(MouseUpEvent $event){
+        MouseDragEndEvent event = MouseDragEndEvent.fromMouseUp($event);
+        for (GuiDomNode activateElement : activateElements) {
+            activateElement.dispatchEvent(event.getType(), event.withTarget(activateElement));
+        }
+        activateElements = List.of();
+    }
+
+    public List<GuiDomNode> getActivateElements() {
+        return activateElements;
     }
 }

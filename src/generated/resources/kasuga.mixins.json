@@ -4,6 +4,7 @@
   "package": "kasuga.lib.mixins.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "kasuga.refmap.json",
+  "plugin": "",
   "mixins": [
     "MixinNbtUtils",
     "client.ModelLoaderRegistryAccessor",
@@ -19,9 +20,11 @@
     "client.MixinBlockModelShaper",
     "client.MixinBlockRenderDispatcher",
     "client.MixinModelBakery",
+    "client.MixinTextureManager",
+    "compat.client.IrisOculusCompatMixin",
+    "client.MixinGameRenderer",
     "client.MixinObjLoader",
-    "client.MixinRenderType",
-    "client.MixinTextureManager"
+    "client.MixinRenderType"
   ],
   "minVersion": "0.8"
 }

@@ -68,6 +68,11 @@ public class MouseEvent extends UIEvent {
         return offsetPosition;
     }
 
+    @HostAccess.Export
+    public int getButton() {
+        return button;
+    }
+
     public MouseEvent withTarget(GuiDomNode target) {
         return create(currentTarget, target, screenPosition, offsetPosition, button);
     }
