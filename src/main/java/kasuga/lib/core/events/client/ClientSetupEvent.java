@@ -8,6 +8,7 @@ import kasuga.lib.core.addons.resource.ResourceProvider;
 import kasuga.lib.core.client.frontend.commands.MetroModuleLoader;
 import kasuga.lib.core.client.frontend.gui.GuiEngine;
 import kasuga.lib.core.util.Start;
+import kasuga.lib.core.webserver.KasugaHttpServer;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
@@ -33,5 +34,6 @@ public class ClientSetupEvent {
         KasugaLib.STACKS.GUI.ifPresent(GuiEngine::init);
         ClientAddon.init();
         MetroModuleLoader.init();
+        KasugaHttpServer.onClientStart();
     }
 }
