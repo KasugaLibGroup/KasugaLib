@@ -1,12 +1,11 @@
 package kasuga.lib.core.client.frontend.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.sk89q.worldedit.math.Vector2;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.client.frontend.common.layouting.LayoutBox;
-import kasuga.lib.core.client.frontend.gui.events.mouse.MouseClickEvent;
-import kasuga.lib.core.client.frontend.gui.events.mouse.MouseDownEvent;
-import kasuga.lib.core.client.frontend.gui.events.mouse.MouseMoveEvent;
-import kasuga.lib.core.client.frontend.gui.events.mouse.MouseUpEvent;
+import kasuga.lib.core.client.frontend.gui.events.mouse.*;
+import kasuga.lib.core.client.frontend.gui.nodes.GuiDomNode;
 import kasuga.lib.core.client.frontend.rendering.RenderContext;
 import kasuga.lib.core.util.data_type.Pair;
 import kasuga.lib.core.util.data_type.Vec2i;
@@ -14,6 +13,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.concurrent.atomic.AtomicReference;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiScreen extends Screen {
@@ -69,6 +72,9 @@ public class GuiScreen extends Screen {
             });
         });
         lastClickedPos = Pair.of(pMouseX, pMouseY);
+        isLastClicked = true;
+        lastX = pMouseX;
+        lastY = pMouseY;
         return true;
     }
 
@@ -92,16 +98,40 @@ public class GuiScreen extends Screen {
             }
         }
         lastClickedPos = null;
+        isLastClicked = false;
+        lastX = 0;
+        lastY = 0;
         return true;
     }
 
+    double lastX = 0;
+    double lastY = 0;
+    boolean isLastClicked = false;
 
     @Override
     public void mouseMoved(double pMouseX, double pMouseY) {
         MouseMoveEvent moveEvent = MouseMoveEvent.fromScreen(null, new Vec2i((int)pMouseX,(int)pMouseY), 0);
+        AtomicReference<MouseDragEvent> dragEvent = new AtomicReference<>(null);
+
+        if(isLastClicked) {
+            double xDeltaD = pMouseX - lastX, yDeltaD = pMouseY - lastY;
+            int xDeltaI = (int) xDeltaD, yDeltaI = (int) yDeltaD;
+            if(xDeltaI != 0 || yDeltaI != 0) {
+                lastX += xDeltaI;
+                lastY += yDeltaI;
+                Vec2i delta = new Vec2i(xDeltaI, yDeltaI);
+                dragEvent.set(MouseDragEvent.fromScreen(null, new Vec2i((int) pMouseX, (int) pMouseY), 0, delta));
+            }
+        }
+
         instance.getContext().ifPresent((context)->{
             context.appendTask(()->{
                 context.getRootNode().onMouseEvent(this,moveEvent);
+                if(dragEvent.get() != null){
+                    for (GuiDomNode activateElement : context.getActivateElements()) {
+                        activateElement.dispatchEvent(dragEvent.get().getType(), dragEvent.get().withTarget(activateElement));
+                    }
+                }
             });
         });
     }

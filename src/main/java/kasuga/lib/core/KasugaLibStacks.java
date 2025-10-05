@@ -1,5 +1,6 @@
 package kasuga.lib.core;
 
+import com.caoccao.javet.interop.loader.JavetLibLoader;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.base.CustomBlockRenderer;
 import kasuga.lib.core.base.commands.ArgumentTypes.BaseArgument;
@@ -11,6 +12,8 @@ import kasuga.lib.core.channel.test.ChannelTest;
 import kasuga.lib.core.client.animation.Constants;
 import kasuga.lib.core.client.frontend.gui.GuiEngine;
 import kasuga.lib.core.client.model.ModelPreloadManager;
+import kasuga.lib.core.compat.AllCompats;
+import kasuga.lib.core.compat.iris.IrisOculusCompat;
 import kasuga.lib.core.events.both.BothSetupEvent;
 import kasuga.lib.core.events.both.EntityAttributeEvent;
 import kasuga.lib.core.events.both.ResourcePackEvent;
@@ -21,6 +24,8 @@ import kasuga.lib.core.events.server.ServerStartingEvents;
 import kasuga.lib.core.client.render.texture.old.SimpleTexture;
 import kasuga.lib.core.events.server.ServerTickEvent;
 import kasuga.lib.core.javascript.JavascriptApi;
+import kasuga.lib.core.javascript.engine.ScriptEngines;
+import kasuga.lib.core.javascript.engine.javet.JavetDownloader;
 import kasuga.lib.core.menu.GuiMenuManager;
 import kasuga.lib.core.menu.locator.ServerChunkMenuLocatorManager;
 import kasuga.lib.core.menu.targets.TargetsClient;
@@ -69,6 +74,9 @@ public class KasugaLibStacks {
 
     public static final SimpleRegistry REGISTRY = new SimpleRegistry(KasugaLib.MOD_ID, KasugaLib.EVENTS);
     public static final ChannelNetworkManager CHANNEL = new ChannelNetworkManager();
+
+    public final AllCompats COMPATS = new AllCompats();
+
     public static HashSet<Minecraft> mcs = new HashSet<>();
 
     public KasugaLibStacks(IEventBus bus) {
@@ -83,6 +91,8 @@ public class KasugaLibStacks {
         BLOCK_RENDERERS = new HashMap<>();
         MENU.init();
 
+        COMPATS.IRIS_OCULUS.map(IrisOculusCompat::isRenderingShadow).orElse(false);
+
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverAboutToStart);
         MinecraftForge.EVENT_BUS.addListener(ServerStartingEvents::serverStopped);
@@ -95,6 +105,9 @@ public class KasugaLibStacks {
         bus.addListener(EntityAttributeEvent::entityAttributeCreation);
         MinecraftForge.EVENT_BUS.addListener(ServerTickEvent::onServerTick);
         bus.addListener(KasugaPackFinder.getInstance()::post);
+
+        JavetLibLoader.setLibLoadingListener(new JavetDownloader());
+        ScriptEngines.CURRENT.get().init();
 
         if(Envs.isClient()) {
             MinecraftForge.EVENT_BUS.addListener(PacketEvent::onClientPayloadHandleEvent);
@@ -120,6 +133,7 @@ public class KasugaLibStacks {
             bus.addListener(GeometryEvent::registerGeometry);
             bus.addListener(GeometryEvent::registerReloadListener);
             bus.addListener(BothSetupEvent::RegisterKeyEvent);
+
             GUI = Optional.of(new GuiEngine());
             MENU.initClient();
             bus.addListener(AnimationModelRegistryEvent::registerAnimations);

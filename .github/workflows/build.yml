@@ -1,0 +1,75 @@
+on:
+  workflow_call:
+    inputs:
+
+      branch:
+        type: string
+        required: true
+
+      channel:
+        type: string
+        required: true
+
+      publish:
+        type: boolean
+        default: false
+
+      snapshot_serial:
+        type: string
+        required: false
+
+    secrets:
+      KUAYUE_MAVEN_USERNAME:
+        required: false
+      KUAYUE_MAVEN_PASSWORD:
+        required: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout KasugaLib Repository
+        uses: actions/checkout@v4
+        with:
+          repository: 'KasugaLibGroup/KasugaLib'
+          ref: ${{ inputs.branch }}
+          submodules: true
+
+      - name: Setup Java
+        uses: actions/setup-java@v4.7.1
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4.4.1
+        with:
+          gradle-version: "7.5.1"
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4.4.0
+        with:
+          node-version: "22.x"
+
+      - name: Set UTC+8 Asia/Shanghai TimeZone
+        run: |
+          TIME="$(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M:%S')"
+          echo "Build At: $TIME" >> $GITHUB_STEP_SUMMARY
+
+      - name: Build KasugaLib Javascript Runtime
+        run: |
+          git submodule update --remote --recursive
+          rm ./src/generated/resources/script/ -r -f
+          yarn
+          yarn build
+
+      - name: Build and Publish KasugaLib
+        if: ${{ inputs.publish }}
+        run: |
+          ./gradlew build publishAllPublicationsToKuayueMavenRepository -Pchannel=${{ inputs.channel }} -Pgit_version=$(git rev-parse --short HEAD) -PkuayueMavenUsername="${{ secrets.KUAYUE_MAVEN_USERNAME }}" -PkuayueMavenPassword="${{ secrets.KUAYUE_MAVEN_PASSWORD }}" -Psnapshot_serial="${{ inputs.snapshot_serial }}" -Pgit_version_full="$(git rev-parse HEAD)" -Pci_type="github/${RUNNER_ENVIRONMENT}" -Pbuilder_name="${RUNNER_NAME}" -Pci_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+
+      - name: Build KasugaLib
+        if: ${{ !inputs.publish }}
+        run: |
+          ./gradlew build -Pchannel=${{ inputs.channel }} -Pgit_version=$(git rev-parse --short HEAD)

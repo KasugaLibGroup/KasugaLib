@@ -19,7 +19,7 @@
     "client.MixinDirectoryLister",
     "client.MixinTextureManager",
     "client.MixinBlockModelShaper",
-    "client.MixinTextureManager"
+    "client.MixinGameRenderer"
   ],
   "minVersion": "0.8"
 }
