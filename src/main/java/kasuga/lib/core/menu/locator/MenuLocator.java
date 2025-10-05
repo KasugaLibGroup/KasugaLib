@@ -63,7 +63,7 @@ public abstract class MenuLocator implements NetworkSerializable {
     }
 
     protected void broadcastDisable() {
-        for(Connection connection : tracking){
+        for(Connection connection : List.copyOf(tracking)){
             sendDownTo(connection);
         }
         tracking.clear();

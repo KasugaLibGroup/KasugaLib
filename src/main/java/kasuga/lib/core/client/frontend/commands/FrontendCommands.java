@@ -3,11 +3,14 @@ package kasuga.lib.core.client.frontend.commands;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.systems.RenderSystem;
 import kasuga.lib.KasugaLib;
+import kasuga.lib.core.addons.minecraft.ClientAddon;
 import kasuga.lib.core.addons.node.NodePackage;
+import kasuga.lib.core.addons.node.PackageReader;
 import kasuga.lib.core.base.commands.CommandHandler;
 import kasuga.lib.core.client.frontend.gui.GuiInstance;
 import kasuga.lib.core.javascript.JavascriptContext;
 import kasuga.lib.core.javascript.JavascriptThread;
+import kasuga.lib.core.util.data_type.Pair;
 import kasuga.lib.registrations.common.CommandReg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.client.Minecraft;
@@ -25,6 +28,7 @@ import org.apache.http.impl.client.HttpClients;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -49,10 +53,13 @@ public class FrontendCommands {
                             try(InputStream inputStream = resourceProvider.open("/package.json")){
                                 InputStreamReader reader = new InputStreamReader(inputStream);
                                 JsonObject json = KasugaLib.GSON.fromJson(reader, JsonObject.class);
-                                nodePackage = NodePackage.parse(json, null);
+                                nodePackage = NodePackage.parse(json, new PackageReader("/", resourceProvider));
                             }catch (IOException e){
                                 return;
                             }
+
+                            ClientAddon.provider.packages.add(Pair.of(nodePackage, List.of(nodePackage)));
+                            KasugaLib.STACKS.JAVASCRIPT.CLIENT_LOADER.addPackage(nodePackage);
 
                             nodePackage.minecraft.clientDebuggerEntries().forEach((entry)->{
                                 JavascriptContext context = thread.createContext(entry,"Debugger Context - "+entry);

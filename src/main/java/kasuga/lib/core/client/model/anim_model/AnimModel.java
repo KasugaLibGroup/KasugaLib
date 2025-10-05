@@ -12,6 +12,7 @@ import kasuga.lib.core.client.render.SimpleColor;
 import kasuga.lib.core.client.model.BedrockRenderable;
 import kasuga.lib.core.client.model.model_json.Cube;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -39,7 +40,9 @@ public class AnimModel implements IMultipartModelGeometry<AnimModel>, Animable {
     public final List<BedrockRenderable> roots;
     public final Geometry geometry;
     public final List<Material> materials;
-    public final Supplier<RenderType> renderType;
+
+    @Setter
+    public Supplier<RenderType> renderType;
     private SimpleColor color;
 
     public Vector3f position, rotation,

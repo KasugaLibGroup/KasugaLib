@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录</title>
+    <style>
+        /* Material Design inspired styles */
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; /* System fonts */
+            background-color: #f5f5f5; /* Light grey background (Material Grey 100) */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333; /* Dark grey text */
+            line-height: 1.6;
+        }
+
+        .login-container {
+            background-color: #ffffff; /* White card background */
+            padding: 32px 40px;
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Standard Material shadow (e.g., elevation 4-6) */
+            text-align: center;
+            max-width: 500px;
+            width: 90%; /* Responsive width */
+            animation: fadeIn 0.5s ease-out; /* Subtle fade-in animation */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-instruction {
+            font-size: 16px;
+            color: #5f6368; /* Google's secondary text color */
+            margin-bottom: 24px;
+            min-height: 1.6em; /* Reserve space to prevent layout shifts */
+        }
+
+        .command-area {
+            display: flex;
+            align-items: center;
+            background-color: #f8f9fa; /* Very light grey, like an input field area */
+            border: 1px solid #dadce0; /* Google's input border color */
+            border-radius: 4px;
+            padding: 8px;
+            margin-bottom: 16px; /* Space before help text */
+        }
+
+        .command-input {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; /* Monospace font for command */
+            font-size: 15px;
+            color: #202124; /* Google's primary text color */
+            background-color: transparent; /* Input field transparent within its area */
+            border: none;
+            outline: none;
+            width: 100%; /* Take available space */
+            padding: 8px 12px; /* Padding inside the input text area */
+            box-sizing: border-box;
+        }
+
+        .copy-marker { /* The "[复制]" span */
+            background-color: #1a73e8; /* Google Blue */
+            color: white;
+            padding: 10px 18px;
+            border-radius: 4px; /* Standard Material button corner */
+            font-size: 14px;
+            font-weight: 500; /* Medium weight for button text */
+            cursor: default; /* It's not a button, so default cursor */
+            white-space: nowrap; /* Prevent text wrapping */
+            margin-left: 8px; /* Space between input and marker */
+            user-select: none; /* Prevent selecting the text "[复制]" */
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #757575; /* Material Grey 600 for helper text */
+            min-height: 1.2em; /* Reserve space */
+        }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 600px) {
+            .login-container {
+                padding: 24px; /* Reduce padding on smaller screens */
+            }
+            .command-area {
+                flex-direction: column; /* Stack command input and marker vertically */
+                align-items: stretch; /* Make children take full width */
+                padding: 12px;
+            }
+            .command-input {
+                margin-bottom: 10px; /* Space between input and marker when stacked */
+                text-align: center; /* Optional: center text in input on small screens */
+            }
+            .copy-marker {
+                margin-left: 0; /* No left margin when stacked */
+                text-align: center;
+                padding: 10px; /* Adjust padding */
+            }
+            .login-instruction {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <p class="login-instruction">正在初始化...</p>
+    <div class="command-area" style="display: none;">
+        <input type="text" class="command-input" value="正在加载命令..." readonly onclick="this.select();">
+        <span class="copy-marker">[复制]</span>
+    </div>
+    <p class="help-text" style="display: none;"></p>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const loginInstructionElement = document.querySelector('.login-instruction');
+        const commandAreaElement = document.querySelector('.command-area');
+        const commandInputElement = document.querySelector('.command-input');
+        const helpTextElement = document.querySelector('.help-text');
+
+        const initialUrlParams = new URLSearchParams(window.location.search);
+        let currentToken = initialUrlParams.get('token');
+        const redirectTarget = initialUrlParams.get('redirect') || '/';
+
+        let pollingIntervalId = null;
+
+        function setUIState(state, message = '', tokenForCommand = '') {
+            // Default visibility and styles
+            commandAreaElement.style.display = 'none';
+            helpTextElement.style.display = 'none';
+            loginInstructionElement.style.color = '#5f6368'; // Default text color
+
+            switch (state) {
+                case 'INITIAL_LOAD_WITH_TOKEN': // Token from URL, ready to poll
+                    loginInstructionElement.textContent = '请在 Minecraft 的聊天栏中输入以下命令进行登录:';
+                    commandInputElement.value = `/kasugalib webui login ${tokenForCommand}`;
+                    helpTextElement.textContent = `点击上面的命令框可全选命令，然后使用 Ctrl+C (或 Cmd+C) 手动复制。`;
+                    commandAreaElement.style.display = 'flex';
+                    helpTextElement.style.display = 'block';
+                    break;
+                case 'FETCHING_TOKEN':
+                    loginInstructionElement.textContent = message || '正在获取登录令牌...';
+                    break;
+                case 'POLLING':
+                    loginInstructionElement.textContent = message; // Specific message from pollAuthStatus
+                    commandInputElement.value = `/kasugalib webui login ${tokenForCommand}`;
+                    helpTextElement.textContent = `点击上面的命令框可全选命令，然后使用 Ctrl+C (或 Cmd+C) 手动复制。`;
+                    commandAreaElement.style.display = 'flex';
+                    helpTextElement.style.display = 'block';
+                    break;
+                case 'AUTH_SUCCESS':
+                    loginInstructionElement.textContent = message || '授权成功！正在跳转...';
+                    if (pollingIntervalId) clearInterval(pollingIntervalId);
+                    break;
+                case 'ERROR':
+                    loginInstructionElement.textContent = message || '发生错误。';
+                    loginInstructionElement.style.color = '#d93025'; // Red for error
+                    if (pollingIntervalId) clearInterval(pollingIntervalId);
+                    break;
+            }
+        }
+
+        async function fetchInitialTokenAndUpdateUrl() {
+            setUIState('FETCHING_TOKEN');
+            try {
+                const response = await fetch('/api/auth'); // GET by default
+                if (!response.ok) {
+                    let errorText = '';
+                    try {
+                        errorText = await response.text();
+                    } catch (e) { /* ignore if text() fails */ }
+                    throw new Error(`服务器错误 ${response.status}: ${errorText || response.statusText}`);
+                }
+                const data = await response.json();
+                if (!data || !data.token) {
+                    throw new Error('服务器未返回有效令牌');
+                }
+
+                const newUrl = new URL(window.location.href);
+                newUrl.searchParams.set('token', data.token);
+                if (initialUrlParams.has('redirect')) {
+                    newUrl.searchParams.set('redirect', initialUrlParams.get('redirect'));
+                }
+                history.replaceState(null, '', newUrl.toString());
+                console.log('初始令牌获取成功: ' + data.token);
+                return data.token;
+
+            } catch (error) {
+                console.error('获取初始令牌失败:', error);
+                setUIState('ERROR', `获取令牌失败: ${error.message} 请刷新页面重试。`);
+                return null;
+            }
+        }
+
+        async function pollAuthStatus(tokenToPoll) {
+            console.log(`正在轮询 /api/auth?token=${tokenToPoll}`);
+            // Update UI for polling state, showing the command
+            setUIState('POLLING', `请在 Minecraft 的聊天栏中输入以下命令进行登录: (等待确认...)`, tokenToPoll);
+
+            try {
+                const response = await fetch(`/api/auth?token=${tokenToPoll}`);
+
+                if (response.ok) { // Status 200
+                    console.log('授权成功!');
+                    setUIState('AUTH_SUCCESS');
+                    setTimeout(() => {
+                        window.location.href = redirectTarget;
+                    }, 1500); // 1.5 second delay for user to see message
+                } else if (response.status === 401) {
+                    console.log('授权尚未完成 (401)，将继续轮询...');
+                    // UI is already in POLLING state, message remains until next successful poll or error
+                } else { // Other non-200, non-401 errors
+                    let errorText = '';
+                    try {
+                        errorText = await response.text();
+                    } catch (e) { /* ignore */ }
+                    console.error(`授权检查时发生错误: ${response.status} ${response.statusText}`, errorText);
+                    setUIState('ERROR', `授权检查失败: ${response.status} ${errorText || response.statusText}. 请刷新或联系管理员。`);
+                }
+            } catch (error) { // Network errors or other fetch issues
+                console.error('轮询 /api/auth 时发生网络错误:', error);
+                // Optionally, update UI to indicate temporary network issue, but for now, it will just retry.
+                // If error is persistent, it might need a counter to stop polling.
+                // setUIState('POLLING', `网络通讯中断，尝试重连... (令牌: ${tokenToPoll.substring(0,8)}...)`, tokenToPoll);
+            }
+        }
+
+        function startPollingProcess(token) {
+            if (!token) {
+                // This case should ideally be handled by the caller ensuring token is valid
+                // or fetchInitialTokenAndUpdateUrl failing and setting an error state.
+                // If somehow called with no token, and no prior error state:
+                setUIState('ERROR', '无法开始验证：无有效令牌。');
+                return;
+            }
+            pollAuthStatus(token); // Call once immediately
+            pollingIntervalId = setInterval(() => pollAuthStatus(token), 5000);
+        }
+
+        async function initializeAuthFlow() {
+            if (currentToken) {
+                console.log(`使用URL中的令牌开始轮询: ${currentToken}`);
+                setUIState('INITIAL_LOAD_WITH_TOKEN', '', currentToken);
+                startPollingProcess(currentToken);
+            } else {
+                console.log('URL中无令牌，尝试获取新令牌...');
+                const newToken = await fetchInitialTokenAndUpdateUrl();
+                if (newToken) {
+                    currentToken = newToken; // Update currentToken with the fetched one
+                    // UI state for polling will be set by the first call to pollAuthStatus inside startPollingProcess
+                    startPollingProcess(currentToken);
+                }
+                // If newToken is null, fetchInitialTokenAndUpdateUrl has already set an error UI state.
+            }
+        }
+
+        initializeAuthFlow();
+    });
+</script>
+</body>
+</html>
