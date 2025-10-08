@@ -6,6 +6,7 @@ buildscript {
         maven { url = 'https://maven.minecraftforge.net'}
         maven { url = 'https://maven.parchmentmc.org' }
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/'}
+        maven { url = 'https://modmaven.dev'}
         mavenCentral()
         jcenter()
     }
@@ -223,6 +224,11 @@ repositories {
     // }
     mavenCentral()
     maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "https://modmaven.dev"
+    }
+    maven {
         name = 'tterrag maven'
         url = 'https://maven.tterrag.com/'
     }
@@ -231,11 +237,6 @@ repositories {
 //        name = "Progwml6 maven"
 //        url = "https://dvs1.progwml6.com/files/maven/"
 //    }
-    maven {
-        // location of a maven mirror for JEI files, as a fallback
-        name = "ModMaven"
-        url = "https://modmaven.dev"
-    }
     maven {
         url = "https://maven.theillusivec4.top/"
     }
