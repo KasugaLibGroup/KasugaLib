@@ -1,7 +1,9 @@
 package kasuga.lib.core.client.block_bench_model.anim_model;
 
 import interpreter.compute.data.Namespace;
+import interpreter.compute.data.Variable;
 import interpreter.compute.data.functions.Function;
+import interpreter.compute.infrastructure.Formula;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -47,4 +49,18 @@ public class AnimFunctions {
             Math::min);
 
     public void invoke(){}
+
+    public static void main(String[] args) {
+        Namespace namespace = new Namespace(AnimFunctions.animRoot);
+        namespace.registerInstance("direct", new Variable("direct", namespace, 1f));
+        namespace.registerInstance("time", new Variable("time", namespace, 0f));
+        namespace.registerInstance("wheel", new Variable("wheel", namespace, 0f));
+
+        namespace.assign("time", 0.166666666667f);
+        Formula formula = namespace.decodeFormula("direct *(- time) * 360 / 1");
+        float result = formula.getResult();
+        namespace.assign("wheel", result);
+
+        System.out.println(result);
+    }
 }

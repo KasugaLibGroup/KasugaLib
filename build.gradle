@@ -223,6 +223,11 @@ repositories {
     // }
     mavenCentral()
     maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "https://modmaven.dev"
+    }
+    maven {
         name = 'tterrag maven'
         url = 'https://maven.tterrag.com/'
     }
@@ -231,11 +236,6 @@ repositories {
 //        name = "Progwml6 maven"
 //        url = "https://dvs1.progwml6.com/files/maven/"
 //    }
-    maven {
-        // location of a maven mirror for JEI files, as a fallback
-        name = "ModMaven"
-        url = "https://modmaven.dev"
-    }
     maven {
         url = "https://maven.theillusivec4.top/"
     }
@@ -290,9 +290,11 @@ dependencies {
 
     minecraftLibrary ('org.lwjgl:lwjgl-yoga:3.3.1') {
         exclude group: 'org.lwjgl',module: 'lwjgl'
+        // exclude group: 'com.google.code.gson', module: 'gson';
     };
     shadedLib('org.lwjgl:lwjgl-yoga:3.3.1'){
         exclude group: 'org.lwjgl',module: 'lwjgl'
+        // exclude group: 'com.google.code.gson', module: 'gson';
     };
 
     implementation('io.netty:netty-codec-http:4.1.77.Final');
@@ -305,6 +307,7 @@ dependencies {
         exclude group: 'io.netty', module:'netty-buffer';
         exclude group: 'io.netty', module:'netty-resolver';
         exclude group: 'io.netty', module:'netty-common';
+        // exclude group: 'com.google.code.gson', module: 'gson';
     }
 
     shadedLib ('io.netty:netty-codec-http:4.1.77.Final') {
@@ -315,13 +318,16 @@ dependencies {
         exclude group: 'io.netty', module: 'netty-buffer';
         exclude group: 'io.netty', module: 'netty-resolver';
         exclude group: 'io.netty', module: 'netty-common';
+        // exclude group: 'com.google.code.gson', module: 'gson';
     }
 
     minecraftLibrary ("edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.1.0") {
+        exclude group: 'com.ibm.icu', module: 'icu4j';
         exclude group: 'com.google.guava', module: 'guava';
         exclude group: 'com.google.code.gson', module: 'gson';
     }
     shadedLib(group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)") {
+        exclude group: 'com.ibm.icu', module: 'icu4j';
         exclude group: 'com.google.guava', module: 'guava';
         exclude group: 'com.google.code.gson', module: 'gson';
     }
@@ -369,7 +375,7 @@ dependencies {
     // compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api") // Adds JEI API as a compile dependency
     // runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
     // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${minecraft_version}-${registrate_version}") // Adds registrate as a dependency
-    // minecraftLibrary "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.2"
+    // minecraftLibrary "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.1.0"
     // shadedLib (group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)")
     // Examples using mod jars from ./libs
     // implementation fg.deobf("blank:coolmod-${minecraft_version}:${coolmod_version}")
