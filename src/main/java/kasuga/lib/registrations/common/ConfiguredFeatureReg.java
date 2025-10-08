@@ -3,6 +3,9 @@ package kasuga.lib.registrations.common;
 import com.google.common.base.Suppliers;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.registry.SimpleRegistry;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -28,6 +31,7 @@ public class ConfiguredFeatureReg<T extends Block> extends Reg {
 
     private final List<Supplier<OreConfiguration.TargetBlockState>> oreConfigTargetList;
     private RegistryObject<ConfiguredFeature<?, ?>> registryObject = null;
+    private ResourceKey<ConfiguredFeature<?, ?>> key = null;
 
     public ConfiguredFeatureReg(String registrationKey) {
         super(registrationKey);
@@ -89,12 +93,15 @@ public class ConfiguredFeatureReg<T extends Block> extends Reg {
 
     @Override
     public ConfiguredFeatureReg<T> submit(SimpleRegistry registry) {
-        registryObject = registry.configuredFeature().register(
-                registrationKey,
-                () -> new ConfiguredFeature<>(
-                        Feature.ORE,
-                        new OreConfiguration(getOreConfigTargetList(), quantityPerGroup)));
+//        registryObject = registry.configuredFeature().register(
+//                registrationKey,
+//                () -> new ConfiguredFeature<>(
+//                        Feature.ORE,
+//                        new OreConfiguration(getOreConfigTargetList(), quantityPerGroup)));
+        key = ResourceKey.create(Registries.CONFIGURED_FEATURE,
+                new ResourceLocation(registry.namespace, this.registrationKey));
         return this;
+//        return this;
     }
 
     @Override
