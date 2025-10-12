@@ -42,7 +42,10 @@ public class GreenAppleTileRenderer implements BlockEntityRenderer<GreenAppleTil
                 return new AnimationController(model);
             });
         AnimationController controller = bbTestModel.get();
-        if (controller == null) return;
+        if (controller == null) {
+            pose.popPose();
+            return;
+        }
         // controller.setSpeed("animation.model.new", 0.05f);
         controller.start("animation.model.new");
         controller.render(pose, buffer, light, overlay, partial);
