@@ -21,9 +21,6 @@
   ],
   "client": [
     "client.MixinBlockModel$Deserializer",
-    "client.MixinBlockModelBinding",
-    "client.MixinBlockModelShaper",
-    "client.MixinTextureManager",
     "client.MixinBezierConnection",
     "client.MixinBlockRenderDispatcher",
     "client.MixinCarriageContraptionEntityRenderer",
@@ -31,6 +28,7 @@
     "client.MixinDirectoryLister",
     "client.MixinTextureManager",
     "client.MixinBlockModelShaper",
+    "compat.client.IrisOculusCompatMixin",
     "client.MixinGameRenderer"
   ],
   "minVersion": "0.8"
