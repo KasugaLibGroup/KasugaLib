@@ -14,11 +14,11 @@
   ],
   "client": [
     "client.MixinBlockModel$Deserializer",
-    "client.MixinBlockModelBinding",
     "client.MixinBlockRenderDispatcher",
     "client.MixinDirectoryLister",
     "client.MixinTextureManager",
     "client.MixinBlockModelShaper",
+    "compat.client.IrisOculusCompatMixin",
     "client.MixinGameRenderer"
   ],
   "minVersion": "0.8"
