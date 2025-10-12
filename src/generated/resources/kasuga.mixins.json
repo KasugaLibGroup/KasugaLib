@@ -22,7 +22,6 @@
   ],
   "client": [
     "client.MixinBlockModel$Deserializer",
-    "client.MixinBlockModelBinding",
     "client.MixinBlockModelShaper",
     "client.MixinTextureManager",
     "client.MixinBezierConnection",
