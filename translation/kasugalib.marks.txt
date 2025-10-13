@@ -29,7 +29,7 @@ DedicateServer是一类专门用于多人游戏的服务器，并不运行客户
 
 
 
-kasuga.lib.core.util.Resources#getResources
+kasuga.lib.core.resource.Resources#getResources
 Get resources with their path.
 @param location The location of file or folder.
 @param isFile is the location pointing at a file or a folder?
@@ -41,7 +41,7 @@ Get resources with their path.
 @return 资源与资源的map
 @throws IOException 如果资源不存在则抛出此错误
 
-kasuga.lib.core.util.Resources#getFullPathResources
+kasuga.lib.core.resource.Resources#getFullPathResources
 Get resources with their full path. Full path means that the path contains the location path you gave.
 @param location The location of file or folder.
 @param isFile is the location pointing at a file or a folder?
@@ -53,7 +53,7 @@ Get resources with their full path. Full path means that the path contains the l
 @return 资源与资源的map
 @throws IOException 如果资源不存在则抛出此错误
 
-kasuga.lib.core.util.Resources#getResource
+kasuga.lib.core.resource.Resources#getResource
 Get single resource file from your asset or data.
 @param location the file location.
 @return the resource.
@@ -63,7 +63,7 @@ Get single resource file from your asset or data.
 @return 资源
 @throws IOException 如果文件不存在则抛出此错误
 
-kasuga.lib.core.util.Resources#getBlock
+kasuga.lib.core.resource.Resources#getBlock
 Get Block from its registration key.
 @param location the block registration key (we usually use them in data-gen)
 @return the block we got.
@@ -71,7 +71,7 @@ Get Block from its registration key.
 @param location 方块注册的key(在数据生成中使用的)
 @return 获取到的方块
 
-kasuga.lib.core.util.Resources#getItem
+kasuga.lib.core.resource.Resources#getItem
 Get item from its registration key.
 @param location the item registration key (we usually use them in data-gen)
 @return the item we got.
