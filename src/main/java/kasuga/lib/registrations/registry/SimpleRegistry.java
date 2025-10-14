@@ -60,6 +60,10 @@ import java.util.function.Supplier;
 import static net.minecraft.core.Registry.CONFIGURED_FEATURE_REGISTRY;
 
 /**
+ * SimpleRegistry是Kasugalib提供注册的核心注册机。
+ * 通过调用{@link kasuga.lib.registrations.registry.SimpleRegistry#SimpleRegistry(String, IEventBus)}
+ * 并传入你的命名空间名称和你的mod事件总线。我们已经为一些类型的游戏元素提供了注册机。
+ * 要使用这些注册，请参见{@link kasuga.lib.registrations.Reg}及其子类。
  * SimpleRegistry is the core registry of KasugaLib provide Registration.
  * call via {@link kasuga.lib.registrations.registry.SimpleRegistry#SimpleRegistry(String, IEventBus)} with your namespace
  * name and your mod event bus. We have provided registries for some types of game elements.
@@ -98,6 +102,11 @@ public class SimpleRegistry {
     private final HashMap<String, AnimReg> ANIMS;
 
     /**
+     * 这个构造函数用于创建一个新的KasugaLib注册机。
+     * @param namespace 你的mod命名空间名称
+     * @param bus 你的mod命名空间事件总线。更多信息请参见{@link FMLJavaModLoadingContext#get()}
+     * 和{@link FMLJavaModLoadingContext#getModEventBus()}
+     * 
      * This constructor is used for create a new KasugaLib registration.
      * @param namespace your mod namespace name
      * @param bus your mod namespace eventbus. For more info see
@@ -141,6 +150,8 @@ public class SimpleRegistry {
     }
 
     /**
+     * 返回注册机logger
+     * @return 注册机logger
      * return the registry logger.
      * @return registry logger.
      */
@@ -149,12 +160,16 @@ public class SimpleRegistry {
     }
 
     /**
+     * 返回音效的注册机。请参见{@link kasuga.lib.registrations.common.SoundReg}
+     * @return 音效注册机
      * return the registry of SoundEvents. See {@link kasuga.lib.registrations.common.SoundReg}
      * @return Registry of SoundEvents
      */
     public DeferredRegister<SoundEvent> sound() {return SOUNDS;}
 
     /**
+     * 返回方块的注册机。请参见{@link kasuga.lib.registrations.common.BlockReg}
+     * @return 方块注册机
      * return the registry of Blocks. See {@link kasuga.lib.registrations.common.BlockReg}
      * @return Registry of Blocks
      */
@@ -163,6 +178,8 @@ public class SimpleRegistry {
     }
 
     /**
+     * 返回物品的注册机。请参见{@link kasuga.lib.registrations.common.ItemReg}
+     * @return 物品注册机
      * return the registry of items. See {@link kasuga.lib.registrations.common.ItemReg}
      * @return Registry of items.
      */
@@ -171,6 +188,8 @@ public class SimpleRegistry {
     }
 
     /**
+     * 返回方块实体的注册机。请参见{@link kasuga.lib.registrations.common.BlockEntityReg}
+     * @return 方块实体注册机
      * return the registry of BlockEntities. See {@link kasuga.lib.registrations.common.BlockEntityReg}
      * @return Registry of BlockEntities.
      */
@@ -179,6 +198,8 @@ public class SimpleRegistry {
     }
 
     /**
+     * 返回ContainerMenus和RENDER Screens的注册机。请参见{@link kasuga.lib.registrations.common.MenuReg}
+     * @return ContainerMenus注册机
      * return the registry of ContainerMenus and RENDER Screens. See {@link kasuga.lib.registrations.common.MenuReg}
      * @return Registry of ContainerMenus.
      */
@@ -187,6 +208,8 @@ public class SimpleRegistry {
     }
 
     /**
+     * 返回 实体的注册机。请参见{@link kasuga.lib.registrations.common.EntityReg}
+     * @return 实体注册机
      * return the registry of Entities. See {@link kasuga.lib.registrations.common.EntityReg}
      * @return Registry of Entities.
      */
@@ -195,6 +218,8 @@ public class SimpleRegistry {
     }
 
     /**
+     * 返回实体AI属性的注册机。
+     * @return 属性注册机
      * return the registry of entity AI attributes.
      * @return Registry of attributes.
      */
@@ -202,6 +227,8 @@ public class SimpleRegistry {
     public DeferredRegister<Attribute> attribute() {return ATTRIBUTES;}
 
     /**
+     * 返回配方的注册机。请参见{@link kasuga.lib.registrations.common.RecipeReg}
+     * @return 配方注册机
      * return the registry of recipes. See {@link kasuga.lib.registrations.common.RecipeReg}
      * @return Registry of recipes.
      */
@@ -210,6 +237,8 @@ public class SimpleRegistry {
     }
 
     /**
+     * 返回配方序列化器的注册机。请参见{@link kasuga.lib.registrations.common.RecipeReg}
+     * @return 配方注册机
      * return the registry of recipe serializers. See {@link kasuga.lib.registrations.common.RecipeReg}
      * @return Registry of recipe.
      */
@@ -218,18 +247,24 @@ public class SimpleRegistry {
     }
 
     /**
+     * 返回药水效果的注册机。请参见{@link kasuga.lib.registrations.common.EffectReg}
+     * @return 药水效果注册机
      * return the registry of poison effects. See {@link kasuga.lib.registrations.common.EffectReg}
      * @return Registry of effects.
      */
     public DeferredRegister<MobEffect> mob_effect() {return EFFECT;}
 
     /**
+     * 返回流体类型的注册机。请参见{@link kasuga.lib.registrations.common.FluidReg}
+     * @return 流体类型注册机
      * return the registry of fluid types. See {@link kasuga.lib.registrations.common.FluidReg}
      * @return the registry of fluid types.
      */
     public DeferredRegister<FluidType> fluid_type() {return FLUID_TYPE;}
 
     /**
+     * 返回流体的注册机。请参见{@link kasuga.lib.registrations.common.FluidReg}
+     * @return 流体注册机
      * return the registry of fluid. See {@link kasuga.lib.registrations.common.FluidReg}
      * @return the registry of fluid.
      */
@@ -240,24 +275,32 @@ public class SimpleRegistry {
     public DeferredRegister<PlacedFeature> placedFeature() { return PLACED_FEATURE; }
 
     /**
+     * 返回 kasuga lib 风格的模型注册机。请参见{@link kasuga.lib.registrations.client.ModelReg}
+     * @return Kasuga Lib 风格模型注册机
      * retrun the registry of kasuga lib style models. See {@link kasuga.lib.registrations.client.ModelReg}
      * @return the registry of kasuga lib style models.
      */
     public ModelRegistry model() {return MODELS;}
 
     /**
+     * 返回创造模式物品栏的注册机。请参见{@link kasuga.lib.registrations.common.CreativeTabReg}
+     * @return 创造模式物品栏注册机
      * return the registry of Creative Mode Tabs. See {@link kasuga.lib.registrations.common.CreativeTabReg}
      * @return the regsitry of kasuga lib's tabs.
      */
     public HashMap<String, SimpleCreativeTab> tab() {return TABS;}
 
     /**
+     * 返回指令的注册机。请参见{@link kasuga.lib.registrations.common.CommandReg}
+     * @return 指令注册机
      * return the registry of Commands. See {@link kasuga.lib.registrations.common.CommandReg}
      * @return the regsitry of kasuga lib's commands.
      */
     public HashMap<String, CommandReg> command() {return COMMANDS;}
 
     /**
+     * 返回按键绑定的注册机。请参见{@link KeyBindingReg}
+     * @return 按键绑定注册机
      * return the registry of key bindings. See {@link KeyBindingReg}
      * @return the regsitry of kasuga lib's key bindings.
      */
@@ -266,6 +309,9 @@ public class SimpleRegistry {
     public HashMap<String, AnimReg> animation() {return ANIMS;}
 
     /**
+     * 用于在给定命名空间下获取资源位置的实用
+     * @param path 被调用的资源路径。
+     * @return 新的资源位置。
      * method for get location for resource under given namespace
      * @param path the path of resource called.
      * @return new resource location.
@@ -276,6 +322,7 @@ public class SimpleRegistry {
     }
 
     /**
+     * 你必须在所有注册都加载完毕后调用此方法。
      * You must call this after the registry has all been loaded.
      */
     @Mandatory

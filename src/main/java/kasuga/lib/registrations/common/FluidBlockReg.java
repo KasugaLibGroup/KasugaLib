@@ -32,6 +32,9 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
+ * 这是用于注册块装流体的注册机。
+ * 例如，这个液体的源块就是一个液体块。
+ * @param <T> 你的流体类。
  * This is the registration for blocks of fluid.
  * For example, the source block of the liquid is a liquid block.
  * @param <T> The class of fluid.
@@ -52,6 +55,8 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     BlockReg.BlockRendererBuilder<T> rendererBuilder;
 
     /**
+     * 创建一个流体方块注册机
+     * @param registrationKey 你的流体注册的名字。
      * Create a fluid block reg.
      * @param registrationKey The registration key of your fluid.
      */
@@ -61,6 +66,9 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     }
 
     /**
+     * 选定你的流体方块对应的流体实例。传入一个返回有效流体的lambda。
+     * @param fluid 你的流体实例的lambda。
+     * @return 自身
      * Specifies the fluid instance tha corresponds to the block. Pass a lambda that returns an valid fluid here.
      * @param fluid the fluid supplier lambda.
      * @return self.
@@ -72,6 +80,9 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     }
 
     /**
+     * 传入一个方块实例lambda。
+     * @param builder 方块构建器lambda。
+     * @return 自身
      * Pass a block instance lambda in here.
      * @param builder the block invoker lambda.
      * @return self.
@@ -83,6 +94,9 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     }
 
     /**
+     * 就像方块的矿物属性方法一样，见{@link BlockReg#material(Material)}
+     * @param material 你希望在地图上显示的方块材质。
+     * @return 自身
      * As same as the block's material method, see {@link BlockReg#material(Material)}
      * @param material the material color you'd like to show in the map.
      * @return self.
@@ -94,7 +108,10 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     }
 
     /**
-     * The color you would like to make your fluid blok on the map.
+     * 你希望在地图上显示的流体方块颜色。
+     * @param color 颜色。
+     * @return 自身
+     * The color you would like to make your fluid block on the map.
      * @param color color on map.
      * @return self.
      */
@@ -105,6 +122,9 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     }
 
     /**
+     * 你的流体方块自定义属性。
+     * @param identifier 方块属性定制lambda。
+     * @return 自身
      * Your block's custom property.
      * @param identifier the block property customizer lambda.
      * @return self.
@@ -116,6 +136,9 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     }
 
     /**
+     * 你的流体方块破坏音效（你想干啥？）
+     * @param sound 破坏音效。
+     * @return 自身
      * Your fluid block's destroy sound. (Why you want to apply it?)
      * @param sound The destroy sound.
      * @return self.
@@ -127,6 +150,12 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     }
 
     /**
+     * 为你的流体方块创建一个方块实体。（你想干啥？）
+     * @param beRegistrationKey 你的方块实体注册的名字。
+     * @param supplier 提供方块实体实例的lambda。
+     * @return 自身
+     * @param <R> 你的实体类。
+     *
      * create a block entity for your fluid. (Why you would need this?)
      * @param beRegistrationKey the registration key of your block entity.
      * @param supplier the supplier that provides a block entity instance.
@@ -143,6 +172,9 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     }
 
     /**
+     * 将你的流体方块与一个方块实体绑定。
+     * @param blockEntityReg 你的方块实体注册机。
+     * @return 自身
      * bind your block with a block entity.
      * @param blockEntityReg the reg of your block entity.
      * @return self.
@@ -155,6 +187,9 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     }
 
     /**
+     * 或许你需要为你的液体添加一个方块实体渲染器？
+     * @param builder 你的方块实体渲染器构建器lambda。
+     * @return 自身
      * Maybe you need a block entity renderer for your liquid ?
      * @param builder the block entity renderer supplier lambda pf your block entity.
      * @return self.
@@ -175,6 +210,14 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     }
 
     /**
+     * 详见{@link BlockReg#withMenu(String, IContainerFactory, Supplier)}
+     * @param registrationKey 你的菜单注册的名字。
+     * @param menu 你的菜单实例。
+     * @param screen 你的屏幕实例。
+     * @return 自身
+     * @param <F> 你的菜单类。
+     * @param <U> 你的屏幕类。
+     *
      * See {@link BlockReg#withMenu(String, IContainerFactory, Supplier)}
      * @param registrationKey the name of your menu.
      * @param menu the menu instance supplier.
@@ -193,6 +236,9 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     }
 
     /**
+     * 详见{@link BlockReg#withMenu(MenuReg)}
+     * @param menuReg 你的菜单注册机。
+     * @return 自身
      * see {@link BlockReg#withMenu(MenuReg)}
      * @param menuReg the reg of your menu.
      * @return self.
@@ -205,6 +251,9 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     }
 
     /**
+     * 详见{@link BlockReg#withTags(TagKey)}
+     * @param tag 你的标签。
+     * @return 自身
      * see {@link BlockReg#withTags(TagKey)}
      * @param tag the tagkey.
      * @return self.
@@ -216,6 +265,9 @@ public class FluidBlockReg<T extends LiquidBlock> extends Reg {
     }
 
     /**
+     * 将你的配置提交到forge和minecraft的注册表。
+     * @param registry 你的mod的SimpleRegistry。
+     * @return 自身
      * Submit your config to forge and minecraft's registry.
      * @param registry the mod SimpleRegistry.
      * @return self.

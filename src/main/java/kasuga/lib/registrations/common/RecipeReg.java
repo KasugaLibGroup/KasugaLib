@@ -10,6 +10,11 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.registries.RegistryObject;
 
 /**
+ * 用这个来创建一个配方和它的序列化器。配方用于合成、熔炼等等。
+ * 详见 {@link net.minecraft.world.item.crafting.CraftingRecipe} 或
+ * {@link net.minecraft.world.item.crafting.SingleItemRecipe}
+ * @param <T> 你的配方的类。
+ * @param <F> 你的配方序列化器的类。
  * Use this to create a recipe and it's serializer. Recipe is used for crafting, smelting and so on.
  * For example, see {@link net.minecraft.world.item.crafting.CraftingRecipe} or
  * {@link net.minecraft.world.item.crafting.SingleItemRecipe}
@@ -26,6 +31,9 @@ public class RecipeReg<T extends Recipe<?>, F extends RecipeSerializer<?>> exten
     }
 
     /**
+     * 创建一个配方注册机。
+     * @param registrationKey 你的配方注册机的键。
+     * @param serializer 你的配方序列化器实例。
      * Create a recipe reg.
      * @param registrationKey The registration key of your recipe.
      * @param serializer The recipe serializer instance.
@@ -36,6 +44,9 @@ public class RecipeReg<T extends Recipe<?>, F extends RecipeSerializer<?>> exten
     }
 
     /**
+     * 将你的配置提交到minecraft和forge注册表。
+     * @param registry mod的SimpleRegistry。
+     * @return 自身
      * Submit your config to minecraft and forge registry.
      * @param registry the mod SimpleRegistry.
      * @return self.

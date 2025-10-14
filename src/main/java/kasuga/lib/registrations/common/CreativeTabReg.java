@@ -12,6 +12,12 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.function.Supplier;
 
 /**
+ * 这个注册机是用于创造模式物品栏的注册机。我们强烈建议你使用这个来注册你的创造模式物品栏，
+ * 因为在1.19.3中，minecraft的物品栏注册修改了很多。如果你使用原始的minecraft注册，
+ * 传入物品到物品栏会给你带来很大的麻烦。如果你使用这个来创建你的物品栏，
+ * 请使用 {@link ItemReg#tab(CreativeTabReg)}，{@link BlockReg#tabTo(CreativeTabReg)}
+ * 或 {@link FluidReg#tab(CreativeTabReg)} 来注册你的物品到这个物品栏。
+ * 这个注册机会为你创建一个 {@link SimpleCreativeTab} 实例。
  * This is the registration for the creative mode tab. We firmly suggest that you should use this to register
  * your creative tab because the minecraft tab reg would be changed violently in 1.19.3. If you use the original
  * minecraft registration, it would be a big trouble for you to deal with your items with their tabs.
@@ -24,6 +30,8 @@ public class CreativeTabReg extends Reg {
     public Supplier<ItemStack> iconSupplier = null;
 
     /**
+     * 用这个来创建你的物品栏注册机。
+     * @param registrationKey 你的标签的名称或翻译键。
      * Use this to create your tab registration.
      * @param registrationKey the name or translation key of your tab.
      */
@@ -32,6 +40,10 @@ public class CreativeTabReg extends Reg {
     }
 
     /**
+     * 传入一个itemStack来用作你的标签图标。
+     * 如果物品有一个itemReg，请使用 {@link CreativeTabReg#icon(ItemReg)}
+     * @param icon 你的图标itemStack。
+     * @return 自身
      * Pass an ItemStack in to use it as your tab's icon.
      * If the item has an itemReg, use that reg with {@link CreativeTabReg#icon(ItemReg)}
      * @param icon the icon itemStack.
@@ -44,6 +56,10 @@ public class CreativeTabReg extends Reg {
     }
 
     /**
+     * 传入一个itemStack来用作你的标签图标。
+     * 如果你的物品是通过其他方式注册的，请使用 {@link CreativeTabReg#icon(Supplier)}
+     * @param reg 你的物品注册对象。
+     * @return 自身
      * Pass an itemStack in to use it as your tab's icon.
      * If your item is registered in other way, use {@link CreativeTabReg#icon(Supplier)}
      * @param reg the item registration.
@@ -56,6 +72,10 @@ public class CreativeTabReg extends Reg {
     }
 
     /**
+     * 如果你的图标是从原始的forge注册表中注册的，请使用此方法将其用作图标。
+     * 对于其他用法，请参见 {@link CreativeTabReg#icon(Supplier)} 或 {@link CreativeTabReg#icon(ItemReg)}
+     * @param itemRegistry 你的物品的注册对象。
+     * @return 自身
      * If your icon is registered from original forge registry, use this method to use it as icon.
      * For other usage, see {@link CreativeTabReg#icon(Supplier)} or {@link CreativeTabReg#icon(ItemReg)}
      * @param itemRegistry the registry object of your item.
@@ -68,6 +88,9 @@ public class CreativeTabReg extends Reg {
     }
 
     /**
+     * 将你的配置传递给forge和minecraft。
+     * @param registry mod的SimpleRegistry。
+     * @return 自身
      * Pass your configs to forge and minecraft registry.
      * @param registry the mod SimpleRegistry.
      * @return self.

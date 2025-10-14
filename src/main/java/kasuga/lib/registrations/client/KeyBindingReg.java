@@ -39,6 +39,10 @@ public class KeyBindingReg extends Reg {
     private static final LinkedList<KeyBindingReg> registered = new LinkedList<>();
 
     /**
+     * 开始你的按键注册
+     * @param translationKey 你的按键的可翻译名字
+     * @param categoryName 你的按键分类名
+     * @see KeyMapping
      * The beginning of your registry
      * @param translationKey Your key binding's translatable name
      * @param categoryName Your key binding's category name
@@ -51,6 +55,9 @@ public class KeyBindingReg extends Reg {
     }
 
     /**
+     * 在逻辑客户端设置你的输入处理器
+     * @param consumer 处理器
+     * @return Reg本身
      * Set your input handler on logical client side
      * @param consumer The handler
      * @return The Reg itself
@@ -61,6 +68,9 @@ public class KeyBindingReg extends Reg {
     }
 
     /**
+     * 在逻辑服务端设置你的输入处理器
+     * @param consumer 处理器
+     * @return Reg本身
      * Set your input handler on logical server side
      * @param consumer The handler
      * @return The Reg itself
@@ -71,6 +81,10 @@ public class KeyBindingReg extends Reg {
     }
 
     /**
+     * 设置你的默认绑定按键的修饰键，这意味着用户应该同时按下修饰键与绑定键。
+     * 最多只能选择一个修饰键。
+     * @param modifier 你的按键的修饰键，可以是control, shift或者alt。
+     * @return Reg本身
      * Set your key binding's default modifier, which means user should hold them down at once.
      * Can hold one modifier at most.
      * @param modifier Your key's modifier, can be control, shift or alt.
@@ -82,6 +96,10 @@ public class KeyBindingReg extends Reg {
     }
 
     /**
+     * 设置你的按键绑定类型。可以是键盘(KEYSYM)或者鼠标(MOUSE)。强烈建议不要使用扫描码(SCANNODE)，因为它是平台相关的。
+     * @param defaultKeyCode 你的按键的默认GLFW码。
+     * @param type 你的按键的输入类型。
+     * @return Reg本身
      * Set your key binding's input type. Can be a keyboard (KEYSYM) or mouse (MOUSE). It is highly recommended not to use scannode (SCANNODE) as it is platform-specific.
      * @param defaultKeyCode Your key's default GLFW code.
      * @param type Your key's input type.
@@ -94,6 +112,9 @@ public class KeyBindingReg extends Reg {
     }
 
     /**
+     * 设定你的绑定按键环境，意味着它可以在什么时刻被调用
+     * @param env 你的按键环境。可以是IN_GUI(只在任何Screen打开时调用)，IN_GAME(只在没有任何Screen打开时调用)或者ALL(没有限制)。
+     * @return Reg本身
      * Set your key binding's environment, means it can be called at which moment.
      * @param env Your key's environment. Can be IN_GUI(Only call when any Screen is open), IN_GAME(Only call when none Screen is open) or ALL(With no restriction).
      * @return The reg itself.
@@ -104,6 +125,9 @@ public class KeyBindingReg extends Reg {
     }
 
     /**
+     * 表明你的注册已经完成
+     * @param registry 你的mod的SimpleRegistry。
+     * @return Reg本身
      * Marks your registry is over
      * @param registry Your mod's SimpleRegistry.
      * @return The Reg itself

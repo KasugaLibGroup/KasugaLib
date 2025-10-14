@@ -10,6 +10,7 @@ import net.minecraftforge.registries.RegistryObject;
 import javax.annotation.Nonnull;
 
 /**
+ * 用此注册机来注册你的自定义声音类型和声音事件到minecraft。
  * Use this reg to register your custom sound type and sound event to minecraft.
  */
 public class SoundReg extends Reg {
@@ -17,6 +18,9 @@ public class SoundReg extends Reg {
     private RegistryObject<SoundEvent> registryObject = null;
 
     /**
+     * 创建一个声音注册机。
+     * @param registrationKey 你的声音注册机的键。
+     * @param soundFileLocation 你的声音文件的资源位置。
      * Create a sound reg.
      * @param registrationKey key of your sound reg.
      * @param soundFileLocation the resource location of your sound file.
@@ -27,6 +31,9 @@ public class SoundReg extends Reg {
     }
 
     /**
+     * 将你的配置提交到minecraft。
+     * @param registry mod的SimpleRegistry。
+     * @return 自身
      * Submit your config to minecraft.
      * @param registry the mod SimpleRegistry.
      * @return self.

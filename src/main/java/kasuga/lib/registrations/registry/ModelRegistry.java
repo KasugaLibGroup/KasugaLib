@@ -8,6 +8,9 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.HashMap;
 
 /**
+ * ModelRegistry是KasugaLib风格的模型注册注册机。
+ * 通过使用KasugaLib，你可以使用{@link kasuga.lib.core.client.render.model.SimpleModel}
+ * 和{@link kasuga.lib.core.client.render.model.MultiPartModel}来进行数据生成模型定义和快速动画开发。
  * ModelRegistry is the registry of KasugaLib style model registration.
  * KasugaLib provides {@link kasuga.lib.core.client.render.model.SimpleModel} and
  * {@link kasuga.lib.core.client.render.model.MultiPartModel} for data-gen model definition and quick
@@ -30,6 +33,8 @@ public class ModelRegistry {
     }
 
     /**
+     * 将模型注册到注册机内
+     * @param reg 需要注册的模型
      * register the model into this registry
      * @param reg the model to be registered.
      */
@@ -53,6 +58,9 @@ public class ModelRegistry {
     }
 
     /**
+     * 从此注册机中获取模型
+     * @param location 模型路径
+     * @return 模型
      * getModel from this registry
      * @param location the location of model
      * @return the model
@@ -62,6 +70,8 @@ public class ModelRegistry {
     }
 
     /**
+     * 获取所有烘培后的模型
+     * @return 所有烘培后的模型
      * get all baked models.
      * @return all baked models.
      */

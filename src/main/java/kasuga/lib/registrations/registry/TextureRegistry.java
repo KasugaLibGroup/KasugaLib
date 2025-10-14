@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 /**
+ * TextureRegistry是KasugaLib风格的纹理注册注册机。
+ * 你可以使用{@link SimpleTexture}和{@link WorldTexture}来进行快速纹理使用。
  * TextureRegistry is registry for KasugaLib style textures. We provide {@link SimpleTexture}
  * and {@link WorldTexture} for quick Texture usage.
  */
@@ -38,6 +40,9 @@ public class TextureRegistry {
     }
 
     /**
+     * 从注册机获取纹理
+     * @param location 纹理位置
+     * @return 纹理
      * get texture from this registry.
      * @param location the location of the texture.
      * @return texture.
@@ -47,6 +52,8 @@ public class TextureRegistry {
     }
 
     /**
+     * 获取所有注册的纹理
+     * @return 注册的纹理
      * get all registered pics.
      * @return registered pics.
      */
@@ -55,6 +62,7 @@ public class TextureRegistry {
     }
 
     /**
+     * 这是在{@link kasuga.lib.core.events.client.TextureRegistryEvent}中触发的事件
      * this is a event fired in {@link kasuga.lib.core.events.client.TextureRegistryEvent}
      */
     @Inner

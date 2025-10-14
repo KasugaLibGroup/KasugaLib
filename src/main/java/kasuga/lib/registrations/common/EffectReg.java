@@ -14,6 +14,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
+ * 这个注册机是用于注册药水效果。你可以用它来注册你自定义的药水效果。
+ * @param <T> 药水效果类。
  * This registration is used for poison effect registration. You could register your custom poison effect with it.
  * @param <T> The poison effect class.
  */
@@ -25,6 +27,8 @@ public class EffectReg<T extends MobEffect> extends Reg {
     private int color = 0xffffff;
 
     /**
+     * 调用此函数来创建一个药水效果注册机。
+     * @param registrationKey 你的药水效果注册的名字。
      * Use this to create a poison effect reg.
      * @param registrationKey The registration key of your poison effect.
      */
@@ -34,6 +38,9 @@ public class EffectReg<T extends MobEffect> extends Reg {
     }
 
     /**
+     * 你的药水效果的构造函数lambda。
+     * @param builder 你的构造函数lambda。
+     * @return 自身
      * The constructor lambda of your poison effect.
      * @param builder constructor lambda.
      * @return self
@@ -45,6 +52,10 @@ public class EffectReg<T extends MobEffect> extends Reg {
     }
 
     /**
+     * 你的药水效果类型。它是一个有3个值的枚举：BENEFICIAL, HARMFUL 和 NEUTRAL。
+     * 详见{@link MobEffectCategory}。
+     * @param category 你的药水效果类型。
+     * @return 自身
      * The type of your effect. It's an enum with 3 values : BENEFICIAL, HARMFUL and NEUTRAL.
      * see {@link MobEffectCategory} for more info.
      * @param category the type of your effect.
@@ -57,6 +68,11 @@ public class EffectReg<T extends MobEffect> extends Reg {
     }
 
     /**
+     * 你的药水效果粒子的颜色。默认为0xffffff（白色）。
+     * @param r 红色 (0-255)。
+     * @param g 绿色 (0-255)。
+     * @param b 蓝色 (0-255)。
+     * @return 自身
      * The color of your effect's particles. 0xffffff (white) in default.
      * @param r red (0-255).
      * @param g green (0-255).
@@ -70,6 +86,9 @@ public class EffectReg<T extends MobEffect> extends Reg {
     }
 
     /**
+     * 你的药水效果粒子的颜色。默认为0xffffff（白色）。
+     * @param integerColor 颜色值 (0x000000 - 0xffffff)。
+     * @return 自身
      * The color of your effect's particles. 0xffffff (white) in default.
      * @param integerColor the color value (0x000000 - 0xffffff)
      * @return self.
@@ -81,6 +100,9 @@ public class EffectReg<T extends MobEffect> extends Reg {
     }
 
     /**
+     * 为你的药水效果应用属性。
+     * @param attributeModifier 你的属性修改lambda。
+     * @return 自身
      * Apply and Attributes for your effect.
      * @param attributeModifier your attribute modifier lambda
      * @return self.
@@ -92,6 +114,9 @@ public class EffectReg<T extends MobEffect> extends Reg {
     }
 
     /**
+     * 提交你的配置到forge和minecraft。
+     * @param registry mod的SimpleRegistry。
+     * @return 自身
      * Submit your config to forge and minecraft.
      * @param registry the mod SimpleRegistry.
      * @return self.

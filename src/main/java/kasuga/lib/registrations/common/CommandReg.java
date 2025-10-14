@@ -35,6 +35,9 @@ public class CommandReg extends Reg {
     public static final HashMap<ResourceLocation, BaseArgument> types = new HashMap<>();
 
     /**
+     * 指令注册机的起点。
+     * 比如，你需要 /lp <Enumpara1> <int> 和 /lp <double> <url>两个指令，请注册两次
+     * @param registrationKey 你的指令的名称。
      * Beginning of commands registries.
      * For instance, if you need /lp <Enumpara1> <int> and /lp <double> <url>,
      * please register twice.
@@ -49,6 +52,11 @@ public class CommandReg extends Reg {
     }
 
     /**
+     * 为你的指令追加一个字符串参数。
+     *
+     * @param string 你的字符串
+     * @param isOptional 这个属性是可选的吗？你不能在任何可选参数之后添加必需参数！
+     * @return Reg本身
      * Append a literal string parameter to the end of your command.Think /gamemode
      *
      * @param string     Your String
@@ -66,6 +74,13 @@ public class CommandReg extends Reg {
     }
 
     /**
+     * 为你的指令追加一个你自己的类型的参数。
+     *
+     * @param defaultName 你的参数的名称
+     * @param isOptional 这个参数是可选的吗？你不能在任何可选参数之后添加必需参数！
+     * @param target 你的目标类。使用前注册它。
+     * @see ArgumentTypeReg
+     * @return Reg本身
      * Append your own type of parameter to the end of your command.
      *
      * @param defaultName Name of your parameter
@@ -84,6 +99,11 @@ public class CommandReg extends Reg {
     }
 
     /**
+     * 设定参数的默认类型
+     *
+     * @param defaultName 你的参数的名称
+     * @param isOptional 这个参数是可选的吗？你不能在任何可选参数之后添加必需参数！
+     * @return Reg本身
      * Some default types of parameters.
      *
      * @param defaultName Name of your parameter
@@ -135,6 +155,11 @@ public class CommandReg extends Reg {
     }
 
     /**
+     * 玩家使用本指令需要什么级别权限？
+     *
+     * @param level 玩家使用本指令需要什么级别权限
+     * @return Reg本身
+     * @see net.minecraft.commands.Commands
      * What permission should the player have to use the command?
      *
      * @param level The level player should have to use the command
@@ -149,6 +174,9 @@ public class CommandReg extends Reg {
     }
 
     /**
+     * 设置所有同前缀的指令只在指定端执行。
+     * @param dist 你想让你的指令被执行的端。Null为双端（默认）。
+     * @return Reg本身
      * Set all the command of the same prefix to be executed only in specified side.
      * @param dist The dist you'd like to let your command be executed. Null for both sides(default).
      * @return The Reg itself
@@ -160,6 +188,8 @@ public class CommandReg extends Reg {
     }
 
     /**
+     * @param runnable 你的指令的处理器。
+     * @return Reg本身
      * @param runnable your command's handler.
      * @return The Reg itself
      */
@@ -169,6 +199,9 @@ public class CommandReg extends Reg {
     }
 
     /**
+     * 标志你的指令注册完毕。
+     * @param registry 你的mod的SimpleRegistry。
+     * @return Reg本身
      * Marks that your command is over.
      *
      * @param registry Your mod's SimpleRegistry.
@@ -187,6 +220,9 @@ public class CommandReg extends Reg {
     }
 
     /**
+     * 监听CommandEvent来注册你的指令。
+     * @param dispatcher CommandEvent的调度器
+     * @see net.minecraftforge.event.RegisterCommandsEvent
      * Subscribe the CommandEvent to get your commands registered.
      *
      * @param dispatcher The dispatcher of CommandEvent

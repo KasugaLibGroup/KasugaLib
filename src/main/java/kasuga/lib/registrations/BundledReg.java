@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
+ * BundledReg是一个批量注册的注册类。我们可以在一个注册中注册许多元素。
+ * 比如，我们想注册100个简单的方块，我们可以使用调用{@link BundledReg#element(String)}这个类100次来放入所有的注册键。
+ * @param <T> 这个注册的名字。
  * BundledReg is designed for registration in batch. We could register many element in one reg.
  * For example, we want to register 100 simple blocks, so we could use this just call {@link BundledReg#element(String)}
  * for 100 times to put all registrationKey in.
@@ -22,6 +25,8 @@ public class BundledReg<T extends Reg> extends Reg {
     private RegFactory<T> factory = null;
 
     /**
+     * 用这个类来初始化一个批量注册。
+     * @param registrationKey 这个注册的名字。
      * Use this to init a bundled reg.
      * @param registrationKey the name of this reg.
      */
@@ -35,6 +40,9 @@ public class BundledReg<T extends Reg> extends Reg {
     }
 
     /**
+     * 这个必须在你调用任何元素之前通过 {@link BundledReg#element(String)}被调用
+     * @param factory 一个注册初始化的工厂lambda。
+     * @return 自身
      * This must be called before you call any elements via {@link BundledReg#element(String)}
      * while that method would use the factory we have given in this.
      * @param factory A factory lambda for registration initial.
@@ -47,6 +55,9 @@ public class BundledReg<T extends Reg> extends Reg {
     }
 
     /**
+     * 堆叠一个元素进行注册。这个必须在 {@link BundledReg#factory(RegFactory)} 之后被调用
+     * @param registrationKey 你的元素的注册键。
+     * @return 自身
      * Stack an element in for registration. This must be called after {@link BundledReg#factory(RegFactory)}
      * @param registrationKey the registration key of your element.
      * @return self.
@@ -90,6 +101,9 @@ public class BundledReg<T extends Reg> extends Reg {
     }
 
     /**
+     * 堆叠一个动作驱动进行注册。你可以通过调用这个方法为一些特定的注册应用一些动作。如果你想为多个注册添加多个函数，请使用这个。
+     * @param drive 你想要提供的动作驱动。
+     * @return 自身
      * Stack an action drive in for registration. You can apply some action for some specific registrations via calling
      * this. If you want to add multiple functions for multiple regs, use this.
      * @param drive the action drive you would like to give.

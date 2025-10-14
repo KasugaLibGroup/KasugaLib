@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
+ * BucketItemReg是用于桶的注册类。
+ * @param <T> 你的桶物品的类。
  * BucketItemReg is the registration for bucket.
  * @param <T> Class of your bucket item.
  */
@@ -43,6 +45,15 @@ public class BucketItemReg<T extends BucketItem> extends ItemReg<T> {
     private final List<TagKey<?>> tags;
 
     /**
+     * 创建一个桶物品注册机。
+     * 注意：如果你想为你的物品设置合成残留，请使用
+     * {@link kasuga.lib.core.base.item_helper.ExternalRemainderItem} 或
+     * {@link kasuga.lib.core.base.item_helper.ExternalRemainderBlockItem}，
+     * 然后使用 {@link ExternalProperties#craftRemainder(Supplier)}
+     * @param registrationKey 你的桶的注册键。
+     * @param model 如果你的桶模型不在 "namespace:models/item" 文件夹下，请在此处传递位置，
+     *              注意你的模型必须在 "namespace:models" 文件夹下。如果你的桶模型只是
+     *              按照通常的方式声明，请传递 'null'。
      * Create a bucket item reg.
      * <p>
      * Note: If you want to set a Crafting Remainder for your item, please use
@@ -64,6 +75,8 @@ public class BucketItemReg<T extends BucketItem> extends ItemReg<T> {
     }
 
     /**
+     * 如果你不需要为你的桶自定义模型，请使用此函数。
+     * @param registrationKey 你的桶的注册键。
      * If your don't need a customize model for your bucket, use this.
      * @param registrationKey the registration key of your item.
      */
@@ -74,6 +87,10 @@ public class BucketItemReg<T extends BucketItem> extends ItemReg<T> {
     }
 
     /**
+     * 获取一个你的流体的默认桶物品。
+     * @param fluidReg 用于创建此桶的流体注册机。
+     * @param model 此物品的模型位置。
+     * @return 自身。
      * Get a default bucket item from your fluid.
      * @param fluidReg the fluid registration to create this bucket.
      * @param model the model location of this item.
@@ -87,6 +104,9 @@ public class BucketItemReg<T extends BucketItem> extends ItemReg<T> {
     }
 
     /**
+     * 获取一个你的流体的默认桶物品。
+     * @param fluidReg 用于创建此桶的流体注册机。
+     * @return 自身。
      * Get a default bucket item from your fluid.
      * @param fluidReg the fluid registration to create this bucket.
      * @return self.
@@ -99,6 +119,9 @@ public class BucketItemReg<T extends BucketItem> extends ItemReg<T> {
     }
 
     /**
+     * 传入你的流体提供者。从任何流体注册机获取你的流体。
+     * @param fluid 你的流体提供者。
+     * @return 自身
      * Pass your fluid supplier here, get your fluid from any fluid registries.
      * @param fluid your fluid supplier.
      * @return self.
@@ -110,6 +133,9 @@ public class BucketItemReg<T extends BucketItem> extends ItemReg<T> {
     }
 
     /**
+     * 传入你的桶物品的构造器lambda。
+     * @param builder 你的桶物品的构造器lambda。
+     * @return 自身
      * Pass the constructor lambda of your bucket here.
      * @param builder your bucket's constructor lambda.
      * @return self.
@@ -139,6 +165,9 @@ public class BucketItemReg<T extends BucketItem> extends ItemReg<T> {
     }
 
     /**
+     * 自定义你的物品属性
+     * @param identifier 物品属性定制器
+     * @return 自身
      * Customize your item's property.
      * @param identifier Item property customizer.
      * @return self.
@@ -150,6 +179,9 @@ public class BucketItemReg<T extends BucketItem> extends ItemReg<T> {
     }
 
     /**
+     * 将你的配置提交至minecraft和forge注册机。
+     * @param registry mod的SimpleRegistry。
+     * @return 自身
      * Submit your config to minecraft and forge registry.
      * @param registry the mod SimpleRegistry.
      * @return self.

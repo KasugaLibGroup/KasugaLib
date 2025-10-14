@@ -21,6 +21,11 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.function.Supplier;
 
 /**
+ * 菜单是Minecraft渲染的基类。你可以使用它来打开玩家的屏幕并创建容器GUI。
+ * 更多信息，请参见{@link AbstractContainerMenu}和{@link Screen}，
+ * 为了创建一个菜单，你的游戏元素应该是{@link net.minecraft.world.MenuProvider}的子类
+ * @param <T> 你的菜单类。
+ * @param <U> 你的屏幕类。
  * Menu is the base class of minecraft RENDER. You could use it to open the player's screen and create container guis.
  * For more info, see {@link AbstractContainerMenu} and {@link Screen},
  * In order to create a menu, your game element should be a subClass of {@link net.minecraft.world.MenuProvider}
@@ -33,6 +38,8 @@ public class MenuReg<T extends AbstractContainerMenu, U extends Screen & MenuAcc
     private RegistryObject<MenuType<T>> registryObject = null;
 
     /**
+     * 创建一个菜单注册机
+     * @param registrationKey 你的菜单注册的名字。
      * Create a menu reg.
      * @param registrationKey the registration key of your menu.
      */
@@ -41,6 +48,10 @@ public class MenuReg<T extends AbstractContainerMenu, U extends Screen & MenuAcc
     }
 
     /**
+     * 为你的菜单或屏幕加载一个构造器。
+     * @param menu 你的菜单的构造器lambda。
+     * @param screen 你的屏幕的构造器lambda。
+     * @return 自身
      * load a constructor for your menu and screen.
      * @param menu Your menu's constructor lambda.
      * @param screen Your screen's constructor lambda.
@@ -55,6 +66,9 @@ public class MenuReg<T extends AbstractContainerMenu, U extends Screen & MenuAcc
     }
 
     /**
+     * 提交你的配置到minecraft注册机。
+     * @param registry mod的SimpleRegistry。
+     * @return 自身
      * Submit your config to minecraft registry.
      * @param registry the mod SimpleRegistry.
      * @return self.

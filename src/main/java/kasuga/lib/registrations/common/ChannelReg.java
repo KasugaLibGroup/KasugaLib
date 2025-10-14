@@ -27,6 +27,11 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
+ * 频道是用于网络数据包的。如果你有一些自定义数据需要在逻辑客户端和逻辑服务器之间传输，
+ * 有关逻辑侧的更多信息，请参见{@link net.minecraftforge.fml.LogicalSide}
+ * 注册后，您可以使用此频道来传输您的数据包。
+ * 有关从客户端到服务器的数据包，请参见{@link C2SPacket}。
+ * 有关从服务器到客户端的数据包，请参见{@link S2CPacket}
  * Channel is used for network packages. If you have some custom data need to be transmitted between
  * Logical Client and Logical Server, for more info about Logical Side, see {@link net.minecraftforge.fml.LogicalSide}
  * After registration, You could use this channel to transmit your packets.
@@ -41,6 +46,8 @@ public class ChannelReg extends Reg {
     Predicate<String> clientVersions = ((input) -> true), serverVersions = ((input) -> true);
 
     /**
+     * 创建一个频道注册机。
+     * @param registrationKey 你的频道注册机的键。
      * Create a registry.
      * @param registrationKey name of your channel reg.
      */
@@ -50,6 +57,9 @@ public class ChannelReg extends Reg {
     }
 
     /**
+     * 你的频道的版本。
+     * @param brand 版本。
+     * @return 自身
      * Your channel's version.
      * @param brand version.
      * @return self.
@@ -61,6 +71,11 @@ public class ChannelReg extends Reg {
     }
 
     /**
+     * 传入一个接口方法。不同玩家可能使用不同版本的你的mod在联机游戏中。
+     * 游戏会使用这个函数来检查不同版本的你的数据包。
+     * 如果本方法返回false，游戏将拒绝这个数据包。
+     * @param clientVersions 这个接口方法。通常是一个lambda，默认情况下只返回
+     * @return 自身
      * Pass a predicate method here. Different player may use different version of your mod in multiplayer.
      * The game would use this function to examine different versions of your packet.
      * If this method return false, the game will reject the packet.
@@ -74,6 +89,11 @@ public class ChannelReg extends Reg {
     }
 
     /**
+     * 传入一个接口方法。不同玩家可能使用不同版本的你的mod在联机游戏中。
+     * 游戏会使用这个函数来检查不同版本的你的数据包。
+     * 如果本方法返回false，游戏将拒绝这个数据包。
+     * @param serverVersions 这个接口方法。通常是一个lambda，默认情况下只返回
+     * @return 自身
      * Pass a predicate method here. Different player may use different version of your mod in multiplayer.
      * The game would use this function to examine different versions of your packet.
      * If this method return false, the game will reject the packet.
@@ -87,6 +107,11 @@ public class ChannelReg extends Reg {
     }
 
     /**
+     * 注册一个数据包到这个频道。客户端到服务器的数据包，见{@link C2SPacket}，
+     * 服务器到客户端的数据包，见{@link S2CPacket}
+     * @param packetClass 你的数据包类。
+     * @param decoder 解码器方法。
+     * @return 自身
      * Register a packet into this channel. Client to server packet, see {@link C2SPacket},
      * server to client packet, see {@link S2CPacket}
      * @param packetClass Class of your packet.
@@ -103,6 +128,9 @@ public class ChannelReg extends Reg {
     }
 
     /**
+     * 提交你的注册到forge和minecraft。
+     * @param registry mod的SimpleRegistry。
+     * @return 自身
      * Submit your registration to forge and minecraft.
      * @param registry the mod SimpleRegistry.
      * @return self.
@@ -130,6 +158,8 @@ public class ChannelReg extends Reg {
     }
 
     /**
+     * 你应当仅在逻辑客户端使用此方法。使用此方法向服务器发送{@link C2SPacket}。
+     * @param msg 你的数据包。
      * You could use this method only in the logical client. Use this to send a {@link C2SPacket} to the server.
      * @param msg Your packet.
      */
@@ -139,6 +169,10 @@ public class ChannelReg extends Reg {
     }
 
     /**
+     * 向特定侧通过给定连接发送数据包。
+     * @param msg 你的数据包
+     * @param connection 你使用的连接。
+     * @param direction 发送到的网络方向。
      * Send your packet to specific side via given connection.
      * @param msg Your packet
      * @param connection The connection you use.
@@ -150,6 +184,9 @@ public class ChannelReg extends Reg {
     }
 
     /**
+     * 你应当仅在逻辑服务器使用此方法。使用此方法将{@link S2CPacket}从服务器发送到客户端。
+     * @param msg 你的数据包。
+     * @param connection 你使用的连接。
      * You could only use this method in the logical server. Send your {@link S2CPacket} from the server
      * to a client.
      * @param msg your packet.
@@ -160,6 +197,9 @@ public class ChannelReg extends Reg {
     }
 
     /**
+     * 你应当仅在逻辑服务器使用此方法。使用此方法将{@link S2CPacket}从服务器发送到单个玩家的客户端。
+     * @param msg 你的数据包。
+     * @param player 你将发送的玩家。
      * You could only use this method in the logical server. Send your {@link S2CPacket} from the server
      * to a single player's client.
      * @param msg your packet.
@@ -170,6 +210,10 @@ public class ChannelReg extends Reg {
     }
 
     /**
+     * 你应当仅在逻辑服务器使用此方法。使用此方法将{@link S2CPacket}从服务器发送到所有连接的客户端。
+     * @param msg 你的数据包。
+     * @param level 服务器等级。
+     * @param pos 你发送此数据包的方块位置。
      * You could only use this method in the logical server. Send your {@link S2CPacket} from the server
      * to all connected client.
      * @param msg your packet.

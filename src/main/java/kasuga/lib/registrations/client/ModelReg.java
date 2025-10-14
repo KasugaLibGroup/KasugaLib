@@ -23,6 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 一个KasugaLib风格的模型注册机。通过使用它，你可以获得一个KasugaLib类型的模型。
+ * 更多关于模型的信息，请参见{@link SimpleModel}和{@link MultiPartModel}，这些模型可以
+ * 拥有它们自己的数据生成动画，更多关于动画的信息，请参见{@link kasuga.lib.core.client.animation.data.Animation}
  * A reg for KasugaLib style model registration. By using this, you could get a KasugaLib type model.
  * For more info about models, see {@link SimpleModel} and {@link MultiPartModel}, these models could
  * have their own data-gen animations, for more info about animations, see {@link kasuga.lib.core.client.animation.data.Animation}
@@ -35,6 +38,9 @@ public class ModelReg extends Reg {
     boolean multiPart = false;
 
     /**
+     * 调用此函数来创建一个KasugaLib风格的模型注册。
+     * @param registrationKey 你的模型注册的名字。
+     * @param location 你的模型的位置。你位置的根目录是"namespace:models/"文件夹
      * Use this to create a KasugaLib style model registration.
      * @param registrationKey the name of your model reg.
      * @param location the location of your model. the root of your location is "namespace:models/" folder
@@ -59,6 +65,8 @@ public class ModelReg extends Reg {
     }
 
     /**
+     * 模型的位置。
+     * @return 模型位置
      * The location of the model.
      * @return model location.
      */
@@ -67,6 +75,8 @@ public class ModelReg extends Reg {
     }
 
     /**
+     * 方块是否为MultiPartModel？
+     * @return 如果模型是multiPart。
      * Is this model a MultiPartModel?
      * @return if the model is multiPart.
      */
@@ -75,6 +85,9 @@ public class ModelReg extends Reg {
     }
 
     /**
+     * 注意: 你应当在执行模型注册后调用 {@link SimpleModel#clone()} 来获取一个克隆的模型以供使用。
+     * 随后，在你的渲染器的构造函数中调用这个getter方法，而不是直接在命名空间中声明它。
+     * 在注册表执行前调用这个会导致一个空模型。直接使用你在这里得到的模型会导致模型动画混乱。
      * Attention: You had better call {@link SimpleModel#clone()} to get a cloned model for usage
      * after the model registry has been fired. Therefore, call this getter method in your renderer's constructor
      * instead of declare it just in the namespace. Calling this before the registry fired would lead to an empty model.

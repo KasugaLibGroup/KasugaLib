@@ -57,6 +57,10 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
+ * 使用此注册机来注册流体，例如水与岩浆。
+ * 详见{@link ForgeFlowingFluid}, {@link net.minecraft.world.level.material.WaterFluid} 与
+ * {@link net.minecraft.world.level.material.LavaFluid}
+ * @param <E> 你的流体类。
  * Use this registration to register fluids like water of lava.
  * See {@link ForgeFlowingFluid}, {@link net.minecraft.world.level.material.WaterFluid} and
  * {@link net.minecraft.world.level.material.LavaFluid}
@@ -87,6 +91,8 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     private String stillRegKey, flowingRegKey;
 
     /**
+     * 创建一个流体注册机。
+     * @param registrationKey 你的流体注册机的键。
      * Create a fluid registration.
      * @param registrationKey the registration key of your fluid.
      */
@@ -104,6 +110,11 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     /**
+     * 传入你的固定流体构造器。 "固定" 意味着它不会流动，并且它的纹理应该是一个静止的流体纹理。
+     * 详见{@link net.minecraft.world.level.material.WaterFluid.Source} 或 {@link ForgeFlowingFluid.Source}
+     * @param builder 你的固定流体的构造器。
+     * @param stillTexPath 静止流体纹理的资源位置路径。
+     * @return 自身
      * Pass your still fluid constructor here. "Still" means it is not flowing, and it's texture should be a still fluid
      * texture. See {@link net.minecraft.world.level.material.WaterFluid.Source} or {@link ForgeFlowingFluid.Source}
      * @param builder the constructor lambda of your still fluid.
@@ -126,6 +137,11 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     /**
+     * 传入你的流动流体构造器。"流动"意味着它正在流动，并且它的纹理应该是一个流动的流体纹理。
+     * 详见{@link net.minecraft.world.level.material.WaterFluid} 或 {@link ForgeFlowingFluid}
+     * @param builder 你的流动流体的构造器。
+     * @param flowingTexPath 流动流体纹理的资源位置路径。
+     * @return 自身
      * Pass your flowing fluid constructor here. "Flowing" means it is moving, and it's texture should be a flowing fluid
      * texture. See {@link net.minecraft.world.level.material.WaterFluid} or {@link ForgeFlowingFluid}
      * @param builder the constructor lambda of your flowing fluid.
@@ -171,6 +187,9 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     /**
+     * 你的流体必须有一个流体方块，传入你的流体方块的构造器lambda。
+     * @param builder 你的流体方块的构造器lambda。
+     * @return 自身
      * Your fluid must has a fluid block, pass your fluid-block's constructor lambda here.
      * @param builder The constructor lambda of your fluid block.
      * @return self.
@@ -191,6 +210,9 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     /**
+     * 注册你的自定义流体类型。
+     * @param type 你的流体类型。
+     * @return 自身
      * Register your custom fluid type here.
      * @param type your fluid type.
      * @return self.
@@ -202,6 +224,9 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     /**
+     * 传入一个桶构造器。玩家可以使用这个桶来获取流体实例。
+     * @param builder 你的桶的构造器lambda。
+     * @return 自身
      * Pass a bucket constructor here. Player could use this bucket to get the fluid instance.
      * @param builder the constructor lambda.
      * @return self.
@@ -237,6 +262,9 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     /**
+     * 如果你的桶模型不在 namespace:model/item 下，请传入它的位置。
+     * @param resourceLocation 你的模型位置。
+     * @return 自身
      * If you bucket's model isn't lies under namespace:model/item, pass its location here.
      * @param resourceLocation the model location.
      * @return self.
@@ -252,6 +280,9 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     /**
+     * 用这个函数来自定义你的桶的物品属性。
+     * @param identifier 属性定制器lambda。
+     * @return 自身
      * Use this to customize your bucket's item property.
      * @param identifier Bucket property customizer lambda.
      * @return self.
@@ -267,6 +298,9 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     /**
+     * 如果你希望你的桶有自定义渲染，请使用此方法。
+     * @paarm flag 你的桶是否需要自定义渲染？
+     * @return 自身
      * If you want your bucket to be custom rendered, use this.
      * @param flag Should your bucket to be custom rendered?
      * @return self.
@@ -282,6 +316,9 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     /**
+     * 你的流体应该处于哪个创造模式物品栏中？
+     * @param tab 你的创造模式物品栏。
+     * @return 自身
      * Which creative mode tab would your item contained in.
      * @param tab the creative mode tab.
      * @return self.
@@ -297,6 +334,9 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     /**
+     * 你的流体应该处于哪个创造模式物品栏中？
+     * @param reg 你的创造模式物品栏注册机。
+     * @return 自身
      * Which creative mode tab would your item contained in.
      * @param reg the creative mode tab registration.
      * @return self.
@@ -312,6 +352,9 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     /**
+     * 你的桶的最大堆叠数量
+     * @param size 最大堆叠数量
+     * @return 自身
      * Your bucket's max stack size.
      * @param size max stack size.
      * @return self.
@@ -327,6 +370,14 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     /**
+     * 如果你希望你的桶有自定义的菜单和屏幕，请使用此方法。
+     * 详见{@link BlockReg#withItemMenu(MenuReg)}
+     * @param registrationKey 你的菜单注册键。
+     * @param menu 你的菜单构造器lambda。
+     * @param screen 你的屏幕构造器lambda。
+     * @return 自身、
+     * @param <F> 你的菜单类。
+     * @param <U> 你的屏幕类。
      * If you want your bucket also has menus and screens, use this. For more info,
      * see {@link BlockReg#withItemMenu(MenuReg)}
      * @param registrationKey the registration key of your menu.
@@ -346,6 +397,9 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     /**
+     * 如果你希望你的桶有菜单和屏幕，请使用此方法。
+     * @param menuReg 你的菜单注册机。
+     * @return 自身
      * If you want your bucket to have menus and screens, use this.
      * @param menuReg the registration of your menu.
      * @return self.
@@ -358,6 +412,9 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     /**
+     * 自定义你的流体方块的属性。
+     * @param identifier 你的流体方块的属性定制器lambda。
+     * @return 自身
      * Customize the property of your fluid block.
      * @param identifier The property customizer of your fluid block.
      * @return self.
@@ -393,6 +450,11 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     /**
+     * 你的流体的贴图的颜色，0xffffff(白色)为默认值。
+     * @param r 红色。
+     * @param g 绿色。
+     * @param b 蓝色。
+     * @return 自身
      * What color your fluid texture would be, 0xffffff(white) in default.
      * @param r red.
      * @param g green.
@@ -406,6 +468,9 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     /**
+     * 你的流体的贴图的颜色，0xffffff(白色)为默认值。
+     * @param color 颜色值。
+     * @return 自身
      * What color your fluid texture would be, 0xffffff(white) in default.
      * @param color color value.
      * @return self.
@@ -417,6 +482,9 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     /**
+     * 如果你的流体有一个界面，传入它的资源位置路径。
+     * @param path 你的流体的界面纹理的资源位置路径。
+     * @return 自身
      * If your fluid dose have an overlay, pass its resource location path here.
      * @param path The resource location path of your fluid's overlay texture.
      * @return self.
@@ -428,6 +496,9 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     /**
+     * 自定义你的流体类型的属性。
+     * @param builder 你的流体类型的属性定制器lambda。
+     * @return 自身
      * Customize your fluid-type's property.
      * @param builder your fluid-type's property customizer lambda.
      * @return self.
@@ -520,6 +591,9 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     /**
+     * 自定义你的流体的属性。
+     * @param builder 你的流体的属性定制器lambda。
+     * @return 自身
      * Customize your fluid's property.
      * @param builder your fluid's property customizer lambda.
      * @return self.
@@ -531,6 +605,9 @@ public class FluidReg<E extends ForgeFlowingFluid> extends Reg {
     }
 
     /**
+     * 提交你的流体到minecraft和forge注册机。
+     * @param registry 你的mod的SimpleRegistry。
+     * @return 自身
      * Submit your config to minecraft and forge registry.
      * @param registry the mod SimpleRegistry.
      * @return self.

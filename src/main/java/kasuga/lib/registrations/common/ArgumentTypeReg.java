@@ -41,6 +41,9 @@ public class ArgumentTypeReg extends Reg {
     }
 
     /**
+     * 调用此函数来注册你自己的类型，然后使用它们。
+     * @return Reg自身
+     * TODO
      * Call this to register your own type before using them.*
      * Use in tour registry.
      * @return The Reg itself
@@ -51,6 +54,11 @@ public class ArgumentTypeReg extends Reg {
     }
 
     /**
+     * 讲你的字符串解析为一个注册的类型
+     * 在你的处理器中使用它
+     * @param value 你的字符串
+     * @param target 目标类
+     * @return BaseArgument
      * Parse your string with a registered type
      * Use this inside in you handler
      * @param value Your string

@@ -37,6 +37,10 @@ import java.util.function.Supplier;
 
 
 /**
+ * 方块是游戏的基本元素。你可以很容易地将你的方块与物品、方块实体、方块实体渲染器或菜单绑定在一起，见
+ * {@link BlockEntityReg} 了解更多关于方块实体注册的信息，{@link MenuReg} 了解更多关于菜单注册的信息，
+ * {@link ItemReg} 了解更多关于物品注册的信息。见 {@link Block} 了解关于Minecraft方块的信息。
+ * @param <T> 你的方块类。
  * Block is the base element of the game. You would bind your block with item, block entity,
  * block entity renderer or menus easily with this reg. See {@link BlockEntityReg} for more info
  * about block entity registration, {@link MenuReg} for more info about menu reg, {@link ItemReg}
@@ -59,6 +63,8 @@ public class BlockReg<T extends Block> extends Reg {
     private BlockRendererBuilder<T> rendererBuilder = null;
 
     /**
+     * 用这个方法来创建一个BlockReg。
+     * @param registrationKey 你的方块注册名字。
      * Use this to create a BlockReg.
      * @param registrationKey your block registration key.
      */
@@ -69,6 +75,9 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * 材料控制着你的方块在地图上显示的颜色。
+     * @param material 你想用的材料。
+     * @return 自身
      * Material controls what color the block would display on your map.
      * @param material The material you want to apply.
      * @return self.
@@ -80,6 +89,9 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * 材料颜色也控制着你的方块在地图上显示的颜色。
+     * @param color 你的方块在地图上显示的颜色。
+     * @return 自身
      * Meterial color also controls what color the block would display on your map.
      * @param color The color your block would have on the map.
      * @return self.
@@ -91,6 +103,10 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * 你的方块的初始化器。你应该传入一个方块构造函数到这里。例如在这个方法内写 "ExampleBlock::new" 或
+     * "prop -> new ExampleBlock(prop)"。
+     * @param builder 你的方块初始化器。
+     * @return 自身
      * The initializer of your block. You should pass a block constructor function into this. For example write
      * "ExampleBlock::new" or "prop -> new ExampleBlock(prop)" in this method.
      * @param builder initializer of your block.
@@ -103,6 +119,10 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * 为你的方块生成一个默认的方块物品。
+     * @param modelLocation 你的物品模型位置，如果你的物品模型就在 namespace:models/item/ 文件夹下，你可以传入null或者使用下面的{@link BlockReg#defaultBlockItem()}方法。
+     *                      如果你的模型在模型文件夹的其他位置，传入一个有效的资源位置。
+     * @return 自身
      * Generate a default item for your block.
      * @param modelLocation your item model location, if your item's model is just under the namespace:models/item/
      *                      folder, you could pass null into this or use the method {@link BlockReg#defaultBlockItem()}
@@ -118,6 +138,8 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * 生成一个默认的方块物品。
+     * @return 自身
      * Generate a default item for your block.
      * @return self.
      */
@@ -129,6 +151,9 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * 为你的方块添加一个自定义属性
+     * @param identifier 一个函数接口，它为你提供方块属性，你可以在lambda中应用你的自定义配置。
+     * @return 自身
      * Add other custom property to your block.
      * @param identifier A function interface that provides the block property to you, you could apply your custom
      *                   config to the property in tha lambda.
@@ -141,6 +166,9 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * Minecraft将在方块破坏时播放这个声音。
+     * @param sound 破坏声音。
+     * @return 自身
      * The game would play this sound when it is broken by any source.
      * @param sound the breaking sound.
      * @return self
@@ -157,6 +185,12 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * 为方块提供一个方块实体。如果你想让你的方块生成一个方块实体，它必须是BaseEntityBlock的子类，见
+     * {@link net.minecraft.world.level.block.BaseEntityBlock}。
+     * @param beRegistrationKey 你的方块实体注册名字。
+     * @param supplier 你的方块实体初始化器。
+     * @return 自身
+     * @param <R> 你的方块实体类。
      * Provide a block entity for the block. If you want your block to spawn a block entity, it must be a subClass of
      * BaseEntityBlock, see {@link net.minecraft.world.level.block.BaseEntityBlock}.
      * @param beRegistrationKey your block entity reg name.
@@ -174,6 +208,9 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * 为方块提供方块实体。
+     * @param blockEntityReg 你的方块实体注册。
+     * @return 自身
      * Provide a block entity for your block.
      * @param blockEntityReg registration of your block entity.
      * @return self.
@@ -186,6 +223,10 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * 提供一个方块实体渲染器给你的方块实体（仅当你在此注册中有方块实体时）。
+     * 要使用此功能，请确保你的方块是{@link net.minecraft.world.MenuProvider}的子类。
+     * @param builder 你的方块实体渲染器提供者。
+     * @return 自身
      * Provide a block entity renderer for your block entity (only if you have a block entity in this registration.)
      * To use this, make sure your block is a subClass of {@link net.minecraft.world.MenuProvider}
      * @param builder Your block entity renderer provider.
@@ -202,6 +243,14 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * 为你的方块提供一个菜单。菜单（和屏幕）用于GUI。
+     * 要使用此功能，请确保你的方块是{@link net.minecraft.world.MenuProvider}的子类。
+     * @param registrationKey 你的菜单注册键。
+     * @param menu 你的菜单构造函数。
+     * @param screen 你的屏幕构造函数。
+     * @return 自身
+     * @param <F> 你的菜单类。
+     * @param <U> 你的屏幕类。
      * Provide a menu for your block. Menus (and screens) are used for GUIs.
      * To use this, make sure your block is a subClass of {@link net.minecraft.world.MenuProvider}
      * @param registrationKey the registration key of your menu.
@@ -221,6 +270,10 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * 为你的方块提供一个菜单。详见{@link MenuReg}。
+     * 要使用此功能，请确保你的方块是{@link net.minecraft.world.MenuProvider}的子类。
+     * @param menuReg 你的菜单注册。
+     * @return 自身
      * Provide a menu for your block. See {@link MenuReg} for more info. To use this, make sure that your block
      * is a subClass of {@link net.minecraft.world.MenuProvider}
      * @param menuReg your menu registration.
@@ -234,6 +287,14 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * 为你的物品提供一个菜单（仅当你有物品注册时）。
+     * 要使用此功能，请确保你的物品是{@link net.minecraft.world.MenuProvider}的子类。
+     * @param registrationKey 你的菜单注册键。
+     * @param menu 你的菜单初始化器。
+     * @param screen 你的屏幕初始化器。
+     * @return 自身
+     * @param <F> 你的菜单类。
+     * @param <U> 你的屏幕类。
      * Provide a menu for your item (only if you have a item registration).
      * To use this, make sure your item is a subClass of {@link net.minecraft.world.MenuProvider}
      * @param registrationKey the registration key of your menu.
@@ -255,6 +316,10 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * 为你的物品提供一个菜单（仅当你有物品注册时）。
+     * 要使用此功能，请确保你的物品是{@link net.minecraft.world.MenuProvider}的子类。
+     * @param menuReg 你的菜单注册。
+     * @return 自身
      * Provide a menu for your item (only if you ha a item registration).
      * To use this, make sure your item is a subClass of {@link net.minecraft.world.MenuProvider}
      * @param menuReg the menu you would apply.
@@ -271,6 +336,13 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * 为你的方块提供一个物品。你提供的物品必须是 {@link net.minecraft.world.item.BlockItem} 的子类。
+     * 玩家可以使用这个物品来放置你的方块。
+     * @param builder 你的物品提供者。
+     * @param itemModelLocation 你的物品模型位置，如果你的物品模型就在 namespace:models/item/ 文件夹下，你可以传入null或者使用下面的{@link BlockReg#defaultBlockItem()}方法。
+     *                          如果你的模型在模型文件夹的其他位置，传入一个有效的资源位置。
+     * @return 自身
+     * @param <R> 物品类。
      * Provide an item for your block. The item you provide must be a subClass of {@link net.minecraft.world.item.BlockItem}
      * Player could use this item to place your block down.
      * @param builder your item provider.
@@ -298,6 +370,10 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * 你的物品渲染器是你的自定义渲染器吗？如果你想创建一个自定义渲染的物品，见
+     * {@link kasuga.lib.core.base.CustomRenderedItem}
+     * @param flag 你的物品是否应该被自定义渲染。
+     * @return 自身
      * Is your item renderer by your custom renderer? If you want to create a custom rendered item, see
      * {@link kasuga.lib.core.base.CustomRenderedItem}
      * @param flag should your item be custom rendered.
@@ -314,6 +390,9 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * 为你的方块物品应用自定义属性(仅当你有物品注册时)。
+     * @param identifier 在这里传递你的自定义物品配置。
+     * @return 自身
      * Apply custom property to your block item(only if there's a item reg)
      * @param identifier pass your custom item config here.
      * @return self.
@@ -329,6 +408,9 @@ public class BlockReg<T extends Block> extends Reg {
 
 
     /**
+     * 你的方块物品会堆叠到这个创造模式物品栏。
+     * @param tab 你想把你的物品放进去的物品栏。
+     * @return 自身
      * Your block item would stack to this tab,
      * @param tab The tab you'd like to put your item in.
      * @return self.
@@ -343,6 +425,9 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * 你的方块物品会堆叠到这个创造模式物品栏。
+     * @param reg 你想把你的物品放进去的物品栏。
+     * @return 自身
      * Your block item would stack to this tab.
      * @param reg The tab you'd like to put your item in.
      * @return self.
@@ -357,6 +442,9 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * 为你的方块物品设置最大堆叠数量。
+     * @param size 最大堆叠数量。
+     * @return 自身
      * Set the max stack size of your block item.
      * @param size max stack size.
      * @return self.
@@ -371,6 +459,9 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * 为你的方块应用方块标签。
+     * @param tag 方块标签。
+     * @return 自身
      * Apply block tags to your block.
      * @param tag block tag.
      * @return self.
@@ -382,6 +473,9 @@ public class BlockReg<T extends Block> extends Reg {
     }
 
     /**
+     * 在所有的配置都应用后调用此方法。
+     * @param registry 你的mod的SimpleRegistry。
+     * @return 自身
      * Call this after all config has been applied.
      * @param registry the mod SimpleRegistry.
      * @return self.
