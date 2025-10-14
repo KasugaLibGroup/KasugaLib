@@ -246,7 +246,7 @@ repositories {
     }
     maven {
         name = 'mali'
-        url = "https://raw.github.com/MegumiKasuga/kasuga-maven/mali/"
+        url = "https://raw.github.com/MegumiKasuga/kasuga-maven/mali_1.1.0/"
     }
 
     mavenLocal()
@@ -310,8 +310,14 @@ dependencies {
         exclude group: 'io.netty', module:'netty-common';
     }
 
-    minecraftLibrary "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.0"
-    shadedLib(group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)")
+    minecraftLibrary ("edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.1.0") {
+        exclude group: 'com.google.guava', module: 'guava';
+        exclude group: 'com.google.code.gson', module: 'gson';
+    }
+    shadedLib(group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)") {
+        exclude group: 'com.google.guava', module: 'guava';
+        exclude group: 'com.google.code.gson', module: 'gson';
+    }
 
     // shadedLib("org.graalvm.polyglot:js-community:23.1.0");
     // implementation("org.graalvm.sdk:graal-sdk:22.0.2");
@@ -351,8 +357,8 @@ dependencies {
     // compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api") // Adds JEI API as a compile dependency
     // runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
     // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${minecraft_version}-${registrate_version}") // Adds registrate as a dependency
-    minecraftLibrary "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.2"
-    shadedLib (group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)")
+    // minecraftLibrary "edu.carole:Mixed-Arithmetic-Logic-Interpreter:1.0.2"
+    // shadedLib (group: "edu.carole", name: "Mixed-Arithmetic-Logic-Interpreter", version: "[1.0.0, 2.0.0)")
     // Examples using mod jars from ./libs
     // implementation fg.deobf("blank:coolmod-${minecraft_version}:${coolmod_version}")
     minecraftLibrary("io.javalin:javalin:6.6.0"){

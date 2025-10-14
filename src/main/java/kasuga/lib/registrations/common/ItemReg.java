@@ -68,7 +68,7 @@ public class ItemReg<T extends Item> extends Reg {
      *              Pay attention that your model must be under the "namespace:models" folder. If your item's model just
      *              declared as usual, pass 'null' into this.
      */
-    public ItemReg(String registrationKey, @Nullable ResourceLocation model) {
+    public ItemReg(String registrationKey, @Nullable @Deprecated ResourceLocation model) {
         super(registrationKey);
         this.model = model;
         this.tags = new ArrayList<>();
@@ -141,6 +141,7 @@ public class ItemReg<T extends Item> extends Reg {
      * @param location the resource location of your item's model.
      * @return self.
      */
+    @Deprecated
     @Optional
     public ItemReg<T> model(ResourceLocation location) {
         this.model = location;

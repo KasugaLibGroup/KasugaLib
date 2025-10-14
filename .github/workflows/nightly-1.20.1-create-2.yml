@@ -1,0 +1,16 @@
+name: Build Nightly for Minecraft 1.20.1 (Create Branch)
+on:
+  schedule:
+    - cron: "0 21 * * *"
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+    with:
+      channel: "nightly"
+      branch: "1.20.1-create-2"
+      publish: true
+    secrets:
+      KUAYUE_MAVEN_USERNAME: ${{ secrets.KUAYUE_MAVEN_USERNAME }}
+      KUAYUE_MAVEN_PASSWORD: ${{ secrets.KUAYUE_MAVEN_PASSWORD }}

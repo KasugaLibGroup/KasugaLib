@@ -68,7 +68,7 @@ public class BucketItemReg<T extends BucketItem> extends ItemReg<T> {
      *              Pay attention that your model must be under the "namespace:models" folder. If your bucket's model just
      *              declared as usual, pass 'null' into this.
      */
-    public BucketItemReg(String registrationKey, @Nullable ResourceLocation model) {
+    public BucketItemReg(String registrationKey, @Nullable @Deprecated ResourceLocation model) {
         super(registrationKey);
         this.model = model;
         this.tags = new ArrayList<>();
