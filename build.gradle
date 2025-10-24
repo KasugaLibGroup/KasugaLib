@@ -250,6 +250,7 @@ repositories {
     }
 
     mavenLocal()
+
     flatDir {
         dir('libs')
     }
@@ -299,6 +300,9 @@ dependencies {
         exclude group: 'io.netty', module:'netty-resolver';
         exclude group: 'io.netty', module:'netty-common';
     }
+
+    minecraftLibrary 'org.jgrapht:jgrapht-core:1.5.2'
+    shadedLib 'org.jgrapht:jgrapht-core:1.5.2'
 
     shadedLib ('io.netty:netty-codec-http:4.1.77.Final'){
         exclude group: 'io.netty', module:'netty-handler';
