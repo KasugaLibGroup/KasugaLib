@@ -26,8 +26,8 @@ body:
     attributes:
       label: Logs
       description: |
-      请使用 Github Gist/Pastebin 等工具将完整日志上传后复制于此，请勿直接粘贴日志或截图。为了方便后人存档，请不要使用 PrivateBin 等有时效性的日志。请检查自己上传的日志中是否包含重要登录凭据(如Token等)
-      Please upload the complete logs using GitHub Gist, Pastebin, or a similar service, then paste the link here. Do not paste the logs directly or upload screenshots. For long-term reference, please avoid using time-limited services such as PrivateBin. Also, make sure to check that the uploaded logs do not contain sensitive credentials (such as tokens, etc.).
+          请使用 Github Gist/Pastebin 等工具将完整日志上传后复制于此，请勿直接粘贴日志或截图。为了方便后人存档，请不要使用 PrivateBin 等有时效性的日志。请检查自己上传的日志中是否包含重要登录凭据(如Token等)
+          Please upload the complete logs using GitHub Gist, Pastebin, or a similar service, then paste the link here. Do not paste the logs directly or upload screenshots. For long-term reference, please avoid using time-limited services such as PrivateBin. Also, make sure to check that the uploaded logs do not contain sensitive credentials (such as tokens, etc.).
       value: 再次强调，请注意 ** 不要上传自己的个人凭据 ** (如Token等)
   - type: textarea
     attributes:
