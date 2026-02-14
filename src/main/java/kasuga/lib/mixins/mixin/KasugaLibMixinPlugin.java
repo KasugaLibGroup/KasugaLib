@@ -1,7 +1,6 @@
 package kasuga.lib.mixins.mixin;
 
 import kasuga.lib.KasugaLib;
-import kasuga.lib.core.util.data_type.Pair;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -11,14 +10,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public class KasugaLibMixinPlugin implements IMixinConfigPlugin {
 
     protected final HashMap<String, Predicate<Void>> mixinConditions = new HashMap<>();
 
     KasugaLibMixinPlugin(){
-        mixinConditions.put("IrisOculusCompatMixin", v->KasugaLib.STACKS.COMPATS.IRIS_OCULUS.isPresent());
+        mixinConditions.put("IrisOculusCompatMixin", v -> KasugaLib.STACKS.COMPAT_MODS.isIrisOculusPresent());
     }
 
     @Override
