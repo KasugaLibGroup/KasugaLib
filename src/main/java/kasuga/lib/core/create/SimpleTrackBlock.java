@@ -1,7 +1,6 @@
 package kasuga.lib.core.create;
 
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
-import com.simibubi.create.content.schematics.requirement.ISpecialBlockItemRequirement;
 import com.simibubi.create.content.trains.bogey.AbstractBogeyBlock;
 import com.simibubi.create.content.trains.track.*;
 import com.simibubi.create.foundation.block.IBE;
@@ -16,7 +15,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
-public class SimpleTrackBlock extends TrackBlock implements IBE<TrackBlockEntity>, IWrenchable, ITrackBlock, ISpecialBlockItemRequirement, ProperWaterloggedBlock {
+public class SimpleTrackBlock extends TrackBlock implements IBE<TrackBlockEntity>, IWrenchable, ITrackBlock, ProperWaterloggedBlock {
     @Nonnull private final BogeySelector selector;
     public SimpleTrackBlock(@Nonnull BogeySelector selector, Properties properties, TrackMaterial material) {
         super(properties, material);

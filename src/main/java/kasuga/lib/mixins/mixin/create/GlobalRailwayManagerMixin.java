@@ -2,7 +2,6 @@ package kasuga.lib.mixins.mixin.create;
 
 import com.simibubi.create.Create;
 import com.simibubi.create.content.trains.GlobalRailwayManager;
-import com.simibubi.create.content.trains.entity.Train;
 import com.simibubi.create.content.trains.graph.TrackEdge;
 import com.simibubi.create.content.trains.graph.TrackGraph;
 import com.simibubi.create.content.trains.graph.TrackNode;
@@ -14,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;

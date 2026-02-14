@@ -6,32 +6,31 @@
   "refmap": "kasuga.refmap.json",
   "mixins": [
     "MixinNbtUtils",
+    "MixinStationBlockEntity",
     "MultiPackResourceManagerAccessor",
     "ReloadableResourceManagerAccessor",
+    "create.EdgeDataMixin",
+    "create.GlobalRailwayManagerMixin",
+    "create.SignalPropagatorMixin",
+    "create.TrackGraphAccessor",
+    "create.TrackGraphMixin",
+    "create.TrackTargetingClientMixin",
+    "create.TrainMixin",
     "resources.DelegatingPackResourcesMixin",
     "resources.FilePackResourceMixin",
-    "resources.PathPackResourceMixin",
-    "MixinStationBlockEntity",
-    "create.GlobalRailwayManagerMixin",
-    "create.TrackGraphMixin",
-    "create.TrackGraphAccessor",
-    "create.SignalPropagatorMixin",
-    "create.EdgeDataMixin",
-    "create.TrainMixin"
+    "resources.PathPackResourceMixin"
   ],
   "client": [
+    "client.MixinBezierConnection",
     "client.MixinBlockModel$Deserializer",
     "client.MixinBlockModelBinding",
     "client.MixinBlockModelShaper",
-    "client.MixinTextureManager",
-    "client.MixinBezierConnection",
     "client.MixinBlockRenderDispatcher",
     "client.MixinCarriageContraptionEntityRenderer",
-    "client.MixinStationBlockEntityClient",
     "client.MixinDirectoryLister",
-    "client.MixinTextureManager",
-    "client.MixinBlockModelShaper",
-    "client.MixinGameRenderer"
+    "client.MixinGameRenderer",
+    "client.MixinStationBlockEntityClient",
+    "client.MixinTextureManager"
   ],
   "minVersion": "0.8"
 }

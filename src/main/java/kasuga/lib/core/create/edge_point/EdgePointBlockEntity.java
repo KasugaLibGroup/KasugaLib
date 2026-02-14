@@ -1,7 +1,6 @@
 package kasuga.lib.core.create.edge_point;
 
 import com.simibubi.create.content.trains.graph.EdgePointType;
-import com.simibubi.create.content.trains.signal.SingleBlockEntityEdgePoint;
 import com.simibubi.create.content.trains.signal.TrackEdgePoint;
 import com.simibubi.create.content.trains.track.TrackTargetingBehaviour;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;

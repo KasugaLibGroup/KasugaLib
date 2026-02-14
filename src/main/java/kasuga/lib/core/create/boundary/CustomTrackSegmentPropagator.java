@@ -2,13 +2,13 @@ package kasuga.lib.core.create.boundary;
 
 import com.simibubi.create.Create;
 import com.simibubi.create.content.trains.graph.*;
-import com.simibubi.create.foundation.utility.Couple;
-import com.simibubi.create.foundation.utility.Iterate;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.create.graph.EdgeExtraData;
 import kasuga.lib.core.create.graph.GraphExtraData;
 import kasuga.lib.core.create.graph.TrackEdgeLocation;
 import kasuga.lib.core.util.data_type.Pair;
+import net.createmod.catnip.data.Couple;
+import net.createmod.catnip.data.Iterate;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;

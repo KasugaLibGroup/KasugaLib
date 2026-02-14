@@ -3,8 +3,8 @@ package kasuga.lib.core.create.graph;
 import com.simibubi.create.content.trains.graph.DimensionPalette;
 import com.simibubi.create.content.trains.graph.TrackEdge;
 import com.simibubi.create.content.trains.graph.TrackNodeLocation;
-import com.simibubi.create.foundation.utility.Couple;
 import kasuga.lib.core.util.data_type.Pair;
+import net.createmod.catnip.data.Couple;
 import net.minecraft.nbt.CompoundTag;
 
 public class TrackEdgeLocation extends Pair<TrackNodeLocation,TrackNodeLocation> {

@@ -1,6 +1,5 @@
 package kasuga.lib.core.create.graph;
 
-import com.simibubi.create.content.trains.entity.Train;
 
 import java.util.WeakHashMap;
 

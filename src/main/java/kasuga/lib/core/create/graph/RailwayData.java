@@ -1,6 +1,5 @@
 package kasuga.lib.core.create.graph;
 
-import com.simibubi.create.content.trains.entity.Train;
 import com.simibubi.create.content.trains.graph.DimensionPalette;
 import com.simibubi.create.content.trains.graph.TrackGraph;
 import kasuga.lib.core.create.boundary.ResourcePattle;

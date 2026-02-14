@@ -1,16 +1,16 @@
 package kasuga.lib.core.base;
 
-import com.jozufozu.flywheel.core.PartialModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.simibubi.create.content.trains.track.TrackBlock;
 import com.simibubi.create.content.trains.track.TrackMaterial;
 import com.simibubi.create.content.trains.track.TrackShape;
-import com.simibubi.create.foundation.render.CachedBufferer;
-import com.simibubi.create.foundation.render.SuperByteBuffer;
+import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.registrations.create.TrackMaterialReg;
+import net.createmod.catnip.render.CachedBuffers;
+import net.createmod.catnip.render.SuperByteBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,12 +40,12 @@ public class CustomTrackRenderer<T extends TrackBlock> extends CustomBlockRender
             material = getBlock().getMaterial();
             offset = KasugaLib.STACKS.getCachedTrackMaterial(material).trackOffsets();
         }
-        PartialModel left = material.getModelHolder().segment_left(),
-                right = material.getModelHolder().segment_right(),
+        PartialModel left = material.getModelHolder().leftSegment(),
+                right = material.getModelHolder().rightSegment(),
                 tie = material.getModelHolder().tie();
-        SuperByteBuffer leftBuffer = CachedBufferer.partial(left, state),
-                rightBuffer = CachedBufferer.partial(right, state),
-                tieBuffer = CachedBufferer.partial(tie, state);
+        SuperByteBuffer leftBuffer = CachedBuffers.partial(left, state),
+                rightBuffer = CachedBuffers.partial(right, state),
+                tieBuffer = CachedBuffers.partial(tie, state);
         TrackShape shape = state.getValue(TrackBlock.SHAPE);
         Direction direction = getFacingMapping(shape);
         if (direction == Direction.DOWN) {

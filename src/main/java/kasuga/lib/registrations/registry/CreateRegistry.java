@@ -10,15 +10,7 @@ import java.util.LinkedList;
 public class CreateRegistry extends SimpleRegistry {
     private final CreateRegistrate createRegistry;
     private final LinkedList<InteractionMovementReg> movements;
-    /**
-     * This constructor is used for create a new KasugaLib registration.
-     *
-     * @param namespace your mod namespace name
-     * @param bus       your mod namespace eventbus. For more info see
-     *                  {@link FMLJavaModLoadingContext#get()}
-     *                  and
-     *                  {@link FMLJavaModLoadingContext#getModEventBus()}
-     */
+
     public CreateRegistry(String namespace, IEventBus bus) {
         super(namespace, bus);
         movements = new LinkedList<>();

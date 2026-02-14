@@ -7,13 +7,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import org.apache.commons.lang3.tuple.Pair;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = CarriageContraption.class, remap = false)
 public class CarriageContraptionMixin {
@@ -31,7 +34,7 @@ public class CarriageContraptionMixin {
                     value = "HEAD"
             )
     )
-    public void beforeCapture(Level world, BlockPos pos, CallbackInfo ci){
+    public void beforeCapture(Level world, BlockPos pos, CallbackInfoReturnable<Pair<StructureTemplate.StructureBlockInfo, BlockEntity>> cir){
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         captureTrainController(blockState, block);

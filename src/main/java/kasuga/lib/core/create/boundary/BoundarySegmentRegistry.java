@@ -1,6 +1,5 @@
 package kasuga.lib.core.create.boundary;
 
-import com.ibm.icu.impl.ICUResourceBundle;
 import com.simibubi.create.content.trains.graph.EdgePointType;
 import net.minecraft.resources.ResourceLocation;
 
@@ -9,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class BoundarySegmentRegistry
 {

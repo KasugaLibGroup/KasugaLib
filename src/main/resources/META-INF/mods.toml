@@ -67,6 +67,6 @@ Kasuga Lib is a base mod aiming at simplify modding.
 [[dependencies.kasuga_lib]]
     modId="create"
     mandatory=true
-    versionRange="[0.5.1.e,)"
+    versionRange="[6.0.8,)"
     ordering="AFTER"
     side="BOTH"
