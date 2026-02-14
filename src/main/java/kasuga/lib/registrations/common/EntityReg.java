@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 public class EntityReg<T extends Entity> extends Reg {
     EntityBuilder<T> builder;
     RegistryObject<EntityType<T>> registryObject;
-    MobCategory mobCategory;
+    MobCategory mobCategory = MobCategory.MISC;
     public final List<Object> externalArgs;
     private EntityAttributeBuilder attributeBuilder;
     private Supplier<EntityRendererBuilder<T>> provider = null;
