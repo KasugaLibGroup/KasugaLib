@@ -1,7 +1,7 @@
 package kasuga.lib.registrations.create;
 
 import com.simibubi.create.AllInteractionBehaviours;
-import com.simibubi.create.content.contraptions.behaviour.MovingInteractionBehaviour;
+import com.simibubi.create.api.behaviour.interaction.MovingInteractionBehaviour;
 import kasuga.lib.registrations.Reg;
 import kasuga.lib.registrations.common.BlockReg;
 import kasuga.lib.registrations.exception.RegistryElementNotPresentException;
@@ -76,7 +76,7 @@ public class InteractionReg<T extends MovingInteractionBehaviour> extends Reg im
                 if (blocks == null)
                     crashOnNotPresent(InteractionReg.class, getIdentifier(), "you must provide a list of block for registration.");
                 for (BlockReg block : blocks)
-                    AllInteractionBehaviours.registerBehaviour(block.getBlock(), behaviour);
+                    MovingInteractionBehaviour.REGISTRY.register(block.getBlock(), behaviour);
             }
             case predicate -> {
                 if (blocks == null)
@@ -85,24 +85,24 @@ public class InteractionReg<T extends MovingInteractionBehaviour> extends Reg im
                     crashOnNotPresent(InteractionReg.class, getIdentifier(), "you must provide a predictor for registration.");
                 for (BlockReg block : blocks) {
                     if (blockPredicate.test(block))
-                        AllInteractionBehaviours.registerBehaviour(block.getBlock(), behaviour);
+                        MovingInteractionBehaviour.REGISTRY.register(block.getBlock(), behaviour);
                 }
             }
             case state_predicate -> {
                 if (statePredicate == null)
                     crashOnNotPresent(InteractionReg.class, getIdentifier(), "you must provide a predictor for registration.");
-                AllInteractionBehaviours.registerBehaviourProvider(
-                        state -> statePredicate.test(state) ? behaviour : null
+                MovingInteractionBehaviour.REGISTRY.registerProvider(
+                        (state) -> statePredicate.test(state.defaultBlockState()) ? behaviour : null
                 );
             }
             case tag -> {
                 if (tags == null)
                     crashOnNotPresent(InteractionReg.class, getIdentifier(), "you must provide a list of tags for registration.");
-                AllInteractionBehaviours.registerBehaviourProvider(
+                MovingInteractionBehaviour.REGISTRY.registerProvider(
                         state -> {
                             boolean flag = false;
-                            for (TagKey tag : tags) {
-                                if (state.is(tag)) {
+                            for (TagKey<Block> tag : tags) {
+                                if (state.defaultBlockState().is(tag)) {
                                     flag = true;
                                     break;
                                 }
@@ -124,7 +124,7 @@ public class InteractionReg<T extends MovingInteractionBehaviour> extends Reg im
                             break;
                         }
                     }
-                    if (flag) AllInteractionBehaviours.registerBehaviour(reg.getBlock(), behaviour);
+                    if (flag) MovingInteractionBehaviour.REGISTRY.register(reg.getBlock(), behaviour);
                 }
             }
         }

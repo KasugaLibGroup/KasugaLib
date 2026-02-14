@@ -5,9 +5,9 @@ import com.simibubi.create.content.trains.bogey.AbstractBogeyBlockEntity;
 import com.simibubi.create.content.trains.station.GlobalStation;
 import com.simibubi.create.content.trains.station.StationBlockEntity;
 import com.simibubi.create.content.trains.track.ITrackBlock;
-import com.simibubi.create.foundation.utility.NBTHelper;
-import com.simibubi.create.foundation.utility.animation.LerpedFloat;
 import kasuga.lib.core.create.BogeyDataConstants;
+import net.createmod.catnip.animation.LerpedFloat;
+import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -28,7 +28,8 @@ import javax.annotation.Nullable;
 @Mixin(value = StationBlockEntity.class, remap = false)
 public abstract class MixinStationBlockEntity extends BlockEntity {
 
-    @Shadow(remap = false) abstract Direction getAssemblyDirection();
+    @Shadow(remap = false)
+    public abstract Direction getAssemblyDirection();
 
     @Shadow(remap = false)
     @Nullable

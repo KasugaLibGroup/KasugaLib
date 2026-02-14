@@ -18,7 +18,8 @@ public class BogeySizeReg extends Reg {
 
     @Override
     public BogeySizeReg submit(SimpleRegistry registry) {
-        bogeySize = BogeySizes.addSize(registry.asResource(registrationKey), size);
+        bogeySize = new BogeySizes.BogeySize(registry.asResource(registrationKey), size);
+        BogeySizes.register(bogeySize);
         return this;
     }
 

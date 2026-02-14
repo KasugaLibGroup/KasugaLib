@@ -1,6 +1,6 @@
 package kasuga.lib.registrations.create;
 
-import com.simibubi.create.AllBogeyStyles;
+import com.simibubi.create.content.trains.bogey.AbstractBogeyBlock;
 import com.simibubi.create.content.trains.bogey.BogeyRenderer;
 import com.simibubi.create.content.trains.bogey.BogeySizes;
 import com.simibubi.create.content.trains.bogey.BogeyStyle;
@@ -10,9 +10,10 @@ import kasuga.lib.registrations.registry.SimpleRegistry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -23,11 +24,7 @@ public class BogeyGroupReg extends Reg {
     private String cycleGroup = "";
     private ParticleOptions contactParticle = null, smokeParticle = null;
     private BogeyStyle style = null;
-    /**
-     * Use this to create a BlockReg.
-     *
-     * @param registrationKey your block registration key.
-     */
+
     public BogeyGroupReg(String registrationKey, String cycleGroup) {
         super(registrationKey);
         this.cycleGroup = cycleGroup;
@@ -81,14 +78,32 @@ public class BogeyGroupReg extends Reg {
 
     @Override
     public BogeyGroupReg submit(SimpleRegistry registry) {
-        AllBogeyStyles.BogeyStyleBuilder builder= new AllBogeyStyles.BogeyStyleBuilder(registry.asResource(registrationKey), registry.asResource(cycleGroup));
+        ResourceLocation styleId = registry.asResource(registrationKey);
+        ResourceLocation groupLocation = registry.asResource(cycleGroup);
+        BogeyStyle.Builder builder = new BogeyStyle.Builder(styleId,groupLocation);
+
         if (translationName != null) builder.displayName(translationName);
         if (contactParticle != null) builder.contactParticle(contactParticle);
         if (smokeParticle != null) builder.smokeParticle(smokeParticle);
+
         for (BogeyStyleBuilderContext context : contexts) {
-            ResourceLocation location = new ResourceLocation(context.id.getNamespace().equals("") ? registry.namespace : context.id.getNamespace(), context.id.getPath());
-            builder.size(context.size, () -> context.supplier, location);
+            Supplier<? extends AbstractBogeyBlock<?>> blockSupplier = () -> {
+                Block block = ForgeRegistries.BLOCKS.getValue(context.id);
+                return block instanceof AbstractBogeyBlock<?> bogeyBlock ? bogeyBlock : null;
+            };
+
+            Supplier<Supplier<? extends BogeyStyle.SizeRenderer>> rendererSupplier = () -> () -> {
+                BogeyRenderer renderer = context.supplier.get();
+                return new BogeyStyle.SizeRenderer(renderer, null);
+            };
+
+            builder.size(
+                    context.size,
+                    blockSupplier,
+                    rendererSupplier
+            );
         }
+
         style = builder.build();
         return this;
     }
@@ -102,5 +117,9 @@ public class BogeyGroupReg extends Reg {
         return "bogey_group";
     }
 
-    public record BogeyStyleBuilderContext(BogeySizes.BogeySize size, Supplier<BogeyRenderer> supplier, ResourceLocation id){}
+    public record BogeyStyleBuilderContext(
+            BogeySizes.BogeySize size,
+            Supplier<? extends BogeyRenderer> supplier,
+            ResourceLocation id
+    ){}
 }

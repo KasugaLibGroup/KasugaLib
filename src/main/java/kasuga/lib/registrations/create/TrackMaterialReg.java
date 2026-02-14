@@ -1,10 +1,10 @@
 package kasuga.lib.registrations.create;
 
-import com.jozufozu.flywheel.core.PartialModel;
 import com.simibubi.create.content.trains.track.TrackBlock;
 import com.simibubi.create.content.trains.track.TrackMaterial;
 import com.simibubi.create.content.trains.track.TrackMaterialFactory;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import kasuga.lib.KasugaLib;
 import kasuga.lib.core.create.TrackType;
 import kasuga.lib.registrations.Reg;

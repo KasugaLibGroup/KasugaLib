@@ -15,9 +15,9 @@ import kasuga.lib.core.create.edge_point.BogeyObserverEdgePoint;
 import net.minecraft.nbt.CompoundTag;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -29,9 +29,11 @@ import java.util.UUID;
 @Mixin(value = Train.class, remap = false)
 public class TrainMixin implements TrainDeviceProvider {
 
+    @Unique
     private TrainDeviceManager kasuga$manager;
 
-    @Shadow protected void updateNavigationTarget(double distance){throw new IllegalStateException("Mixin Error?");};
+    @Unique
+    protected void updateNavigationTarget(double distance){throw new IllegalStateException("Mixin Error?");}
 
     @Shadow public double speed;
 
@@ -46,20 +48,12 @@ public class TrainMixin implements TrainDeviceProvider {
 
         Optional<Double> speed = kasuga$manager.beforeSpeed();
 
-        if(speed.isPresent()) {
-            this.speed = speed.get();
-        }
+        speed.ifPresent(aDouble -> this.speed = aDouble);
     }
 
 
 
-    @Redirect(
-            method = "tick",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lcom/simibubi/create/content/trains/entity/Train;updateNavigationTarget(D)V"
-            )
-    )
+    @Unique
     public void doUpdateNavigationTarget(Train train, double distance){
         if(train.graph == null)return;
         this.updateNavigationTarget(distance);

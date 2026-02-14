@@ -8,24 +8,9 @@ import kasuga.lib.core.client.frontend.gui.layout.LayoutEngines;
 import kasuga.lib.core.client.frontend.webserver.GuiWebServerEndpoint;
 import kasuga.lib.core.javascript.commands.JavascriptModuleCommands;
 import kasuga.lib.core.packets.AllPackets;
-import kasuga.lib.core.util.Envs;
-import kasuga.lib.core.resource.KasugaPackResource;
 import kasuga.lib.core.webserver.KasugaHttpServer;
-import kasuga.lib.example_env.ExampleMain;
-import kasuga.lib.example_env.AllExampleElements;
-import kasuga.lib.mixins.mixin.MultiPackResourceManagerAccessor;
-import kasuga.lib.mixins.mixin.ReloadableResourceManagerAccessor;
 import lombok.Getter;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.ReloadableServerResources;
-import net.minecraft.server.WorldLoader;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.*;
-import net.minecraft.world.level.storage.LevelStorageSource;
-import net.minecraft.world.level.storage.WorldData;
-import kasuga.lib.example_env.ExampleMain;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -56,8 +41,6 @@ public class KasugaLib {
         FrontendCommands.invoke();
         KasugaLibConfig.invoke();
         KasugaHttpServer.invoke();
-        if (Envs.isDevEnvironment())
-            ExampleMain.invoke();
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()-> LayoutEngines::init);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()-> GuiWebServerEndpoint::invoke);
     }
