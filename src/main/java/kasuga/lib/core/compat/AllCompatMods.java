@@ -1,9 +1,10 @@
 package kasuga.lib.core.compat;
 
-import kasuga.lib.KasugaLib;
+import kasuga.lib.core.util.Envs;
+import net.minecraftforge.fml.ModList;
 
 public class AllCompatMods {
     public static boolean isIrisOculusPresent() {
-        return KasugaLib.STACKS.COMPATS.IRIS_OCULUS.isPresent();
+        return !Envs.isDedicateServer() && (ModList.get().isLoaded("iris") || ModList.get().isLoaded("oculus"));
     }
 }
