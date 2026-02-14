@@ -1,6 +1,6 @@
 package kasuga.lib.mixins.mixin;
 
-import kasuga.lib.KasugaLib;
+import kasuga.lib.core.compat.AllCompatMods;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -16,7 +16,7 @@ public class KasugaLibMixinPlugin implements IMixinConfigPlugin {
     protected final HashMap<String, Predicate<Void>> mixinConditions = new HashMap<>();
 
     KasugaLibMixinPlugin(){
-        mixinConditions.put("IrisOculusCompatMixin", v -> KasugaLib.STACKS.COMPAT_MODS.isIrisOculusPresent());
+        mixinConditions.put("IrisOculusCompatMixin", v -> AllCompatMods.isIrisOculusPresent());
     }
 
     @Override
